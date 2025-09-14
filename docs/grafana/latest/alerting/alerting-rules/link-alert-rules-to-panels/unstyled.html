@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<h1 id="create-and-link-alert-rules-to-panels">Create and link alert rules to panels</h1>
+<p>Grafana allows you to link an alert rule to a dashboard panel. This can help you:</p>
+<ul>
+<li>Inform alert responders about where to investigate and which data to examine.</li>
+<li>Visualize the alert state directly from dashboards.</li>
+<li>Include a screenshot of the panel in notification messages.</li>
+</ul>
+<p>An alert rule is linked to a panel by setting the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#annotations"><code>__dashboardUid__</code> and <code>__panelId__</code> annotations</a>. Both annotations must be set together.</p>
+<h2 id="link-alert-rules-to-panels">Link alert rules to panels</h2>
+<p>When configuring the alert rule, you can set the dashboard and panel annotations as shown in this <a href="https://youtu.be/ClLp-iSoaSY?si=qKWnvSVaQuvYcuw9&amp;t=170" target="_blank" rel="noopener noreferrer">video</a>.</p>
+<ol>
+<li>Configure the alert rule.</li>
+<li>In the <strong>Configure notification message</strong> section, click <strong>Link dashboard and panel</strong>.</li>
+<li>Select an existing dashboard, then choose a panel from the selected dashboard.</li>
+<li>Complete the alert rule configuration and click <strong>Save rule</strong> to initiate the alert rule.</li>
+</ol>
+<p>You can then 
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state/#view-alert-state-on-panels">view the alert state on the panel</a>.</p>
+<p>By default, notification messages include a link to the dashboard panel. Additionally, you can 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/images-in-notifications/">enable displaying panel screenshots in notifications</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/panel-displays-alert-state.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/panel-displays-alert-state.png"data-srcset="/media/docs/alerting/panel-displays-alert-state.png?w=320 320w, /media/docs/alerting/panel-displays-alert-state.png?w=550 550w, /media/docs/alerting/panel-displays-alert-state.png?w=750 750w, /media/docs/alerting/panel-displays-alert-state.png?w=900 900w, /media/docs/alerting/panel-displays-alert-state.png?w=1040 1040w, /media/docs/alerting/panel-displays-alert-state.png?w=1240 1240w, /media/docs/alerting/panel-displays-alert-state.png?w=1920 1920w"
+          data-sizes="auto"alt="A panel displaying the alert status and state changes."width="1674"height="700"title="A panel displaying the alert status and state changes."/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/panel-displays-alert-state.png"
+            alt="A panel displaying the alert status and state changes."width="1674"height="700"title="A panel displaying the alert status and state changes."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">A panel displaying the alert status and state changes.</figcaption></a></figure>
+<h2 id="create-alert-rules-from-panels">Create alert rules from panels</h2>
+<p>To streamline alert creation, you can create an alert rule directly from a panel.</p>
+<ol>
+<li>Navigate to a dashboard in the <strong>Dashboards</strong> section.</li>
+<li>Hover over the top-right corner of a panel and click the panel menu icon.</li>
+<li>From the dropdown menu, select <strong>More&hellip;</strong> &gt; <strong>New alert rule</strong>.</li>
+<li>This opens the <strong>Edit rule</strong> form and pre-fills some values:
+<ul>
+<li>Sets the annotations to the corresponding dashboard and panel.</li>
+<li>Sets the alert rule query using the panel query.</li>
+</ul>
+</li>
+<li>Complete the alert rule configuration and click <strong>Save rule</strong> to initiate the alert rule.</li>
+</ol>
+
+<p>You can then 
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state/#view-alert-state-on-panels">view the alert state on the panel</a>.</p>
+<p>By default, notification messages include a link to the dashboard panel. Additionally, you can 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/images-in-notifications/">enable displaying panel screenshots in notifications</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Changes to panel and alert rule queries aren&rsquo;t synchronized. If you change a query, you have to update it in both the panel and the alert rule.</p></blockquote></div>
+
+<h2 id="access-linked-alert-rules-from-panels">Access linked alert rules from panels</h2>
+<p>This option is available only in 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">time series panels</a>. To access alert rules associated to a time series panel, complete the following steps.</p>
+<ol>
+<li>Hover over the top-right corner of the panel and click the panel menu icon.</li>
+<li>Click <strong>Edit</strong>.</li>
+<li>Click the <strong>Alert</strong> tab to view existing alert rules or create a new one.</li>
+</ol>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>For a practical example, refer to our <a href="http://www.grafana.com/tutorials/alerting-get-started-pt6/" target="_blank" rel="noopener noreferrer">Getting started: Link alerts to visualizations tutorial</a>.</p></blockquote></div>
+

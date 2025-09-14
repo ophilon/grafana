@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<h1 id="encrypt-database-secrets-using-aws-kms">Encrypt database secrets using AWS KMS</h1>
+<p>You can use an encryption key from AWS Key Management Service to encrypt secrets in the Grafana database.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>An AWS account with permission to view and create KMS keys and programmatic credentials to access those keys</li>
+<li>Access to the Grafana <a href="../../../configure-grafana/#configuration-file-location">configuration</a> file</li>
+</ul>
+<ol>
+<li>
+<p>Create a symmetric API key either from the AWS Management Console or by using the AWS KMS API.
+<br><br>For detailed instructions, refer to <a href="https://docs.aws.amazon.com/kms/latest/developerguide/create-keys.html" target="_blank" rel="noopener noreferrer">Creating keys</a>.</p>
+</li>
+<li>
+<p>Retrieve the Key ID.
+<br><br>In AWS terms, this can be a key ID, a key ARN (Amazon Resource Name), an alias name, or an alias ARN. For more information about how to retrieve a key ID from AWS, refer to <a href="https://docs.aws.amazon.com/kms/latest/developerguide/find-cmk-id-arn.html" target="_blank" rel="noopener noreferrer">Finding the key ID and key ARN</a>.</p>
+</li>
+<li>
+<p>Create a <a href="https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys" target="_blank" rel="noopener noreferrer">programmatic credential</a> (access key ID and secret access key), which has permission to view the key that you created.
+<br><br>In AWS, you can control access to your KMS keys by using <a href="https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html" target="_blank" rel="noopener noreferrer">key policies</a>, <a href="https://docs.aws.amazon.com/kms/latest/developerguide/iam-policies.html" target="_blank" rel="noopener noreferrer">IAM policies</a>, and <a href="https://docs.aws.amazon.com/kms/latest/developerguide/grants.html" target="_blank" rel="noopener noreferrer">grants</a>. You can also create <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html" target="_blank" rel="noopener noreferrer">temporary credentials</a>, which must provide a session token along with an access key ID and a secret access key.</p>
+</li>
+<li>
+<p>From within Grafana, turn on envelope encryption.</p>
+</li>
+<li>
+<p>Add your AWS KMS details to the Grafana configuration file; depending on your operating system, it is usually named <code>grafana.ini</code>:
+<br><br>a. Add a new section to the configuration file, with a name in the format of <code>[security.encryption.awskms.&lt;KEY-NAME&gt;]</code>, where <code>&lt;KEY-NAME&gt;</code> is any name that uniquely identifies this key among other provider keys.
+<br><br>b. Fill in the section with the following values:
+<br></p>
+<ul>
+<li>
+<p><code>key_id</code>: a reference to a key stored in the KMS. This can be a key ID, a key Amazon Resource Name (ARN), an alias name, or an alias ARN. If you are using an alias, use the prefix <code>alias/</code>. To specify a KMS key in a different AWS account, use its ARN or alias. For more information about how to retrieve a key ID from AWS, refer to <a href="https://docs.aws.amazon.com/kms/latest/developerguide/find-cmk-id-arn.html" target="_blank" rel="noopener noreferrer">Finding the key ID and key ARN</a>.<br></p>
+<table>
+  <thead>
+      <tr>
+          <th><code>key_id</code> option</th>
+          <th>Example value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Key ID</td>
+          <td><code>1234abcd-12ab-34cd-56ef-1234567890ab</code></td>
+      </tr>
+      <tr>
+          <td>Key ARN</td>
+          <td><code>arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code></td>
+      </tr>
+      <tr>
+          <td>Alias name</td>
+          <td><code>alias/ExampleAlias</code></td>
+      </tr>
+      <tr>
+          <td>Alias ARN</td>
+          <td><code>arn:aws:kms:us-east-2:111122223333:alias/ExampleAlias</code></td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p><code>access_key_id</code>: The AWS Access Key ID that you previously generated.</p>
+</li>
+<li>
+<p><code>secret_access_key</code>: The AWS Secret Access Key you previously generated.</p>
+</li>
+<li>
+<p><code>region</code>: The AWS region where you created the KMS key. The region is contained in the key’s ARN. For example: <code>arn:aws:kms:*us-east-2*:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code></p>
+</li>
+</ul>
+<p>An example of an AWS KMS provider section in the <code>grafana.ini</code> file is as follows:</p>
+<pre># AWS key management service provider setup
+;[security.encryption.awskms.example-encryption-key]
+# Reference to a KMS key - either key ID, key ARN, alias name, or ARN
+;key_id = 1234abcd-12ab-34cd-56ef-1234567890ab
+# AWS access key ID
+;access_key_id = AKIAIOSFODNN7EXAMPLE
+# AWS secret access key
+;secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+# AWS region, for example eu-north-1
+;region = eu-north-1</pre>
+</li>
+<li>
+<p>Update the <code>[security]</code> section of the <code>grafana.ini</code> configuration file with the new Encryption Provider key that you created:</p>
+<pre>[security]
+# previous encryption key, used for legacy alerts, decrypting existing secrets or used as default provider when external providers are not configured
+secret_key = AaaaAaaa
+# encryption provider key in the format &lt;PROVIDER&gt;.&lt;KEY_NAME&gt;
+encryption_provider = awskms.example-encryption-key
+# list of configured key providers, space separated
+available_encryption_providers = awskms.example-encryption-key</pre>
+</li>
+<li>
+<p><a href="/docs/grafana/latest/installation/restart-grafana/">Restart Grafana</a>.</p>
+</li>
+<li>
+<p>(Optional) From the command line and the root directory of Grafana, re-encrypt all of the secrets within the Grafana database with the new key using the following command:</p>
+<p><code>grafana cli admin secrets-migration re-encrypt</code></p>
+<p>If you do not re-encrypt existing secrets, then they will remain encrypted by the previous encryption key. Users will still be able to access them.</p>
+<p><strong>&gt; Note:</strong> This process could take a few minutes to complete, depending on the number of secrets (such as data sources) in your database. Users might experience errors while this process is running, and alert notifications might not be sent.</p>
+<p><strong>&gt; Note:</strong> If you are updating this encryption key during the initial setup of Grafana before any data sources or dashboards have been created, then this step is not necessary because there are no secrets in Grafana to migrate.</p>
+</li>
+</ol>

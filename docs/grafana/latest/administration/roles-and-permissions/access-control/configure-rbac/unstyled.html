@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<h1 id="configure-rbac-in-grafana">Configure RBAC in Grafana</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>The table below describes all RBAC configuration options. Like any other Grafana configuration, you can apply these options as 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#override-configuration-with-environment-variables">environment variables</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Required</th>
+          <th>Description</th>
+          <th>Default</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>permission_cache</code></td>
+          <td>No</td>
+          <td>Enable to use in memory cache for loading and evaluating users&rsquo; permissions.</td>
+          <td><code>true</code></td>
+      </tr>
+      <tr>
+          <td><code>permission_validation_enabled</code></td>
+          <td>No</td>
+          <td>Grafana enforces validation for permissions when a user creates or updates a role. The system checks the internal list of scopes and actions for each permission to determine they are valid. By default, if a scope or action is not recognized, Grafana logs a warning message. When set to <code>true</code>, Grafana returns an error.</td>
+          <td><code>true</code></td>
+      </tr>
+      <tr>
+          <td><code>reset_basic_roles</code></td>
+          <td>No</td>
+          <td>Reset Grafana&rsquo;s basic roles&rsquo; (Viewer, Editor, Admin, Grafana Admin) permissions to their default. Warning, if this configuration option is left to <code>true</code> this will be done on every reboot.</td>
+          <td><code>true</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="example-rbac-configuration">Example RBAC configuration</h2>
+<pre>[rbac]
+
+permission_cache = true</pre>

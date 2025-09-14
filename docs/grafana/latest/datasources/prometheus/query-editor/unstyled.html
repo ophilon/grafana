@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<h1 id="prometheus-query-editor">Prometheus query editor</h1>
+<p>Grafana provides a query editor for the Prometheus data source to create queries in PromQL. For more information about PromQL, see <a href="http://prometheus.io/docs/querying/basics/" target="_blank" rel="noopener noreferrer">Querying Prometheus</a>. The Prometheus query editor is located on the 
+    <a href="/docs/grafana/latest/explore/">Explore page</a>. You can also access the PostgreSQL query editor from a dashboard panel. Click the ellipsis in the upper right of the panel and select <strong>Edit</strong>.</p>
+<p>For general documentation on querying data sources in Grafana, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>. For options and functions common to all query editors, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query editors</a>.</p>
+<p>The Prometheus query editor has two modes:</p>
+<ul>
+<li><a href="#builder-mode">Builder mode</a></li>
+<li><a href="#code-mode">Code mode</a></li>
+</ul>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/prometheus/builder-code-v11-mode.png"
+  alt="Query editor mode" width="1130"
+     height="216"/></p>
+<p>Grafana synchronizes both modes, allowing you to switch between them. Grafana also displays a warning message if it detects an issue with the query while switching modes.</p>
+<p>You can configure Prometheus-specific options in the query editor by setting several options regardless of mode.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/options.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/options.png"data-srcset="/static/img/docs/prometheus/options.png?w=320 320w, /static/img/docs/prometheus/options.png?w=550 550w, /static/img/docs/prometheus/options.png?w=750 750w, /static/img/docs/prometheus/options.png?w=900 900w, /static/img/docs/prometheus/options.png?w=1040 1040w, /static/img/docs/prometheus/options.png?w=1240 1240w, /static/img/docs/prometheus/options.png?w=1920 1920w"
+          data-sizes="auto"alt="Options"width="820"height="114"title="Options"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/options.png"
+            alt="Options"width="820"height="114"title="Options"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Options</figcaption></a></figure>
+<h2 id="builder-mode">Builder mode</h2>
+<p><strong>Builder mode</strong> helps you build queries using a visual interface. This option is best for users who have limited experience working with Prometheus and PromQL.</p>
+<p>The following video demonstrates how to use the visual Prometheus query builder:</p>
+
+
+
+
+
+  
+  
+  
+
+<div
+x-data="{ vimeo_is_up: false, responded: false }"
+x-init="fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/720004179`)
+    .then(response => {
+      responded = true;
+      response && response.status === 200 ? vimeo_is_up = true : vimeo_is_up = false;
+    })
+    .catch(error => {
+      responded = true;
+    })"
+x-cloak>
+  <figure class="p-0 m-0">
+
+    <template x-if="vimeo_is_up">
+      <div class="my-1" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe src="https://player.vimeo.com/video/720004179?transparent=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="vimeo video" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+      </div>
+    </template>
+    <template x-if="responded && !vimeo_is_up">
+      <p class="bg-gray-17 p-1">There&rsquo;s supposed to be a video here, but for some reason there isn&rsquo;t. Either we entered the id wrong (oops!), or Vimeo is down. If it&rsquo;s the latter, we&rsquo;d expect they&rsquo;ll be back up and running soon. In the meantime, <a href="/blog/">check out our blog</a>!</p>
+    </template>
+
+    
+  </figure>
+</div>
+<p>Builder mode contains the following components:</p>
+<ul>
+<li><strong>Kick start your query</strong> - Click to view a list of predefined operation patterns that help you quickly build queries with multiple operations. These include:
+<ul>
+<li>Rate query starters</li>
+<li>Histogram query starters</li>
+<li>Binary query starters</li>
+</ul>
+</li>
+</ul>
+<p>Click the arrow next to each to see the available options to add to your query.</p>
+<ul>
+<li><strong>Explain</strong> - Toggle on to display a step-by-step explanation of all query components and operations.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/explain-results.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/explain-results.png"data-srcset="/static/img/docs/prometheus/explain-results.png?w=320 320w, /static/img/docs/prometheus/explain-results.png?w=550 550w, /static/img/docs/prometheus/explain-results.png?w=750 750w, /static/img/docs/prometheus/explain-results.png?w=900 900w, /static/img/docs/prometheus/explain-results.png?w=1040 1040w, /static/img/docs/prometheus/explain-results.png?w=1240 1240w, /static/img/docs/prometheus/explain-results.png?w=1920 1920w"
+          data-sizes="auto"alt="Explain results"width="1673"height="366"title="Explain results"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/explain-results.png"
+            alt="Explain results"width="1673"height="366"title="Explain results"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Explain results</figcaption></a></figure>
+<ul>
+<li><strong>Builder/Code</strong> - Click the corresponding <strong>Builder</strong> or <strong>Code</strong> tab on the toolbar to select an editor mode.</li>
+</ul>
+<p>If you select Builder mode you will see the following options:</p>
+<ul>
+<li><strong>Metric</strong> - Select a metric from the drop-down. Click the icon to open Metrics explorer, where you can search for metrics by name and filter by type if your instance has a large number of metrics. Refer to <a href="#metrics-explorer">Metrics explorer</a> for more detail on using this feature.</li>
+<li><strong>Label filters</strong> - Select label filters from the drop-down. Select an operator and a value.
+Select desired labels and their values from the drop-down list.
+When a metric is selected, the data source requests available labels and their values from the server.
+Use the <code>+</code> button to add a label, and the <code>x</code> button to remove a label.</li>
+</ul>
+<p>Click <strong>+ Operations</strong> to select from a list of operations including Aggregations, Range functions, Functions, Binary operations, Trigonometric and Time functions. You can select multiple operations. Refer to <a href="#operations">Operations</a> for more detail.</p>
+<p><strong>Options:</strong></p>
+<ul>
+<li>
+<p><strong>Legend</strong>- Lets you customize the name for the time series. You can use a predefined or custom format.</p>
+<ul>
+<li><strong>Auto</strong> - Displays unique labels. Also displays all overlapping labels if a series has multiple labels.</li>
+<li><strong>Verbose</strong> - Displays all label names.</li>
+<li><strong>Custom</strong> - Lets you customize the legend using label templates. For example, <code>{{hostname}}</code> is replaced with the value of the <code>hostname</code> label. To switch to a different legend mode, clear the input and click outside the field.</li>
+</ul>
+</li>
+<li>
+<p><strong>Min step</strong> - Sets the minimum interval between data points returned by the query. For example, setting this to <code>1h</code> suggests that data is collected or displayed at hourly intervals. This setting supports the <code>$__interval</code> and <code>$__rate_interval</code> macros. Note that the time range of the query is aligned to this step size, which may adjust the actual start and end times of the returned data.</p>
+</li>
+<li>
+<p><strong>Format</strong> - Determines how the data from your Prometheus query is interpreted and visualized in a panel. Choose from the following format options:</p>
+<ul>
+<li><strong>Time series</strong> - The default format. Refer to <a href="/developers/dataplane/timeseries/">Time series kind formats</a> for information on time series data frames and how time and value fields are structured.</li>
+<li><strong>Table</strong> - Displays data in table format. This format works only in a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table panel</a>.</li>
+<li><strong>Heatmap</strong> - Displays Histogram-type metrics in a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/heatmap/">Heatmap panel</a> by converting cumulative histograms to regular ones and sorting the series by the bucket bound. Converts cumulative histogram data into regular histogram format and sorts the series by bucket boundaries for proper display.</li>
+</ul>
+</li>
+<li>
+<p><strong>Type</strong> - This setting determines the query type. These include:</p>
+<ul>
+<li><strong>Both</strong> - The default option. Returns results for both a <strong>Range</strong> query and an <strong>Instant</strong> query.</li>
+<li><strong>Range</strong> - Returns a range vector - a set of time series
+a set of time series where each series includes multiple data points over a period of time. You can choose to visualize the data as lines, bars, points, stacked lines, or stacked bars.</li>
+<li><strong>Instant</strong> - Returns a single data point per series — the most recent value within the selected time range. The results can be displayed in a table or as raw data. To visualize instant query results in a time series panel, start by adding field override, then add a property to the override called <code>Transform</code>, and set the Transform value to <code>Constant</code> in the drop-down. For more information, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/#transform">Time Series Transform option documentation</a>.</li>
+</ul>
+</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana adjusts the query time range to align with the dynamically calculated step interval. This alignment ensures consistent metric visualization and supports Prometheus&rsquo;s result caching requirements. However, this alignment can cause minor visual differences, such as a slight gap at the graph&rsquo;s right edge or a shifted start time. For example, a <code>15s</code> step aligns timestamps to Unix times divisible by 15 seconds. A <code>1w</code> <code>minstep</code> aligns the range to the start of the week, which for Prometheus is Thursday at 00:00 UTC.</p></blockquote></div>
+
+<ul>
+<li><strong>Exemplars</strong> - Toggle on to run a query that includes exemplars in the graph. Exemplars are unique to Prometheus. For more information see 
+    <a href="/docs/grafana/latest/fundamentals/exemplars/">Introduction to exemplars</a>.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>There is no option to add exemplars with an <strong>Instant</strong> query type.</p></blockquote></div>
+
+<h3 id="filter-metrics">Filter metrics</h3>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/metrics-and-labels.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/metrics-and-labels.png"data-srcset="/static/img/docs/prometheus/metrics-and-labels.png?w=320 320w, /static/img/docs/prometheus/metrics-and-labels.png?w=550 550w, /static/img/docs/prometheus/metrics-and-labels.png?w=750 750w, /static/img/docs/prometheus/metrics-and-labels.png?w=900 900w, /static/img/docs/prometheus/metrics-and-labels.png?w=1040 1040w, /static/img/docs/prometheus/metrics-and-labels.png?w=1240 1240w, /static/img/docs/prometheus/metrics-and-labels.png?w=1920 1920w"
+          data-sizes="auto"alt="Metric and label filters"width="641"height="120"title="Metric and label filters"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/metrics-and-labels.png"
+            alt="Metric and label filters"width="641"height="120"title="Metric and label filters"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Metric and label filters</figcaption></a></figure>
+<p>When you are ready to create a query, you can choose the specific metric name from the drop-down list under <strong>Metric</strong>.
+The data source provides the list of available metrics based on the selected time range.
+You can also enter text into the selector when the drop-down is open to search and filter the list.</p>
+<h4 id="metrics-explorer-in-builder-mode">Metrics explorer in Builder mode</h4>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png"data-srcset="/static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png?w=320 320w, /static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png?w=550 550w, /static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png?w=750 750w, /static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png?w=900 900w, /static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png?w=1040 1040w, /static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png?w=1240 1240w, /static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Metrics explorer"width="1322"height="643"title="Metrics explorer"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/screenshot-grafana-prometheus-metrics-explorer-2.png"
+            alt="Metrics explorer"width="1322"height="643"title="Metrics explorer"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Metrics explorer</figcaption></a></figure>
+<p>Click the <strong>Open book icon</strong> to open the Metrics explorer, where you can search for and filter all the metrics in your instance.</p>
+<p>If you would like to explore your metrics in the query builder further, you can open the <strong>Metrics explorer</strong> by clicking the first option in the metric select component of the query builder.</p>
+<p>The Metrics explorer displays all metrics in a paginated table list. The list shows the total number of metrics, as well as the name, type, and description for each metric. You can enter text into the search input to filter results.
+You can also filter by type.</p>
+<p>The following options are included under the <strong>Additional Settings</strong> drop-down:</p>
+<ul>
+<li><strong>Include description in search</strong>: Toggle on to search by both name and description.</li>
+<li><strong>Include results with no metadata</strong>: Toggle on to include metrics that lack type or description metadata.</li>
+<li><strong>Disable text wrap</strong>: Toggle on to disable text wrapping.</li>
+<li><strong>Enable regex search</strong>: Toggle on to filter metric names by regex search, which uses an additional call on the Prometheus API.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The Metrics explorer (Builder mode) and <a href="#metrics-browser-in-code-mode">Metrics browser (Code mode)</a> are separate elements. The Metrics explorer does not have the ability to browse labels yet, but the Metrics browser can display all labels on a metric name.</p></blockquote></div>
+
+<h3 id="operations">Operations</h3>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/operations.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/operations.png"data-srcset="/static/img/docs/prometheus/operations.png?w=320 320w, /static/img/docs/prometheus/operations.png?w=550 550w, /static/img/docs/prometheus/operations.png?w=750 750w, /static/img/docs/prometheus/operations.png?w=900 900w, /static/img/docs/prometheus/operations.png?w=1040 1040w, /static/img/docs/prometheus/operations.png?w=1240 1240w, /static/img/docs/prometheus/operations.png?w=1920 1920w"
+          data-sizes="auto"alt="Operations"width="652"height="102"title="Operations"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/operations.png"
+            alt="Operations"width="652"height="102"title="Operations"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Operations</figcaption></a></figure>
+<p>Select the <strong>+ Operations</strong> button to add operations to your query.</p>
+<p>The query editor groups operations into the following sections:</p>
+<ul>
+<li>Aggregations - for additional information see <a href="https://prometheus.io/docs/prometheus/latest/querying/operators/#aggregation-operators" target="_blank" rel="noopener noreferrer">Aggregation operators</a>.</li>
+<li>Range functions - for additional information see <a href="https://prometheus.io/docs/prometheus/latest/querying/functions/#functions" target="_blank" rel="noopener noreferrer">Functions</a>.</li>
+<li>Functions - for additional information see <a href="https://prometheus.io/docs/prometheus/latest/querying/functions/#functions" target="_blank" rel="noopener noreferrer">Functions</a>.</li>
+<li>Binary operations - for additional information see <a href="https://prometheus.io/docs/prometheus/latest/querying/operators/#binary-operators" target="_blank" rel="noopener noreferrer">Binary operators</a>.</li>
+<li>Trigonometric - for additional information see <a href="https://prometheus.io/docs/prometheus/latest/querying/functions/#trigonometric-functions" target="_blank" rel="noopener noreferrer">Trigonometric functions</a>.</li>
+<li>Time functions - for additional information see <a href="https://prometheus.io/docs/prometheus/latest/querying/functions/#functions" target="_blank" rel="noopener noreferrer">Functions</a>.</li>
+</ul>
+<p>All operations have function parameters under the operation header. Click the <code>operator</code> to see a full list of supported functions. Some operations allow you to apply specific labels to functions.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/use-function-by-label-9-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/use-function-by-label-9-5.png"data-srcset="/static/img/docs/prometheus/use-function-by-label-9-5.png?w=320 320w, /static/img/docs/prometheus/use-function-by-label-9-5.png?w=550 550w, /static/img/docs/prometheus/use-function-by-label-9-5.png?w=750 750w, /static/img/docs/prometheus/use-function-by-label-9-5.png?w=900 900w, /static/img/docs/prometheus/use-function-by-label-9-5.png?w=1040 1040w, /static/img/docs/prometheus/use-function-by-label-9-5.png?w=1240 1240w, /static/img/docs/prometheus/use-function-by-label-9-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Functions and labels"width="614"height="429"title="Functions and labels"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/use-function-by-label-9-5.png"
+            alt="Functions and labels"width="614"height="429"title="Functions and labels"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Functions and labels</figcaption></a></figure>
+<p>Some operations are only valid when used in a specific order. If you add an operation in a way that would create an invalid or illogical query, the query editor automatically places it in the correct position to maintain a valid query structure.</p>
+<h3 id="hints">Hints</h3>
+<p>The query editor can detect which operations are most appropriate for certain selected metrics.
+When it does, it displays a hint next to the <strong>+ Operations</strong> button.</p>
+<p>To add the operation to your query, click the <strong>Hint</strong>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/hint-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/hint-example.png"data-srcset="/static/img/docs/prometheus/hint-example.png?w=320 320w, /static/img/docs/prometheus/hint-example.png?w=550 550w, /static/img/docs/prometheus/hint-example.png?w=750 750w, /static/img/docs/prometheus/hint-example.png?w=900 900w, /static/img/docs/prometheus/hint-example.png?w=1040 1040w, /static/img/docs/prometheus/hint-example.png?w=1240 1240w, /static/img/docs/prometheus/hint-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Hint"width="655"height="197"title="Hint"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/hint-example.png"
+            alt="Hint"width="655"height="197"title="Hint"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Hint</figcaption></a></figure>
+<p>When you are satisfied with your query, click <strong>Run query</strong>.</p>
+<h2 id="code-mode">Code mode</h2>
+<p><strong>Code mode</strong> is for the experienced Prometheus user with prior expertise in PromQL, Prometheus&rsquo; query language. The Code mode editor allows you to create queries just as you would in Prometheus. For more information about PromQL see <a href="http://prometheus.io/docs/querying/basics/" target="_blank" rel="noopener noreferrer">Querying Prometheus</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/code-mode.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/code-mode.png"data-srcset="/static/img/docs/prometheus/code-mode.png?w=320 320w, /static/img/docs/prometheus/code-mode.png?w=550 550w, /static/img/docs/prometheus/code-mode.png?w=750 750w, /static/img/docs/prometheus/code-mode.png?w=900 900w, /static/img/docs/prometheus/code-mode.png?w=1040 1040w, /static/img/docs/prometheus/code-mode.png?w=1240 1240w, /static/img/docs/prometheus/code-mode.png?w=1920 1920w"
+          data-sizes="auto"alt="Code mode"width="1688"height="171"title="Code mode"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/code-mode.png"
+            alt="Code mode"width="1688"height="171"title="Code mode"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Code mode</figcaption></a></figure>
+<p>The user interface (UI) also lets you select metrics, labels, filters, and operations.</p>
+<p>You can write complex queries using the text editor with autocompletion features and syntax highlighting. Code mode&rsquo;s autocomplete feature works automatically while typing. The query editor can autocomplete static functions, aggregations, keywords, and also dynamic items like metrics and labels. The autocompletion drop-down includes documentation for the suggested items where available.</p>
+<p>It also contains a <a href="#metrics-browser-in-code-mode">Metrics browser</a> to further help you write queries. To open the Metrics browser, click the arrow next to <strong>Metrics browser</strong>.</p>
+<h3 id="metrics-browser-in-code-mode">Metrics browser in Code mode</h3>
+<p>The Metrics browser locates metrics and selects relevant labels to help you build basic queries.
+When you click <strong>Metrics browser</strong> in <code>Code</code> mode, it displays all available metrics and labels.
+If supported by your Prometheus instance, each metric also displays its <code>HELP</code> and <code>TYPE</code> as a tooltip.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1335px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png"data-srcset="/media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png?w=320 320w, /media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png?w=550 550w, /media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png?w=750 750w, /media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png?w=900 900w, /media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png?w=1040 1040w, /media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png?w=1240 1240w, /media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png?w=1920 1920w"
+          data-sizes="auto"alt="Prometheus query editor metrics browser"width="1335"height="675"title="Metrics browser"/>
+        <noscript>
+          <img
+            src="/media/docs/prometheus/Metrics-browser-V10-prom-query-editor.png"
+            alt="Prometheus query editor metrics browser"width="1335"height="675"title="Metrics browser"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Metrics browser</figcaption></a></figure>
+<p>When you select a metric under <strong>Step 1</strong>, the browser narrows down the available labels to show only the ones applicable to the metric.
+You can then select one or more labels shown in <strong>Step 2</strong>.
+Select one or more values in <strong>Step 3</strong> for each label to tighten your query scope.
+In <strong>Step 4</strong>, you can select <strong>Use query</strong> to run the query, <strong>Use as rate query</strong> to add the rate operation to your query (<code>$__rate_interval</code>), <strong>Validate selector</strong> to verify the selector is valid and show the number of series found, or <strong>Clear</strong> to clear your selections and start over.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you don&rsquo;t remember the exact metric name, you can start by selecting a few labels to filter the list. This helps you find relevant label values and narrow down your options.</p></blockquote></div>
+
+<p>All lists in the Metrics browser include a search field to quickly filter metrics or labels by keyword.
+In the <strong>Values</strong> section, there&rsquo;s a single search field that filters across all selected labels, making it easier to find matching values. For example, if you have labels like <code>app</code>, <code>job</code>, and <code>job_name</code>, only one of them might contain the value you&rsquo;re looking for.</p>
+<p>When you are satisfied with your query, click <strong>Run query</strong>.</p>
+<h2 id="incremental-dashboard-queries-beta">Incremental dashboard queries (beta)</h2>
+<p>Starting with Grafana v10, the Prometheus data source supports incremental querying for live dashboards. Instead of re-querying the entire time range on each refresh, Grafana can fetch only new data since the last query.</p>
+<p>You can enable or disable this feature in the data source configuration or provisioning file using the <code>incrementalQuerying</code> field in <code>jsonData</code>.</p>
+<p>You can also control the overlap between consecutive incremental queries using the <code>incrementalQueryOverlapWindow</code> field in <code>jsonData</code>. By default, this is set to <code>10m</code> (10 minutes). Increasing the <code>incrementalQueryOverlapWindow</code> value increases the time range covered by each incremental query. This can help in environments where the most recent data may be delayed or incomplete.</p>

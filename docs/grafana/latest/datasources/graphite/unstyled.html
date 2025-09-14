@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<h1 id="graphite-data-source">Graphite data source</h1>
+<p>Grafana includes built-in support for Graphite.
+This topic explains options, variables, querying, and other features specific to the Graphite data source, which include its feature-rich query editor.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.</p>
+<p>Once you&rsquo;ve added the Graphite data source, you can <a href="#configure-the-data-source">configure it</a> so that your Grafana instance&rsquo;s users can create queries in its <a href="query-editor/">query editor</a> when they 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build dashboards</a> and use 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/000000003/" target="_blank" rel="noopener noreferrer">Graphite: Sample Website Dashboard</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/000000003/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<p>Grafana exposes metrics for Graphite on the <code>/metrics</code> endpoint.
+For detailed instructions, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/">Internal Grafana metrics</a>.</p>
+<h2 id="get-grafana-metrics-into-graphite">Get Grafana metrics into Graphite</h2>
+<p>Grafana exposes metrics for Graphite on the <code>/metrics</code> endpoint.
+Refer to 
+    <a href="/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/">Internal Grafana metrics</a> for more information.</p>
+<h2 id="graphite-and-loki-integration">Graphite and Loki integration</h2>
+<p>When you change the data source selection in 
+    <a href="/docs/grafana/latest/explore/">Explore</a>, Graphite queries are converted to Loki queries.
+Grafana extracts Loki label names and values from the Graphite queries according to mappings provided in the Graphite data source configuration. Grafana automatically transforms queries using tags with <code>seriesByTags()</code> without requiring additional setup.</p>
+<h2 id="get-the-most-out-of-the-data-source">Get the most out of the data source</h2>
+<p>After installing and configuring the Graphite data source you can:</p>
+<ul>
+<li>Create a wide variety of 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/">visualizations</a></li>
+<li>Configure and use 
+    <a href="/docs/grafana/latest/dashboards/variables/">templates and variables</a></li>
+<li>Add 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/">transformations</a></li>
+<li>Add 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/">annotations</a></li>
+<li>Set up 
+    <a href="/docs/grafana/latest/alerting/">alerting</a></li>
+</ul>

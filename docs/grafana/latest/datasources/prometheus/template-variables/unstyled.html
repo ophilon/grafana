@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<h1 id="prometheus-template-variables">Prometheus template variables</h1>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables. Grafana refers to such variables as <strong>template</strong> variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the displayed data.</p>
+<p>For an introduction to templating and template variables, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a>.</p>
+<h2 id="use-query-variables">Use query variables</h2>
+<p>Grafana supports several types of variables, but Query variables are specifically used to query Prometheus. They can return a list of metrics, labels, label values, query results, or series.</p>
+<p>Select a Prometheus data source query type and enter the required inputs:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Query Type</th>
+          <th>Input(* required)</th>
+          <th>Description</th>
+          <th>Used API endpoints</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Label names</code></td>
+          <td><code>metric</code></td>
+          <td>Returns a list of all label names matching the specified <code>metric</code> regex.</td>
+          <td>/api/v1/labels</td>
+      </tr>
+      <tr>
+          <td><code>Label values</code></td>
+          <td><code>label</code>*, <code>metric</code></td>
+          <td>Returns a list of label values for the <code>label</code> in all metrics or the optional metric.</td>
+          <td>/api/v1/label/<code>label</code>/values or /api/v1/series</td>
+      </tr>
+      <tr>
+          <td><code>Metrics</code></td>
+          <td><code>metric</code></td>
+          <td>Returns a list of metrics matching the specified <code>metric</code> regex.</td>
+          <td>/api/v1/label/__name__/values</td>
+      </tr>
+      <tr>
+          <td><code>Query result</code></td>
+          <td><code>query</code></td>
+          <td>Returns a list of Prometheus query result for the <code>query</code>.</td>
+          <td>/api/v1/query</td>
+      </tr>
+      <tr>
+          <td><code>Series query</code></td>
+          <td><code>metric</code>, <code>label</code> or both</td>
+          <td>Returns a list of time series associated with the entered data.</td>
+          <td>/api/v1/series</td>
+      </tr>
+      <tr>
+          <td><code>Classic query</code></td>
+          <td>classic query string</td>
+          <td>Deprecated, classic version of variable query editor. Enter a string with the query type using a syntax like the following: <code>label_values(&lt;metric&gt;, &lt;label&gt;)</code></td>
+          <td>all</td>
+      </tr>
+  </tbody>
+</table>
+<p>For details on <code>metric names</code>, <code>label names</code>, and <code>label values</code>, refer to the <a href="http://prometheus.io/docs/concepts/data_model/#metric-names-and-labels" target="_blank" rel="noopener noreferrer">Prometheus documentation</a>.</p>
+<h3 id="query-options">Query options</h3>
+<p>With the query variable type, you can set the following query options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Data source</strong></td>
+          <td>Select your data source from the drop-down list.</td>
+      </tr>
+      <tr>
+          <td><strong>Select query type</strong></td>
+          <td>Options are <code>default</code>, <code>value</code> and <code>metric name</code>. Each query type hits a different Prometheus endpoint.</td>
+      </tr>
+      <tr>
+          <td><strong>Regex</strong></td>
+          <td>Optional, if you want to extract part of a series name or metric node segment.</td>
+      </tr>
+      <tr>
+          <td><strong>Sort</strong></td>
+          <td>Default is <code>disabled</code>. Options include <code>alphabetical</code>, <code>numerical</code>, and <code>alphabetical case-sensitive</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Refresh</strong></td>
+          <td>When to update the values for the variable. Options are <code>On dashboard load</code> and <code>On time range change</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="selection-options">Selection options</h3>
+<p>The following selection options are available:</p>
+<ul>
+<li>
+<p><strong>Multi-value</strong> - Check this option to enable multiple values to be selected at the same time.</p>
+</li>
+<li>
+<p><strong>Include All option</strong> - Check this option to include all variables.</p>
+</li>
+</ul>
+<h3 id="use-interval-and-range-variables">Use interval and range variables</h3>
+<p>You can use global built-in variables in query variables, including the following:</p>
+<ul>
+<li><code>$__interval</code></li>
+<li><code>$__interval_ms</code></li>
+<li><code>$__range</code></li>
+<li><code>$__range_s</code></li>
+<li><code>$__range_ms</code></li>
+</ul>
+<p>For details, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#global-variables">Global built-in variables</a>.
+The <code>label_values</code> function doesn&rsquo;t support queries, so you can use these variables in conjunction with the <code>query_result</code> function to filter variable queries.</p>
+<p>Configure the variable’s <code>refresh</code> setting to <code>On Time Range Change</code> to ensure it dynamically queries and displays the correct instances when the dashboard time range is modified.</p>
+<p><strong>Example:</strong></p>
+<p>Populate a variable with the top 5 busiest request instances ranked by average QPS over the dashboard&rsquo;s selected time range:</p>
+<pre>query_result(topk(5, sum(rate(http_requests_total[$__range])) by (instance)))
+Regex: /&#34;([^&#34;]+)&#34;/</pre>
+<p>Populate a variable with the instances having a certain state over the time range shown in the dashboard, using <code>$__range_s</code>:</p>
+<pre>query_result(max_over_time(&lt;metric&gt;[${__range_s}s]) != &lt;state&gt;)
+Regex:</pre>
+<h2 id="use-__rate_interval">Use <code>$__rate_interval</code></h2>
+<p>Grafana recommends using <code>$__rate_interval</code> with the <code>rate</code> and <code>increase</code> functions instead of <code>$__interval</code> or a fixed interval value.
+Since <code>$__rate_interval</code> is always at least four times the scrape interval, it helps avoid issues specific to Prometheus, such as gaps or inaccuracies in query results.</p>
+<p>For example, instead of using the following:</p>
+<pre>rate(http_requests_total[5m])</pre>
+<p>or:</p>
+<pre>rate(http_requests_total[$__interval])</pre>
+<p>Use the following:</p>
+<pre>rate(http_requests_total[$__rate_interval])</pre>
+<!-- The value of `$__rate_interval` is defined as
+*max(`$__interval` + *Scrape interval*, 4 \* *Scrape interval*)*,
+where _Scrape interval_ is the "Min step" setting (also known as `query*interval`, a setting per PromQL query) if any is set.
+Otherwise, Grafana uses the Prometheus data source's `scrape interval` setting. -->
+<p>The value of <code>$__rate_interval</code> is calculated as:</p>
+<pre>max($__interval + scrape_interval, 4 * scrape_interval)</pre>
+<p>Here, <code>scrape_interval</code> refers to the <code>min step</code> setting (also known as <code>query_interval</code>) specified per PromQL query, if set. If not, Grafana falls back to the Prometheus data source’s scrape interval setting.</p>
+<p>The <code>min interval</code> setting in the panel is modified by the resolution setting, and therefore doesn&rsquo;t have any effect on <code>scrape interval</code>.</p>
+<p>For details, refer to the Grafana blog <a href="/blog/2020/09/28/new-in-grafana-7.2-__rate_interval-for-prometheus-rate-queries-that-just-work/">$__rate_interval for Prometheus rate queries that just work</a>.</p>
+<h2 id="choose-a-variable-syntax">Choose a variable syntax</h2>
+<p>The Prometheus data source supports two variable syntaxes for use in the <strong>Query</strong> field:</p>
+<ul>
+<li><code>$&lt;varname&gt;</code>, for example <code>rate(http_requests_total{job=~&quot;$job&quot;}[$_rate_interval])</code>, which is easier to read and write but does not allow you to use a variable in the middle of a word.</li>
+<li><code>[[varname]]</code>, for example <code>rate(http_requests_total{job=~&quot;[[job]]&quot;}[$_rate_interval])</code></li>
+</ul>
+<p>If you&rsquo;ve enabled the <code>Multi-value</code> or <code>Include all value</code> options, Grafana converts the labels from plain text to a regex-compatible string, which requires you to use <code>=~</code> instead of <code>=</code>.</p>
+<h2 id="use-the-ad-hoc-filters-variable-type">Use the ad hoc filters variable type</h2>
+<p>Prometheus supports the special 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#add-ad-hoc-filters">ad hoc filters</a> variable type, which allows you to dynamically apply label/value filters across your dashboards. These filters are automatically added to all Prometheus queries, allowing dynamic filtering without modifying individual queries.</p>

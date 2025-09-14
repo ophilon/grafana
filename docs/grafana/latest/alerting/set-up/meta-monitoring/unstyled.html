@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<h1 id="meta-monitoring">Meta monitoring</h1>
+<p>Monitor your alerting metrics to ensure you identify potential issues before they become critical.</p>
+<p>Meta monitoring is the process of monitoring your monitoring system and alerting when your monitoring is not working as it should.</p>
+<p>In order to enable you to meta monitor, Grafana provides predefined metrics.</p>
+<p>Identify which metrics are critical to your monitoring system (i.e. Grafana) and then set up how you want to monitor them.</p>
+<p>You can use meta-monitoring metrics to understand the health of your alerting system in the following ways:</p>
+<ol>
+<li>Optional: Create a dashboard in Grafana that uses this metric in a panel (just like you would for any other kind of metric).</li>
+<li>Optional: Create an alert rule in Grafana that checks this metric regularly (just like you would do for any other kind of alert rule).</li>
+<li>Optional: Use the Explore module in Grafana.</li>
+</ol>
+<h2 id="metrics-for-grafana-managed-alerts">Metrics for Grafana-managed alerts</h2>
+<p>To meta monitor Grafana-managed alerts, you can collect two types of metrics in a Prometheus instance:</p>
+<ul>
+<li>
+<p><strong>State history metric (<code>GRAFANA_ALERTS</code>)</strong> — Exported by Grafana Alerting as part of alert state history.</p>
+</li>
+<li>
+<p><strong>Scraped metrics</strong> — Exported by Grafana’s <code>/metrics</code> endpoint to monitor alerting activity and performance.</p>
+</li>
+</ul>
+<p>You need a Prometheus-compatible server to collect and store these metrics.</p>
+<h3 id="grafana_alerts-metric"><code>GRAFANA_ALERTS</code> metric</h3>
+<p>If you have configured 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alert-state-history/">Prometheus for alert state history</a>, Grafana writes alert state changes to the <code>ALERTS</code> metric:</p>
+<pre>GRAFANA_ALERTS{alertname=&#34;&#34;, alertstate=&#34;&#34;, grafana_alertstate=&#34;&#34;, grafana_rule_uid=&#34;&#34;, &lt;additional alert labels&gt;}</pre>
+<p>This <code>GRAFANA_ALERTS</code> metric is compatible with the <code>ALERTS</code> metric used by Prometheus Alerting and includes two additional labels:</p>
+<ol>
+<li>A new <code>grafana_rule_uid</code> label for the UID of the Grafana rule.</li>
+<li>A new <code>grafana_alertstate</code> label for the Grafana alert state, which differs slightly from the equivalent Prometheus state included in the <code>alertstate</code> label.</li>
+</ol>
+<p>Alert labels are automatically converted before being written to Prometheus to ensure compatibility. Prometheus requires label names to start with a letter or underscore (<code>_</code>), followed only by letters, numbers, or additional underscores. Invalid characters are replaced during conversion. For example, <code>1my-label</code> becomes <code>_my_label</code>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Grafana state</th>
+          <th><code>alertstate</code></th>
+          <th><code>grafana_alertstate</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Alerting</strong></td>
+          <td><code>firing</code></td>
+          <td><code>alerting</code></td>
+      </tr>
+      <tr>
+          <td><strong>Recovering</strong></td>
+          <td><code>firing</code></td>
+          <td><code>recovering</code></td>
+      </tr>
+      <tr>
+          <td><strong>Pending</strong></td>
+          <td><code>pending</code></td>
+          <td><code>pending</code></td>
+      </tr>
+      <tr>
+          <td><strong>Error</strong></td>
+          <td><code>firing</code></td>
+          <td><code>error</code></td>
+      </tr>
+      <tr>
+          <td><strong>NoData</strong></td>
+          <td><code>firing</code></td>
+          <td><code>nodata</code></td>
+      </tr>
+      <tr>
+          <td><strong>Normal</strong></td>
+          <td><em>(no metric emitted)</em></td>
+          <td><em>(no metric emitted)</em></td>
+      </tr>
+  </tbody>
+</table>
+<p>You can then query this metric like any other Prometheus metric:</p>
+
+
+
+  
+
+  
+
+  
+
+
+
+  <div class="code" x-data="app_code([&#34;firing-alerts&#34;,&#34;recovering-alerts&#34;,&#34;critical-alerts-in-pending&#34;])" x-init="init()" data-codetoggle="true">
+    <div class="toggle-toolbar">
+      <div><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'firing-alerts' }" @click="$store.code.language = 'firing-alerts'"><span>firing-alerts</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'recovering-alerts' }" @click="$store.code.language = 'recovering-alerts'"><span>recovering-alerts</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'critical-alerts-in-pending' }" @click="$store.code.language = 'critical-alerts-in-pending'"><span>critical-alerts-in-pending</span></button></div>
+      <span class="code-clipboard" x-ref="tooltip">
+        <button @click="copy()">
+          <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+          <span>Copy</span>
+        </button>
+      </span>
+    <div class="toggle-toolbar__border"></div>
+    </div>
+    <div>
+    <pre>GRAFANA_ALERTS{grafana_alertstate=&#34;alerting&#34;}</pre>
+<pre>GRAFANA_ALERTS{grafana_alertstate=&#34;recovering&#34;}</pre>
+<pre>GRAFANA_ALERTS{grafana_alertstate=&#34;pending&#34;, severity=&#34;critical&#34;}</pre>
+
+    </div>
+  </div>
+
+
+<h3 id="scraped-metrics">Scraped metrics</h3>
+<p>To collect scraped Alerting metrics, configure Prometheus to scrape metrics from Grafana.</p>
+<pre>- job_name: grafana
+  honor_timestamps: true
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  follow_redirects: true
+  static_configs:
+    - targets:
+        - grafana:3000</pre>
+<p>The Grafana ruler, which is responsible for evaluating alert rules, and the Grafana Alertmanager, which is responsible for sending notifications of firing and resolved alerts, provide a number of metrics that let you observe them.</p>
+<h4 id="grafana_alerting_alerts">grafana_alerting_alerts</h4>
+<p>This metric is a counter that shows you the number of <code>normal</code>, <code>pending</code>, <code>alerting</code>, <code>nodata</code> and <code>error</code> alerts. For example, you might want to create an alert that fires when <code>grafana_alerting_alerts{state=&quot;error&quot;}</code> is greater than 0.</p>
+<h4 id="grafana_alerting_schedule_alert_rules">grafana_alerting_schedule_alert_rules</h4>
+<p>This metric is a gauge that shows you the number of alert rules scheduled. An alert rule is scheduled unless it is paused, and the value of this metric should match the total number of non-paused alert rules in Grafana.</p>
+<h4 id="grafana_alerting_schedule_periodic_duration_seconds_bucket">grafana_alerting_schedule_periodic_duration_seconds_bucket</h4>
+<p>This metric is a histogram that shows you the time it takes to process an individual tick in the scheduler that evaluates alert rules. If the scheduler takes longer than 10 seconds to process a tick then pending evaluations start to accumulate such that alert rules might later than expected.</p>
+<h4 id="grafana_alerting_schedule_query_alert_rules_duration_seconds_bucket">grafana_alerting_schedule_query_alert_rules_duration_seconds_bucket</h4>
+<p>This metric is a histogram that shows you how long it takes the scheduler to fetch the latest rules from the database. If this metric is elevated, <code>schedule_periodic_duration_seconds</code> is also evaluated.</p>
+<h4 id="grafana_alerting_scheduler_behind_seconds">grafana_alerting_scheduler_behind_seconds</h4>
+<p>This metric is a gauge that shows you the number of seconds that the scheduler is behind where it should be. This number increases if <code>schedule_periodic_duration_seconds</code> is longer than 10 seconds, and decrease when it is less than 10 seconds. The smallest possible value of this metric is 0.</p>
+<h4 id="grafana_alerting_notification_latency_seconds_bucket">grafana_alerting_notification_latency_seconds_bucket</h4>
+<p>This metric is a histogram that shows you the number of seconds taken to send notifications for firing and resolved alerts. This metric lets you observe slow or over-utilized integrations, such as an SMTP server that is being given emails faster than it can send them.</p>
+<h4 id="grafana_alerting_state_history_writes_failed_total">grafana_alerting_state_history_writes_failed_total</h4>
+<p>This metric is a counter that shows you the number of failed writes to the configured alert state history backend. It includes a <code>backend</code> label to distinguish between different backends (such as <code>loki</code> or <code>prometheus</code>).</p>
+<p>For example, you might want to create an alert that fires when <code>grafana_alerting_state_history_writes_failed_total{backend=&quot;prometheus&quot;}</code> is greater than 0 to detect when Prometheus remote write is failing.</p>
+<h2 id="logs-for-grafana-managed-alerts">Logs for Grafana-managed alerts</h2>
+<p>If you have configured 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alert-state-history/">Loki for alert state history</a>, logs related to state changes in Grafana-managed alerts are stored in the Loki data source.</p>
+<p>You can use <strong>Grafana Explore</strong> and the Loki query editor to search for alert state changes.</p>
+
+
+
+  
+
+  
+
+  
+
+
+
+  <div class="code" x-data="app_code([&#34;basic-query&#34;,&#34;additional-filters&#34;,&#34;failing-rules&#34;])" x-init="init()" data-codetoggle="true">
+    <div class="toggle-toolbar">
+      <div><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'basic-query' }" @click="$store.code.language = 'basic-query'"><span>basic-query</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'additional-filters' }" @click="$store.code.language = 'additional-filters'"><span>additional-filters</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'failing-rules' }" @click="$store.code.language = 'failing-rules'"><span>failing-rules</span></button></div>
+      <span class="code-clipboard" x-ref="tooltip">
+        <button @click="copy()">
+          <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+          <span>Copy</span>
+        </button>
+      </span>
+    <div class="toggle-toolbar__border"></div>
+    </div>
+    <div>
+    <pre>{from=&#34;state-history&#34;} | json</pre>
+<pre>{from=&#34;state-history&#34;} | json | previous=~&#34;Normal.*&#34; | current=~&#34;Alerting.*&#34;</pre>
+<pre>{from=&#34;state-history&#34;} | json | current=~&#34;Error.*&#34;</pre>
+
+    </div>
+  </div>
+
+
+<p>In the <strong>Logs</strong> view, you can review details for individual alerts by selecting fields such as:</p>
+<ul>
+<li><code>previous</code>: previous alert instance state.</li>
+<li><code>current</code>: current alert instance state.</li>
+<li><code>ruleTitle</code>: alert rule title.</li>
+<li><code>ruleID</code> and <code>ruleUID</code>.</li>
+<li><code>labels_alertname</code>, <code>labels_new_label</code>, and <code>labels_grafana_folder</code>.</li>
+<li>Additional available fields.</li>
+</ul>
+<p>Alternatively, you can access the 
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state-history/">History page</a> in Grafana to visualize and filter state changes for individual alerts or all alerts.</p>
+<h2 id="metrics-for-mimir-managed-alerts">Metrics for Mimir-managed alerts</h2>
+<p>To meta monitor Grafana Mimir-managed alerts, open source and on-premise users need a Prometheus/Mimir server, or another metrics database to collect and store metrics exported by the Mimir ruler.</p>
+<h4 id="rule_evaluation_failures_total">rule_evaluation_failures_total</h4>
+<p>This metric is a counter that shows you the total number of rule evaluation failures.</p>
+<h2 id="metrics-for-alertmanager">Metrics for Alertmanager</h2>
+<p>To meta monitor the Alertmanager, you need a Prometheus/Mimir server, or another metrics database to collect and store metrics exported by Alertmanager.</p>
+<p>For example, if you are using Prometheus you should add a <code>scrape_config</code> to Prometheus to scrape metrics from your Alertmanager.</p>
+<pre>- job_name: alertmanager
+  honor_timestamps: true
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  follow_redirects: true
+  static_configs:
+    - targets:
+        - alertmanager:9093</pre>
+<p>The following is a list of available metrics for Alertmanager.</p>
+<h4 id="alertmanager_alerts">alertmanager_alerts</h4>
+<p>This metric is a counter that shows you the number of active, suppressed, and unprocessed alerts in Alertmanager. Suppressed alerts are silenced alerts, and unprocessed alerts are alerts that have been sent to the Alertmanager but have not been processed.</p>
+<h4 id="alertmanager_alerts_invalid_total">alertmanager_alerts_invalid_total</h4>
+<p>This metric is a counter that shows you the number of invalid alerts that were sent to Alertmanager. This counter should not exceed 0, and so in most cases, create an alert that fires if whenever this metric increases.</p>
+<h4 id="alertmanager_notifications_total">alertmanager_notifications_total</h4>
+<p>This metric is a counter that shows you how many notifications have been sent by Alertmanager. The metric uses a label &ldquo;integration&rdquo; to show the number of notifications sent by integration, such as email.</p>
+<h4 id="alertmanager_notifications_failed_total">alertmanager_notifications_failed_total</h4>
+<p>This metric is a counter that shows you how many notifications have failed in total. This metric also uses a label &ldquo;integration&rdquo; to show the number of failed notifications by integration, such as failed emails. In most cases, use the <code>rate</code> function to understand how often notifications are failing to be sent.</p>
+<h4 id="alertmanager_notification_latency_seconds_bucket">alertmanager_notification_latency_seconds_bucket</h4>
+<p>This metric is a histogram that shows you the amount of time it takes Alertmanager to send notifications and for those notifications to be accepted by the receiving service. This metric uses a label &ldquo;integration&rdquo; to show the amount of time by integration. For example, you can use this metric to show the 95th percentile latency of sending emails.</p>
+<h2 id="metrics-for-alertmanager-in-high-availability-mode">Metrics for Alertmanager in high availability mode</h2>
+<p>If you are using Alertmanager in high availability mode there are a number of additional metrics that you might want to create alerts for.</p>
+<h4 id="alertmanager_cluster_members">alertmanager_cluster_members</h4>
+<p>This metric is a gauge that shows you the current number of members in the cluster. The value of this gauge should be the same across all Alertmanagers. If different Alertmanagers are showing different numbers of members then this is indicative of an issue with your Alertmanager cluster. You should look at the metrics and logs from your Alertmanagers to better understand what might be going wrong.</p>
+<h4 id="alertmanager_cluster_failed_peers">alertmanager_cluster_failed_peers</h4>
+<p>This metric is a gauge that shows you the current number of failed peers.</p>
+<h4 id="alertmanager_cluster_health_score">alertmanager_cluster_health_score</h4>
+<p>This metric is a gauge showing the health score of the Alertmanager. Lower values are better, and zero means the Alertmanager is healthy.</p>
+<h4 id="alertmanager_cluster_peer_info">alertmanager_cluster_peer_info</h4>
+<p>This metric is a gauge. It has a constant value <code>1</code>, and contains a label called &ldquo;peer&rdquo; containing the Peer ID of each known peer.</p>
+<h4 id="alertmanager_cluster_reconnections_failed_total">alertmanager_cluster_reconnections_failed_total</h4>
+<p>This metric is a counter that shows you the number of failed peer connection attempts. In most cases you should use the <code>rate</code> function to understand how often reconnections fail as this may be indicative of an issue or instability in your network.</p>

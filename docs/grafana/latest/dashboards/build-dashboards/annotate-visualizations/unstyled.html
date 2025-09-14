@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<h1 id="annotate-visualizations">Annotate visualizations</h1>
+<p>Annotations provide a way to mark points on a visualization with rich events. They are visualized as vertical lines and icons on all graph panels. When you hover over an annotation, you can get event description and event tags. The text field can include links to other systems with more detail.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v46/annotations.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v46/annotations.png"data-srcset="/static/img/docs/v46/annotations.png?w=320 320w, /static/img/docs/v46/annotations.png?w=550 550w, /static/img/docs/v46/annotations.png?w=750 750w, /static/img/docs/v46/annotations.png?w=900 900w, /static/img/docs/v46/annotations.png?w=1040 1040w, /static/img/docs/v46/annotations.png?w=1240 1240w, /static/img/docs/v46/annotations.png?w=1920 1920w"
+          data-sizes="auto"alt="Annotated visualization with annotation context menu open"width="746"height="293"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v46/annotations.png"
+            alt="Annotated visualization with annotation context menu open"width="746"height="293"/>
+        </noscript></div></a></figure>
+<p>You can annotate visualizations in three ways:</p>
+<ul>
+<li>Directly in the panel, using the <a href="#built-in-query">built-in annotations query</a></li>
+<li>Using the HTTP API</li>
+<li>Configuring annotation queries in the dashboard settings</li>
+</ul>
+<p>In the first two cases, you&rsquo;re creating new annotations, while in the last you&rsquo;re querying existing annotations from data sources. The built-in annotation query also supports this.</p>
+<p>This page explains the first and third options; for information about using the HTTP API, refer to 
+    <a href="/docs/grafana/latest/developers/http_api/annotations/">Annotations API</a>.</p>
+<p>Annotations are supported for the following visualization types:</p>
+<ul>
+<li>Time series</li>
+<li>State timeline</li>
+<li>Candlestick</li>
+</ul>
+<h2 id="create-annotations-in-panels">Create annotations in panels</h2>
+<p>Grafana comes with the ability to add annotation events directly from a panel using the <a href="#built-in-query">built-in annotation query</a> that exists on all dashboards. Annotations that you create this way are stored in Grafana.</p>
+<p>To add annotations directly in the panel:</p>
+<ul>
+<li>The dashboard must already be saved.</li>
+<li>The built-in query must be enabled. Learn more in <a href="#built-in-query">Built-in query</a>.</li>
+</ul>
+<p>Watch the following video for a quick tutorial on creating annotations:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=N5iOlyYyK6Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="add-an-annotation">Add an annotation</h3>
+<p>To add an annotation, complete the following steps:</p>
+<ol>
+<li>
+<p>If you&rsquo;ve just saved a dashboard, refresh the page.</p>
+</li>
+<li>
+<p>Click <strong>Edit</strong> in the top-right corner of the dashboard.</p>
+</li>
+<li>
+<p>Click the panel to which you&rsquo;re adding the annotation.</p>
+<p>A context menu appears.</p>
+</li>
+<li>
+<p>In the context menu, click <strong>Add annotation</strong>.
+<img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/time-series-panel/time-series-annotations-context-menu.png"
+  alt="Add annotation context menu" width="1976"
+     height="1188"/></p>
+</li>
+<li>
+<p>Add an annotation description and tags (optional).</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<p>Alternatively, to add an annotation, press Ctrl/Cmd and click the panel, and the <strong>Add annotation</strong> context menu appears.</p>
+<h3 id="add-a-region-annotation">Add a region annotation</h3>
+<ol>
+<li>If you&rsquo;ve just saved a dashboard, refresh the page.</li>
+<li>Click <strong>Edit</strong> in the top-right corner of the dashboard.</li>
+<li>Press Ctrl/Cmd and click and drag on the panel.
+<img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/time-series-panel/time-series-annotations-add-region-annotation.gif"
+  alt="Add annotation popover" width="1280"
+     height="942"/></li>
+<li>Add an annotation description and tags (optional).</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Exit edit</strong>.</li>
+</ol>
+<h3 id="edit-an-annotation">Edit an annotation</h3>
+<ol>
+<li>Click <strong>Edit</strong> in the top-right corner of the dashboard.</li>
+<li>Hover over the annotation indicator on the panel.</li>
+<li>Click the pencil icon in the annotation tooltip.</li>
+<li>Modify the description and tags.</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Exit edit</strong>.</li>
+</ol>
+<h3 id="delete-an-annotation">Delete an annotation</h3>
+<ol>
+<li>Click <strong>Edit</strong> in the top-right corner of the dashboard.</li>
+<li>Hover over the annotation indicator on the panel.</li>
+<li>Click the trash icon in the annotation tooltip.</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Exit edit</strong>.</li>
+</ol>
+<h2 id="fetch-annotations-through-dashboard-settings">Fetch annotations through dashboard settings</h2>
+<p>In the dashboard settings, under <strong>Annotations</strong>, you can add new queries to fetch annotations using any data source, including the built-in data annotation data source. Annotation queries return events that can be visualized as event markers in graphs across the dashboard.</p>
+<p>Check out the video below for a quick tutorial.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=2istdJpPj2Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="add-new-annotation-queries">Add new annotation queries</h3>
+<p>To add a new annotation query to a dashboard, follow these steps:</p>
+<ol>
+<li>
+<p>Click <strong>Edit</strong> in the top-right corner of the dashboard.</p>
+</li>
+<li>
+<p>Click <strong>Settings</strong>.</p>
+</li>
+<li>
+<p>On the <strong>Settings</strong> page, go to the <strong>Annotations</strong> tab.</p>
+</li>
+<li>
+<p>Click <strong>Add annotation query</strong>.</p>
+<p>If you&rsquo;ve added a query before, the <strong>+ New query</strong> button is displayed.</p>
+</li>
+<li>
+<p>Enter a name for the annotation query.</p>
+<p>This name is given to the toggle (checkbox) that allows you to enable/disable showing annotation events from this query.</p>
+</li>
+<li>
+<p>Select the data source for the annotations.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to see more options, including adding a data source (Admins only).</p>
+</li>
+<li>
+<p>If you don&rsquo;t want to use the annotation query right away, clear the <strong>Enabled</strong> checkbox.</p>
+</li>
+<li>
+<p>If you don&rsquo;t want the annotation query toggle to be displayed in the dashboard, select the <strong>Hidden</strong> checkbox.</p>
+</li>
+<li>
+<p>Select a color for the event markers.</p>
+</li>
+<li>
+<p>In the <strong>Show in</strong> drop-down, choose one of the following options:</p>
+<ul>
+<li><strong>All panels</strong> - The annotations are displayed on all panels that support annotations.</li>
+<li><strong>Selected panels</strong> - The annotations are displayed on all the panels you select.</li>
+<li><strong>All panels except</strong> - The annotations are displayed on all panels except the ones you select.</li>
+</ul>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png"data-srcset="/media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png?w=1920 1920w"
+             data-sizes="auto"alt="Annotation filtering"width="552"height="186"title="Annotation filtering"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/dashboards/screenshot-annotation-filtering-10-v2.png"
+               alt="Annotation filtering"width="552"height="186"title="Annotation filtering"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Annotation filtering</figcaption></a></figure>
+</li>
+<li>
+<p>Configure the query.</p>
+<p>The annotation query options are different for each data source. For information about annotations in a specific data source, refer to the specific 
+    <a href="/docs/grafana/latest/datasources/">data source</a> topic.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="built-in-query">Built-in query</h2>
+<p>After you add an annotation, they are still visible. This is due to the built-in annotation query that exists on all dashboards. This annotation query fetches all annotation events that originate from the current dashboard, which are stored in Grafana, and show them on the panel where they were created. This includes alert state history annotations.</p>
+<p>By default, the built-in annotation query uses the <code>-- Grafana --</code> special data source, and manual annotations are only supported using this data source. You can use another data source in the built-in annotation query, but you&rsquo;ll only be able to create automated annotations using the query editor for that data source.</p>
+<p>To add annotations directly to the dashboard, this query must be enabled.</p>
+<p>To confirm if the built-in query is enabled, take the following steps:</p>
+<ol>
+<li>
+<p>Click <strong>Edit</strong> in the top-right corner of the dashboard.</p>
+</li>
+<li>
+<p>Click <strong>Settings</strong>.</p>
+</li>
+<li>
+<p>On the <strong>Settings</strong> page, go to the <strong>Annotations</strong> tab.</p>
+</li>
+<li>
+<p>Find the <strong>Annotations &amp; Alerts (Built-in)</strong> query.</p>
+<p>If it says <strong>Disabled</strong> before the name of the query, then you&rsquo;ll need to click the query name to open it and update the setting.</p>
+</li>
+</ol>
+<p>You can stop annotations from being fetched and drawn by taking the following steps:</p>
+<ol>
+<li>Click the dashboard settings (gear) icon in the dashboard header to open the settings menu.</li>
+<li>Click <strong>Annotations</strong>.</li>
+<li>Find and click the <strong>Annotations &amp; Alerts (Built-in)</strong> query to open it.</li>
+<li>Click the <strong>Enabled</strong> toggle to turn it off.</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</li>
+</ol>
+<p>When you copy a dashboard using the <strong>Save As</strong> feature it gets a new dashboard id, so annotations created on the source dashboard is no longer be visible on the copy. You can still show them if you add a new <strong>Annotation Query</strong> and filter by tags. However, this only works if the annotations on the source dashboard had tags to filter by.</p>
+<p>Following are some query options specific to the built-in annotation query.</p>
+<h3 id="filter-queries-by-tag">Filter queries by tag</h3>
+<p>You can create new queries to fetch annotations from the built-in annotation query using the <code>-- Grafana --</code> data source by setting <em>Filter by</em> to <code>Tags</code>.</p>
+<p>Grafana also supports typeahead of existing tags, provide at least one tag.</p>
+<p>For example, create an annotation query name <code>outages</code> and specify a tag <code>outage</code>. This query shows all annotations (from any dashboard or via API) with the <code>outage</code> tag. If multiple tags are defined in an annotation query, then Grafana only shows annotations matching all the tags. To modify the behavior, enable <code>Match any</code>, and Grafana shows annotations that contain any one of the tags you provided.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Annotation query options"width="520"height="403"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-annotations-typeahead-support-10.0.png"
+            alt="Annotation query options"width="520"height="403"/>
+        </noscript></div></a></figure>
+<p>You can also use template variables in the tag query. This means if you have a dashboard showing stats for different services and a template variable that dictates which services to show, you can use the same template variable in your annotation query to only show annotations for those services.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Annotation query options with a template variable query tag"width="533"height="447"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-annotation-tag-filter-variable-10.0.png"
+            alt="Annotation query options with a template variable query tag"width="533"height="447"/>
+        </noscript></div></a></figure>
+<h3 id="add-time-regions">Add time regions</h3>
+<p>When adding or editing an annotation, you can define a repeating time region by setting <strong>Query type</strong> to <strong>Time regions</strong>. Then, define the <strong>From</strong> and <strong>To</strong> sections with the preferred days of the week and time. You also have the option to change the timezone, which is set to the dashboard&rsquo;s timezone, by default.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png"data-srcset="/media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png?w=1920 1920w"
+          data-sizes="auto"alt="Time regions options set to business hours"width="506"height="407"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-annotation-timeregions-10-v2.png"
+            alt="Time regions options set to business hours"width="506"height="407"/>
+        </noscript></div></a></figure>
+<p>The above configuration produces the following result in the Time series panel:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png"data-srcset="/media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png?w=320 320w, /media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png?w=550 550w, /media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png?w=750 750w, /media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png?w=900 900w, /media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png?w=1040 1040w, /media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png?w=1240 1240w, /media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png?w=1920 1920w"
+          data-sizes="auto"alt="Time series visualization with time regions business hours"width="2406"height="746"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-grafana-10-0-timeseries-time-regions.png"
+            alt="Time series visualization with time regions business hours"width="2406"height="746"/>
+        </noscript></div></a></figure>
+<p>Toggle the <strong>Advanced</strong> switch and use <a href="https://en.wikipedia.org/wiki/Cron" target="_blank" rel="noopener noreferrer">Cron syntax</a> to set more granular time region controls. The following example sets a time region of 9:00 AM, Monday to Friday:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png"data-srcset="/media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="Time region query with cron syntax"width="768"height="574"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-annotations-cron-option-v11.6.png"
+            alt="Time region query with cron syntax"width="768"height="574"/>
+        </noscript></div></a></figure>

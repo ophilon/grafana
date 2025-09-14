@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<h1 id="rbac-permissions-actions-and-scopes">RBAC permissions, actions, and scopes</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>A permission is comprised of an action and a scope. When creating a custom role, consider the actions the user can perform and the resources on which they can perform those actions.</p>
+<p>To learn more about the Grafana resources to which you can apply RBAC, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/#fixed-roles">Resources with RBAC permissions</a>.</p>
+<ul>
+<li><strong>Action:</strong> An action describes what tasks a user can perform on a resource.</li>
+<li><strong>Scope:</strong> A scope describes where an action can be performed, such as reading a specific user profile. In this example, a permission is associated with the scope <code>users:&lt;userId&gt;</code> to the relevant role.</li>
+</ul>
+<h2 id="action-definitions">Action definitions</h2>
+<p>The following list contains role-based access control actions.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Applicable scopes</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>alert.instances.external:read</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Read alerts and silences in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances.external:write</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Manage alerts and silences in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances:create</code></td>
+          <td>None</td>
+          <td>Create silences in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances:read</code></td>
+          <td>None</td>
+          <td>Read alerts and silences in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances:write</code></td>
+          <td>None</td>
+          <td>Update and expire silences in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.external:read</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Read templates, contact points, notification policies, and mute timings in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.external:write</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Manage templates, contact points, notification policies, and mute timings in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications:write</code></td>
+          <td>None</td>
+          <td>Manage templates, contact points, notification policies, and mute timings in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications:read</code></td>
+          <td>None</td>
+          <td>Read all templates, contact points, notification policies, and mute timings in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules.external:read</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Read alert rules in data sources that support alerting (Prometheus, Mimir, and Loki)</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules.external:write</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Create, update, and delete alert rules in data sources that support alerting (Mimir and Loki).</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:create</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Create Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder and <code>datasources:query</code> in the scope of data sources the user can query.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:delete</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Delete Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:read</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Read Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder and <code>datasources:query</code> in the scope of data sources the user can query.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:write</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Update Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder. To allow query modifications add <code>datasources:query</code> in the scope of data sources the user can query.</td>
+      </tr>
+      <tr>
+          <td><code>alert.silences:create</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Create rule-specific silences in a folder and its subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>alert.silences:read</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Read all general silences and rule-specific silences in a folder and its subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>alert.silences:write</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Update and expire rule-specific silences in a folder and its subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning:read</code></td>
+          <td>None</td>
+          <td>Read all Grafana alert rules, notification policies, etc via provisioning API. Permissions to folders and datasource are not required.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning.secrets:read</code></td>
+          <td>None</td>
+          <td>Same as <code>alert.provisioning:read</code> plus ability to export resources with decrypted secrets.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning:write</code></td>
+          <td>None</td>
+          <td>Update all Grafana alert rules, notification policies, etc via provisioning API. Permissions to folders and datasource are not required.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning.provenance:write</code></td>
+          <td>None</td>
+          <td>Set provisioning status for alerting resources. Cannot be used alone. Requires user to have permissions to access resources</td>
+      </tr>
+      <tr>
+          <td><code>annotations:create</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Create annotations.</td>
+      </tr>
+      <tr>
+          <td><code>annotations:delete</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Delete annotations.</td>
+      </tr>
+      <tr>
+          <td><code>annotations:read</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Read annotations and annotation tags.</td>
+      </tr>
+      <tr>
+          <td><code>annotations:write</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Update annotations.</td>
+      </tr>
+      <tr>
+          <td><code>apikeys:read</code></td>
+          <td><ul><li><code>apikeys:*</code></li><li><code>apikeys:id:*</code></li></ul></td>
+          <td>Read API keys.</td>
+      </tr>
+      <tr>
+          <td><code>apikeys:delete</code></td>
+          <td><ul><li><code>apikeys:*</code></li><li><code>apikeys:id:*</code></li></ul></td>
+          <td>Delete API keys.</td>
+      </tr>
+      <tr>
+          <td><code>banners:write</code></td>
+          <td>None</td>
+          <td>Create <a href="/docs/grafana-cloud/whats-new/2024-09-10-announcement-banner/">announcement banners</a>.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards:create</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Create dashboards in one or more folders and their subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards:delete</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Delete one or more dashboards.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards.insights:read</code></td>
+          <td>None</td>
+          <td>Read dashboard insights data and see presence indicators. To view insights, <code>dashboards:read</code> on the dashboard is also needed.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards.permissions:read</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Read permissions for one or more dashboards.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards.permissions:write</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Update permissions for one or more dashboards.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards:read</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Read one or more dashboards.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards:write</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Update one or more dashboards.</td>
+      </tr>
+      <tr>
+          <td><code>dashboards.public:write</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li></ul></td>
+          <td>Write shared dashboard configuration.</td>
+      </tr>
+      <tr>
+          <td><code>datasources.caching:read</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Read data source query caching settings.</td>
+      </tr>
+      <tr>
+          <td><code>datasources.caching:write</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Update data source query caching settings.</td>
+      </tr>
+      <tr>
+          <td><code>datasources:create</code></td>
+          <td>None</td>
+          <td>Create data sources.</td>
+      </tr>
+      <tr>
+          <td><code>datasources:delete</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Delete data sources.</td>
+      </tr>
+      <tr>
+          <td><code>datasources:explore</code></td>
+          <td>None</td>
+          <td>Enable access to the <strong>Explore</strong> tab.</td>
+      </tr>
+      <tr>
+          <td><code>datasources.id:read</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Read data source IDs.</td>
+      </tr>
+      <tr>
+          <td><code>datasources.insights:read</code></td>
+          <td>None</td>
+          <td>Read data sources insights data. To view insights, <code>datasources:read</code> on the datasource is also needed.</td>
+      </tr>
+      <tr>
+          <td><code>datasources.permissions:read</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>List data source permissions.</td>
+      </tr>
+      <tr>
+          <td><code>datasources.permissions:write</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Update data source permissions.</td>
+      </tr>
+      <tr>
+          <td><code>datasources:query</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Query data sources.</td>
+      </tr>
+      <tr>
+          <td><code>datasources:read</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>List data sources.</td>
+      </tr>
+      <tr>
+          <td><code>datasources:write</code></td>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Update data sources.</td>
+      </tr>
+      <tr>
+          <td><code>featuremgmt.read</code></td>
+          <td>None</td>
+          <td>Read feature toggles.</td>
+      </tr>
+      <tr>
+          <td><code>featuremgmt.write</code></td>
+          <td>None</td>
+          <td>Write feature toggles.</td>
+      </tr>
+      <tr>
+          <td><code>folders.permissions:read</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Read permissions for one or more folders and their subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>folders.permissions:write</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Update permissions for one or more folders and their subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>folders:create</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li><li><code>folders:uid:general</code></li></ul></td>
+          <td>Create folders or subfolders. If granted with scope <code>folders:uid:general</code>, it allows to create root level folders. Otherwise, it allows creating subfolders under the specified folders.</td>
+      </tr>
+      <tr>
+          <td><code>folders:delete</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Delete one or more folders and their subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>folders:read</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Read one or more folders and their subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>folders:write</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Update one or more folders and their subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>ldap.config:reload</code></td>
+          <td>None</td>
+          <td>Reload the LDAP configuration.</td>
+      </tr>
+      <tr>
+          <td><code>ldap.status:read</code></td>
+          <td>None</td>
+          <td>Verify the availability of the LDAP server or servers.</td>
+      </tr>
+      <tr>
+          <td><code>ldap.user:read</code></td>
+          <td>None</td>
+          <td>Read users via LDAP.</td>
+      </tr>
+      <tr>
+          <td><code>ldap.user:sync</code></td>
+          <td>None</td>
+          <td>Sync users via LDAP.</td>
+      </tr>
+      <tr>
+          <td><code>library.panels:create</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Create a library panel in one or more folders and their subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>library.panels:read</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li><li><code>library.panels:*</code></li><li><code>library.panels:uid:*</code></li></ul></td>
+          <td>Read one or more library panels.</td>
+      </tr>
+      <tr>
+          <td><code>library.panels:write</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li><li><code>library.panels:*</code></li><li><code>library.panels:uid:*</code></li></ul></td>
+          <td>Update one or more library panels.</td>
+      </tr>
+      <tr>
+          <td><code>library.panels:delete</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li><li><code>library.panels:*</code></li><li><code>library.panels:uid:*</code></li></ul></td>
+          <td>Delete one or more library panels.</td>
+      </tr>
+      <tr>
+          <td><code>licensing.reports:read</code></td>
+          <td>None</td>
+          <td>Get custom permission reports.</td>
+      </tr>
+      <tr>
+          <td><code>licensing:delete</code></td>
+          <td>None</td>
+          <td>Delete the license token.</td>
+      </tr>
+      <tr>
+          <td><code>licensing:read</code></td>
+          <td>None</td>
+          <td>Read licensing information.</td>
+      </tr>
+      <tr>
+          <td><code>licensing:write</code></td>
+          <td>None</td>
+          <td>Update the license token.</td>
+      </tr>
+      <tr>
+          <td><code>migrationassistant:migrate</code></td>
+          <td>None</td>
+          <td>Execute on-prem to cloud migrations through the Migration Assistant.</td>
+      </tr>
+      <tr>
+          <td><code>org.users:write</code></td>
+          <td><ul><li><code>users:*</code></li><li><code>users:id:*</code></li></ul></td>
+          <td>Update the organization role (<code>None</code>, <code>Viewer</code>, <code>Editor</code>, or <code>Admin</code>) of a user.</td>
+      </tr>
+      <tr>
+          <td><code>org.users:add</code></td>
+          <td><ul><li><code>users:*</code></li><li><code>users:id:*</code></li></ul></td>
+          <td>Add a user to an organization or invite a new user to an organization.</td>
+      </tr>
+      <tr>
+          <td><code>org.users:read</code></td>
+          <td><ul><li><code>users:*</code></li><li><code>users:id:*</code></li></ul></td>
+          <td>Get user profiles within an organization.</td>
+      </tr>
+      <tr>
+          <td><code>org.users:remove</code></td>
+          <td><ul><li><code>users:*</code></li><li><code>users:id:*</code></li></ul></td>
+          <td>Remove a user from an organization.</td>
+      </tr>
+      <tr>
+          <td><code>orgs.preferences:read</code></td>
+          <td>None</td>
+          <td>Read organization preferences.</td>
+      </tr>
+      <tr>
+          <td><code>orgs.preferences:write</code></td>
+          <td>None</td>
+          <td>Update organization preferences.</td>
+      </tr>
+      <tr>
+          <td><code>orgs.quotas:read</code></td>
+          <td>None</td>
+          <td>Read organization quotas.</td>
+      </tr>
+      <tr>
+          <td><code>orgs.quotas:write</code></td>
+          <td>None</td>
+          <td>Update organization quotas.</td>
+      </tr>
+      <tr>
+          <td><code>orgs:create</code></td>
+          <td>None</td>
+          <td>Create an organization.</td>
+      </tr>
+      <tr>
+          <td><code>orgs:delete</code></td>
+          <td>None</td>
+          <td>Delete one or more organizations.</td>
+      </tr>
+      <tr>
+          <td><code>orgs:read</code></td>
+          <td>None</td>
+          <td>Read one or more organizations.</td>
+      </tr>
+      <tr>
+          <td><code>orgs:write</code></td>
+          <td>None</td>
+          <td>Update one or more organizations.</td>
+      </tr>
+      <tr>
+          <td><code>plugins.app:access</code></td>
+          <td><ul><li><code>plugins:*</code></li><li><code>plugins:id:*</code></li></ul></td>
+          <td>Access one or more application plugins (still enforcing the organization role)</td>
+      </tr>
+      <tr>
+          <td><code>plugins:install</code></td>
+          <td>None</td>
+          <td>Install and uninstall plugins.</td>
+      </tr>
+      <tr>
+          <td><code>plugins:write</code></td>
+          <td><ul><li><code>plugins:*</code></li><li><code>plugins:id:*</code></li></ul></td>
+          <td>Edit settings for one or more plugins.</td>
+      </tr>
+      <tr>
+          <td><code>provisioning:reload</code></td>
+          <td><code>provisioners:*</code></td>
+          <td>Reload provisioning files. To find the exact scope for specific provisioner, refer to <a href="#scope-definitions">Scope definitions</a>.</td>
+      </tr>
+      <tr>
+          <td><code>reports:create</code></td>
+          <td>None</td>
+          <td>Create reports.</td>
+      </tr>
+      <tr>
+          <td><code>reports:write</code></td>
+          <td><ul><li><code>reports:*</code></li><li><code>reports:id:*</code></li></ul></td>
+          <td>Update reports.</td>
+      </tr>
+      <tr>
+          <td><code>reports.settings:read</code></td>
+          <td>None</td>
+          <td>Read report settings.</td>
+      </tr>
+      <tr>
+          <td><code>reports.settings:write</code></td>
+          <td>None</td>
+          <td>Update report settings.</td>
+      </tr>
+      <tr>
+          <td><code>reports:delete</code></td>
+          <td><ul><li><code>reports:*</code></li><li><code>reports:id:*</code></li></ul></td>
+          <td>Delete reports.</td>
+      </tr>
+      <tr>
+          <td><code>reports:read</code></td>
+          <td><ul><li><code>reports:*</code></li><li><code>reports:id:*</code></li></ul></td>
+          <td>List all available reports or get a specific report.</td>
+      </tr>
+      <tr>
+          <td><code>reports:send</code></td>
+          <td><ul><li><code>reports:*</code></li><li><code>reports:id:*</code></li></ul></td>
+          <td>Send a report email.</td>
+      </tr>
+      <tr>
+          <td><code>roles:delete</code></td>
+          <td><ul><li><code>permissions:type:delegate</code></li><ul></td>
+          <td>Delete a custom role.</td>
+      </tr>
+      <tr>
+          <td><code>roles:read</code></td>
+          <td><ul><li><code>roles:*</code></li><li><code>roles:uid:*</code></li></ul></td>
+          <td>List roles and read a specific role with its permissions.</td>
+      </tr>
+      <tr>
+          <td><code>roles:write</code></td>
+          <td><ul><li><code>permissions:type:delegate</code></li><ul></td>
+          <td>Create or update a custom role.</td>
+      </tr>
+      <tr>
+          <td><code>roles:write</code></td>
+          <td><ul><li><code>permissions:type:escalate</code></li><ul></td>
+          <td>Reset basic roles to their default permissions.</td>
+      </tr>
+      <tr>
+          <td><code>server.stats:read</code></td>
+          <td>None</td>
+          <td>Read Grafana instance statistics.</td>
+      </tr>
+      <tr>
+          <td><code>server.usagestats.report:read</code></td>
+          <td>None</td>
+          <td>View usage statistics report.</td>
+      </tr>
+      <tr>
+          <td><code>serviceaccounts:write</code></td>
+          <td><ul><li><code>serviceaccounts:*</code></li><ul></td>
+          <td>Create Grafana service accounts.</td>
+      </tr>
+      <tr>
+          <td><code>serviceaccounts:create</code></td>
+          <td>None</td>
+          <td>Update Grafana service accounts.</td>
+      </tr>
+      <tr>
+          <td><code>serviceaccounts:delete</code></td>
+          <td><ul><li><code>serviceaccounts:*</code></li><li><code>serviceaccounts:id:*</code></li></ul></td>
+          <td>Delete Grafana service accounts.</td>
+      </tr>
+      <tr>
+          <td><code>serviceaccounts:read</code></td>
+          <td><ul><li><code>serviceaccounts:*</code></li><li><code>serviceaccounts:id:*</code></li></ul></td>
+          <td>Read Grafana service accounts.</td>
+      </tr>
+      <tr>
+          <td><code>serviceaccounts.permissions:write</code></td>
+          <td><ul><li><code>serviceaccounts:*</code></li><li><code>serviceaccounts:id:*</code></li></ul></td>
+          <td>Update Grafana service account permissions to control who can do what with the service account.</td>
+      </tr>
+      <tr>
+          <td><code>serviceaccounts.permissions:read</code></td>
+          <td><ul><li><code>serviceaccounts:*</code></li><li><code>serviceaccounts:id:*</code></li></ul></td>
+          <td>Read Grafana service account permissions to see who can do what with the service account.</td>
+      </tr>
+      <tr>
+          <td><code>settings:read</code></td>
+          <td><ul><li><code>settings:*</code></li><li><code>settings:auth.saml:*</code></li><li><code>settings:auth.saml:enabled</code></li></ul> (property level)</td>
+          <td>Read the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/">Grafana configuration settings</a></td>
+      </tr>
+      <tr>
+          <td><code>settings:write</code></td>
+          <td><ul><li><code>settings:*</code></li><li><code>settings:auth.saml:*</code></li><li><code>settings:auth.saml:enabled</code></li></ul> (property level)</td>
+          <td>Update any Grafana configuration settings that can be 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/settings-updates-at-runtime/">updated at runtime</a>.</td>
+      </tr>
+      <tr>
+          <td><code>support.bundles:create</code></td>
+          <td>None</td>
+          <td>Create support bundles.</td>
+      </tr>
+      <tr>
+          <td><code>support.bundles:delete</code></td>
+          <td>None</td>
+          <td>Delete support bundles.</td>
+      </tr>
+      <tr>
+          <td><code>support.bundles:read</code></td>
+          <td>None</td>
+          <td>List and download support bundles.</td>
+      </tr>
+      <tr>
+          <td><code>snapshots:create</code></td>
+          <td>None</td>
+          <td>Create snapshots.</td>
+      </tr>
+      <tr>
+          <td><code>snapshots:delete</code></td>
+          <td>None</td>
+          <td>Delete snapshots.</td>
+      </tr>
+      <tr>
+          <td><code>snapshots:read</code></td>
+          <td>None</td>
+          <td>List snapshots.</td>
+      </tr>
+      <tr>
+          <td><code>status:accesscontrol</code></td>
+          <td><ul><li><code>services:accesscontrol</code></li><ul></td>
+          <td>Get access-control enabled status.</td>
+      </tr>
+      <tr>
+          <td><code>teams.permissions:read</code></td>
+          <td><ul><li><code>teams:*</code></li><li><code>teams:id:*</code></li></ul></td>
+          <td>Read members and Team Sync setup for teams.</td>
+      </tr>
+      <tr>
+          <td><code>teams.permissions:write</code></td>
+          <td><ul><li><code>teams:*</code></li><li><code>teams:id:*</code></li></ul></td>
+          <td>Add, remove and update members and manage Team Sync setup for teams.</td>
+      </tr>
+      <tr>
+          <td><code>teams.roles:add</code></td>
+          <td><ul><li><code>permissions:type:delegate</code></li><ul></td>
+          <td>Assign a role to a team.</td>
+      </tr>
+      <tr>
+          <td><code>teams.roles:read</code></td>
+          <td><ul><li><code>teams:*</code></li><li><code>teams:id:*</code></li></ul></td>
+          <td>List roles assigned directly to a team.</td>
+      </tr>
+      <tr>
+          <td><code>teams.roles:remove</code></td>
+          <td><ul><li><code>permissions:type:delegate</code></li><ul></td>
+          <td>Unassign a role from a team.</td>
+      </tr>
+      <tr>
+          <td><code>teams:create</code></td>
+          <td>None</td>
+          <td>Create teams.</td>
+      </tr>
+      <tr>
+          <td><code>teams:delete</code></td>
+          <td><ul><li><code>teams:*</code></li><li><code>teams:id:*</code></li></ul></td>
+          <td>Delete one or more teams.</td>
+      </tr>
+      <tr>
+          <td><code>teams:read</code></td>
+          <td><ul><li><code>teams:*</code></li><li><code>teams:id:*</code></li></ul></td>
+          <td>Read one or more teams and team preferences. To list teams through the UI one of the following permissions is required in addition to <code>teams:read</code>: <code>teams:write</code>, <code>teams.permissions:read</code> or <code>teams.permissions:write</code>.</td>
+      </tr>
+      <tr>
+          <td><code>teams:write</code></td>
+          <td><ul><li><code>teams:*</code></li><li><code>teams:id:*</code></li></ul></td>
+          <td>Update one or more teams and team preferences.</td>
+      </tr>
+      <tr>
+          <td><code>users.authtoken:read</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>List authentication tokens that are assigned to a user.</td>
+      </tr>
+      <tr>
+          <td><code>users.authtoken:write</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Update authentication tokens that are assigned to a user.</td>
+      </tr>
+      <tr>
+          <td><code>users.password:write</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Update a user’s password.</td>
+      </tr>
+      <tr>
+          <td><code>users.permissions:read</code></td>
+          <td><ul><li><code>users:*</code></li><ul></td>
+          <td>List permissions of a user.</td>
+      </tr>
+      <tr>
+          <td><code>users.permissions:write</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Update a user’s organization-level permissions.</td>
+      </tr>
+      <tr>
+          <td><code>users.quotas:read</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>List a user’s quotas.</td>
+      </tr>
+      <tr>
+          <td><code>users.quotas:write</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Update a user’s quotas.</td>
+      </tr>
+      <tr>
+          <td><code>users.roles:add</code></td>
+          <td><ul><li><code>permissions:type:delegate</code></li><ul></td>
+          <td>Assign a role to a user or a service account.</td>
+      </tr>
+      <tr>
+          <td><code>users.roles:read</code></td>
+          <td><ul><li><code>users:*</code></li><ul></td>
+          <td>List roles assigned directly to a user or a service account.</td>
+      </tr>
+      <tr>
+          <td><code>users.roles:remove</code></td>
+          <td><ul><li><code>permissions:type:delegate</code></li><ul></td>
+          <td>Unassign a role from a user or a service account.</td>
+      </tr>
+      <tr>
+          <td><code>users:create</code></td>
+          <td>None</td>
+          <td>Create a user.</td>
+      </tr>
+      <tr>
+          <td><code>users:delete</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Delete a user.</td>
+      </tr>
+      <tr>
+          <td><code>users:disable</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Disable a user.</td>
+      </tr>
+      <tr>
+          <td><code>users:enable</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Enable a user.</td>
+      </tr>
+      <tr>
+          <td><code>users:logout</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Sign out a user.</td>
+      </tr>
+      <tr>
+          <td><code>users:read</code></td>
+          <td><ul><li><code>global.users:*</code></li><ul></td>
+          <td>Read or search user profiles.</td>
+      </tr>
+      <tr>
+          <td><code>users:write</code></td>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Update a user’s profile.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="grafana-adaptive-metrics-action-definitions">Grafana Adaptive Metrics action definitions</h3>
+<p>The following list contains role-based access control actions used by Grafana Adaptive Metrics.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Applicable scopes</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.plugin:access</code></td>
+          <td>None</td>
+          <td>Access the Adaptive Metrics plugin in Grafana Cloud.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.config:read</code></td>
+          <td>None</td>
+          <td>Read the Adaptive Metrics app configuration.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.config:write</code></td>
+          <td>None</td>
+          <td>Update the Adaptive Metrics app configuration.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.recommendations:read</code></td>
+          <td>None</td>
+          <td>Read aggregation recommendations.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.recommendations:apply</code></td>
+          <td>None</td>
+          <td>Apply aggregation recommendations.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.rules:read</code></td>
+          <td>None</td>
+          <td>Read aggregation rules.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.rules:write</code></td>
+          <td>None</td>
+          <td>Create aggregation rules.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.rules:delete</code></td>
+          <td>None</td>
+          <td>Delete aggregation rules.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.exemptions:read</code></td>
+          <td>None</td>
+          <td>Read recommendation exemptions.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-adaptive-metrics-app.exemptions:write</code></td>
+          <td>None</td>
+          <td>Create, update, and delete recommendation exemptions.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="cloud-access-policies-action-definitions">Cloud Access Policies action definitions</h3>
+<p>The following list contains role-based access control actions used by Cloud Access Policies.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Applicable scopes</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>grafana-auth-app:write</code></td>
+          <td>None</td>
+          <td>Create, read, update, and delete access policies for Grafana Cloud.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>Granting the <code>grafana-auth-app:write</code> permission is equivalent to assigning the Admin role to a user in Grafana, as it allows them to manage all stack service accounts. This provides significant privileges and should be assigned with caution.</p></blockquote></div>
+
+<p>For more information on Cloud Access Policies and how to use them, see <a href="/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/">Access policies</a>.</p>
+<h3 id="grafana-alerting-notification-action-definitions">Grafana Alerting Notification action definitions</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Applicable scopes</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>alert.notifications.receivers:read</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Read contact points.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers.secrets:read</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Export contact points with decrypted secrets.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:create</code></td>
+          <td>None</td>
+          <td>Create a new contact points. The creator is automatically granted full access to the created contact point.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:write</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Update existing contact points.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:delete</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Update and delete existing contact points.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:test</code></td>
+          <td>None</td>
+          <td>Test contact point notification.</td>
+      </tr>
+      <tr>
+          <td><code>receivers.permissions:read</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Read permissions for contact points.</td>
+      </tr>
+      <tr>
+          <td><code>receivers.permissions:write</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Manage permissions for contact points.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.time-intervals:read</code></td>
+          <td>None</td>
+          <td>Read mute time intervals.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.time-intervals:write</code></td>
+          <td>None</td>
+          <td>Create new or update existing mute time intervals.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.time-intervals:delete</code></td>
+          <td>None</td>
+          <td>Delete existing time intervals.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.templates:read</code></td>
+          <td>None</td>
+          <td>Read templates.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.templates:write</code></td>
+          <td>None</td>
+          <td>Create new or update existing templates.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.templates:delete</code></td>
+          <td>None</td>
+          <td>Delete existing templates.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.routes:read</code></td>
+          <td>None</td>
+          <td>Read notification policies.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.routes:write</code></td>
+          <td>None</td>
+          <td>Create new, update or delete notification policies</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="grafana-synthetic-monitoring-action-definitions">Grafana Synthetic Monitoring action definitions</h3>
+<p>The following list contains role-based access control actions used by Grafana Synthetic Monitoring.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Applicable scopes</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app:read</code></td>
+          <td>None</td>
+          <td>Read synthetic monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app:write</code></td>
+          <td>None</td>
+          <td>Write synthetic monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.checks:read</code></td>
+          <td>None</td>
+          <td>Read checks in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.checks:write</code></td>
+          <td>None</td>
+          <td>Create and edit checks in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.checks:delete</code></td>
+          <td>None</td>
+          <td>Delete checks in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.probes:read</code></td>
+          <td>None</td>
+          <td>Read probes in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.probes:write</code></td>
+          <td>None</td>
+          <td>Create and edit probes in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.probes:delete</code></td>
+          <td>None</td>
+          <td>Delete probes in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.alerts:read</code></td>
+          <td>None</td>
+          <td>Read alerts in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.alerts:write</code></td>
+          <td>None</td>
+          <td>Create and edit alerts in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.alerts:delete</code></td>
+          <td>None</td>
+          <td>Delete alerts in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.thresholds:read</code></td>
+          <td>None</td>
+          <td>Read thresholds in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.thresholds:write</code></td>
+          <td>None</td>
+          <td>Create and edit thresholds in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.thresholds:delete</code></td>
+          <td>None</td>
+          <td>Delete thresholds in the Synthetic Monitoring app.</td>
+      </tr>
+      <tr>
+          <td><code>grafana-synthetic-monitoring-app.access-tokens:write</code></td>
+          <td>None</td>
+          <td>Create and delete synthetic monitoring access tokens.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="scope-definitions">Scope definitions</h2>
+<p>The following list contains role-based access control scopes.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Scopes</th>
+          <th>Descriptions</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li></ul></td>
+          <td>Restrict an action to a set of annotations. For example, <code>annotations:*</code> matches any annotation, <code>annotations:type:dashboard</code> matches annotations associated with dashboards and <code>annotations:type:organization</code> matches organization annotations.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>apikeys:*</code></li><li><code>apikeys:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of API keys. For example, <code>apikeys:*</code> matches any API key, <code>apikey:id:1</code> matches the API key whose id is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li></ul></td>
+          <td>Restrict an action to a set of dashboards. For example, <code>dashboards:*</code> matches any dashboard, and <code>dashboards:uid:1</code> matches the dashboard whose UID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>datasources:*</code></li><li><code>datasources:uid:*</code></li></ul></td>
+          <td>Restrict an action to a set of data sources. For example, <code>datasources:*</code> matches any data source, and <code>datasources:uid:1</code> matches the data source whose UID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+          <td>Restrict an action to a set of folders. For example, <code>folders:*</code> matches any folder, and <code>folders:uid:1</code> matches the folder whose UID is <code>1</code>. Note that permissions granted to a folder cascade down to subfolders located under it.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>global.users:*</code></li><li><code>global.users:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of global users. For example, <code>global.users:*</code> matches any user and <code>global.users:id:1</code> matches the user whose ID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>library.panels:*</code></li><li><code>library.panels:uid:*</code></li></ul></td>
+          <td>Restrict an action to a set of library panels. For example, <code>library.panels:*</code> matches any library panel, and <code>library.panel:uid:1</code> matches the library panel whose UID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>orgs:*</code></li><li><code>orgs:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of organizations. For example, <code>orgs:*</code> matches any organization and <code>orgs:id:1</code> matches the organization whose ID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>permissions:type:delegate</code></li><ul></td>
+          <td>The scope is only applicable for roles associated with the Access Control itself and indicates that you can delegate your permissions only, or a subset of it, by creating a new role or making an assignment.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>permissions:type:escalate</code></li><ul></td>
+          <td>The scope is required to trigger the reset of basic roles permissions. It indicates that users might acquire additional permissions they did not previously have.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>plugins:*</code></li><li><code>plugins:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of plugins. For example, <code>plugins:id:grafana-oncall-app</code> matches Grafana OnCall plugin, and <code>plugins:*</code> matches all plugins.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>provisioners:*</code></li><ul></td>
+          <td>Restrict an action to a set of provisioners. For example, <code>provisioners:*</code> matches any provisioner, and <code>provisioners:accesscontrol</code> matches the role-based access control 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-grafana-provisioning/">provisioner</a>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>reports:*</code></li><li><code>reports:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of reports. For example, <code>reports:*</code> matches any report and <code>reports:id:1</code> matches the report whose ID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>roles:*</code></li><li><code>roles:uid:*</code></li></ul></td>
+          <td>Restrict an action to a set of roles. For example, <code>roles:*</code> matches any role and <code>roles:uid:randomuid</code> matches only the role whose UID is <code>randomuid</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>services:accesscontrol</code></li><ul></td>
+          <td>Restrict an action to target only the role-based access control service. You can use this in conjunction with the <code>status:accesscontrol</code> actions.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>serviceaccounts:*</code></li><li><code>serviceaccounts:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of service account from an organization. For example, <code>serviceaccounts:*</code> matches any service account and <code>serviceaccount:id:1</code> matches the service account whose ID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>settings:*</code></li><ul></td>
+          <td>Restrict an action to a subset of settings. For example, <code>settings:*</code> matches all settings, <code>settings:auth.saml:*</code> matches all SAML settings, and <code>settings:auth.saml:enabled</code> matches the enable property on the SAML settings.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>teams:*</code></li><li><code>teams:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of teams from an organization. For example, <code>teams:*</code> matches any team and <code>teams:id:1</code> matches the team whose ID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li><code>users:*</code></li><li><code>users:id:*</code></li></ul></td>
+          <td>Restrict an action to a set of users from an organization. For example, <code>users:*</code> matches any user and <code>users:id:1</code> matches the user whose ID is <code>1</code>.</td>
+      </tr>
+      <tr>
+          <td><ul><li>None</li><ul></td>
+          <td>If an action has &ldquo;None&rdquo; specified for the scope, then the action doesn&rsquo;t require a scope. For example, the <code>teams:create</code> action doesn&rsquo;t require a scope and allows users to create teams.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->

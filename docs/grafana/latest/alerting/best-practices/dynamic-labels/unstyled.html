@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<h1 id="example-of-dynamic-labels-in-alert-instances">Example of dynamic labels in alert instances</h1>
+<p>Labels are essential for scaling your alerting setup. They define metadata like <code>severity</code>, <code>team</code>, <code>category</code>, or <code>environment</code>, which you can use for alert routing.</p>
+<p>A label like <code>severity=&quot;critical&quot;</code> can be set statically in the alert rule configuration, or dynamically based on a query value such as the current free disk space. Dynamic labels <strong>adjust label values at runtime</strong>, allowing you to reuse the same alert rule across different scenarios.</p>
+<p>This example shows how to define dynamic labels based on query values, along with key behavior to keep in mind when using them.</p>
+<p>First, it&rsquo;s important to understand how Grafana Alerting treats 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#labels">labels</a>.</p>
+<h2 id="alert-instances-are-defined-by-labels">Alert instances are defined by labels</h2>
+<p>Each alert rule creates a separate alert instance for every unique combination of labels.</p>
+<p>This is called 
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">multi-dimensional alerts</a>: one rule, many instances—<strong>one per unique label set</strong>.</p>
+<p>For example, a rule that queries CPU usage per host might return multiple series (or dimensions):</p>
+<ul>
+<li><code>{alertname=&quot;ServerHighCPU&quot;, instance=&quot;prod-server-1&quot; }</code></li>
+<li><code>{alertname=&quot;ServerHighCPU&quot;, instance=&quot;prod-server-2&quot; }</code></li>
+<li><code>{alertname=&quot;ServerHighCPU&quot;, instance=&quot;prod-server-3&quot; }</code></li>
+</ul>
+<p>Each unique label combination defines a distinct alert instance, with its own evaluation state and potential notifications.</p>
+<p>The full label set of an alert instance can include:</p>
+<ul>
+<li>Labels from the query result (e.g., <code>instance</code>)</li>
+<li>Auto-generated labels (e.g., <code>alertname</code>)</li>
+<li>User-defined labels from the rule configuration</li>
+</ul>
+<h2 id="user-defined-labels">User-defined labels</h2>
+<p>As shown earlier, alert instances automatically include labels from the query result, such as <code>instance</code> or <code>job</code>. To add more context or control alert routing, you can define <em>user-defined labels</em> in the alert rule configuration:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/example-dynamic-labels-edit-labels-v3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/example-dynamic-labels-edit-labels-v3.png"data-srcset="/media/docs/alerting/example-dynamic-labels-edit-labels-v3.png?w=320 320w, /media/docs/alerting/example-dynamic-labels-edit-labels-v3.png?w=550 550w, /media/docs/alerting/example-dynamic-labels-edit-labels-v3.png?w=750 750w, /media/docs/alerting/example-dynamic-labels-edit-labels-v3.png?w=900 900w, /media/docs/alerting/example-dynamic-labels-edit-labels-v3.png?w=1040 1040w, /media/docs/alerting/example-dynamic-labels-edit-labels-v3.png?w=1240 1240w, /media/docs/alerting/example-dynamic-labels-edit-labels-v3.png?w=1920 1920w"
+          data-sizes="auto"alt="Edit labels UI in the alert rule configuration."width="933"height="380"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/example-dynamic-labels-edit-labels-v3.png"
+            alt="Edit labels UI in the alert rule configuration."width="933"height="380"/>
+        </noscript></div></a></figure>
+<p>User-defined labels can be either:</p>
+<ul>
+<li>
+<p><strong>Fixed labels</strong>: These have the same value for every alert instance. They are often used to include common metadata, such as team ownership.</p>
+</li>
+<li>
+<p><strong>Templated labels</strong>: These calculate their values based on the query result at evaluation time.</p>
+</li>
+</ul>
+<h2 id="templated-labels">Templated labels</h2>
+<p>Templated labels evaluate their values dynamically, based on the query result. This allows the label value to vary per alert instance.</p>
+<p>Use templated labels to inject additional context into alerts. To learn about syntax and use cases, refer to 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">Template annotations and labels</a>.</p>
+<p>You can define templated labels that produce either:</p>
+<ul>
+<li>A fixed value per alert instance.</li>
+<li>A dynamic value per alert instance that changes based on the last query result.</li>
+</ul>
+<h3 id="fixed-values-per-alert-instance">Fixed values per alert instance</h3>
+<p>You can use a known label value to enrich the alert with additional metadata not present in existing labels. For example, you can map the <code>instance</code> label to an <code>env</code> label that represents the deployment environment:</p>
+<pre>{{- if eq $labels.instance &#34;prod-server-1&#34; -}}production
+{{- else if eq $labels.instance &#34;stag-server-1&#34; -}}staging
+{{- else -}}development
+{{- end -}}</pre>
+<p>This produces alert instances like:</p>
+<ul>
+<li><code>{alertname=&quot;ServerHighCPU&quot;, instance=&quot;prod-server-1&quot;, env=&quot;production&quot;}</code></li>
+<li><code>{alertname=&quot;ServerHighCPU&quot;, instance=&quot;stag-server-1&quot;, env=&quot;staging&quot;}</code></li>
+</ul>
+<p>In this example, the <code>env</code> label is fixed for each alert instance and does not change during its lifecycle.</p>
+<h3 id="dynamic-values-per-alert-instance">Dynamic values per alert instance</h3>
+<p>You can define a label whose value depends on the numeric result of a query—mapping it to a predefined set of options. This is useful for representing <code>severity</code> levels within a single alert rule.</p>
+<p>Instead of defining three separate rules like:</p>
+<ul>
+<li><em>CPU ≥ 90</em> → <code>severity=critical</code></li>
+<li><em>CPU ≥ 80</em> → <code>severity=warning</code></li>
+<li><em>CPU ≥ 70</em> → <code>severity=minor</code></li>
+</ul>
+<p>You can define a single rule and assign <code>severity</code> dynamically using a template:</p>
+<pre>{{/* $values.B.Value refers to the numeric result from query B */}}
+{{- if gt $values.B.Value 90.0 -}}critical
+{{- else if gt $values.B.Value 80.0 -}}warning
+{{- else if gt $values.B.Value 70.0 -}}minor
+{{- else -}}none
+{{- end -}}</pre>
+<p>This pattern lets you express multiple alerting scenarios in a single rule, while still routing based on the <code>severity</code> label value.</p>
+<h2 id="example-overview">Example overview</h2>
+<p>In the previous severity template, you can set the alert condition to <code>$B &gt; 70</code> to prevent firing when <code>severity=none</code>, and then use the <code>severity</code> label to route distinct alert instances to different contact points.</p>
+<p>For example, configure a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">notification policy</a> that matches <code>alertname=&quot;ServerHighCPU&quot;</code> with the following children policies:</p>
+<ul>
+<li><code>severity=critical</code> → escalate to an incident response and management solution (IRM).</li>
+<li><code>severity=warning</code> → send to the team&rsquo;s Slack channel.</li>
+<li><code>severity=minor</code> → send to a non-urgent queue or log-only dashboard.</li>
+</ul>
+<p>The resulting alerting flow might look like this:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Time</th>
+          <th style="text-align: left">$B query</th>
+          <th style="text-align: left">Alert instance</th>
+          <th style="text-align: left">Routed to</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">t1</td>
+          <td style="text-align: left">65</td>
+          <td style="text-align: left"><code>{alertname=&quot;ServerHighCPU&quot;, severity=&quot;none&quot;}</code></td>
+          <td style="text-align: left"><code>Not firing</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t2</td>
+          <td style="text-align: left">75</td>
+          <td style="text-align: left"><code>{alertname=&quot;ServerHighCPU&quot;, severity=&quot;minor&quot;}</code></td>
+          <td style="text-align: left">Non-urgent queue</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t3</td>
+          <td style="text-align: left">85</td>
+          <td style="text-align: left"><code>{alertname=&quot;ServerHighCPU&quot;, severity=&quot;warning&quot;}</code></td>
+          <td style="text-align: left">Team Slack channel</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t4</td>
+          <td style="text-align: left">95</td>
+          <td style="text-align: left"><code>{alertname=&quot;ServerHighCPU&quot;, severity=&quot;critical&quot;}</code></td>
+          <td style="text-align: left">IRM escalation chain</td>
+      </tr>
+  </tbody>
+</table>
+<p>This alerting setup allows you to:</p>
+<ul>
+<li>Use a single rule for multiple severity levels.</li>
+<li>Route alerts dynamically using the label value.</li>
+<li>Simplify alert rule maintenance and avoid duplication.</li>
+</ul>
+<p>However, dynamic labels can introduce unexpected behavior when label values change. The next section explains this.</p>
+<h2 id="caveat-a-label-change-affects-a-distinct-alert-instance">Caveat: a label change affects a distinct alert instance</h2>
+<p>Remember: <strong>alert instances are defined by their labels</strong>.</p>
+<p>If a dynamic label changes between evaluations, this new value affects a separate alert instance.</p>
+<p>Here&rsquo;s what happens if <code>severity</code> changes from <code>minor</code> to <code>warning</code>:</p>
+<ol>
+<li>The instance with <code>severity=&quot;minor&quot;</code> disappears → it becomes a missing series.</li>
+<li>A new instance with <code>severity=&quot;warning&quot;</code> appears → it starts from scratch.</li>
+<li>After two evaluations without data, the <code>minor</code> instance is <strong>resolved and evicted</strong>.</li>
+</ol>
+<p>Here’s a sequence example:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Time</th>
+          <th style="text-align: left">Query value</th>
+          <th style="text-align: left">Instance <code>severity=&quot;none&quot;</code></th>
+          <th style="text-align: left">Instance <code>severity=&quot;minor&quot;</code></th>
+          <th style="text-align: left">Instance <code>severity=&quot;warning&quot;</code></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">t0</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t1</td>
+          <td style="text-align: left">75</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left">🔴 📩</td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t2</td>
+          <td style="text-align: left">85</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left">⚠️ MissingSeries</td>
+          <td style="text-align: left">🔴 📩</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t3</td>
+          <td style="text-align: left">85</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left">⚠️ MissingSeries</td>
+          <td style="text-align: left">🔴</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t4</td>
+          <td style="text-align: left">50</td>
+          <td style="text-align: left">🟢</td>
+          <td style="text-align: left">📩 Resolved and evicted</td>
+          <td style="text-align: left">⚠️ MissingSeries</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t5</td>
+          <td style="text-align: left">50</td>
+          <td style="text-align: left">🟢</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left">⚠️ MissingSeries</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">t6</td>
+          <td style="text-align: left">50</td>
+          <td style="text-align: left">🟢</td>
+          <td style="text-align: left"></td>
+          <td style="text-align: left">📩 Resolved and evicted</td>
+      </tr>
+  </tbody>
+</table>
+<p>Learn more about this behavior in 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/stale-alert-instances/">Stale alert instances</a>.</p>
+<p>In this example, the <code>minor</code> and <code>warning</code> alerts likely represent the same underlying issue, but Grafana treats them as distinct alert instances. As a result, this scenario generates two firing notifications and two resolved notifications, one for each instance.</p>
+<p>This behavior is important to keep in mind when dynamic label values change frequently.</p>
+<p>It can lead to multiple notifications firing and resolving in short intervals, resulting in <strong>noisy and confusing notifications</strong>.</p>
+<h2 id="try-it-with-testdata">Try it with TestData</h2>
+<p>You can replicate this scenario using the 
+    <a href="/docs/grafana/latest/datasources/testdata/">TestData data source</a> to simulate an unstable signal—like monitoring a noisy sensor.</p>
+<p>This setup reproduces label flapping and shows how dynamic label values affect alert instance behavior.</p>
+<ol>
+<li>
+<p>Add the <strong>TestData</strong> data source through the <strong>Connections</strong> menu.</p>
+</li>
+<li>
+<p>Create an alert rule.</p>
+<p>Navigate to <strong>Alerting</strong> → <strong>Alert rules</strong> and click <strong>New alert rule</strong>.</p>
+</li>
+<li>
+<p>Simulate a query (<code>$A</code>) that returns a noisy signal.</p>
+<p>Select <strong>TestData</strong> as the data source and configure the scenario.</p>
+<ul>
+<li>Scenario: Random Walk</li>
+<li>Series count: 1</li>
+<li>Start value: 51</li>
+<li>Min: 50, Max: 100</li>
+<li>Spread: 100 (ensures large changes between consecutive data points)</li>
+</ul>
+</li>
+<li>
+<p>Add an expression.</p>
+<ul>
+<li>Type: Reduce</li>
+<li>Input: A</li>
+<li>Function: Last (to get the most recent value)</li>
+<li>Name: B</li>
+</ul>
+</li>
+<li>
+<p>Define the alert condition.</p>
+<p>Use a threshold like <code>$B &gt;= 50</code> (it always fires).</p>
+</li>
+<li>
+<p>Click <strong>Edit Labels</strong> to add a dynamic label.</p>
+<p>Create a new label <code>severity</code> and set its value to the following:</p>
+<pre>{{/* $values.B.Value refers to the numeric result from query B */}}
+{{- if gt $values.B.Value 90.0 -}}P1
+{{- else if gt $values.B.Value 80.0 -}}P2
+{{- else if gt $values.B.Value 70.0 -}}P3
+{{- else if gt $values.B.Value 60.0 -}}P4
+{{- else if gt $values.B.Value 50.0 -}}P5
+{{- else -}}none
+{{- end -}}</pre>
+</li>
+<li>
+<p>Set evaluation behavior.</p>
+<p>Set a short evaluation interval (e.g., <code>10s</code>) to observe quickly label flapping and alert instance transitions in the history.</p>
+</li>
+<li>
+<p>Preview alert routing to verify the label template.</p>
+<p>In <strong>Configure notifications</strong>, toggle <strong>Advanced options</strong>.<br />
+Click <strong>Preview routing</strong> and check the value of the <code>severity</code> label:</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/example-dynamic-labels-preview-label.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/example-dynamic-labels-preview-label.png"data-srcset="/media/docs/alerting/example-dynamic-labels-preview-label.png?w=320 320w, /media/docs/alerting/example-dynamic-labels-preview-label.png?w=550 550w, /media/docs/alerting/example-dynamic-labels-preview-label.png?w=750 750w, /media/docs/alerting/example-dynamic-labels-preview-label.png?w=900 900w, /media/docs/alerting/example-dynamic-labels-preview-label.png?w=1040 1040w, /media/docs/alerting/example-dynamic-labels-preview-label.png?w=1240 1240w, /media/docs/alerting/example-dynamic-labels-preview-label.png?w=1920 1920w"
+             data-sizes="auto"alt="Preview routing multiple times to verify how label values change over time."width="1007"height="298"title="Preview routing multiple times to verify how label values change over time."/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/example-dynamic-labels-preview-label.png"
+               alt="Preview routing multiple times to verify how label values change over time."width="1007"height="298"title="Preview routing multiple times to verify how label values change over time."/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Preview routing multiple times to verify how label values change over time.</figcaption></a></figure>
+</li>
+<li>
+<p>Observe alert state changes.</p>
+<p>Click <strong>Save rule and exit</strong>, and open the 
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state-history/">alert history view</a> to see how changes in <code>severity</code> affect the state of distinct alert instances.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/example-dynamic-labels-alert-history-page.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/example-dynamic-labels-alert-history-page.png"data-srcset="/media/docs/alerting/example-dynamic-labels-alert-history-page.png?w=320 320w, /media/docs/alerting/example-dynamic-labels-alert-history-page.png?w=550 550w, /media/docs/alerting/example-dynamic-labels-alert-history-page.png?w=750 750w, /media/docs/alerting/example-dynamic-labels-alert-history-page.png?w=900 900w, /media/docs/alerting/example-dynamic-labels-alert-history-page.png?w=1040 1040w, /media/docs/alerting/example-dynamic-labels-alert-history-page.png?w=1240 1240w, /media/docs/alerting/example-dynamic-labels-alert-history-page.png?w=1920 1920w"
+             data-sizes="auto"alt="You can find multiple transitions over time as the label value fluctuates."width="810"height="419"title="You can find multiple transitions over time as the label value fluctuates."/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/example-dynamic-labels-alert-history-page.png"
+               alt="You can find multiple transitions over time as the label value fluctuates."width="810"height="419"title="You can find multiple transitions over time as the label value fluctuates."/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">You can find multiple transitions over time as the label value fluctuates.</figcaption></a></figure>
+
+   <div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+     <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+     <div>
+       <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+       <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+   This feature can be seen on <a href="https://play.grafana.org/alerting/grafana/eep7oslk5u680e/view" target="_blank" rel="noopener noreferrer">this alert example</a>.</p>
+       <div class="mx-auto">
+         <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/alerting/grafana/eep7oslk5u680e/view">Try it</a>
+       </div>
+     </div>
+   </div>
+
+</li>
+</ol>
+<h2 id="considerations">Considerations</h2>
+<p>Dynamic labels lets you reuse a single alert rule across multiple escalation scenarios—but it also introduces complexity. When the label value depends on a noisy metric and changes frequently, it can lead to flapping alert instances and excessive notifications.</p>
+<p>These alerts often require tuning to stay reliable and benefit from continuous review. To get the most out of this pattern, consider the following:</p>
+<ul>
+<li>
+<p><strong>Tune evaluation settings and queries for stability</strong></p>
+<p>Increase the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/">evaluation interval and pending period</a> to reduce the frequency of state changes. Additionally, consider smoothing metrics with functions like <code>avg_over_time</code> to reduce flapping.</p>
+</li>
+<li>
+<p><strong>Use wider threshold bands</strong></p>
+<p>Define broader ranges in your label template logic to prevent label switching caused by small value changes.</p>
+</li>
+<li>
+<p><strong>Disable resolved notifications</strong></p>
+<p>When labels change frequently and alerts resolve quickly, you can reduce the number of notifications by disabling resolved notifications at the contact point.</p>
+</li>
+<li>
+<p><strong>Disable the Missing series evaluations setting</strong></p>
+<p>The 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/stale-alert-instances/">Missing series evaluations setting</a> (default: 2) defines how many intervals without data are allowed before resolving an instance. Consider disabling it if it&rsquo;s unnecessary for your use case, as it can complicate alert troubleshooting.</p>
+</li>
+<li>
+<p><strong>Preserve context across related alerts</strong></p>
+<p>Ensure alert metadata includes enough information to help correlate related alerts during investigation.</p>
+</li>
+<li>
+<p><strong>Use separate alert rules and static labels when simpler</strong></p>
+<p>In some cases, defining separate rules with static labels may be easier to manage than one complex dynamic rule. This also allows you to customize alert queries for each specific case.</p>
+</li>
+</ul>
+<h2 id="learn-more">Learn more</h2>
+<p>Here&rsquo;s a list of additional resources related to this example:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">Multi-dimensional alerting example</a> – Explore how Grafana creates separate alert instances for each unique set of labels.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#labels">Labels</a> – Learn about the different types of labels and how they define alert instances.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">Template labels in alert rules</a> – Use templating to set label values dynamically based on query results.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/stale-alert-instances/">Stale alert instances</a> – Understand how Grafana resolves and removes stale alert instances.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/best-practices/missing-data/">Handle missing data</a> – Learn how Grafana distinguishes between missing series and <code>NoData</code>.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">Notification policies and routing</a> – Create multiple notification policies to route alerts based on label values like <code>severity</code> or <code>team</code>.</li>
+<li><a href="https://play.grafana.org/alerting/grafana/eep7oslk5u680e/view" target="_blank" rel="noopener noreferrer">Dynamic label example in Grafana Play</a> - View this example in Grafana Play to explore alert instances and state transitions with dynamic labels.</li>
+</ul>

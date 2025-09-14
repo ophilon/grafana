@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<h1 id="manage-playlists">Manage playlists</h1>
+<p>A <em>playlist</em> is a list of dashboards that are displayed in a sequence. You might use a playlist to build situational awareness or to present your metrics to your team or visitors.</p>
+<p>Grafana automatically scales dashboards to any resolution, which makes them perfect for big screens.</p>
+<p>You can access the <strong>Playlist</strong> feature from Grafana&rsquo;s side menu, in the Dashboards submenu.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You must have at least Editor role permissions to create and manage playlists.</p></blockquote></div>
+
+<h2 id="access-share-and-control-a-playlist">Access, share, and control a playlist</h2>
+<p>Use the information in this section to access playlists. Start and control the display of a playlist using one of the six available modes.</p>
+<h3 id="access-a-playlist">Access a playlist</h3>
+<ol>
+<li>Click <strong>Dashboards</strong> in the main menu.</li>
+<li>Click <strong>Playlists</strong> to see a list of playlists.</li>
+</ol>
+<h3 id="start-a-playlist">Start a playlist</h3>
+<p>You can start a playlist in four different view modes. View modes determine how the menus and navigation bar appear on the dashboards as well as how panels are sized.</p>
+<ol>
+<li>
+<p>Click <strong>Dashboards</strong> in the main menu.</p>
+</li>
+<li>
+<p>Click <strong>Playlists</strong>.</p>
+</li>
+<li>
+<p>Find the desired playlist and click <strong>Start playlist</strong>.</p>
+</li>
+<li>
+<p>In the dialog box that opens, select one of the <a href="#playlist-modes">four playlist modes</a> available.</p>
+</li>
+<li>
+<p>Disable any dashboard controls that you don&rsquo;t want displayed while the list plays; these controls are enabled and visible by default. Select from:</p>
+<ul>
+<li><strong>Time and refresh</strong></li>
+<li><strong>Variables</strong></li>
+<li><strong>Dashboard links</strong></li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Start &lt;playlist name&gt;</strong>.</p>
+</li>
+</ol>
+<p>The playlist displays each dashboard for the time specified in the <strong>Interval</strong> field, set when creating or editing a playlist. After a playlist starts, you can <a href="#control-a-playlist">start or stop it</a> it using the controls at the top of your screen.</p>
+<h3 id="playlist-modes">Playlist modes</h3>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Mode</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Normal mode</td>
+          <td><ul><li>The main menu and navbar remain visible.</li><li>Dashboard controls are hidden.</li><li>Playlist controls are displayed at the top of the screen.<li><ul></td>
+      </tr>
+      <tr>
+          <td>Normal mode (with auto fit panels)</td>
+          <td><ul><li>The main menu and navbar remain visible.</li><li>Dashboard controls are hidden.</li><li>Playlist controls are displayed at the top of the screen.</li><li>Dashboard panels automatically adjust to optimize space on screen.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Kiosk mode</td>
+          <td><ul><li>The main menu, navbar, and dashboard controls are hidden.</li><li>You can disable the playlist manually by pressing the <code>Esc</code> key after the playlist has started. Doing so causes the playlist controls to be displayed at the top of the screen briefly.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Kiosk mode (with auto fit panels)</td>
+          <td><ul>&laquo;li&gt;The main menu, navbar, and dashboard controls are hidden.</li><li>You can disable the playlist manually by pressing the <code>Esc</code> key after the playlist has started. Doing so causes the playlist controls to be displayed at the top of the screen briefly.</li><li>Dashboard panels automatically adjust to optimize space on screen.</li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="playlist-controls">Playlist controls</h3>
+<p>You can control a playlist in <strong>Normal</strong> mode after it&rsquo;s started, using the buttons at the top of your screen. Press the <code>Esc</code> key to stop the playlist.</p>
+<ul>
+<li><strong>Next (double-right arrow)</strong> - Advances to the next dashboard.</li>
+<li><strong>Back (doublt-left arrow)</strong> - Returns to the previous dashboard.</li>
+<li><strong>Stop playlist</strong> - Ends the playlist, and exits to the current dashboard.</li>
+</ul>
+<h2 id="create-a-playlist">Create a playlist</h2>
+<p>You can create a playlist to present dashboards in a sequence, with a set order and time interval between dashboards. Be sure that all the dashboards you want to appear in your playlist are added before you create the playlist.</p>
+<ol>
+<li>
+<p>Click <strong>Dashboards</strong> in the main menu.</p>
+</li>
+<li>
+<p>Click <strong>Playlists</strong>.</p>
+</li>
+<li>
+<p>Click <strong>New playlist</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Name</strong> field, enter a descriptive name.</p>
+</li>
+<li>
+<p>In the <strong>Interval</strong> field, enter the time interval each dashboard is displayed before moving on to the next dashboard.</p>
+</li>
+<li>
+<p>In the <strong>Add dashboards</strong> section, add dashboards to the playlist using the <strong>Add by title</strong> and <strong>Add by tag</strong> drop-down options.</p>
+<p>Added dashboards are displayed in a list in the <strong>Dashboards</strong> section of the page, in the order you added them. This is also the play order of the dashboards.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h2 id="edit-a-playlist">Edit a playlist</h2>
+<p>You can edit a playlist including adding, removing, and rearranging the order of dashboards.</p>
+<ol>
+<li>
+<p>Click <strong>Dashboards</strong> in the main menu.</p>
+</li>
+<li>
+<p>Click <strong>Playlists</strong>.</p>
+</li>
+<li>
+<p>Find the playlist you want to update and click <strong>Edit playlist</strong>. Do one or more of the following:</p>
+<ul>
+<li>Edit - Update the name and time interval.</li>
+<li>Add dashboards - Search for dashboards by title or tag to add them to the playlist.</li>
+<li>Rearrange dashboards - Click and drag the dashboards into your desired order.</li>
+<li>Remove dashboards - Click the <strong>X</strong> next to the name of the dashboard you want to remove from the playlist.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h2 id="share-a-playlist-in-a-view-mode">Share a playlist in a view mode</h2>
+<p>You can share a playlist by copying the link address on the view mode you prefer, and pasting the URL to your destination.</p>
+<ol>
+<li>Click <strong>Dashboards</strong> in the main menu.</li>
+<li>Click <strong>Playlists</strong>.</li>
+<li>Click the share icon of the playlist you want to share.</li>
+<li>Select the view mode you prefer.</li>
+<li>Click <strong>Copy</strong> next to the <strong>Link URL</strong> to copy it to your clipboard.</li>
+<li>Paste the URL to your destination.</li>
+</ol>
+<h2 id="delete-a-playlist">Delete a playlist</h2>
+<p>When you no longer need a playlist, follow these steps to delete it:</p>
+<ol>
+<li>Click <strong>Dashboards</strong> in the main menu.</li>
+<li>Click <strong>Playlists</strong>.</li>
+<li>Find the playlist you want to remove.</li>
+<li>Click <strong>Delete playlist</strong>.</li>
+</ol>

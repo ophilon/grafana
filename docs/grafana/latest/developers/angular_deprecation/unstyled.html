@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<h1 id="angular-support-deprecation">Angular support deprecation</h1>
+<p>Angular plugin support is deprecated and will be removed in a future release.
+There are legacy core Grafana visualizations and external plugins that rely on Grafana&rsquo;s Angular plugin support to work. The same is likely true for <a href="/legal/plugins/">private plugins</a> that have been developed by Grafana users for use on their own instances over the years.
+From Grafana v9 and onwards, there is a <a href="https://github.com/grafana/grafana/blob/d61bcdf4ca5e69489e0067c56fbe7f0bfdf84ee4/conf/defaults.ini#L362" target="_blank" rel="noopener noreferrer">server configuration option</a> that&rsquo;s global to the entire instance and controls whether Angular plugin support is available or not.
+In Grafana 11, we will change the default value for the configuration to remove support.</p>
+<p>Warning messages are displayed if a dashboard depends on an a panel visualization or data source which requires AngularJS as shown in the following video:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=XlEVs6g8dC8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>To avoid disruption:</p>
+<ul>
+<li>Ensure that you are running the latest version of plugins by following this guide on <a href="../../administration/plugin-management/#update-a-plugin">updating</a>. Many panels and data sources have migrated from AngularJS.</li>
+<li>If you are using legacy Core Grafana visualizations such as Graph or Table-old, migrate to their replacements using the provided <a href="angular-plugins/#automatic-migration-of-plugins">automatic migrations</a>.</li>
+<li>Review the <a href="angular-plugins/">list of current Angular plugins</a> to discover which Core and external plugins are impacted, and whether an update or alternative is required.</li>
+</ul>
+<h2 id="why-are-we-deprecating-angular-support">Why are we deprecating Angular support?</h2>
+<p>AngularJS is an old frontend framework whose active development stopped many years ago. Therefore, it poses a security risk. As Grafana itself had already started migrating to React in v5, this presented the most logical framework for our plugin platform. AngularJS also requires unsafe-eval in the CSP (Content Security Policy) settings, which also reduces the security of running JavaScript in the browser.</p>
+<h2 id="when-will-angular-plugins-stop-working">When will Angular plugins stop working?</h2>
+<p>In Grafana 11, which will be released in preview in April 2024 and generally available in May, we will change the default behavior of the <a href="https://github.com/grafana/grafana/blob/d61bcdf4ca5e69489e0067c56fbe7f0bfdf84ee4/conf/defaults.ini#L362" target="_blank" rel="noopener noreferrer">angular_support_enabled</a> configuration parameter to turn off support for AngularJS based plugins. In case you still rely on <a href="angular-plugins/">AngularJS-based plugins</a> developed internally or by the community, you will need to enable this option to continue using them.</p>
+<p>New Grafana Cloud users will be unable to request for support to be added to their instance.</p>
+<h2 id="when-will-we-remove-angular-support-completely">When will we remove Angular support completely?</h2>
+<p>Our current plan is to completely remove any remaining support for Angular plugins in version 12. Including the removal of the <a href="https://github.com/grafana/grafana/blob/d61bcdf4ca5e69489e0067c56fbe7f0bfdf84ee4/conf/defaults.ini#L362" target="_blank" rel="noopener noreferrer">angular_support_enabled</a> configuration parameter.</p>
+<h2 id="a-dashboard-i-use-is-displaying-a-warning-what-do-i-need-to-do">A dashboard I use is displaying a warning, what do I need to do?</h2>
+<p>A dashboard displays warnings when one or more panel visualizations or data sources in the dashboard have a dependency on Angular.
+Contact your system administrator to advise them of the issue or follow the preceding guidance on avoiding disruption.</p>
+<h2 id="how-do-i-migrate-an-angular-plugin-to-react">How do I migrate an Angular plugin to React?</h2>
+<p>Depending on if it’s a data source plugin, panel plugin, or app plugin the process will differ.</p>
+<p>For panels, the rendering logic could in some cases be easily preserved, but all options need to be redone to use the declarative options framework. For data source plugins the query editor and config options will likely need a total rewrite.</p>
+<h2 id="how-do-i-encourage-a-community-plugin-to-migrate">How do I encourage a community plugin to migrate?</h2>
+<p>We encourage you to locate the repository of the corresponding plugin and create or upvote an Issue within it if you are using a plugin that is still based on Angular.</p>
+<h3 id="links">Links</h3>
+<ul>
+<li><a href="/developers/plugin-tools/migration-guides/angular-react/">Migrate Angular to React</a></li>
+<li><a href="/tutorials/build-a-panel-plugin/">Build a panel plugin</a></li>
+<li><a href="/tutorials/build-a-data-source-plugin/">Build a data source plugin</a></li>
+<li><a href="angular-plugins/">List of current Angular plugins</a></li>
+</ul>

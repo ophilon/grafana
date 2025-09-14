@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<h1 id="variable-syntax">Variable syntax</h1>
+<p>Panel titles and metric queries can refer to variables using two different syntaxes:</p>
+<ul>
+<li><code>$varname</code>
+This syntax is easy to read, but it does not allow you to use a variable in the middle of a word.
+<strong>Example:</strong> apps.frontend.$server.requests.count</li>
+<li><code>${var_name}</code> Use this syntax when you want to interpolate a variable in the middle of an expression.</li>
+<li><code>${var_name:&lt;format&gt;}</code> This format gives you more control over how Grafana interpolates values. Refer to <a href="#advanced-variable-format-options">Advanced variable format options</a> for more detail on all the formatting types.</li>
+<li><code>[[varname]]</code> Do not use. Deprecated old syntax, will be removed in a future release.</li>
+</ul>
+<p>Before queries are sent to your data source the query is <em>interpolated</em>, meaning the variable is replaced with its current value. During
+interpolation, the variable value might be <em>escaped</em> in order to conform to the syntax of the query language and where it is used.
+For example, a variable used in a regex expression in an InfluxDB or Prometheus query will be regex escaped. Read the data source specific
+documentation topic for details on value escaping during interpolation.</p>
+<p>For advanced syntax to override data source default formatting, refer to <a href="#advanced-variable-format-options">Advanced variable format options</a>.</p>
+<h2 id="advanced-variable-format-options">Advanced variable format options</h2>
+<p>The formatting of the variable interpolation depends on the data source, but there are some situations where you might want to change the default formatting.</p>
+<p>For example, the default for the MySql data source is to join multiple values as comma-separated with quotes: <code>'server01','server02'</code>. In some cases, you might want to have a comma-separated string without quotes: <code>server01,server02</code>. You can make that happen with advanced variable formatting options listed below.</p>
+<h3 id="general-syntax">General syntax</h3>
+<p>Syntax: <code>${var_name:option}</code></p>
+<p>Test the formatting options on the <a href="https://play.grafana.org/d/cJtIfcWiz/template-variable-formatting-options?orgId=1" target="_blank" rel="noopener noreferrer">Grafana Play site</a>.</p>
+<p>If any invalid formatting option is specified, then <code>glob</code> is the default/fallback option.</p>
+<p>An alternative syntax (that might be deprecated in the future) is <code>[[var_name:option]]</code>.</p>
+<h3 id="csv">CSV</h3>
+<p>Formats variables with multiple values as a comma-separated string.</p>
+<pre>servers = [&#39;test1&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:csv}&#39;
+Interpolation result: &#39;test1,test2&#39;</pre>
+<h3 id="distributed---opentsdb">Distributed - OpenTSDB</h3>
+<p>Formats variables with multiple values in custom format for OpenTSDB.</p>
+<pre>servers = [&#39;test1&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:distributed}&#39;
+Interpolation result: &#39;test1,servers=test2&#39;</pre>
+<h3 id="doublequote">Doublequote</h3>
+<p>Formats single- and multi-valued variables into a comma-separated string, escapes <code>&quot;</code> in each value by <code>\&quot;</code> and quotes each value with <code>&quot;</code>.</p>
+<pre>servers = [&#39;test1&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:doublequote}&#39;
+Interpolation result: &#39;&#34;test1&#34;,&#34;test2&#34;&#39;</pre>
+<h3 id="glob---graphite">Glob - Graphite</h3>
+<p>Formats variables with multiple values into a glob (for Graphite queries).</p>
+<pre>servers = [&#39;test1&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:glob}&#39;
+Interpolation result: &#39;{test1,test2}&#39;</pre>
+<h3 id="join">Join</h3>
+<p>Formats multi-valued variables with a custom delimiter. If no delimiter argument is supplied, they will be combined with <code>,</code>.</p>
+<pre>servers = [&#34;test1&#34;, &#34;test2&#34;]
+String to interpolate: &#39;${servers:join:&amp;}&#39;
+Interpolation result: &#34;test1&amp;test2&#34;</pre>
+<h3 id="json">JSON</h3>
+<p>Formats variables with multiple values as a comma-separated string.</p>
+<pre>servers = [&#39;test1&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:json}&#39;
+Interpolation result: &#39;[&#34;test1&#34;, &#34;test2&#34;]&#39;</pre>
+<h3 id="lucene---elasticsearch">Lucene - Elasticsearch</h3>
+<p>Formats variables with multiple values in Lucene format for Elasticsearch.</p>
+<pre>servers = [&#39;test1&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:lucene}&#39;
+Interpolation result: &#39;(&#34;test1&#34; OR &#34;test2&#34;)&#39;</pre>
+<h3 id="percentencode">Percentencode</h3>
+<p>Formats single and multi valued variables for use in URL parameters.</p>
+<pre>servers = [&#39;foo()bar BAZ&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:percentencode}&#39;
+Interpolation result: &#39;foo%28%29bar%20BAZ%2Ctest2&#39;</pre>
+<h3 id="pipe">Pipe</h3>
+<p>Formats variables with multiple values into a pipe-separated string.</p>
+<pre>servers = [&#39;test1.&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:pipe}&#39;
+Interpolation result: &#39;test1.|test2&#39;</pre>
+<h3 id="query-parameters">Query parameters</h3>
+<p>Formats single- and multi-valued variables into their query parameter representation. Example: <code>var-foo=value1&amp;var-foo=value2</code></p>
+<pre>servers = [&#34;test1&#34;, &#34;test2&#34;]
+String to interpolate: &#39;${servers:queryparam}&#39;
+Interpolation result: &#34;var-servers=test1&amp;var-servers=test2&#34;</pre>
+<p>Use the <code>customqueryparam</code> formatter to customize how the query parameters are formatted. It accepts two optional arguments to specify the parameter name, and a value prefix.</p>
+<pre>servers = [&#34;test1&#34;, &#34;test2&#34;]
+String to interpolate: &#39;${servers:customqueryparam:v-servers:x-}&#39;
+Interpolation result: &#34;v-servers=x-test1&amp;v-servers=x-test2&#34;</pre>
+<h3 id="raw">Raw</h3>
+<p>Doesn&rsquo;t apply any data source-specific formatting to the variable.</p>
+<p>For example, in this case, there&rsquo;s a dashboard with a Prometheus data source and a multi-value variable.
+Grafana typically converts the variable values as follows to accommodate Prometheus:</p>
+<pre>servers = [&#39;test1.&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers}&#39;
+Interpolation result: &#39;(test1 | test2)&#39;</pre>
+<p>Using the raw format, the values are returned without that formatting:</p>
+<pre>servers = [&#39;test1.&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:raw}&#39;
+Interpolation result: &#39;test1,test2&#39;</pre>
+<h3 id="regex">Regex</h3>
+<p>Formats variables with multiple values into a regex string.</p>
+<pre>servers = [&#39;test1.&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:regex}&#39;
+Interpolation result: &#39;(test1\.|test2)&#39;</pre>
+<h3 id="singlequote">Singlequote</h3>
+<p>Formats single- and multi-valued variables into a comma-separated string, escapes <code>'</code> in each value by <code>\'</code> and quotes each value with <code>'</code>.</p>
+<pre>servers = [&#39;test1&#39;, &#39;test2&#39;]
+String to interpolate: &#39;${servers:singlequote}&#39;
+Interpolation result: &#34;&#39;test1&#39;,&#39;test2&#39;&#34;</pre>
+<h3 id="sqlstring">Sqlstring</h3>
+<p>Formats single- and multi-valued variables into a comma-separated string, escapes <code>'</code> in each value by <code>''</code> and quotes each value with <code>'</code>.</p>
+<pre>servers = [&#34;test&#39;1&#34;, &#34;test2&#34;]
+String to interpolate: &#39;${servers:sqlstring}&#39;
+Interpolation result: &#34;&#39;test&#39;&#39;1&#39;,&#39;test2&#39;&#34;</pre>
+<h3 id="text">Text</h3>
+<p>Formats single- and multi-valued variables into their text representation. For a single variable it will just return the text representation. For multi-valued variables it will return the text representation combined with <code>+</code>.</p>
+<pre>servers = [&#34;test1&#34;, &#34;test2&#34;]
+String to interpolate: &#39;${servers:text}&#39;
+Interpolation result: &#34;test1 + test2&#34;</pre>

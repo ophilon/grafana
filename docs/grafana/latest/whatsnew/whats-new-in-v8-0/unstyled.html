@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v80">What&rsquo;s new in Grafana v8.0</h1>
+<p>This topic includes the release notes for Grafana v8.0. For all details, read the full <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a>.</p>
+<h2 id="grafana-oss-features">Grafana OSS features</h2>
+<p>These features are included in the Grafana open source edition.</p>
+<h3 id="grafana-v80-alerts">Grafana v8.0 alerts</h3>
+<p>The new alerts in Grafana 8.0 are an opt-in feature that centralizes alerting information for Grafana managed alerts and alerts from Prometheus-compatible data sources in one UI and API. You can create and edit alerting rules for Grafana managed alerts, Mimir alerts, and Loki alerts as well as see alerting information from prometheus-compatible data sources in a single, searchable view. For more information, on how to create and edit alerts and notifications, refer to <a href="../../alerting/">Grafana Alerting</a>.</p>
+<p>As part of the new alert changes, we have introduced a new data source, Alertmanager, which includes built-in support for Prometheus Alertmanager. It is presently in alpha and it not accessible unless alpha plugins are enabled in Grafana settings. For more information, refer to <a href="../../datasources/alertmanager/">Alertmanager data source</a>.</p>
+<blockquote>
+<p><strong>Note:</strong> Out of the box, Grafana still supports old Grafana alerts. They are legacy alerts at this time, and will be deprecated in a future release.</p></blockquote>
+<p>To learn more about the differences between new alerts and the legacy alerts, refer to <a href="/docs/grafana/v10.0/alerting/difference-old-new/">What&rsquo;s New with Grafana 8 Alerts</a>.</p>
+<h3 id="library-panels">Library panels</h3>
+<p>Library panels allow users to build panels that can be used in multiple dashboards. Any updates made to that shared panel will then automatically be applied to all the dashboards that have that panel. For instructions on how to create, add, unlink and manage library panels, refer to <a href="../../dashboards/build-dashboards/manage-library-panels/">Library panels</a>.</p>
+<h3 id="real-time-streaming">Real-time streaming</h3>
+<p>Data sources can now send real-time updates to dashboards over a websocket connection. This can be used with the <a href="https://github.com/grafana/mqtt-datasource" target="_blank" rel="noopener noreferrer">MQTT data source</a>.</p>
+<p>In addition to data source integration, events can be sent to dashboards by posting metrics to the new live endpoint: <code>/api/live/push</code> endpoint.</p>
+<p>These metrics will be broadcast to all dashboards connected to that stream endpoint.</p>
+<p>For more information about real-time streaming, refer to <a href="../../setup-grafana/set-up-grafana-live/">Grafana Live documentation</a>.</p>
+<h3 id="prometheus-metrics-browser">Prometheus metrics browser</h3>
+<p>The Prometheus metrics browser allows you to quickly find metrics and select relevant labels to build basic queries. If supported by your Prometheus instance, each metric will show its HELP and TYPE as a tooltip. For more information, refer to <a href="../../datasources/prometheus/#metrics-browser">Metrics browser documentation</a>.</p>
+<h3 id="bar-chart-visualization-beta">Bar chart visualization (beta)</h3>
+<p>The Bar chart panel is a new visualization that supports categorical data. It only supports one data frame and it needs to have at least one string field that will be used as the category for an X or Y axis and one or more numerical fields.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png"data-srcset="/static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png?w=320 320w, /static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png?w=550 550w, /static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png?w=750 750w, /static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png?w=900 900w, /static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png?w=1040 1040w, /static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png?w=1240 1240w, /static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Bar chart example"width="1222"height="382"title="Bar chart example"/>
+        <noscript>
+          <img
+            src="/static/img/docs/bar-chart-panel/bar-chart-example-v8-0.png"
+            alt="Bar chart example"width="1222"height="382"title="Bar chart example"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Bar chart example</figcaption></a></figure>
+<p>To use it with time series you first have to add a <strong>Reduce</strong> transform.</p>
+<p>For more information, refer to <a href="../../panels-visualizations/visualizations/bar-chart/">Bar chart visualization</a>.</p>
+<h3 id="state-timeline-visualization-beta">State timeline visualization (beta)</h3>
+<p>The State timeline visualization shows discrete state changes over time. Each field or series is rendered as a unique horizontal band. This panel works well with string or boolean states, but it can also be used with time series data. When used with time series data, the thresholds are used to turn the numerical values into discrete state regions.</p>
+<p>This panel also takes advantage of the new value mapping features that allow you to color string and boolean values.</p>
+<p>Example with string values:
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v8/state_timeline_strings.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v8/state_timeline_strings.png"data-srcset="/static/img/docs/v8/state_timeline_strings.png?w=320 320w, /static/img/docs/v8/state_timeline_strings.png?w=550 550w, /static/img/docs/v8/state_timeline_strings.png?w=750 750w, /static/img/docs/v8/state_timeline_strings.png?w=900 900w, /static/img/docs/v8/state_timeline_strings.png?w=1040 1040w, /static/img/docs/v8/state_timeline_strings.png?w=1240 1240w, /static/img/docs/v8/state_timeline_strings.png?w=1920 1920w"
+          data-sizes="auto"alt="state timeline with string states"width="1055"height="303"title="state timeline with string states"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v8/state_timeline_strings.png"
+            alt="state timeline with string states"width="1055"height="303"title="state timeline with string states"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">state timeline with string states</figcaption></a></figure></p>
+<p>With time series data and thresholds:
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v8/state_timeline_time_series.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v8/state_timeline_time_series.png"data-srcset="/static/img/docs/v8/state_timeline_time_series.png?w=320 320w, /static/img/docs/v8/state_timeline_time_series.png?w=550 550w, /static/img/docs/v8/state_timeline_time_series.png?w=750 750w, /static/img/docs/v8/state_timeline_time_series.png?w=900 900w, /static/img/docs/v8/state_timeline_time_series.png?w=1040 1040w, /static/img/docs/v8/state_timeline_time_series.png?w=1240 1240w, /static/img/docs/v8/state_timeline_time_series.png?w=1920 1920w"
+          data-sizes="auto"alt="state timeline with time series"width="1004"height="345"title="state timeline with time series"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v8/state_timeline_time_series.png"
+            alt="state timeline with time series"width="1004"height="345"title="state timeline with time series"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">state timeline with time series</figcaption></a></figure></p>
+<p>For more information, refer to <a href="../../panels-visualizations/visualizations/state-timeline/">State timeline visualization</a>.</p>
+<h3 id="status-history-visualization-beta">Status history visualization (beta)</h3>
+<p>A sister panel to the state timeline is the new Status history panel visualization. It can display periodic states in a grid view. It supports both numerical, string, or boolean states. You can assign colors using value mappings, thresholds, or gradient color. For more information, refer to <a href="../../panels-visualizations/visualizations/status-history/">Status history</a>.
+schemes.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/status-grid/status-grid-8-0.png"
+  alt="Status grid visualization" width="512"
+     height="234"/></p>
+<h3 id="histogram-visualization-beta">Histogram visualization (beta)</h3>
+<p>This hidden feature of the old Graph panel is now a standalone visualization. It combines a histogram transformation and bar chart visualization into a single, integrated, easy-to-use panel. There is also a new standalone histogram transformation that can be paired with any visualization.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/histogram/histogram-8-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/histogram/histogram-8-0.png"data-srcset="/static/img/docs/histogram/histogram-8-0.png?w=320 320w, /static/img/docs/histogram/histogram-8-0.png?w=550 550w, /static/img/docs/histogram/histogram-8-0.png?w=750 750w, /static/img/docs/histogram/histogram-8-0.png?w=900 900w, /static/img/docs/histogram/histogram-8-0.png?w=1040 1040w, /static/img/docs/histogram/histogram-8-0.png?w=1240 1240w, /static/img/docs/histogram/histogram-8-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Histogram example"width="1000"height="348"title="Histogram example"/>
+        <noscript>
+          <img
+            src="/static/img/docs/histogram/histogram-8-0.png"
+            alt="Histogram example"width="1000"height="348"title="Histogram example"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Histogram example</figcaption></a></figure>
+<p>For more information, refer to <a href="../../panels-visualizations/visualizations/histogram/">Histogram</a></p>
+<h3 id="time-series-visualization-updates">Time series visualization updates</h3>
+<p>The Time series is out of beta! We are removing the <code>Beta</code> tag and graduating the Time series visualization to a stable state.</p>
+<ul>
+<li><strong>Time series</strong> is now the default visualization option, replacing the <strong>Graph (old)</strong>.</li>
+<li>The Time series panel now supports stacking. For more information, refer to <a href="../../panels-visualizations/visualizations/time-series/#stack-series">Graph stacked time series</a>.</li>
+<li>You can now add alerts in the Time series panel, just like the old Graph panel.</li>
+<li>Updated <a href="../../panels-visualizations/visualizations/time-series/#connect-null-values">connect null values</a> options.</li>
+<li>We added support for a shared crosshair and a tooltip that’s now smarter when it comes to data display in the tooltip.</li>
+<li>Various performance improvements.</li>
+</ul>
+<p><a href="../../panels-visualizations/visualizations/time-series/">Time series panel</a> topics have been updated as a result of these changes.</p>
+<h3 id="node-graph-visualization-updates">Node graph visualization updates</h3>
+<p>You can now expand the node graph for the displayed trace when using the Trace to logs feature. Depending on the data source, this can show spans of the trace as nodes in the graph, or as some additional context like service map based on the current trace.</p>
+<p>We also added a grid view and the ability to explore hidden nodes.</p>
+<p><a href="../../explore/trace-integration/">Tracing in Explore</a> and <a href="../../panels-visualizations/visualizations/node-graph/">Node graph</a> were updated as a result of these changes.</p>
+<h3 id="pie-chart-visualization-updates">Pie chart visualization updates</h3>
+<p>The Pie chart is out of beta! We are removing the <code>beta</code> tag and graduating the Pie chart visualization to a stable state.</p>
+<h3 id="panel-editor-updates">Panel editor updates</h3>
+<p>Lots of panel editor improvements, heavily informed by user research and community feedback.</p>
+<ul>
+<li>All options are now shown in a single pane.</li>
+<li>You can now search panel options.</li>
+<li>The Value mappings feature has been completely redesigned. For more information, refer to <a href="../../panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</li>
+<li>New <strong>Table view</strong> option is always available.</li>
+</ul>
+<p>The <a href="../../panels-visualizations/">Panels</a> section has been updated to reflect these changes.</p>
+<h3 id="look-and-feel-update">Look and feel update</h3>
+<p>Grafana 8 comes with a refreshed look and feel, including themes changed to be more accessible. The improved Grafana UI brings a number of adjustments and tweaks that make the application even more fun to use. Enjoy the new home dashboard design!</p>
+<p>Under the hood, the new theme architecture enables us to bring more sophisticated themes control in the future.</p>
+<h3 id="download-logs">Download logs</h3>
+<p>When you inspect a panel, you can now download log results as a text (.txt) file.</p>
+<p><a href="../../panels-visualizations/panel-inspector/">Download log results</a> was added as a result of this feature.</p>
+<h3 id="inspector-in-explore">Inspector in Explore</h3>
+<p>The new Explore inspector helps you understand and troubleshoot your queries. You can inspect the raw data, export that data to a comma-separated values (CSV) file, export log results in text format, and view query requests.</p>
+<p><a href="../../explore/explore-inspector/">Inspector in Explore</a> was added as a result of this feature.</p>
+<h3 id="explore-log-improvements">Explore log improvements</h3>
+<p>Log navigation in Explore has been significantly improved. We added pagination to logs, so you can click through older or newer logs as needed.</p>
+<p><a href="../../explore/logs-integration/">Logs in Explore</a> was updated as a result of these changes.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/explore/navigate-logs-8-0.png"
+  alt="Navigate logs in Explore" width="1145"
+     height="620"/></p>
+<h3 id="plugin-catalog">Plugin catalog</h3>
+<p>You can now use the Plugin catalog app to easily manage your plugins from within Grafana. Install, update, and uninstall plugins without requiring a server restart.</p>
+<p><a href="../../administration/plugin-management/#plugin-catalog">Plugin catalog</a> was added as a result of this feature.</p>
+<h3 id="performance-improvements">Performance improvements</h3>
+<p>Grafana 8.0 includes many performance enhancements.</p>
+<h4 id="initial-startup-and-load-performance">Initial startup and load performance</h4>
+<p>We reduced the Grafana initial download size massively, approximately 40%. This means that on slower or mobile connections, the initial login page or home dashboard will load much faster.</p>
+<p>All panels that have migrated from Flot to uPlot will also render two to three times faster because the library is much more efficient. Right now, this includes the Time series, Stat, Timeline, Histogram, and Barchart panel visualizations.</p>
+<h4 id="operational-and-runtime-performance">Operational and runtime performance</h4>
+<p>These improvements affect any subsequent data updates or interactions, including:</p>
+<ul>
+<li>Streaming performance</li>
+<li>General speed of interaction, such as zooming, tooltips, synchronized cursors, and panel updates while editing</li>
+</ul>
+<h3 id="data-source-updates">Data source updates</h3>
+<p>The following data source updates are included with this Grafana release.</p>
+<h4 id="azure-monitor-data-source">Azure Monitor data source</h4>
+<p>Azure Resource Graph is now supported in the Azure Monitor data source. This is a service in Azure that is designed to extend Azure Resource Management by providing efficient and performant exploration of your Azure resources.</p>
+<p>The Azure Monitor data source now supports Managed Identity for users hosting Grafana in Azure to simplify and secure configuring Azure Monitor in Grafana.</p>
+<p>Also, in addition to querying Log Analytics Workspaces, you can now query the logs for any individual <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/metrics-supported" target="_blank" rel="noopener noreferrer">supported resource</a>, or for all resources in a subscription or resource group.</p>
+<blockquote>
+<p><strong>Note:</strong> In Grafana 7.5 we started the deprecation for separate Application Insights queries, in favor of querying Application Insights resources through Metrics and Logs. In Grafana 8.0 new Application Insights and Insights Analytics queries cannot be made, and existing queries have been made read-only. For more details, refer to the <a href="../../datasources/azure-monitor/#application-insights-and-insights-analytics--removed-">Deprecating Application Insights</a>.</p></blockquote>
+<p><a href="../../datasources/azure-monitor/">Azure Monitor data source</a> was updated as a result of these changes.</p>
+<h4 id="elasticsearch-data-source">Elasticsearch data source</h4>
+<p><a href="../../datasources/elasticsearch/">Elasticsearch data source</a> and <a href="../../administration/provisioning/">Provisioning</a> were updated as a result of these changes.</p>
+<h5 id="use-semver-strings-to-identify-elasticsearch-version">Use semver strings to identify Elasticsearch version</h5>
+<p>We changed how the configured Elasticsearch version is handled. You can now specify via provisioning the full semver string version of your instance (such as “7.12.1”) instead of the old version format based on numbers. There’s no manual intervention needed, the old options will be correctly recognized.</p>
+<h5 id="generic-support-for-template-variables">Generic support for template variables</h5>
+<p>You can now use a different interpolation method to use template variables in a more extensive way. You can now use template variables in every query editor field that allows free input.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/elasticsearch/input-templates-8-0.png"
+  alt="Elasticsearch template variables" width="815"
+     height="343"/></p>
+<h5 id="allow-omitting-field-for-metrics-that-support-inline-scripts">Allow omitting field for metrics that support inline scripts</h5>
+<p>Metric aggregations can be specified without a field if a script is provided. You can now deselect fields for metrics aggregation when they support scripting.</p>
+<p>Previously this was only possible when adding a new metric without selecting a field, because once selected, the field could not have been removed.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/elasticsearch/omit-fields-8-0.png"
+  alt="Elasticsearch omit fields" width="852"
+     height="157"/></p>
+<h5 id="allow-setting-a-custom-limit-for-log-queries">Allow setting a custom limit for log queries</h5>
+<p>You can now set a custom line limit for logs queries instead of accepting the previously hard-coded 500. We also simplified the query editor to only show relevant fields when issuing logs queries.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/elasticsearch/custom-log-limit-8-0.png"
+  alt="Elasticsearch custom log limit" width="627"
+     height="125"/></p>
+<h5 id="guess-field-type-from-first-non-empty-value">Guess field type from first non-empty value</h5>
+<p>Response values were always interpreted as strings in Elasticsearch responses, which caused issues with some visualization types that applied logic based on numeric values. We now apply some heuristics to detect value types from the first non-empty value in each response.</p>
+<h4 id="google-cloud-monitoring-data-source">Google Cloud Monitoring data source</h4>
+<p>In a prior release, Cloud Monitoring added <em>preprocessing</em> support in their query editor. This capability has been added to the Cloud Monitoring data source in Grafana.</p>
+<p>Whenever a metric is selected in the query editor, a suitable preprocessing option is automatically selected for you. To avoid breaking changes, preprocessing is not enabled by default on existing queries. If you want to use preprocessing for existing queries, you have to manually select one in the query editor.</p>
+<p><a href="../../datasources/google-cloud-monitoring/#pre-processing">Google Cloud Monitoring data source</a> was updated as a result of this change.</p>
+<h4 id="graphite-data-source">Graphite data source</h4>
+<p><a href="../../datasources/graphite/">Graphite data source</a> was updated as a result of these changes.</p>
+<h5 id="variable-metric-names-expand">Variable metric names expand</h5>
+<p>Values for dashboard variables can be now populated using the <a href="https://graphite-api.readthedocs.io/en/latest/api.html#metrics-expand" target="_blank" rel="noopener noreferrer">Graphite expand API</a>. Expand API is used when the metric query is wrapped in expand() function.</p>
+<p>This way, values can contain not only the last matching node from the metric query, but also the full path of the metric. It can also be narrowed down to a specific node with a regular expression.</p>
+<h5 id="map-graphite-queries-to-loki">Map Graphite queries to Loki</h5>
+<p>Graphite queries are now automatically transformed to Loki queries according to user-defined rules when the data source changes in Explore.</p>
+<h4 id="jaeger-data-source">Jaeger data source</h4>
+<p>You can now use more parameters to find traces.</p>
+<p><a href="../../datasources/jaeger/">Jaeger data source</a> was updated as a result of this change.</p>
+<h3 id="authentication-updates">Authentication updates</h3>
+<p>This Grafana release includes the following authentication updates.</p>
+<h4 id="jwt">JWT</h4>
+<p>JWT is a new authentication option in Grafana.</p>
+<h4 id="added-jwt-authentication-support">Added JWT authentication support</h4>
+<p>You can now configure Grafana to accept a JWT token provided in the HTTP header.</p>
+<p><a href="../../setup-grafana/configure-security/configure-authentication/jwt/">JWT authentication</a> was added and <a href="../../setup-grafana/configure-grafana/#authjwt">Configuration</a> was updated as a result of this feature.</p>
+<h4 id="oauth">OAuth</h4>
+<p><a href="../../setup-grafana/configure-security/configure-authentication/generic-oauth/">Generic OAuth authentication</a> has been updated as a result of these changes.</p>
+<h5 id="added-oauth-support-for-empty-scopes">Added OAuth support for empty scopes</h5>
+<p>You can now configure generic OAuth with empty scopes. This allows OAuth Identity Providers that don&rsquo;t use or support scopes to work with Grafana authentication.</p>
+<h5 id="added-oauth-support-for-strict-parsing-of-role_attribute_path">Added OAuth support for strict parsing of role_attribute_path</h5>
+<p>You can now configure generic OAuth with strict parsing of the <code>role_attribute_path</code>. By default, if the <code>role_attribute_path</code> property does not return a role, then the user is assigned the <code>Viewer</code> role. You can disable the role assignment by setting <code>role_attribute_strict = true</code>. It denies user access if no role or an invalid role is returned.</p>
+<h4 id="singlestat-panel-deprecated">Singlestat panel deprecated</h4>
+<p>Support for Singlestat panel has been discontinued. When you upgrade to version 8.0, all existing Singlestat panels automatically becomes Stat panels.
+Stat panel is available as plugin.</p>
+<h3 id="grafana-license-update">Grafana license update</h3>
+<p>Grafana has updated its license from Apache 2.0 to the GNU Affero General Public License (AGPL). Please see the related <a href="/blog/2021/04/20/grafana-loki-tempo-relicensing-to-agplv3/">blog post</a>, <a href="/blog/2021/04/20/qa-with-our-ceo-on-relicensing/">Q&amp;A</a> and <a href="https://github.com/grafana/grafana/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">license</a> for more details.</p>
+<h2 id="enterprise-features">Enterprise features</h2>
+<p>These features are included in the Grafana Enterprise edition.</p>
+<h3 id="role-based-access-control">Role-based access control</h3>
+<p>You can now add or remove detailed permissions from Viewer, Editor, and Admin org roles, to grant users just the right amount of access within Grafana. Available permissions include the ability to view and manage Users, Reports, and the Access Control API itself. Grafana will support more and more permissions over the coming months.</p>
+<p><a href="../../administration/roles-and-permissions/access-control/">Role-based access control docs</a> were added as a result of this feature.</p>
+<h3 id="data-source-query-caching">Data source query caching</h3>
+<p>Grafana caches the results of backend data source queries so that multiple users viewing the same dashboard or panel do not make multiple submissions of the same query to the data source (like Splunk or Snowflake) itself.</p>
+<p>This results in faster average load times for dashboards and fewer duplicate queries overall to data sources, which reduces cost and the risk of throttling, reaching API limits, or overloading your data sources.</p>
+<p>You can enable caching per data source, and time-to-live (TTL) can be configured globally and per data source. Query caching can be set up with Redis, Memcached, or a simple in-memory cache.</p>
+<p>For more information, refer to the <a href="../../administration/data-source-management/#query-and-resource-caching">Data source query caching docs</a>.</p>
+<h3 id="reporting-updates">Reporting updates</h3>
+<p>When creating a report, you can now choose to export Table panels as .csv files attached to your report email. This makes it easier for recipients to view and work with that data.</p>
+<p>You can also link back to the dashboard directly from the email, for users who want to see the data live in Grafana. This release also includes some improvements to the Reports list view.</p>
+<p>For more information, refer to <a href="../../dashboards/share-dashboards-panels/#reporting">Reporting docs</a>.</p>
+<h3 id="license-restrictions-clarification-in-the-docs">License restrictions clarification in the docs</h3>
+<p>The Grafana Enterprise documentation has been updated to describe more specifically how licensed roles are counted, how they can be updated, and where you can see details about dashboard and folder permissions that affect users&rsquo; licensed roles.</p>
+<p>For more information, refer to <a href="../../administration/enterprise-licensing/#license-restrictions">License restrictions docs</a>.</p>
+<h2 id="breaking-changes">Breaking changes</h2>
+<p>The following breaking changes are included in this release.</p>
+<h3 id="variables">Variables</h3>
+<ul>
+<li>Removed the <strong>Value groups/tags</strong> feature from variables. Any tags will be removed.</li>
+<li>Removed the <code>never</code> refresh option for query variables. Existing variables will be migrated and any stored options will be removed.</li>
+</ul>
+<p>Documentation was updated to reflect these changes.</p>
+<h3 id="elasticsearch-use-applicationx-ndjson-content-type-for-multi-search-requests">Elasticsearch: Use application/x-ndjson content type for multi-search requests</h3>
+<p>For multi-search requests, we now use the correct application/x-ndjson content type instead of the incorrect application/json. Although this should be transparent to most of the users, if you are running Elasticsearch behind a proxy, then be sure that your proxy correctly handles requests with this content type.</p>
+<h3 id="prometheus-update-default-http-method-to-post-for-existing-data-sources">Prometheus: Update default HTTP method to POST for existing data sources</h3>
+<p>The default HTTP method for Prometheus data source is now POST, previously it was GET. The POST APIs are there since January 2018 (Prometheus 2.1.0) and they have fewer limitations than the GET APIs. Users with Prometheus instance with version &lt; 2.1.0 that use the default HTTP method should update their HTTP method to GET.</p>

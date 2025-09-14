@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<h1 id="parca-data-source">Parca data source</h1>
+<p>Grafana ships with built-in support for Parca, a continuous profiling OSS database for analysis of CPU and memory usage, down to the line number and throughout time. Add it as a data source, and you are ready to query your profiles in 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<h2 id="supported-parca-versions">Supported Parca versions</h2>
+<p>This data source supports these versions of Parca:</p>
+<ul>
+<li>v0.19+</li>
+</ul>
+<h2 id="configure-the-parca-data-source">Configure the Parca data source</h2>
+<p>To configure basic settings for the data source, complete the following steps:</p>
+<ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>Parca</code> in the search bar.</p>
+</li>
+<li>
+<p>Click <strong>Parca</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+<li>
+<p>Set the data source&rsquo;s basic configuration options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Name</code></td>
+          <td>A name to specify the data source in panels, queries, and Explore.</td>
+      </tr>
+      <tr>
+          <td><code>Default</code></td>
+          <td>The default data source will be pre-selected for new panels.</td>
+      </tr>
+      <tr>
+          <td><code>URL</code></td>
+          <td>The URL of the Parca instance, e.g., <code>http://localhost:4100</code></td>
+      </tr>
+      <tr>
+          <td><code>Basic Auth</code></td>
+          <td>Enable basic authentication to the Parca data source.</td>
+      </tr>
+      <tr>
+          <td><code>User</code></td>
+          <td>User name for basic authentication.</td>
+      </tr>
+      <tr>
+          <td><code>Password</code></td>
+          <td>Password for basic authentication.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ol>
+<h2 id="querying">Querying</h2>
+<h3 id="query-editor">Query Editor</h3>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/parca/query-editor.png"
+  alt="Query editor" width="1912"
+     height="286"/></p>
+<p>Query editor gives you access to a profile type selector, a label selector, and collapsible options.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/parca/select-profile.png"
+  alt="Profile selector" width="942"
+     height="374"/></p>
+<p>Select a profile type from the drop-down menu. While the label selector can be left empty to query all profiles without filtering by labels, the profile type must be selected for the query to be valid. Grafana does not show any data if the profile type isn’t selected when a query is run.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/parca/labels-selector.png"
+  alt="Labels selector" width="1914"
+     height="376"/></p>
+<p>Use the labels selector input to filter by labels. Parca uses similar syntax to Prometheus to filter labels. Refer to <a href="https://www.parca.dev/docs" target="_blank" rel="noopener noreferrer">Parca documentation</a> for available operators and syntax.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/parca/options-section.png"
+  alt="Options section" width="1878"
+     height="374"/></p>
+<p>Select a query type to return the profile data which can be shown in the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">Flame Graph</a>, metric data visualized in a graph, or both. You can only select both options in a dashboard, because panels allow only one visualization.</p>
+<h3 id="profiles-query-results">Profiles query results</h3>
+<p>Profiles can be visualized in a flame graph. See the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">Flame Graph documentation</a> to learn about the visualization and its features.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/parca/flame-graph.png"
+  alt="Flame graph" width="1958"
+     height="1204"/></p>
+<p>Parca returns profiles aggregated over a selected time range, and the absolute values in the flame graph grow as the time range gets bigger while keeping the relative values meaningful. You can zoom in on the time range to get a higher granularity profile up to the point of a single Parca scrape interval.</p>
+<h3 id="metrics-query-results">Metrics query results</h3>
+<p>Metrics results represent the aggregated value, over time, of the selected profile type. Parca returns ungrouped data with a series for each label combination.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/parca/metric-graph.png"
+  alt="Metrics graph" width="1942"
+     height="610"/></p>
+<p>This allows you to quickly see any spikes in the value of the scraped profiles and zoom in to a particular time range.</p>
+<h2 id="provision-the-parca-data-source">Provision the Parca data source</h2>
+<p>You can modify the Grafana configuration files to provision the Parca data source. To learn more, and to view the available provisioning settings, see 
+    <a href="/docs/grafana/latest/administration/provisioning/#datasources">provisioning documentation</a>.</p>
+<p>Here is an example config:</p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Parca
+    type: parca
+    url: http://localhost:3100</pre>

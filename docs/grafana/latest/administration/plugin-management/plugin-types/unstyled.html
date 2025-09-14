@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<h1 id="types-of-plugins">Types of plugins</h1>
+<p>Grafana supports three types of plugins:</p>
+<ul>
+<li><a href="/grafana/plugins/panel-plugins">Panels</a> - These plugins make it easy to create and add any kind of panel, to show your data, or improve your favorite dashboards.</li>
+<li><a href="/grafana/plugins/data-source-plugins">Data sources</a> - These plugins allow you to pull data from various data sources such as databases, APIs, log files, and so on, and display it in the form of graphs, charts, and dashboards in Grafana.</li>
+<li><a href="/grafana/plugins/app-plugins">Apps</a> - These plugins enable the bundling of data sources, panels, dashboards, and Grafana pages into a cohesive experience.</li>
+</ul>
+<h2 id="panel-plugins">Panel plugins</h2>
+<p>Add new visualizations to your dashboard with panel plugins, such as the <a href="/grafana/plugins/grafana-clock-panel">Clock</a>, <a href="/grafana/plugins/boazreicher-mosaicplot-panel">Mosaic</a> and <a href="/grafana/plugins/volkovlabs-variable-panel">Variable</a> panels.</p>
+<p>Use panel plugins when you want to:</p>
+<ul>
+<li>Visualize data returned by data source queries.</li>
+<li>Navigate between dashboards.</li>
+<li>Control external systems, such as smart home devices.</li>
+</ul>
+<h2 id="data-source-plugins">Data source plugins</h2>
+<p>Data source plugins add support for new databases, such as <a href="/grafana/plugins/grafana-bigquery-datasource">Google BigQuery</a>.</p>
+<p>Data source plugins communicate with external sources of data and return the data in a format that Grafana understands. By adding a data source plugin, you can immediately use the data in any of your existing dashboards.</p>
+<p>Use data source plugins when you want to query data from external or third-party systems.</p>
+<h3 id="managing-access-for-data-source-plugins">Managing access for data source plugins</h3>
+<p>Administrators can grant access to data source plugins with 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/">LBAC</a>.</p>
+<p>Label Based Access Control (LBAC) customizes access rights based on team memberships, ensuring that users only query data relevant to their assigned permissions.</p>
+<h2 id="app-plugins">App plugins</h2>
+<p>Applications, or app plugins, bundle data sources and panels to provide a cohesive experience, such as the <a href="/grafana/plugins/alexanderzobnin-zabbix-app">Zabbix</a> app.</p>
+<p>Apps can also add custom pages for things like control panels.</p>
+<p>Use app plugins when you want an out-of-the-box monitoring experience.</p>
+<h3 id="managing-access-for-app-plugins">Managing access for app plugins</h3>
+<p>Customize access to app plugins with 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-for-app-plugins/">RBAC</a>.</p>
+<p>By default, the Viewer, Editor and Admin roles have access to all app plugins that their Organization role allows them to access.</p>
+<p>Access is granted by the <code>fixed:plugins.app:reader</code> role.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To prevent users from seeing an app plugin, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/plan-rbac-rollout-strategy/#prevent-viewers-from-accessing-an-app-plugin">these permissions scenarios</a>.</p></blockquote></div>
+

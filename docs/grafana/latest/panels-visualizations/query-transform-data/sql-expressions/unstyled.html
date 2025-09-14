@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<h1 id="sql-expressions">SQL expressions</h1>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>SQL expressions is currently in <a href="/docs/release-life-cycle/">private preview</a>. Grafana Labs offers support on a best-effort basis, and breaking changes might occur prior to the feature being made generally available.</p></blockquote></div>
+
+
+<p>SQL Expressions are server-side expressions that manipulate and transform the results of data source queries using MySQL-like syntax. They allow you to easily query and transform your data after it has been queried, using SQL, which provides a familiar and powerful syntax that can handle everything from simple filters to highly complex, multi-step transformations.</p>
+<p>In Grafana, a server-side expression is a way to transform or calculate data after it has been retrieved from the data source, but before it is sent to the frontend for visualization. Grafana evaluates these expressions on the server, not in the browser or at the data source.</p>
+<p>For general information on Grafana expressions, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/expression-queries/">Write expression queries</a>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/sql-expressions/sql-expressions-example-1.png"
+  alt="Example of a SQL expression" width="2144"
+     height="1928"/></p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>Enable SQL expressions under the feature toggle <code>sqlExpressions</code>.
+<ul>
+<li>If you self-host Grafana, you can find feature toggles in the configuration file <code>grafana.ini</code>.</li>
+</ul>
+</li>
+</ul>
+<pre>[feature_toggles]
+enable = sqlExpressions</pre>
+<ul>
+<li>If you are using Grafana Cloud, contact <a href="/help/">Support</a> to enable this feature.</li>
+</ul>
+<h2 id="transform-data-with-sql-expressions">Transform data with SQL expressions</h2>
+<p>SQL expressions allow you to:</p>
+<ul>
+<li>Shape, transform, and modify query results without changing the original query.</li>
+<li>JOIN data from multiple tables.</li>
+<li>Create alerts or recording rules based on transformed data.</li>
+<li>Perform final-stage modifications to datasets, including:
+<ul>
+<li>Show, hide, or rename columns.</li>
+<li>Filter rows based on conditions.</li>
+<li>Aggregate data (for example: sum, average, count).</li>
+</ul>
+</li>
+<li>Write subqueries and Common Table Expressions (CTEs) to support more complex logic:
+<ul>
+<li><strong>Subqueries</strong> are nested queries used for filtering, calculations, or transformations.</li>
+<li><strong>CTEs</strong> are temporary named result sets that help make complex queries more readable and reusable.</li>
+</ul>
+</li>
+</ul>
+<p>A key capability of SQL expressions is the ability to JOIN data from multiple tables. This allows users to combine and transform data in a predictable, user-friendly way—even for complex use cases. You can JOIN data from an unlimited number of data source queries.</p>
+<p>To work with SQL expressions, you must use data from a backend data source. In Grafana, a backend data source refers to a data source plugin or integration that communicates with a database, service, or API through the Grafana server, rather than directly from the browser (frontend).</p>
+<h2 id="compatible-data-sources">Compatible data sources</h2>
+<p>The following are compatible data sources:</p>
+<p><strong>Full support:</strong> All query types for each data source are supported.</p>
+<ul>
+<li>Elasticsearch</li>
+<li>MySQL</li>
+<li>Loki</li>
+<li>Graphite</li>
+<li>Google Sheets</li>
+<li>Amazon Athena</li>
+</ul>
+<p><strong>Partial support:</strong> The following data sources offer limited or conditional support. Some allow different types of queries, depending on the service being accessed. For example, Azure Monitor can query multiple services, each with its own query format. In some cases, you can also change the query type within a panel.</p>
+<ul>
+<li>InfluxDB</li>
+<li>Infinity</li>
+<li>Azure Monitor</li>
+<li>TestData</li>
+<li>Tempo</li>
+<li>Prometheus</li>
+<li>Cloudwatch</li>
+<li>GitHub</li>
+<li>BigQuery</li>
+</ul>
+<h2 id="create-sql-expressions">Create SQL expressions</h2>
+<p>To create a SQL expression, complete the following steps:</p>
+<ol>
+<li>Navigate to <strong>Dashboards</strong> in the left-side menu.</li>
+<li>Select a dashboard and open a dashboard panel.</li>
+<li>Click the ellipsis in the upper right and select <strong>Edit</strong> .</li>
+<li>Click <strong>+ Expression</strong>.</li>
+<li>Select <strong>SQL</strong> from the drop-down.</li>
+</ol>
+<p>After you have added a SQL expression, you can select from other data source queries by referencing the RefIDs of the queries in your SQL expression as if they were tables in a SQL database.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/sql-expressions/using-the-RefID.png"
+  alt="Using the RefID" width="2392"
+     height="1646"/></p>
+<h2 id="workflow-to-build-sql-expressions">Workflow to build SQL expressions</h2>
+<p>Use the following workflow to create a SQL expression:</p>
+<ol>
+<li>
+<p><strong>Build your base queries.</strong> Create the individual query and give it a meaningful name. Create the queries (A, B, etc.) that provide the data you want to combine or transform using SQL Expressions.</p>
+</li>
+<li>
+<p><strong>Hide your base queries.</strong> Click the <strong>👁️ Eye icon</strong> next to each base query to hide them from visualization. This keeps your panel clean while still making the data available to the SQL Expression.</p>
+</li>
+<li>
+<p><strong>Switch to table view</strong>. Set the panel visualization to <strong>Table</strong> to inspect and review the structure and output of your SQL expression as you build and refine it.</p>
+</li>
+<li>
+<p><strong>Add a SQL Expression</strong>. Add a new query and add select SQL Expression as its type.<br />
+<strong>Inspect inputs</strong>. Start with simple test queries to understand the shape of your input frames.</p>
+<pre>SELECT * FROM A LIMIT 10.</pre>
+<p>This lets you see the available columns and sample rows from <code>query A</code>. Repeat this for each input query you want to use (e.g., <code>SELECT * FROM B LIMIT 10</code>).</p>
+</li>
+<li>
+<p><strong>Inspect your data</strong>. Repeat this for each input query to understand the column structure and data types you&rsquo;re working with.</p>
+<pre>SELECT * FROM &lt;B, C, D, etc&gt; LIMIT 10</pre>
+</li>
+<li>
+<p><strong>Construct the SQL expression.</strong> Once you understand your data, you can write your SQL expression to join, filter, or otherwise transform the data.</p>
+</li>
+<li>
+<p><strong>Validate and iterate</strong>. Click <strong>Refresh</strong> every time you update your SQL query to re-evaluate and see the updated result.</p>
+</li>
+</ol>
+<p>When selecting a visualization type, <strong>ensure your SQL expression returns data in the required shape</strong>. For example, time series panels require a column with a time field (e.g., timestamp) and a numeric value column (e.g., __value__). If the output is not shaped correctly, your visualization may appear empty or fail to render.</p>
+<p>The SQL expression workflow in Grafana is designed with the following behaviors:</p>
+<ul>
+<li>
+<p><strong>Unhidden queries are visualized automatically.</strong> If an input query is not hidden, Grafana will attempt to render it alongside your SQL expression. This can clutter the output, especially in table visualizations.</p>
+</li>
+<li>
+<p><strong>SQL expression results may not be immediately visible.</strong> You might need to use the data frame selector (dropdown at the bottom of the table panel) to switch between the raw query and the SQL expression result.</p>
+</li>
+<li>
+<p><strong>Non-tabular or incorrectly shaped data will not render in certain panels.</strong> Visualizations such as graphs or gauges require properly structured data. Mismatched formats will result in rendering issues or missing data.</p>
+</li>
+</ul>
+<p>For data to be used in SQL expressions, it must be in a <strong>tabular format</strong>, specifically the <strong>FullLong format</strong>. This means all relevant data is contained within a single table, with values such as metric labels stored as columns and individual cells. Because not all data sources return results in this format by default, Grafana will automatically convert compatible query results to FullLong format when they are referenced in a SQL expression.</p>
+<h2 id="sql-conversion-rules">SQL conversion rules</h2>
+<p>When a RefID is referenced within a SQL statement (e.g., <code>SELECT * FROM A</code>), the system invokes a distinct SQL conversion process.</p>
+<p>The SQL conversion path:</p>
+<ul>
+<li>The query result is treated as a single data frame, without labels, and is mapped directly to a tabular format.</li>
+<li>If the frame type is present and is either numeric, wide time series, or multi-frame time series (for example, labeled formats), Grafana automatically converts the data into a table structure.</li>
+</ul>
+<h2 id="known-limitations">Known limitations</h2>
+<ul>
+<li>Currently, only one SQL expression is supported per panel or alert.</li>
+<li>Grafana supports certain data sources. Refer to <a href="#compatible-data-sources">compatible data sources</a> for a current list.</li>
+<li>Autocomplete is available, but column/field autocomplete is only available after enabling the <code>sqlExpressionsColumnAutoComplete</code> feature toggle, which is provided on an experimental basis.</li>
+</ul>
+<h2 id="supported-data-source-formats">Supported data source formats</h2>
+<p>Grafana supports three types of data source response formats:</p>
+<ol>
+<li>
+<p><strong>Single Table-like Frame</strong>:<br />
+This refers to data returned in a standard tabular structure, where all values are organized into rows and columns, similar to what you&rsquo;d get from a SQL query.</p>
+<ul>
+<li><strong>Example</strong>: Any query against a SQL data source (e.g., PostgreSQL, MySQL) with the format set to Table.</li>
+</ul>
+</li>
+<li>
+<p><strong>Dataplane: Time Series Format</strong>:<br />
+This format represents time series data with timestamps and associated values. It is typically returned from monitoring data sources.</p>
+<ul>
+<li><strong>Example</strong>: Prometheus or Loki Range Queries (queries that return a set of values over time).</li>
+</ul>
+</li>
+<li>
+<p><strong>Dataplane: Numeric Long Format</strong>:<br />
+This format is used for point-in-time (instant) metric queries that return a single value (or a set of values) at a specific moment.</p>
+<ul>
+<li><strong>Example</strong>: Prometheus or Loki Instant Queries (queries that return the current value of a metric).</li>
+</ul>
+</li>
+</ol>
+<p>For more information on Dataplane formats, refer to <a href="/developers/dataplane">Grafana Dataplane Documentation</a>.</p>
+<p>The following non-tabular formats are automatically converted to a tabular format (<code>FullLong</code>) when used in SQL expressions:</p>
+<ul>
+<li><strong>Time Series Wide</strong>: Label keys become column names.</li>
+<li><strong>Time Series Multi</strong>: Label values become the values in each row (or null if a label is missing).</li>
+<li><strong>Numeric Wide</strong>: The <code>value</code> column contains the numeric metric value.</li>
+<li><strong>Numeric Multi</strong>: If a display name exists, it will appear in the <code>display_name</code> column.</li>
+</ul>
+<p>During conversion:</p>
+<ul>
+<li>Label keys become column names.</li>
+<li>Label values populate the corresponding rows (null if a label is missing).</li>
+<li>The <code>value</code> column contains the numeric metric.</li>
+<li>If available, the <code>display_name</code> column contains a human-readable name.</li>
+<li>The <code>metric_name</code> column stores the raw metric identifier.</li>
+<li>For time series data, Grafana includes a <code>time</code> column with timestamps</li>
+</ul>
+<h2 id="sql-expressions-examples">SQL expressions examples</h2>
+<ol>
+<li>
+<p>Create the following Prometheus query:</p>
+<pre>sum(
+  rate(go_cpu_classes_gc_total_cpu_seconds_total{namespace=~&#34;.*(namespace).*5.&#34;}[$__rate_interval])
+) by (namespace)</pre>
+<p>The panel displays the CPU usage by Go garbage collection (GC) over time, broken down by namespace.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/sql-expressions/sql-expressions-prom-query-example.png"
+  alt="Example using a Prometheus query" width="686"
+     height="434"/></p>
+</li>
+<li>
+<p>Add the SQL expression <code>SELECT * from A</code>. After you add a SQL expression that selects from RefID A, Grafana converts it to a table response:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/sql-expressions/add-the-sql-expression.png"
+  alt="Add the SQL expression" width="684"
+     height="581"/></p>
+</li>
+</ol>

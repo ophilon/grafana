@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<h1 id="heatmap">Heatmap</h1>
+<p>Heatmaps allow you to view 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">histograms</a> over time. While histograms display the data distribution that falls in a specific value range, heatmaps allow you to identify patterns in the histogram data distribution over time. For more information about heatmaps, refer to 
+    <a href="/docs/grafana/latest/fundamentals/intro-histograms/">Introduction to histograms and heatmaps</a>.</p>
+<p>For example, if you want to understand the temperature changes for the past few years, you can use a heatmap visualization to identify trends in your data:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/heatmap-panel/temperature_heatmap.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/heatmap-panel/temperature_heatmap.png"data-srcset="/static/img/docs/heatmap-panel/temperature_heatmap.png?w=320 320w, /static/img/docs/heatmap-panel/temperature_heatmap.png?w=550 550w, /static/img/docs/heatmap-panel/temperature_heatmap.png?w=750 750w, /static/img/docs/heatmap-panel/temperature_heatmap.png?w=900 900w, /static/img/docs/heatmap-panel/temperature_heatmap.png?w=1040 1040w, /static/img/docs/heatmap-panel/temperature_heatmap.png?w=1240 1240w, /static/img/docs/heatmap-panel/temperature_heatmap.png?w=1920 1920w"
+          data-sizes="auto"alt="A heatmap visualization showing the random walk distribution over time"width="1408"height="588"/>
+        <noscript>
+          <img
+            src="/static/img/docs/heatmap-panel/temperature_heatmap.png"
+            alt="A heatmap visualization showing the random walk distribution over time"width="1408"height="588"/>
+        </noscript></div></a></figure>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/heatmap-calculate-log/" target="_blank" rel="noopener noreferrer">Grafana Heatmaps</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/heatmap-calculate-log/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<p>You can use a heatmap visualization if you need to:</p>
+<ul>
+<li>Visualize a large density of your data distribution.</li>
+<li>Condense large amounts of data through various color schemes that are easier to interpret.</li>
+<li>Identify any outliers in your data distribution.</li>
+<li>Provide statistical analysis to see how values or trends change over time.</li>
+</ul>
+<h2 id="configure-a-heatmap-visualization">Configure a heatmap visualization</h2>
+<p>Once you’ve created a 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">dashboard</a>, the following video shows you how to configure a heatmap visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=SGWBzQ54koE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>Heatmaps support time series data.</p>
+<h3 id="example">Example</h3>
+<p>The table below is a simplified output of random walk distribution over time:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Walking (km)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2023-06-25 21:13:09</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>2023-08-25 21:13:10</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td>2023-08-30 21:13:10</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>2023-10-08 21:13:11</td>
+          <td>12</td>
+      </tr>
+      <tr>
+          <td>2023-12-25 21:13:11</td>
+          <td>14</td>
+      </tr>
+      <tr>
+          <td>2024-01-05 21:13:12</td>
+          <td>13</td>
+      </tr>
+      <tr>
+          <td>2024-02-22 21:13:13</td>
+          <td>10</td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is converted as follows:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/heatmap-panel/heatmap.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/heatmap-panel/heatmap.png"data-srcset="/static/img/docs/heatmap-panel/heatmap.png?w=320 320w, /static/img/docs/heatmap-panel/heatmap.png?w=550 550w, /static/img/docs/heatmap-panel/heatmap.png?w=750 750w, /static/img/docs/heatmap-panel/heatmap.png?w=900 900w, /static/img/docs/heatmap-panel/heatmap.png?w=1040 1040w, /static/img/docs/heatmap-panel/heatmap.png?w=1240 1240w, /static/img/docs/heatmap-panel/heatmap.png?w=1920 1920w"
+          data-sizes="auto"alt="A heatmap visualization showing the random walk distribution over time"width="1416"height="590"/>
+        <noscript>
+          <img
+            src="/static/img/docs/heatmap-panel/heatmap.png"
+            alt="A heatmap visualization showing the random walk distribution over time"width="1416"height="590"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="heatmap-options">Heatmap options</h3>
+<p>The following options control how data in the heatmap is calculated and grouped.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Options</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Calculate from data</td>
+          <td>This setting determines if the data is already a calculated heatmap (from the data source/transformer), or one that should be calculated in the panel.</td>
+      </tr>
+      <tr>
+          <td>X Bucket</td>
+          <td>This setting determines how the x-axis is split into buckets. You can specify a time interval in the <strong>Size</strong> input. For example, a time range of <code>1h</code> makes the cells 1-hour wide on the x-axis. You can also set an interval based on <strong>Count</strong>.</td>
+      </tr>
+      <tr>
+          <td>Y Bucket</td>
+          <td>This setting determines how the y-axis is split into buckets. Choose from <strong>Size</strong> or <strong>Count</strong>.</td>
+      </tr>
+      <tr>
+          <td>Y Bucket scale</td>
+          <td>Select one of the following y-axis value scales:<ul><li><strong>Linear</strong> - Linear scale.</li><li><strong>Logarithmic</strong> - Choose a <strong>Log base</strong> of <strong>2</strong> or <strong>10</strong>.</li><li><strong>Symlog</strong> - Symlog scale. Choose a <strong>Log base</strong> of <strong>2</strong> or <strong>10</strong> and enter a value for the <strong>Linear threshold</strong>.</li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="y-axis-options">Y-Axis options</h3>
+<p>The following options define the display of the y-axis.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Options</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Placement</td>
+          <td>Set where the y-axis is displayed. Choose from: <strong>Left</strong>, <strong>Right</strong>, or <strong>Hidden</strong>.</td>
+      </tr>
+      <tr>
+          <td>Unit</td>
+          <td>Unit configuration.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>This setting determines decimal configuration.</td>
+      </tr>
+      <tr>
+          <td>Min/Max value</td>
+          <td>These settings configure the axis range.</td>
+      </tr>
+      <tr>
+          <td>Axis width</td>
+          <td>This setting configures the width for the axis.</td>
+      </tr>
+      <tr>
+          <td>Axis label</td>
+          <td>This setting configures the axis value.</td>
+      </tr>
+      <tr>
+          <td>Tick alignment</td>
+          <td>Sets the alignment of the tick marks on the visualization. Choose from: <strong>Auto</strong>, <strong>Top (LE)</strong>, <strong>Middle</strong>, and <strong>Bottom (GE)</strong>. This option is only displayed when your <strong>Calculate from data</strong> setting is <strong>No</strong>.</td>
+      </tr>
+      <tr>
+          <td>Reverse</td>
+          <td>When selected, the axis appears in reverse order.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+
+
+<div data-shared="visualizations/multiple-y-axes.md">
+            
+
+<h4 id="multiple-y-axes">Multiple y-axes</h4>
+<p>In some cases, you might want to display multiple y-axes. For example, if you have a dataset showing both temperature and humidity over time, you might want to show two y-axes with different units for the two series.</p>
+<p>You can configure multiple y-axes and control where they&rsquo;re displayed in the visualization by adding field overrides. 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/#example-2-format-temperature-and-humidity">This example of a dataset that includes temperature and humidity</a> describes how you can configure that. Repeat the steps for every y-axis you wish to display.</p>
+
+  </div>
+
+        
+<h3 id="colors-options">Colors options</h3>
+<p>The color spectrum controls the mapping between value count (in each bucket) and the color assigned to each bucket. The leftmost color on the spectrum represents the minimum count and the color on the right most side represents the maximum count. Some color schemes are automatically inverted when using the light theme.</p>
+<p>You can also change the color mode to Opacity. In this case, the color will not change but the amount of opacity will change with the bucket count</p>
+<h4 id="mode">Mode</h4>
+<p>Use the following options to define the heatmap colors.</p>
+<ul>
+<li><strong>Scheme</strong> - Bucket value represented by cell color.
+<ul>
+<li><strong>Scheme</strong> - If the mode is <strong>Scheme</strong>, then select a color scheme.</li>
+</ul>
+</li>
+<li><strong>Opacity</strong> - Bucket value represented by cell opacity. Opaque cell means maximum value.
+<ul>
+<li><strong>Color</strong> - Cell base color.</li>
+<li><strong>Scale</strong> - Scale for mapping bucket values to the opacity.
+<ul>
+<li><strong>Exponential</strong> - Power scale. Cell opacity calculated as <code>value ^ k</code>, where <code>k</code> is a configured <strong>Exponent</strong> value. If exponent is less than <code>1</code>, you will get a logarithmic scale. If exponent is greater than <code>1</code>, you will get an exponential scale. In case of <code>1</code>, scale will be the same as linear.
+<ul>
+<li><strong>Exponent</strong> - Value of the exponent, greater than <code>0</code>.</li>
+</ul>
+</li>
+<li><strong>Linear</strong> - Linear scale. Bucket value maps linearly to the opacity.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="steps">Steps</h4>
+<p>Set a value between <code>1</code> and <code>128</code>.</p>
+<h4 id="reverse">Reverse</h4>
+<p>Toggle the switch to reverse the color scheme. This option only applies the <strong>Scheme</strong> color mode.</p>
+<h4 id="startend-color-scale-from-value">Start/end color scale from value</h4>
+<p>By default, Grafana calculates cell colors based on minimum and maximum bucket values. With Min and Max you can overwrite those values. Consider a bucket value as a Z-axis and Min and Max as Z-Min and Z-Max, respectively.</p>
+<ul>
+<li><strong>Start</strong> - Minimum value using for cell color calculation. If the bucket value is less than Min, then it is mapped to the &ldquo;minimum&rdquo; color. The series min value is the default value.</li>
+<li><strong>End</strong> - Maximum value using for cell color calculation. If the bucket value is greater than Max, then it is mapped to the &ldquo;maximum&rdquo; color. The series max value is the default value.</li>
+</ul>
+<h3 id="cell-display-options">Cell display options</h3>
+<p>Use these settings to control the display of heatmap cells.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Unit configuration.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>This setting determines decimal configuration.</td>
+      </tr>
+      <tr>
+          <td>Cell gap</td>
+          <td>Set how much space there is between cells.</td>
+      </tr>
+      <tr>
+          <td>Hide cells with values &lt;=</td>
+          <td>Enter a value.</td>
+      </tr>
+      <tr>
+          <td>Hide cells with values &gt;=</td>
+          <td>Enter a value.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="tooltip-options">Tooltip options</h3>
+<p>Tooltip options control the information overlay that appears when you hover over data points in the visualization.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#tooltip-mode">Tooltip mode</a></td>
+          <td>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</td>
+      </tr>
+      <tr>
+          <td>Show histogram (Y axis)</td>
+          <td>When you set the <strong>Tooltip mode</strong> to <strong>Single</strong>, this option is displayed. This option controls whether or not the tooltip includes a histogram representing the y-axis.</td>
+      </tr>
+      <tr>
+          <td><a href="#show-color-scale">Show color scale</a></td>
+          <td>This option controls whether or not the tooltip includes the color scale that&rsquo;s also represented in the legend.</td>
+      </tr>
+      <tr>
+          <td>Max width</td>
+          <td>Set the maximum width of the tooltip box.</td>
+      </tr>
+      <tr>
+          <td>Max height</td>
+          <td>Set the maximum height of the tooltip box. The default is 600 pixels.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="tooltip-mode">Tooltip mode</h4>
+<p>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</p>
+<ul>
+<li><strong>Single -</strong> The hover tooltip shows only a single series, the one that you are hovering over on the visualization.</li>
+<li><strong>All -</strong> The hover tooltip shows all series in the visualization. Grafana highlights the series that you are hovering over in bold in the series list in the tooltip.</li>
+<li><strong>Hidden -</strong> Do not display the tooltip when you interact with the visualization.</li>
+</ul>
+<p>Use an override to hide individual series from the tooltip.</p>
+<h4 id="show-color-scale">Show color scale</h4>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>Single</strong>, this option is displayed. This option controls whether or not the tooltip includes the color scale that&rsquo;s also represented in the legend. When the color scale is included in the tooltip, it shows the hovered value on the scale:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-heatmap-tooltip-color-scale-v11.0.png"
+  alt="Heatmap with a tooltip displayed showing the hovered value reflected in the color scale" width="794"
+     height="342"/></p>
+<h3 id="legend-options">Legend options</h3>
+<p>Choose whether you want to display the heatmap legend on the visualization by toggling the <strong>Show legend</strong> switch.</p>
+<h3 id="exemplars">Exemplars</h3>
+<p>Set the color used to show exemplar data.</p>
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options.md">
+            <p>Data links allow you to link to other panels, dashboards, and external resources while maintaining the context of the source panel.
+You can create links that include the series name or even the value under the cursor.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Actions are not supported for this visualization.</p></blockquote></div>
+
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

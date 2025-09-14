@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<h1 id="grafana-advisor">Grafana Advisor</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Advisor is currently in <a href="/docs/release-life-cycle/">public preview</a>. Grafana Labs offers limited support, and breaking changes might occur prior to the feature being made generally available.</p>
+<p>To use this feature, enable the grafanaAdvisor feature toggle in your Grafana configuration file or at <strong>Administration &gt; General &gt; Feature toggles</strong> in Grafana Cloud.</p></blockquote></div>
+
+
+<h2 id="overview">Overview</h2>
+<p>Grafana Advisor is a monitoring tool that helps administrators keep their Grafana instances running smoothly and securely. It automatically performs regular health checks on your Grafana server, providing actionable insights and recommendations for maintaining optimal system performance.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Currently, Grafana Advisor performs regular checks on data sources, plugins, and your Grafana instance, but we&rsquo;re planning to expand its capabilities in future releases to cover more aspects of your Grafana environment.</p>
+<p>You can suggest new checks and provide feedback through this <a href="https://docs.google.com/forms/d/e/1FAIpQLSf8T-xMZauFXZ1uHw09OjZLT_AaiY-cl-hJGwC6Krkj0ThmZQ/viewform" target="_blank" rel="noopener noreferrer">form</a>.</p></blockquote></div>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=o84EfY-KP-c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To set up Grafana Advisor you need:</p>
+<ul>
+<li>Administration rights in your Grafana organization.</li>
+<li>If you&rsquo;re running Grafana on-premise, enable the required feature toggle in your Grafana instance. Refer to <a href="#enable-feature-toggles">Enable required feature toggles</a> for instructions. This is not required if you&rsquo;re using Grafana Cloud, as the feature toggles are enabled by default.</li>
+</ul>
+<h3 id="enable-feature-toggles">Enable feature toggles</h3>
+<p>To activate Grafana Advisor, you need to enable the <code>grafanaAdvisor</code> feature toggle. This will automatically install the Grafana Advisor application to your server if it&rsquo;s not already installed. For additional information about feature toggles, refer to <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">Configure feature toggles</a>.</p>
+<p>To enable the required feature toggles, add them to your Grafana configuration file:</p>
+<ol>
+<li>
+<p>Open your Grafana configuration file, either <code>grafana.ini</code> or <code>custom.ini</code>. For file location based on the operating system, refer to Configuration file location.</p>
+</li>
+<li>
+<p>Locate or add a <code>[feature_toggles]</code> section. Add this value:</p>
+<pre>[feature_toggles]
+grafanaAdvisor = true</pre>
+</li>
+<li>
+<p>Save the changes to the file and restart Grafana.</p>
+</li>
+</ol>
+<h2 id="access-grafana-advisor">Access Grafana Advisor</h2>
+<ol>
+<li>Log in to your Grafana instance with an administrator account</li>
+<li>Navigate to the Administration section</li>
+<li>Select &ldquo;Advisor&rdquo; from the navigation menu</li>
+</ol>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana-advisor/grafana-advisor-ui.png"
+  alt="" width="1634"
+     height="900"/></p>
+<h2 id="understand-the-advisor-interface">Understand the Advisor interface</h2>
+<h3 id="action-needed-section">Action needed section</h3>
+<p>This collapsible section displays issues requiring immediate attention:</p>
+<ul>
+<li>For each item, Grafana Advisor displays the specific name of the item that needs to be fixed.</li>
+<li>For data source issues, Grafana Advisor displays the specific data source name.</li>
+<li>One or more buttons appear. These buttons point you to different links to fix the issue, retry the check or hide the error.</li>
+</ul>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana-advisor/action_needed.png"
+  alt="Action needed" width="1509"
+     height="519"/></p>
+<h3 id="investigation-needed-section">Investigation needed section</h3>
+<p>This collapsible section provides information on issues that may not require immediate action but require your attention. For example, it provides information on plugins that require an upgrade. Similar to the &ldquo;Action needed&rdquo; section, clicking an item opens the plugin&rsquo;s upgrade page. From there, you can either update to the latest version or select a specific version from the version history tab.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana-advisor/investigation-needed.png"
+  alt="Investigation needed" width="2982"
+     height="1200"/></p>
+<h3 id="more-info-section">More info section</h3>
+<p>This collapsible section provides more details about which checks have been performed and how many items have been analyzed.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana-advisor/more_info.png"
+  alt="&lt;Grafana Advisor - More info tab&gt;" width="1526"
+     height="764"/></p>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>Click the cogwheel in this section to access Grafana Advisor settings, where you can enable or disable checks according to your preferences.</p></blockquote></div>
+
+<h3 id="enable-llm-suggestions">Enable LLM suggestions</h3>
+<p>If the <a href="/grafana/plugins/grafana-llm-app/">Grafana LLM app</a> is installed, the Advisor can use it to generate suggestions for issues. Enable the LLM app and click the magic (✨) button to generate a suggestion for an issue.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana-advisor/llm-suggestions.png"
+  alt="&lt;Grafana Advisor - LLM suggestions&gt;" width="2526"
+     height="1858"/></p>
+<h2 id="address-issues">Address issues</h2>
+<p>To resolve issues flagged by Grafana Advisor and maintain system reliability, follow the best practices below. Regularly check the Advisor to keep your Grafana instance secure and up to date.</p>
+<h3 id="best-practices">Best practices</h3>
+<ul>
+<li><strong>Regular Monitoring:</strong> Check the Advisor page often to identify and address emerging issues</li>
+<li><strong>Immediate Action:</strong> Address &ldquo;Action needed&rdquo; items promptly to ensure system reliability</li>
+<li><strong>Systematic Review:</strong> After fixing flagged issues, use the &ldquo;Refresh&rdquo; button to confirm all checks pass</li>
+<li><strong>Proactive Updates:</strong> Address plugin update recommendations under &ldquo;Investigation needed&rdquo; even if they haven&rsquo;t caused failures yet</li>
+</ul>
+<h2 id="how-to-create-an-alert-based-on-advisor-results">How to create an alert based on Advisor results</h2>
+<p>This guide walks you through creating a Grafana alert that monitors Advisor check results and triggers when failures are detected.</p>
+<h3 id="step-1-create-a-service-account-and-token">Step 1: Create a service account and token</h3>
+<ol>
+<li>Navigate to <strong>Administration → Users and access → Service accounts</strong> in your Grafana instance</li>
+<li>Click <strong>Add service account</strong></li>
+<li>Provide a name (for example, &ldquo;advisor-alert-service-account&rdquo;)</li>
+<li>Set the role to <strong>Admin</strong> to ensure proper permissions</li>
+<li>Click <strong>Create</strong></li>
+<li>In the service account details, click <strong>Add service account token</strong></li>
+<li>Provide a token name and set an appropriate expiration date</li>
+<li>Click <strong>Generate token</strong></li>
+</ol>
+<blockquote>
+<p><strong>Important</strong>: Copy the token value immediately and store it securely - you won&rsquo;t be able to see it again</p></blockquote>
+<h3 id="step-2-set-up-the-grafana-infinity-data-source">Step 2: Set up the Grafana Infinity data source</h3>
+<blockquote>
+<p><strong>Important</strong>: Use Infinity plugin &gt;=v3.3.0 for the JQ parser used later.</p></blockquote>
+<ol>
+<li>Go to <strong>Connections → Add new connection</strong></li>
+<li>Search for &ldquo;Infinity&rdquo;</li>
+<li>If not installed, click <strong>Install</strong>. Wait for the plugin to be installed.</li>
+<li>From the plugin page, click <strong>Add new data source</strong>.</li>
+<li>Configure the data source:
+<ul>
+<li><strong>Name</strong>: Give it a descriptive name (e.g., &ldquo;Advisor API&rdquo;)</li>
+<li><strong>Setup Authentication</strong>: In the <strong>Auth type</strong>, select <strong>Bearer Token</strong>. In the <strong>Auth details</strong> section, paste the service account token from Step 1 and in the <strong>Allowed hosts</strong> section, write your Grafana app URL and click the &ldquo;Add&rdquo; button (e.g., <code>https://your-grafana-host.com</code>).</li>
+</ul>
+</li>
+<li>Click <strong>Save &amp; test</strong> to verify the connection</li>
+</ol>
+<h3 id="step-3-create-the-alert-rule">Step 3: Create the alert rule</h3>
+<p>Now you have everything you need to create an alert based on Advisor results.</p>
+<ol>
+<li>Navigate to <strong>Alerting → Alert rules</strong></li>
+<li>Click <strong>New alert rule</strong></li>
+<li>Provide a rule name (e.g., &ldquo;Advisor Failures Alert&rdquo;)</li>
+</ol>
+<h4 id="configure-the-query">Configure the query</h4>
+<ol>
+<li><strong>Data source</strong>: Select the Infinity data source created in Step 3</li>
+<li>Configure the query settings:
+<ul>
+<li><strong>Type</strong>: JSON</li>
+<li><strong>Parser</strong>: JQ</li>
+<li><strong>Source</strong>: URL</li>
+<li><strong>Format</strong>: Table</li>
+<li><strong>Method</strong>: GET</li>
+<li><strong>URL</strong>: Get this from the Advisor interface:
+<ul>
+<li>Visit the Advisor in your Grafana instance</li>
+<li>Open browser Developer Tools (F12) → Network tab</li>
+<li>Look for a request ending with <code>/checks</code></li>
+<li>Copy the full URL (format: <code>https://&lt;your_grafana_host&gt;/apis/advisor.grafana.app/v0alpha1/namespaces/&lt;your_namespace&gt;/checks</code>)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="configure-parsing-options">Configure parsing options</h4>
+<p><strong>Rows/Root</strong> (paste this JQ expression):</p>
+<pre>.items | map({
+  type: .metadata.labels[&#34;advisor.grafana.app/type&#34;],
+  creationTimestamp: .metadata.creationTimestamp,
+  failuresCount: (.status.report.failures | length)
+}) | group_by(.type) | map(sort_by(.creationTimestamp) | last)</pre>
+<p>This JQ query processes Grafana Advisor check data to get the most recent result for each check type. It transforms each check into a simplified object with type, timestamp, and failure count.
+The result is a clean array showing the current state of each check type (data source, plugin, configuration, etc.) with their failure counts, perfect for alerting when any type has failures &gt; 0.</p>
+<p><strong>Columns</strong> (add these three columns):</p>
+<ul>
+<li><strong>Selector</strong>: <code>creationTimestamp</code>, <strong>Format</strong>: Time</li>
+<li><strong>Selector</strong>: <code>failuresCount</code>, <strong>Format</strong>: Number</li>
+<li><strong>Selector</strong>: <code>type</code>, <strong>Format</strong>: String</li>
+</ul>
+<h4 id="optional-filter-by-check-type">Optional: Filter by check type</h4>
+<p>If you want to alert only for specific check types:</p>
+<ol>
+<li>In the <strong>Computed columns, Filter, Group by</strong> section</li>
+<li>Add a <strong>Filter</strong>: <code>type == &quot;license&quot;</code> (replace &ldquo;license&rdquo; with your desired check type)</li>
+</ol>
+<h4 id="set-alert-condition">Set alert condition</h4>
+<ul>
+<li><strong>Alert condition</strong>: Select &ldquo;WHEN Last OF QUERY Is above 0&rdquo;</li>
+<li>This will trigger when any check type has failures.</li>
+<li>Click on &ldquo;Preview alert rule condition&rdquo; to see the result of the query.</li>
+</ul>
+<h4 id="complete-alert-configuration">Complete alert configuration</h4>
+<p>Select your preferred evaluation (e.g. every 24 hours) and notification settings.</p>
+<h3 id="step-4-save-the-alert-rule">Step 4: Save the alert rule</h3>
+<p>Click <strong>Save</strong> and check the alert is being triggered.</p>
+<p>Your alert is now configured to monitor Advisor results and notify you when failures are detected!</p>

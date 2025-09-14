@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+      <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="shortcut icon" href="/static/assets/img/fav32.png" type="image/x-icon">
+<meta name="application-name" content="Grafana Labs" />
+<meta name="Copyright" content="Grafana Labs" />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@grafana">
+<meta name="twitter:url" content="https://twitter.com/grafana" />
+<meta name='zd-site-verification' content='khfhpajsuhgh7m48qdm8f9' />
+    
+
+    
+
+    
+      <meta name="robots" content="noindex" />
+    
+
+
+    <meta property="og:site_name" content="Grafana Labs" />
+    <meta property="og:type" content="website" />
+
+    
+    
+      
+
+
+  
+
+
+<title>
+  Technical documentation | Grafana Labs
+</title>
+
+<meta name="twitter:title" content="Technical documentation | Grafana Labs" /> 
+<meta property="og:title" content="Technical documentation | Grafana Labs" />
+
+    
+
+    
+    
+      
+      
+        
+      
+
+      
+        <meta name="twitter:description" content="Technical documentation for Grafana Labs products and services." />
+        <meta name="og:description" content="Technical documentation for Grafana Labs products and services." />
+        <meta name="description" content="Technical documentation for Grafana Labs products and services." />
+      
+
+    
+
+    
+    
+
+
+
+
+  
+  
+  
+  
+
+
+<meta name="twitter:image" content="/meta-generator/Technical&#43;documentation.jpg" />
+<meta property="og:image" content="/meta-generator/Technical&#43;documentation.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+    
+
+    
+
+    
+
+    
+    
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+      
+  <link rel="preload" href="/web/fonts.css" as="style">
+  <link rel="stylesheet" href="/web/fonts.css">
+  <link rel="preload" href="/web/fonts/font-awesome/css/font-awesome.min.css" as="style">
+  <link rel="stylesheet" href="/web/fonts/font-awesome/css/font-awesome.min.css">
+  <link href="/web/app.min.css" rel="stylesheet">
+  <link href="/web/shared.min.css" rel="stylesheet">
+
+
+    
+
+    
+    
+      
+    
+
+    
+    <script>window.Path = 'docs\/_index.md';window.Country = `\u003c!--# echo var=\u0022http_x_client_region\u0022 default=\u0022unknown\u0022 --\u003e`
+    </script>
+
+    
+    
+
+  </head>
+
+  <body class="section-docs ">
+    <div x-data="app_banner()" x-init="init()" x-cloak>
+      <div x-ref="top-banner" id="top-banner"></div>
+    </div>
+    
+      
+        
+          <!--# include file="/header.html" -->
+        
+      
+    
+
+    
+    <div class="main section">
+      <div class="main-content">
+        
+  
+    
+      <div class="journey-hero text-white fw-600" style="background-image: url('/media/docs/home/docs-home-1.jpg')">
+        <div class="wrapper">
+          <div class="d-flex align-items-center py-3">
+            <div class="d-grid d-grid__columns--2 w-100">
+              <div>
+                <h1>Technical documentation</h1>
+              </div>
+              <div x-data class="d-md-flex justify-content-end">
+                <button class="br-8 ask-ai-button btn btn--primary d-flex align-items-center column-gap-10 f-18 h-60" @click="document.dispatchEvent(new CustomEvent('open-ai-modal'))">
+                  
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#clip0_5747_8464)">
+  <path d="M22.3533 14.8212C17.2714 13.8036 16.1964 12.7287 15.1788 7.6467C15.1397 7.4511 14.8603 7.4511 14.8212 7.6467C13.8036 12.7286 12.7287 13.8036 7.6467 14.8212C7.4511 14.8603 7.4511 15.1397 7.6467 15.1788C12.7286 16.1964 13.8036 17.2713 14.8212 22.3533C14.8603 22.5489 15.1397 22.5489 15.1788 22.3533C16.1964 17.2714 17.2713 16.1964 22.3533 15.1788C22.5489 15.1397 22.5489 14.8603 22.3533 14.8212Z" fill="white" stroke="white" stroke-width="2.25"/>
+  <path d="M8.92665 5.16062C6.38571 4.65182 5.84818 4.11437 5.33938 1.57335C5.31984 1.47555 5.18016 1.47555 5.16062 1.57335C4.65182 4.11429 4.11437 4.65182 1.57335 5.16062C1.47555 5.18016 1.47555 5.31984 1.57335 5.33938C4.11429 5.84818 4.65182 6.38563 5.16062 8.92665C5.18016 9.02445 5.31984 9.02445 5.33938 8.92665C5.84818 6.38571 6.38563 5.84818 8.92665 5.33938C9.02445 5.31984 9.02445 5.18016 8.92665 5.16062Z" fill="white" stroke="white" stroke-width="2.25"/>
+  </g>
+  <defs>
+  <clipPath id="clip0_5747_8464">
+  <rect width="24" height="24" fill="white"/>
+  </clipPath>
+  </defs>
+</svg>
+
+                  <span>
+                    Ask Grot, your AI helper
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    <div>
+      
+        
+          <div class="py-3 bg-gray-1">
+            <div class="wrapper">
+              
+                <h2 class="text-black">Our core stack</h2>
+              
+              
+                <p class="maxw-750">Unlock the full potential of your data with our platform, where you can query and visualize metrics, logs, and traces to gain a deeper understanding of your system&#39;s performance and behavior.</p>
+              
+              
+              
+              
+              
+              <div class="d-grid d-grid__columns--4 column-gap-3">
+                
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/grafana-sm.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Grafana logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="grafana">Grafana</div>
+                      
+                        <p>Query, visualize, and understand your data.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/visualizations/" class="hover-underline">Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana/latest/" class="hover-underline">Grafana OSS</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana/latest/introduction/grafana-enterprise/" class="hover-underline">Grafana Enterprise</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/mimir-sm.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Metrics logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="metrics">Metrics</div>
+                      
+                        <p>Store and query raw, unsampled metrics for all your applications and infrastructure.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/metrics/#ways-to-connect-your-data-to-grafana-cloud" class="hover-underline">Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/mimir/latest/" class="hover-underline">Grafana OSS</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/enterprise-metrics/latest/" class="hover-underline">Grafana Enterprise</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/loki-sm.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Logs logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="logs">Logs</div>
+                      
+                        <p>Store and query logs from all your applications and infrastructure.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/logs/" class="hover-underline">Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/loki/latest/" class="hover-underline">Grafana OSS</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/enterprise-logs/latest/" class="hover-underline">Grafana Enterprise</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/tempo-sm.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Traces logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="traces">Traces</div>
+                      
+                        <p>Visualize the lifecycle of a request as it passes through a set of applications.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/traces/" class="hover-underline">Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/tempo/latest/" class="hover-underline">Grafana OSS</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/enterprise-traces/latest/" class="hover-underline">Grafana Enterprise</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        
+      
+        
+          <div class="py-3">
+            <div class="wrapper">
+              
+                <h2 class="text-black">Observability, AI, testing, and Incident Response Management (IRM)</h2>
+              
+              
+                <p class="maxw-750">Comprehensive documentation that covers the entire lifecycle, from testing and instrumentation to AI-powered observability and incident response management, aimed to help you minimize mean time to resolution.</p>
+              
+              
+              
+              
+              
+              <div class="d-grid d-grid__columns--4 column-gap-3">
+                
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/observability.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Observability logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="observability">Observability</div>
+                      
+                        <p>Docs that support your infrastructure and application observability needs.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/opentelemetry/" class="hover-underline">OpenTelemetry</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-infrastructure/kubernetes-monitoring/" class="hover-underline">Kubernetes (k8s) Monitoring</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/" class="hover-underline">Cloud Provider Observability</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-applications/frontend-observability/" class="hover-underline">Frontend Observability</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-applications/application-observability/" class="hover-underline">Application Observability</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-applications/asserts/" class="hover-underline">Asserts</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-applications/ai-observability/" class="hover-underline">AI Observability</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-applications/profiles/" class="hover-underline">Profiles</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/ai.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="AI and Machine Learning logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="ai-and-machine-learning">AI and Machine Learning</div>
+                      
+                        <p>Built-in AI and machine learning features that help you get more out of your observability data.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/machine-learning/assistant" class="hover-underline">Grafana Assistant</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/machine-learning/dynamic-alerting" class="hover-underline">Dynamic alerting</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/machine-learning/llm" class="hover-underline">LLM plugin</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/machine-learning/sift" class="hover-underline">Sift</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/irm.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Alerting and Incident Response (IRM) logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="alerting-and-incident-response-irm">Alerting and Incident Response (IRM)</div>
+                      
+                        <p>Enable your teams to detect, respond to, and learn from incidents.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/alerting-and-irm/alerting/" class="hover-underline">Alerting</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/alerting-and-irm/irm/" class="hover-underline">IRM</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/alerting-and-irm/slo/" class="hover-underline">SLO</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/k6.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Performance and Testing logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="performance-and-testing">Performance and Testing</div>
+                      
+                        <p>Our load testing tools make performance testing easy and productive for engineering teams.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/testing/k6/" class="hover-underline">Performance testing</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/testing/synthetic-monitoring/" class="hover-underline">Synthetic Monitoring</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        
+      
+        
+          <div class="py-3 bg-gray-1">
+            <div class="wrapper">
+              
+                <h2 class="text-black">Learning hub</h2>
+              
+              
+                <p class="maxw-750">Are you new to Grafana Cloud and unsure where to begin? Check out our learning journeys and documentation decision support guides to help you get started.</p>
+              
+              
+              
+              
+              
+              <div class="d-grid d-grid__columns--2 column-gap-3">
+                
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/learning.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Learning journeys logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="learning-journeys">Learning journeys</div>
+                      
+                        <p>Offer clear and organized paths to mastering our platform. Each journey includes expert guidance based on what we know works well.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/learning-journeys/grafana-cloud-onboarding" class="hover-underline">Get started with Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/learning-journeys/linux-server-integration/" class="hover-underline">Monitor a Linux server in Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/learning-journeys/prometheus/" class="hover-underline">Connect to a Prometheus data source in Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/learning-journeys/drilldown-metrics/" class="hover-underline">Explore data using Metrics Drilldown</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/learning-journeys/visualization-metrics/" class="hover-underline">Visualize metrics in a Grafana Cloud dashboard</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/learning-journeys/" class="hover-underline">More learning journeys...</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/docssupport.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Docs decision support logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="docs-decision-support">Docs decision support</div>
+                      
+                        <p>Unsure which docs you need? Answer a few questions, and Grot will guide you to the appropriate docs.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/?guide=whichgrafana#guidance-and-help" class="hover-underline">Which Grafana is right for me?</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/metrics/?guide=metrics" class="hover-underline">Metrics</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/logs/?guide=logs#guidance-and-help" class="hover-underline">Logs</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-applications/profiles/?guide=profiling#guidance-and-help" class="hover-underline">Traces and Profiles</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/connect-externally-hosted/?guide=datasources#guidance-and-help" class="hover-underline">Data sources</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/?guide=instrument#instrument-applications" class="hover-underline">Application instrumentation</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-infrastructure/kubernetes-monitoring/?guide=kubernetes#guidance-and-help" class="hover-underline">Kubernetes Monitoring</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        
+      
+        
+          <div class="py-3">
+            <div class="wrapper">
+              
+                <h2 class="text-black">Connect and visualize data</h2>
+              
+              
+                <p class="maxw-750">Discover the various methods for sending or connecting data to Grafana Cloud. Once your data is in place, you can visualize it to gain valuable insights that help you tackle real-world challenges.</p>
+              
+              
+              
+              
+              
+              <div class="d-grid d-grid__columns--2 column-gap-3">
+                
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/instrument.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Instrument and send data logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="instrument-and-send-data">Instrument and send data</div>
+                      
+                        <p>Set up your infrastructure and applications to transmit telemetry data to Grafana Cloud.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/alloy/" class="hover-underline">Grafana Alloy</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/monitor-infrastructure/integrations/" class="hover-underline">Grafana integrations</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/fleet-management/" class="hover-underline">Fleet Management</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/aws-privatelink/" class="hover-underline">AWS PrivateLink</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/azure-privatelink/" class="hover-underline">Azure Private Link</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/send-data/otlp/" class="hover-underline">OTLP end point</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/beyla/latest/" class="hover-underline">Grafana Beyla</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                        <img class="lazyload" data-src="/media/docs/home/logos/visualize.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Visualize data logo" width="40" height="40">
+                      
+                      <div class="text-black body-xlarge fw-500" id="visualize-data">Visualize data</div>
+                      
+                        <p>Use visualizations to gain actionable insight into your telemetry data.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/visualizations/dashboards/build-dashboards/create-dashboard/" class="hover-underline">Create a dashboard</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/visualizations/dashboards/use-dashboards/" class="hover-underline">Use a dashboard</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/visualizations/panels-visualizations/query-transform-data/" class="hover-underline">Query and transform data</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/visualizations/panels-visualizations/visualizations/" class="hover-underline">Visualizations</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        
+      
+        
+          <div class="py-3 bg-gray-1">
+            <div class="wrapper">
+              
+                <h2 class="text-black">Open source projects from Grafana Labs</h2>
+              
+              
+                <p class="maxw-750">At Grafana Labs, open source continues to be our driving force as we work to develop and evolve our core OSS tools and technologies.</p>
+              
+              
+              
+              
+              
+                
+              
+              <div class="d-flex justify-content-space-evenly flex-wrap gap-1">
+                
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/grafana/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/grafana.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Grafana logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/mimir/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/mimir.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Mimir logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/tempo/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/tempo.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Tempo logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/loki/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/loki.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Loki logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/pyroscope/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/pyroscope.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Pyroscope logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/alloy/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/alloy.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Alloy logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/beyla/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/beyla.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Beyla logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/grafana-cloud/monitor-applications/frontend-observability/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/faro.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Faro logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/grafana/latest/alerting/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/alerting.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Alerting logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/k6/latest/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/k6.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="k6 logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/grafana/latest/datasources/prometheus/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/prometheus.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Prometheus logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/writers-toolkit/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/writers%27-toolkit.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Writers’ Toolkit logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+                  <div class="mb-1tw-w-[286px]">
+                    
+                      <a href="/docs/opentelemetry/" class="hover-underline d-flex h-110 body-xlarge w-100 bg-white p-1 br-12 docs-border docs-border__transition">
+                        
+                          <img class="mx-auto lazyload" data-src="/media/docs/home/logos/cards/OTel.svg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="OpenTelemetry logo" width="245" height="75">
+                        
+                      </a>
+                    
+                    
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        
+      
+        
+          <div class="py-3">
+            <div class="wrapper">
+              
+              
+              
+              
+              
+              
+              <div class="d-grid d-grid__columns--2 column-gap-3">
+                
+                
+                  <div class="">
+                    
+                      
+                      <div class="text-black body-xlarge fw-500" id="grafana-cloud-account-management">Grafana Cloud account management</div>
+                      
+                        <p>At Grafana Labs, open source continues to be our driving force as we work to develop and evolve our core OSS tools and technologies.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/get-started/" class="hover-underline">Get started with Grafana Cloud</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/grafana-cloud/account-management/" class="hover-underline">Account management</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/auth/sign-in/" class="hover-underline">Create an account</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+                  <div class="">
+                    
+                      
+                      <div class="text-black body-xlarge fw-500" id="resources">Resources</div>
+                      
+                        <p>Consult the following resources, as necessary.</p>
+                      
+                    
+                    
+                      <div class="d-flex flex-direction-column gap-half">
+                        
+                          <div class="">
+                            <a href="/docs/writers-toolkit/" class="hover-underline">Writers&#39; Toolkit</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/docs/release-life-cycle/" class="hover-underline">Release life cycle for Grafana Labs</a>
+                          </div>
+                        
+                          <div class="">
+                            <a href="/grafana/plugins/" class="hover-underline">Grafana Labs data source plugin catalog</a>
+                          </div>
+                        
+                      </div>
+                    
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+        
+      
+    </div>
+  
+
+      </div>
+    </div>
+
+    
+    <footer class="section">
+      
+    </footer>
+
+    
+    
+
+    
+      <script type="text/javascript" src="/web/app.js"></script>
+<script type="text/javascript" src="/web/shared.js"></script>
+<script type="text/javascript" src="/web/banner.js"></script>
+<script type="text/javascript" src="/web/marked.js"></script>
+
+    
+  </body>
+</html>

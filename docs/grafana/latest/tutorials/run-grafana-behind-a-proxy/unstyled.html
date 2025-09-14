@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<h2 id="introduction">Introduction</h2>
+<p>In this tutorial, you&rsquo;ll configure Grafana to run behind a reverse proxy.</p>
+<p>When running Grafana behind a proxy, you need to configure the domain name to let Grafana know how to render links and redirects correctly.</p>
+<ul>
+<li>In the Grafana configuration file, change <code>server.domain</code> to the domain name you&rsquo;ll be using:</li>
+</ul>
+<pre>[server]
+domain = example.com</pre>
+<ul>
+<li>Restart Grafana for the changes to take effect.</li>
+</ul>
+<h2 id="configure-reverse-proxy">Configure reverse proxy</h2>
+<h3 id="configure-nginx">Configure nginx</h3>
+<p><a href="https://www.nginx.com" target="_blank" rel="noopener noreferrer">nginx</a> is a high performance load balancer, web server, and reverse proxy.</p>
+<ul>
+<li>In your nginx configuration file inside the <code>http</code> section, add the following:</li>
+</ul>
+<pre># This is required to proxy Grafana Live WebSocket connections.
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  &#39;&#39; close;
+}
+
+upstream grafana {
+  server localhost:3000;
+}
+
+server {
+  listen 80;
+  root /usr/share/nginx/html;
+  index index.html index.htm;
+
+  location / {
+    proxy_set_header Host $host;
+    proxy_pass http://grafana;
+  }
+
+  # Proxy Grafana Live WebSocket connections.
+  location /api/live/ {
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_set_header Host $host;
+    proxy_pass http://grafana;
+  }
+}</pre>
+<ul>
+<li>Reload the nginx configuration.</li>
+<li>Navigate to port 80 on the machine nginx is running on.
+You&rsquo;re greeted by the Grafana login page.</li>
+</ul>
+<p>For Grafana Live which uses WebSocket connections you may have to raise the nginx value for <a href="https://nginx.org/en/docs/ngx_core_module.html#worker_connections" target="_blank" rel="noopener noreferrer"><code>worker_connections</code></a> option which is <code>512</code> by default. The default value limits the number of possible concurrent connections with Grafana Live.</p>
+<p>Also, be aware that the preceding configuration only works when the <code>proxy_pass</code> value for <code>location /</code> is a literal string.
+If you want to use a variable here, you must instead use <a href="https://www.nginx.com/blog/creating-nginx-rewrite-rules/" target="_blank" rel="noopener noreferrer">a rewrite rule</a>.
+For more information, refer to <a href="https://github.com/grafana/grafana/issues/18299" target="_blank" rel="noopener noreferrer">the GitHub issue #18299</a>.</p>
+<p>To configure nginx to serve Grafana under a <em>sub path</em>, update the <code>location</code> block:</p>
+<pre># This is required to proxy Grafana Live WebSocket connections.
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  &#39;&#39; close;
+}
+
+upstream grafana {
+  server localhost:3000;
+}
+
+server {
+  listen 80;
+  root /usr/share/nginx/www;
+  index index.html index.htm;
+
+  location /grafana/ {
+    proxy_set_header Host $host;
+    proxy_pass http://grafana;
+  }
+
+  # Proxy Grafana Live WebSocket connections.
+  location /grafana/api/live/ {
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+    proxy_set_header Host $host;
+    proxy_pass http://grafana;
+  }
+}</pre>
+<p>Add a rewrite rule to each location block:</p>
+<pre> rewrite  ^/grafana/(.*)  /$1 break;</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If nginx is performing TLS termination, then you must set the <code>root_url</code> and <code>protocol</code> configuration accordingly.
+If you&rsquo;re serving Grafana from <code>https://example.com/grafana/</code> then the <code>root_url</code> is <code>https://example.com/grafana/</code> or <code>https://%(domain)s/grafana/</code> with the corresponding <code>domain</code> configuration value set to <code>example.com</code> in the <code>server</code> section of the Grafana configuration file.
+Set <code>protocol</code> to <code>http</code>.</p></blockquote></div>
+
+<h3 id="configure-haproxy">Configure HAProxy</h3>
+<p>To configure HAProxy to serve Grafana under a <em>sub path</em>:</p>
+<pre>frontend http-in
+  bind *:80
+  use_backend grafana_backend if { path /grafana } or { path_beg /grafana/ }
+
+backend grafana_backend
+  server grafana localhost:3000
+  # Requires haproxy &gt;= 1.6
+  http-request set-path %[path,regsub(^/grafana/?,/)]
+  # Works for haproxy &lt; 1.6
+  # reqrep ^([^\ ]*\ /)grafana[/]?(.*) \1\2
+
+  server grafana localhost:3000</pre>
+<h3 id="configure-iis">Configure IIS</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To use IIS, you must have the URL Rewrite module installed.</p></blockquote></div>
+
+<p>To configure IIS to serve Grafana under a <em>sub path</em>, create an <code>Inbound Rule</code> for the parent website in <strong>IIS Manager</strong> with the following settings:</p>
+<ul>
+<li>pattern: <code>grafana(/)?(.*)</code></li>
+<li>check the <code>Ignore case</code> checkbox</li>
+<li>rewrite URL set to <code>http://localhost:3000/{R:2}</code></li>
+<li>check the <code>Append query string</code> checkbox</li>
+<li>check the <code>Stop processing of subsequent rules</code> checkbox</li>
+</ul>
+<p>This is the rewrite rule that&rsquo;s generated in the <code>web.config</code>:</p>
+<pre>  &lt;rewrite&gt;
+      &lt;rules&gt;
+          &lt;rule name=&#34;Grafana&#34; enabled=&#34;true&#34; stopProcessing=&#34;true&#34;&gt;
+              &lt;match url=&#34;grafana(/)?(.*)&#34; /&gt;
+              &lt;action type=&#34;Rewrite&#34; url=&#34;http://localhost:3000/{R:2}&#34; logRewrittenUrl=&#34;false&#34; /&gt;
+          &lt;/rule&gt;
+      &lt;/rules&gt;
+  &lt;/rewrite&gt;</pre>
+<p>For more detailed instruction, refer to the <a href="/tutorials/iis/">tutorial on IIS URL Rewrites</a>.</p>
+<h3 id="configure-apache">Configure Apache</h3>
+<p>To use Apache as a proxy, ensure its proper installation and configuration.</p>
+<ol>
+<li>Ensure that the Apache proxy module <a href="https://httpd.apache.org/docs/current/mod/mod_proxy.html" target="_blank" rel="noopener noreferrer"><code>mod_proxy</code></a> is installed and enabled. To enable, run the following commands:</li>
+</ol>
+<pre>a2enmod proxy
+a2enmod proxy_http</pre>
+<ol start="2">
+<li>To configure the proxy, edit the site configuration file. To do so, inside the <code>&lt;VirtualHost&gt;</code> section, add the following code:</li>
+</ol>
+<pre>  ProxyPreserveHost on
+  ProxyPass / http://your_grafana_server:3000
+  ProxyPassReverse / http://your_grafana_server:3000</pre>
+<ol start="3">
+<li>Finally, restart Apache for the settings to take effect.</li>
+</ol>
+<p>After you&rsquo;ve restarted, navigate to your Apache server on port 80 and you will be redirected to Grafana.</p>
+<p>To configure Grafana hosted in a sub path, replace the sub path with the following code (assuming your Grafana instance is on the sub path <code>your_path</code>):</p>
+<pre>  ProxyPreserveHost on
+  ProxyPass /your_path http://your_grafana_server:3000
+  ProxyPassReverse /your_path http://your_grafana_server:3000
+  ProxyPass / http://your_grafana_server:3000/your_path
+  ProxyPassReverse / http://192.168.250.5:3000/your_path</pre>
+<p>Note that the lines containing <code>your_path</code> <em>must</em> come before the lines referencing root path (<code>/</code>) in order for this to work correctly.</p>
+<h3 id="configure-traefik">Configure Traefik</h3>
+<p><a href="https://traefik.io/traefik/" target="_blank" rel="noopener noreferrer">Traefik</a> Cloud Native application proxy.</p>
+<p>Using the Docker provider and the following labels configures the router and service for a domain or subdomain routing.</p>
+<pre>labels:
+  traefik.http.routers.grafana.rule: Host(`grafana.example.com`)
+  traefik.http.services.grafana.loadbalancer.server.port: 3000</pre>
+<p>To deploy on a <em>sub path</em>:</p>
+<pre>labels:
+  traefik.http.routers.grafana.rule: Host(`example.com`) &amp;&amp; PathPrefix(`/grafana`)
+  traefik.http.services.grafana.loadbalancer.server.port: 3000</pre>
+<p>Examples using the file provider.</p>
+<pre>http:
+  routers:
+    grafana:
+      rule: Host(`grafana.example.com`)
+      service: grafana
+  services:
+    grafana:
+      loadBalancer:
+        servers:
+          - url: http://192.168.30.10:3000</pre>
+<pre>http:
+  routers:
+    grafana:
+      rule: Host(`example.com`) &amp;&amp; PathPrefix(`/grafana`)
+      service: grafana
+  services:
+    grafana:
+      loadBalancer:
+        servers:
+          - url: http://192.168.30.10:3000</pre>
+<h2 id="alternative-for-serving-grafana-under-a-sub-path">Alternative for serving Grafana under a sub path</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You only need this if you don&rsquo;t handle the sub path serving via your reverse proxy configuration.</p></blockquote></div>
+
+<p>If you don&rsquo;t want or can&rsquo;t use the reverse proxy to handle serving Grafana from a <em>sub path</em>, you can set the configuration variable <code>server_from_sub_path</code> to <code>true</code>.</p>
+<ol>
+<li>Include the sub path at the end of the <code>root_url</code>.</li>
+<li>Set <code>serve_from_sub_path</code> to <code>true</code>:</li>
+</ol>
+<pre>[server]
+domain = example.com
+root_url = %(protocol)s://%(domain)s:%(http_port)s/grafana/
+serve_from_sub_path = true</pre>

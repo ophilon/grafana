@@ -1,0 +1,15 @@
+[{
+  "file": "docs/grafana/latest/introduction/grafana-enterprise.md",
+	"name": "grafana-enterprise",
+	"permalink" : "/docs/grafana/latest/introduction/grafana-enterprise/",
+	"relpermalink" : "/docs/grafana/latest/introduction/grafana-enterprise/",
+	"params": {"ads":{"toc":{"id":"cloud_first_1","location":"docs_toc"}},"aliases":["../enterprise/"],"description":"Grafana Enterprise overview","draft":false,"iscjklanguage":false,"labels":{"products":["enterprise"]},"layout":"page","loki_version":"latest","meta_image_generate":true,"oncall_version":"latest","outputs":[{"mediaType":"text/html","path":"","baseName":"index","rel":"canonical","protocol":"","isPlainText":false,"isHTML":true,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":true,"weight":10},{"mediaType":"application/json","path":"","baseName":"index","rel":"alternate","protocol":"","isPlainText":true,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"unstyled","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0}],"pyroscope_version":"latest","section_title":"Documentation","section_title_singular":"Documentation","tempo_version":"latest","title":"Grafana Enterprise","weight":200},
+	"uniqueid": "8373115ac5a77497b6b6725fa7795a63",
+},{
+  "file": "docs/grafana/latest/introduction/grafana-cloud.md",
+	"name": "grafana-cloud",
+	"permalink" : "/docs/grafana/latest/introduction/grafana-cloud/",
+	"relpermalink" : "/docs/grafana/latest/introduction/grafana-cloud/",
+	"params": {"ads":{"toc":{"id":"cloud_first_1","location":"docs_toc"}},"description":"Learn about Grafana Cloud.","draft":false,"iscjklanguage":false,"labels":{"products":["cloud"]},"layout":"page","loki_version":"latest","meta_image_generate":true,"oncall_version":"latest","outputs":[{"mediaType":"text/html","path":"","baseName":"index","rel":"canonical","protocol":"","isPlainText":false,"isHTML":true,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":true,"weight":10},{"mediaType":"application/json","path":"","baseName":"index","rel":"alternate","protocol":"","isPlainText":true,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"unstyled","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0}],"pyroscope_version":"latest","section_title":"Documentation","section_title_singular":"Documentation","tempo_version":"latest","title":"Grafana Cloud","weight":300},
+	"uniqueid": "4e90ea4ecc9504c242ca5497b0f5fb26",
+}]

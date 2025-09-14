@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<h1 id="query-tracing-data">Query tracing data</h1>
+<p>The Tempo data source&rsquo;s query editor helps you query and display traces from Tempo in 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.
+The queries use <a href="/docs/tempo/latest/traceql/">TraceQL</a>, the query language designed specifically for tracing.</p>
+<p>For general documentation on querying data sources in Grafana, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>Don&rsquo;t know TraceQL? Try 
+    <a href="/docs/grafana/latest/explore/simplified-exploration/traces/">Grafana Traces Drilldown</a>, an intuitive, queryless app that lets you explore your tracing data using RED metrics.</p></blockquote></div>
+
+<h2 id="before-you-begin">Before you begin</h2>
+<p>You can compose TraceQL queries in Grafana and Grafana Cloud using <strong>Explore</strong> and a Tempo data source.</p>
+<h3 id="traceql-knowledge-helpful-but-not-required">TraceQL knowledge helpful, but not required</h3>
+<p>You don&rsquo;t have to know TraceQL to create a query.
+You can use the <strong>Search</strong> query builder&rsquo;s user interface to select options to search your data.
+These selections generate a TraceQL query.
+Any query generated using <strong>Search</strong> query builder can be transferred to the <strong>TraceQL</strong> query editor, where you can edit the query directly.</p>
+<p>To learn more about how to query by TraceQL, refer to the 
+    <a href="/docs/tempo/latest/traceql/">TraceQL documentation</a>.</p>
+<h2 id="choose-a-query-editing-mode">Choose a query editing mode</h2>
+<p>The query editor has three <strong>Query types</strong> that you can use to explore your tracing data.
+You can use these modes by themselves or in combination to create building blocks to generate custom queries.
+Adding another query adds a new query block.
+Refer to <a href="#use-query-types-together">Use query types together</a> for more information.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-types.png"
+  alt="The three query types: Search, TraceQL, and Service Graph" width="807"
+     height="86"/></p>
+<p>The three query types are:</p>
+<ul>
+<li><strong>Search</strong> query builder - Provides a user interface for building a TraceQL query.</li>
+<li><strong>TraceQL</strong> query editor - Lets you write your own TraceQL query with assistance from autocomplete.</li>
+<li><strong>Service Graph</strong> view - Displays a visual relationship between services. Refer to the 
+    <a href="/docs/grafana/latest/datasources/tempo/service-graph/">Service graph</a> documentation for more information.</li>
+</ul>
+<h3 id="search-query-builder">Search query builder</h3>
+<p>The <strong>Search</strong> query builder provides drop-down lists and text fields to help you write a query.
+The query builder is ideal for people who aren&rsquo;t familiar with or want to learn TraceQL.</p>
+<p>Refer to the <a href="traceql-search/">Search using the TraceQL query builder documentation</a> to learn more about creating queries using convenient drop-down menus.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-search-v11.png"
+  alt="The Search query builder" width="1011"
+     height="435"/></p>
+<h3 id="traceql-query-editor">TraceQL query editor</h3>
+<p>The <strong>TraceQL</strong> query editor lets you search by trace ID and write TraceQL queries using autocomplete.</p>
+<p>Refer to the <a href="./traceql-editor">TraceQL query editor documentation</a> to learn more about constructing queries using a code-editor-like experience.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-traceql-v11.png"
+  alt="The TraceQL query editor" width="1007"
+     height="277"/></p>
+<p>You can also search for a trace ID by entering it into the query field.</p>
+<h3 id="service-graph-view">Service graph view</h3>
+<p>The <strong>Service Graph</strong> view uses metrics to display span request rates, error rates, and durations, as well as service graphs.
+After the requirements are set up, this preconfigured view is immediately available.</p>
+<p>Using the service graph view, you can:</p>
+<ul>
+<li>Discover spans which are consistently erroring and the rates at which they occur.</li>
+<li>Get an overview of the overall rate of span calls throughout your services.</li>
+<li>Determine how long the slowest queries in your service take to complete.</li>
+<li>Examine all traces that contain spans of particular interest based on rate, error, and duration values (RED signals).</li>
+</ul>
+<p>For more information about the service graph, refer to <a href="../service-graph">Service graph</a>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png"
+  alt="Screenshot of the Service Graph view" width="1290"
+     height="1145"/></p>
+<h2 id="use-traceql-panels-in-dashboards">Use TraceQL panels in dashboards</h2>
+<p>To add TraceQL panels to your dashboard, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/traces/">Traces panel documentation</a>.</p>
+<p>To learn more about Grafana dashboards, refer to the 
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/">Use dashboards documentation</a>.</p>
+<h2 id="set-options-for-query-builder-and-editor">Set options for query builder and editor</h2>
+<p>The following options are available for the <strong>Search</strong> and <strong>TraceQL</strong> query types.
+You can modify these settings in the <strong>Options</strong> section.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-options.png"
+  alt="Options section in the query editors" width="569"
+     height="117"/></p>
+<p>After changing any option, re-run the query to apply the updates.</p>
+<dl>
+<dt>Limit</dt>
+<dd>Determines the maximum number of traces to return. Default value is <code>20</code>.</dd>
+<dt>Span Limit</dt>
+<dd>Sets the maximum number of spans to return for each spanset. Default value is <code>3</code>.</dd>
+<dt>Table Format</dt>
+<dd>Determines whether the query results table is displayed focused on <strong>Traces</strong> or <strong>Spans</strong>. <strong>Traces</strong> is the default selection. When <strong>Traces</strong> is selected, the results table starts with the trace ID. When <strong>Spans</strong> is selected, the table starts with the trace service.</dd>
+<dt>Step</dt>
+<dd>Defines the step for metrics queries. Use duration notation, for example, <code>30ms</code> or <code>1m</code>.</dd>
+<dt>Streaming</dt>
+<dd>Indicates if streaming is active. Streaming lets you view partial query results before the entire query completes. Activating streaming adds the <strong>Table - Streaming Progress</strong> section to the query results.</dd>
+</dl>
+<h2 id="use-query-types-together">Use query types together</h2>
+<p>You can use <strong>+ Add query</strong> to create customized queries that use one or more of the query types together.
+Each time you add a new query, it adds a new section, or query block, that contains <strong>Search</strong>, <strong>TraceQL</strong>, or <strong>Service Graph</strong> user interface.</p>
+<p>The added query and results table appear in the navigation under <strong>Queries</strong> and <strong>Tables</strong> respectively.
+You can use the navigation to view query, results table, and service graph blocks.</p>
+<div class="my-cool-video">
+  <figure class="p-0 m-0 d-flex flex-direction-column align-items-center">
+    <video 
+      width="800px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-editor.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Navigating through the query blocks</figcaption></figure>
+</div>
+<p>To add a query block:</p>
+<ol>
+<li>Select <strong>+ Add query</strong>.</li>
+<li>Choose a query type: <strong>Search</strong>, <strong>TraceQL</strong>, or <strong>Service Graph</strong>.</li>
+</ol>
+<p>To remove a query block, select the <strong>Remove query</strong> trash can icon.</p>
+<p>To rename a block, select the <strong>Rename</strong> edit icon next to the query block name.
+The name changes in the queries and table list.</p>
+<h3 id="additional-query-block-options">Additional query block options</h3>
+<p>Each query block has a set of icons in the right top corner.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-additional-options-toolbar.png"
+  alt="The additional options toolbar" width="1007"
+     height="277"/></p>
+<p>These icons include:</p>
+<dl>
+<dt>Show data source help</dt>
+<dd>Displays the <strong>Tempo Cheat Sheet</strong> with links to documentation.</dd>
+<dt>Create recorded query</dt>
+<dd>Lets you save the current query block as a recorded query. This option is available in Grafana Cloud and Grafana Enterprise. For more information, refer to 
+    <a href="/docs/grafana/latest/administration/recorded-queries/">Recorded queries</a>.</dd>
+<dt>Duplicate query</dt>
+<dd>Copies the current block and adds a new identical block.</dd>
+<dt>Remove query</dt>
+<dd>Deletes the query block.</dd>
+</dl>
+<h3 id="use-query-history-and-query-inspector">Use query history and query inspector</h3>
+<p><strong>Explore</strong> provides a history of all queries you&rsquo;ve used within a data source and an inspector that lets you view stats, inspect queries, view JSON, and general information for your data source queries.</p>
+<p>For more information, refer to the 
+    <a href="/docs/grafana/latest/explore/explore-inspector/">Query inspector in Explore</a> and 
+    <a href="/docs/grafana/latest/explore/query-management/">Query management in Explore</a> documentation.</p>
+<h2 id="cross-tenant-traceql-queries">Cross-tenant TraceQL queries</h2>
+<p>If you&rsquo;ve configured a multi-stack Tempo data source, you can perform TraceQL queries across those stacks and tenants.</p>
+<p>Queries performed using the cross-tenant configured data source, in either <strong>Explore</strong> or inside of dashboards,
+are performed across all the tenants that you specified in the <strong>X-Scope-OrgID</strong> header.</p>
+<!-- vale Grafana.Spelling = NO -->
+<p>TraceQL queries that compare multiple spansets may not correctly return all traces in a cross-tenant query. For instance,</p>
+<!-- vale Grafana.Quotes = YES -->
+<pre>{ span.attr1 = &#34;bar&#34; } &amp;&amp; { span.attr2 = &#34;foo&#34; }</pre>
+<p>TraceQL evaluates a contiguously stored trace.
+If these two conditions are satisfied in separate tenants, then Tempo doesn&rsquo;t return the trace.</p>
+<p>Refer to <a href="/docs/grafana-cloud/connect-externally-hosted/multi-stack-data-sources/#set-up-a-multi-stack-tempo-data-source-in-grafana">Set up a multi-stack Tempo data source in Grafana</a> for information about configuring the Tempo data source.</p>
+<p>For information about Tempo configuration requirements, refer to the 
+    <a href="/docs/tempo/latest/operations/cross_tenant_query/">Cross-tenant query</a> and 
+    <a href="/docs/tempo/latest/operations/multitenancy/">Enable multitenancy</a> documentation.</p>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<h1 id="configure-basic-authentication">Configure basic authentication</h1>
+<p>Grafana provides a basic authentication system with password authentication enabled by default. This document details configuration options to manage and enhance basic authentication.</p>
+<h2 id="disable-basic-authentication">Disable basic authentication</h2>
+<p>To disable basic authentication, use the following configuration:</p>
+<pre>[auth.basic]
+enabled = false</pre>
+<h2 id="password-policy">Password policy</h2>
+<p>By default, Grafana’s password policy requires a minimum of four characters for basic auth users. For a stronger password policy, enable the <code>password_policy</code> configuration option.</p>
+<p>With the <code>password_policy</code> option enabled, new and updated passwords must meet the following criteria:</p>
+<ul>
+<li>At least 12 characters</li>
+<li>At least one uppercase letter</li>
+<li>At least one lowercase letter</li>
+<li>At least one number</li>
+<li>At least one special character</li>
+</ul>
+<pre>[auth.basic]
+password_policy = true</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Existing passwords that do not comply with the new password policy will not be affected until the user updates their password.</p></blockquote></div>
+
+<h2 id="disable-login-form">Disable login form</h2>
+<p>To hide the Grafana login form, use the following configuration setting:</p>
+<pre>[auth]
+disable_login_form = true</pre>
+<p>This can be helpful in setups where authentication is handled entirely through external mechanisms or single sign-on (SSO).</p>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<h1 id="customize-navigation-placement-of-app-plugin-pages">Customize navigation placement of app plugin pages</h1>
+<p>By default, Grafana app plugins and their pages appear under the &ldquo;More apps&rdquo; section in the navigation menu. However, as a Grafana administrator, you might want to improve user experience by relocating specific pages or entire app plugins to more relevant sections of the navigation hierarchy. This guide shows you how to customize the placement of app plugin pages across different parts of your Grafana navigation menu.</p>
+<h2 id="customize-app-and-page-navigation-placement">Customize app and page navigation placement</h2>
+<p>You can change the location of your app plugin pages in two ways:</p>
+<ol>
+<li>Move the entire app plugin (with all its pages) to a different section</li>
+<li>Move specific pages from your app plugin to different sections</li>
+</ol>
+<h3 id="1-move-an-entire-app-plugin-to-a-different-section">1. Move an entire app plugin to a different section</h3>
+<p>To relocate an entire app plugin to a different navigation section, use the <code>navigation.app_sections</code> configuration in your Grafana configuration file:</p>
+<pre>[navigation.app_sections]
+org-example-app = explore 100</pre>
+<p>This configuration:</p>
+<ul>
+<li>Moves the app plugin with ID <code>org-example-app</code></li>
+<li>Places it in the <code>explore</code> section</li>
+<li>Assigns it a sort weight of <code>100</code> (determining its position within that section)</li>
+</ul>
+<h3 id="2-move-individual-app-pages-to-different-sections">2. Move individual app pages to different sections</h3>
+<p>To move specific pages from an app plugin to different navigation sections, use the <code>navigation.app_standalone_pages</code> configuration:</p>
+<pre>[navigation.app_standalone_pages]
+/a/org-example-app/dashboard-page = dashboards 200
+/a/org-example-app/monitoring-page = alerting 50</pre>
+<p>This configuration:</p>
+<ul>
+<li>Moves the page with path <code>/a/org-example-app/dashboard-page</code> to the <code>dashboards</code> section with sort weight <code>200</code></li>
+<li>Moves the page with path <code>/a/org-example-app/monitoring-page</code> to the <code>alerting</code> section with sort weight <code>50</code></li>
+</ul>
+<h2 id="complete-example">Complete example</h2>
+<p>Here&rsquo;s a complete example that configures both the app placement and individual page placement in your Grafana configuration:</p>
+<pre># Move the entire app to the Explore section
+[navigation.app_sections]
+org-example-app = explore 50
+
+# Move specific pages to their own sections
+[navigation.app_standalone_pages]
+/a/org-example-app/metrics = dashboards 100
+/a/org-example-app/logs = alerting 75</pre>
+<h2 id="find-page-paths">Find page paths</h2>
+<p>To move individual pages you need to know their paths. To identify a plugin page path:</p>
+<ul>
+<li>Visit the page in the browser and check the URL in the address bar.</li>
+<li>Page paths in app plugins follow the format <code>/a/PLUGIN_ID/PAGE_PATH</code></li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>If your navigation changes don&rsquo;t appear:</p>
+<ol>
+<li>Verify your configuration syntax is correct</li>
+<li>Ensure you&rsquo;ve restarted Grafana after making changes</li>
+<li>Check that the plugin IDs and page paths exactly match what&rsquo;s defined in your plugin</li>
+</ol>

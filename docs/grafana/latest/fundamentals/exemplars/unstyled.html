@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<h1 id="introduction-to-exemplars">Introduction to exemplars</h1>
+<p>An exemplar is a specific trace representative of measurement taken in a given time interval.
+While metrics excel at giving you an aggregated view of your system, traces give you a fine grained view of a single request; exemplars are a way to link the two.</p>
+<p>Suppose your company website is experiencing a surge in traffic volumes.
+While more than eighty percent of the users are able to access the website in under two seconds, some users are experiencing a higher than normal response time resulting in bad user experience.</p>
+<p>To identify the factors that are contributing to the latency, you must compare a trace for a fast response against a trace for a slow response.
+Given the vast amount of data in a typical production environment, it&rsquo;s an extremely laborious and time-consuming effort.</p>
+<p>Use exemplars to help isolate problems within your data distribution by pinpointing query traces exhibiting high latency within a time interval.
+After you localize the latency problem to a few exemplar traces, you can combine it with additional system based information or location properties to perform a root cause analysis faster, leading to quick resolutions to performance issues.</p>
+<p>Support for exemplars is available for the Prometheus data source only.
+After you enable the functionality, exemplar data is available by default.
+For more information on exemplar configuration and how to enable exemplars, refer to <a href="../../datasources/prometheus/configure-prometheus-data-source/#exemplars">configuring exemplars in the Prometheus data source</a>.</p>
+<p>Grafana shows exemplars alongside a metric in the Explore view and in dashboards.
+Each exemplar displays as a highlighted star.
+You can hover your cursor over an exemplar to view the unique trace ID, which is a combination of a key value pair.
+To investigate further, click the blue button next to the <code>traceID</code> property.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/exemplars/screenshot-exemplars.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/exemplars/screenshot-exemplars.png"data-srcset="/media/docs/grafana/exemplars/screenshot-exemplars.png?w=320 320w, /media/docs/grafana/exemplars/screenshot-exemplars.png?w=550 550w, /media/docs/grafana/exemplars/screenshot-exemplars.png?w=750 750w, /media/docs/grafana/exemplars/screenshot-exemplars.png?w=900 900w, /media/docs/grafana/exemplars/screenshot-exemplars.png?w=1040 1040w, /media/docs/grafana/exemplars/screenshot-exemplars.png?w=1240 1240w, /media/docs/grafana/exemplars/screenshot-exemplars.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot showing the detail window of an exemplar"width="1557"height="786"title="Screenshot showing the detail window of an exemplar"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/exemplars/screenshot-exemplars.png"
+            alt="Screenshot showing the detail window of an exemplar"width="1557"height="786"title="Screenshot showing the detail window of an exemplar"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screenshot showing the detail window of an exemplar</figcaption></a></figure>
+<p>Refer to <a href="#view-exemplar-data">View exemplar data</a> for instructions on how to drill down and view exemplar trace details from metrics and logs.
+To know more about exemplars, refer to the blog post <a href="/blog/2021/03/31/intro-to-exemplars-which-enable-grafana-tempos-distributed-tracing-at-massive-scale/">Intro to exemplars, which enable Grafana Tempo’s distributed tracing at massive scale</a>.</p>
+<h2 id="view-exemplar-data">View exemplar data</h2>
+<p>When support for exemplar support is enabled for a Prometheus data source, you can view exemplar data either in the Explore view or from the Loki log details.</p>
+<h3 id="in-explore">In Explore</h3>
+<p>Explore visualizes exemplar traces as highlighted stars alongside metrics data.
+For more information on how Explore visualizes trace data, refer to <a href="../../explore/trace-integration/">Tracing in Explore</a>.</p>
+<p>To examine the details of an exemplar trace:</p>
+<ol>
+<li>
+<p>Place your cursor over an exemplar (highlighted star).
+Depending on the trace data source you are using, you may see a blue button with the label <code>Query with &lt;DATA SOURCE NAME&gt;</code>.
+In the following example, the tracing data source is Tempo.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 350px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/grafana/exemplars/screenshot-exemplar-details.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/grafana/exemplars/screenshot-exemplar-details.png"data-srcset="/media/docs/grafana/exemplars/screenshot-exemplar-details.png?w=320 320w, /media/docs/grafana/exemplars/screenshot-exemplar-details.png?w=550 550w, /media/docs/grafana/exemplars/screenshot-exemplar-details.png?w=750 750w, /media/docs/grafana/exemplars/screenshot-exemplar-details.png?w=900 900w, /media/docs/grafana/exemplars/screenshot-exemplar-details.png?w=1040 1040w, /media/docs/grafana/exemplars/screenshot-exemplar-details.png?w=1240 1240w, /media/docs/grafana/exemplars/screenshot-exemplar-details.png?w=1920 1920w"
+             data-sizes="auto"alt="Screenshot showing exemplar details"width="503"height="666"title="Screenshot showing exemplar details"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/exemplars/screenshot-exemplar-details.png"
+               alt="Screenshot showing exemplar details"width="503"height="666"title="Screenshot showing exemplar details"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screenshot showing exemplar details</figcaption></a></figure>
+</li>
+<li>
+<p>Click the <strong>Query with Tempo</strong> option next to the <code>traceID</code> property.
+The trace details, including the spans within the trace are listed in a separate panel on the right.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 900px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png"data-srcset="/media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png?w=320 320w, /media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png?w=550 550w, /media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png?w=750 750w, /media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png?w=900 900w, /media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png?w=1040 1040w, /media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png?w=1240 1240w, /media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png?w=1920 1920w"
+             data-sizes="auto"alt="Explorer view with panel showing trace details"width="1561"height="853"title="Explorer view with panel showing trace details"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/exemplars/screenshot-exemplar-explore-view.png"
+               alt="Explorer view with panel showing trace details"width="1561"height="853"title="Explorer view with panel showing trace details"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Explorer view with panel showing trace details</figcaption></a></figure>
+</li>
+</ol>
+<p>For more information on how to drill down and analyze the trace and span details, refer to the <a href="#analyze-trace-and-spans">Analyze trace and span details</a> section.</p>
+<h3 id="in-logs">In logs</h3>
+<p>You can also view exemplar trace details from the Loki logs in Explore.
+Use regular expressions within the Derived fields links for Loki to extract the <code>traceID</code> information.
+Now when you expand Loki logs, you can see a <code>traceID</code> property under the <strong>Detected fields</strong> section.
+To learn more about how to extract a part of a log message into an internal or external link, refer to <a href="../../explore/logs-integration/">using derived fields in Loki</a>.</p>
+<p>To view the details of an exemplar trace:</p>
+<ol>
+<li>
+<p>Expand a log line and scroll down to the <code>Fields</code> section.
+Depending on your backend trace data source, you may see a blue button with the label <code>&lt;DATA SOURCE NAME&gt;</code>.</p>
+</li>
+<li>
+<p>Click the blue button next to the <code>traceID</code> property.
+Typically, it has the name of the backend data source.
+In the following example, the tracing data source is Tempo.
+The trace details, including the spans within the trace are listed in a separate panel on the right.</p>
+</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png"data-srcset="/media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png?w=320 320w, /media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png?w=550 550w, /media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png?w=750 750w, /media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png?w=900 900w, /media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png?w=1040 1040w, /media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png?w=1240 1240w, /media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png?w=1920 1920w"
+          data-sizes="auto"alt="Explorer view with panel showing trace details"width="1559"height="928"title="Explorer view with panel showing trace details"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/exemplars/screenshot-exemplar-loki-logs.png"
+            alt="Explorer view with panel showing trace details"width="1559"height="928"title="Explorer view with panel showing trace details"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Explorer view with panel showing trace details</figcaption></a></figure>
+<p>For more information on how to drill down and analyze the trace and span details, refer to the <a href="#analyze-trace-and-spans">Analyze trace and span details</a> section.</p>
+<h3 id="analyze-trace-and-spans">Analyze trace and spans</h3>
+<p>This panel shows the details of the trace in different segments.</p>
+<ul>
+<li>
+<p>The top segment displays the trace ID to indicate that the query results correspond to the specific trace.</p>
+<p>You can add more traces to the results using the <code>Add query</code> button.</p>
+</li>
+<li>
+<p>The next segment shows the entire span for the specific trace as a narrow strip.
+All levels of the trace from the client all the way down to database query is displayed, which provides a bird&rsquo;s eye view of the time distribution across all layers over which the HTTP request was processed.</p>
+<ol>
+<li>
+<p>You can click within this strip view to display a magnified view of a smaller time segment within the span. This magnified view shows up in the bottom segment of the panel.</p>
+</li>
+<li>
+<p>In the magnified view, you can expand or collapse the various levels of the trace to drill down to the specific span of interest.</p>
+<p>For example, if the strip view shows that most of the latency was within the app layer, you can expand the trace down the app layer to investigate the problem further.
+To expand a particular layer of span, click the left icon.
+The same button can collapse an expanded span.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>To see the details of the span at any level, click the span itself.</p>
+<p>This displays additional metadata associated with the span.
+The metadata itself is initially shown in a narrow strip but you can see more details by clicking the metadata strip.</p>
+<figure
+      class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+      style="max-width: 600px;"
+      itemprop="associatedMedia"
+      itemscope=""
+      itemtype="http://schema.org/ImageObject"
+    ><a
+          class="lightbox-link captioned"
+          href="/media/docs/grafana/exemplars/screenshot-exemplar-span-details.png"
+          itemprop="contentUrl"
+        ><div class="img-wrapper w-100p h-auto"><img
+            class="lazyload mb-0"
+            data-src="/media/docs/grafana/exemplars/screenshot-exemplar-span-details.png"data-srcset="/media/docs/grafana/exemplars/screenshot-exemplar-span-details.png?w=320 320w, /media/docs/grafana/exemplars/screenshot-exemplar-span-details.png?w=550 550w, /media/docs/grafana/exemplars/screenshot-exemplar-span-details.png?w=750 750w, /media/docs/grafana/exemplars/screenshot-exemplar-span-details.png?w=900 900w, /media/docs/grafana/exemplars/screenshot-exemplar-span-details.png?w=1040 1040w, /media/docs/grafana/exemplars/screenshot-exemplar-span-details.png?w=1240 1240w, /media/docs/grafana/exemplars/screenshot-exemplar-span-details.png?w=1920 1920w"
+            data-sizes="auto"alt="Span details"width="765"height="1086"title="Span details"/>
+          <noscript>
+            <img
+              src="/media/docs/grafana/exemplars/screenshot-exemplar-span-details.png"
+              alt="Span details"width="765"height="1086"title="Span details"class="docs-image--no-shadow"/>
+          </noscript></div><figcaption class="w-100p caption text-gray-13  ">Span details</figcaption></a></figure>
+</li>
+</ul>

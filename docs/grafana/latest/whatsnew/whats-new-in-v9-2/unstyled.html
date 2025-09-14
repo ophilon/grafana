@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v92">What&rsquo;s new in Grafana v9.2</h1>
+<p>Welcome to Grafana v9.2, a hefty minor release with a swath of improvements that help you create and share dashboards and alerts.
+Read on to learn about progress on public dashboards, our new panel help menu, custom branding in Grafana Enterprise, and improvements to access control.
+If you&rsquo;d prefer to dig into the details, check out the complete <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>.</p>
+<h2 id="panel-help-menu">Panel help menu</h2>
+<p><em>Available in beta in Grafana Open Source.</em></p>
+<p>Dashboard panel issues can occur for all kinds of reasons, from problems processing data to issues with rendering or configuration.
+Shorten your communication time when reporting issues and requesting help from Grafana Labs by retrieving a panel&rsquo;s query response data and panel settings.
+This will help the support team reproduce, diagnose, and fix the issue as quickly as possible.
+See our <a href="/docs/grafana/latest/troubleshooting/send-panel-to-grafana-support/">documentation</a> for more info.</p>
+<p>For details, see <a href="https://github.com/grafana/grafana/issues/55005" target="_blank" rel="noopener noreferrer">GitHub issue #55005</a> and <a href="/docs/grafana/latest/troubleshooting/send-panel-to-grafana-support/">&ldquo;Send a panel to Grafana Labs support&rdquo;</a> in the documentation.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/panels/panel-help-9-2.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/panels/panel-help-9-2.gif"alt="Retrieving a panel&#39;s query response data and panel settings"width="1350"height="864"title="Retrieving a panel&#39;s query response data and panel settings"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/panel-help-9-2.gif"
+            alt="Retrieving a panel&#39;s query response data and panel settings"width="1350"height="864"title="Retrieving a panel&#39;s query response data and panel settings"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Retrieving a panel&rsquo;s query response data and panel settings</figcaption></a></figure>
+<h2 id="canvas-panel">Canvas panel</h2>
+<p><em>Available in beta in Grafana Open Source.</em></p>
+<p>Introducing the Canvas panel, a new panel that combines the power of Grafana with the flexibility of custom elements.
+Canvas visualizations are extensible form-built panels that allow you to explicitly place elements within static and dynamic layouts. This empowers you to design custom visualizations and overlay data in ways that aren&rsquo;t possible with standard Grafana panels, all within Grafana&rsquo;s UI. If you&rsquo;ve used popular UI and web design tools, then designing Canvas panels will feel very familiar.</p>
+<p>For example, you can place image layers and then overlay text that&rsquo;s updated by Grafana data sources, and display icons that can change color conditionally based on data.</p>
+<p>We&rsquo;ve planned additional features and design elements for future releases to make Canvas panels even more powerful tools for creating custom, interactive, data-driven visualizations. To learn more about the Canvas panel, see the <a href="../../panels-visualizations/visualizations/canvas/">documentation</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/static/img/docs/canvas-panel/canvas-beta-overview-9-2-0.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Canvas panel beta overview</figcaption></figure>
+</div>
+<h2 id="support-for-google-analytics-4-properties">Support for Google Analytics 4 properties</h2>
+<p><em>Generally available in Grafana Open Source.</em></p>
+<p>You can now use Google Analytics 4 (GA4) to track usage of Grafana.
+To enable tracking with GA4, specify your property&rsquo;s measurement ID in Grafana&rsquo;s configuration file.
+Read more <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#google_analytics_4_id">in our documentation</a>.</p>
+<p>Google Analytics 4 replaces Universal Analytics, which will stop processing hits in 2023 (July 1 for free accounts, October 1 for Google Analytics 360).
+You can continue using Universal Analytics with Grafana and send analytics data to both types of properties.</p>
+<h2 id="alertmanager-updated-to-be-based-on-prometheus-alertmanager-v024">Alertmanager updated to be based on Prometheus Alertmanager v0.24</h2>
+<p><em>Generally available in all editions.</em></p>
+<p>The Alertmanager used for Grafana-managed alert rules is now based on the latest release of the Prometheus Alertmanager, v0.24.
+We continue to unify the different Alertmanagers that you can use with Grafana Alertmanager and will provide updates on this topic in a future release of Grafana.</p>
+<p>For details, see <a href="https://github.com/grafana/grafana/pull/53555" target="_blank" rel="noopener noreferrer">GitHub pull request #53555</a>.</p>
+<h2 id="grafana-alerting-alert-rules-now-return-an-error-state-by-default-on-execution-error-or-timeout">Grafana Alerting alert rules now return an Error state by default on execution error or timeout</h2>
+<p><em>Generally available in all editions.</em></p>
+<p>Error rules created with Grafana Alerting were previously switching to an Alerting state when the rule was facing an execution error or timeout.
+New error rules now switch by default to the <code>Error</code> state when failing to execute or timing out.
+You can change this default to either <code>Alerting</code> or <code>OK</code>.</p>
+<p>This change does not update existing alert rules.</p>
+<p>For details on this change, see <a href="https://github.com/grafana/grafana/pull/55345" target="_blank" rel="noopener noreferrer">GitHub pull request #55345</a>.
+For more information about alerting states, see the <a href="/docs/grafana/latest/alerting/fundamentals/state-and-health/">alerting documentation</a>.</p>
+<h2 id="configure-external-alertmanagers-as-data-sources">Configure external alertmanagers as data sources</h2>
+<p><em>Generally available in all editions.</em></p>
+<p>Starting with release 9.2, the URL configuration of external alertmanagers from the Admin tab on the Alerting page is deprecated. It will be removed in a future release.</p>
+<p>External alertmanagers should now be configured as data sources using Grafana Configuration from the main Grafana navigation menu. This enables you to manage the contact points and notification policies of external alertmanagers from within Grafana and also encrypts HTTP basic authentication credentials that were previously visible when configuring external alertmanagers by URL.</p>
+<h2 id="public-dashboards">Public dashboards</h2>
+<p><em>Available in Experimental in Grafana Open Source, Enterprise, and Cloud.</em>
+<em>To enable public dashboards, you must enable a feature flag or request this feature from support.</em></p>
+<p>
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">Public dashboards</a> launched as an experimental feature in Grafana v9.1.
+We&rsquo;ve received lots of great feedback on this much-anticipated feature and thank everyone who has helped us improve it.
+The team has been hard at work polishing public dashboards, and we&rsquo;ve closed quite a few bugs related to community reports.
+If you&rsquo;re trying out public dashboards, let us know how it is going in the <a href="https://github.com/grafana/grafana/discussions/49253" target="_blank" rel="noopener noreferrer">open discussion in GitHub</a>.
+Beyond bug fixes, we&rsquo;re excited to share some new features:</p>
+<h3 id="expression-support">Expression support</h3>
+<p>We have added the ability to use <a href="/docs/grafana/latest/panels/query-a-data-source/use-expressions-to-manipulate-data/about-expressions/">expressions</a> for your public dashboards.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/dashboards/public-dashboards-expressions-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/dashboards/public-dashboards-expressions-9-2.png"data-srcset="/static/img/docs/dashboards/public-dashboards-expressions-9-2.png?w=320 320w, /static/img/docs/dashboards/public-dashboards-expressions-9-2.png?w=550 550w, /static/img/docs/dashboards/public-dashboards-expressions-9-2.png?w=750 750w, /static/img/docs/dashboards/public-dashboards-expressions-9-2.png?w=900 900w, /static/img/docs/dashboards/public-dashboards-expressions-9-2.png?w=1040 1040w, /static/img/docs/dashboards/public-dashboards-expressions-9-2.png?w=1240 1240w, /static/img/docs/dashboards/public-dashboards-expressions-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Using expressions in a public dashboard"width="1202"height="572"title="Using expressions in a public dashboard"/>
+        <noscript>
+          <img
+            src="/static/img/docs/dashboards/public-dashboards-expressions-9-2.png"
+            alt="Using expressions in a public dashboard"width="1202"height="572"title="Using expressions in a public dashboard"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Using expressions in a public dashboard</figcaption></a></figure>
+<h3 id="public-dashboard-usage-insights">Public dashboard usage insights</h3>
+<p><em>Available in Experimental in Grafana Enterprise.</em></p>
+<p>Usage Insights now has a &ldquo;Public Dashboards&rdquo; tab, which tracks how many people are viewing your public dashboard and how many queries have ran, and counts errors.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png"data-srcset="/static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png?w=320 320w, /static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png?w=550 550w, /static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png?w=750 750w, /static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png?w=900 900w, /static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png?w=1040 1040w, /static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png?w=1240 1240w, /static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Usage Insights for a public dashboard"width="1506"height="1598"title="Usage Insights for a public dashboard"/>
+        <noscript>
+          <img
+            src="/static/img/docs/dashboards/public-dashboards-usage-insights-9-2.png"
+            alt="Usage Insights for a public dashboard"width="1506"height="1598"title="Usage Insights for a public dashboard"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Usage Insights for a public dashboard</figcaption></a></figure>
+<h3 id="use-rbac-to-allow-any-user-to-share-dashboards-publicly">Use RBAC to allow any user to share dashboards publicly</h3>
+<p><em>RBAC is available in Grafana Enterprise and Cloud.</em></p>
+<p>We have introduced a new role called &ldquo;Public Dashboard writer&rdquo; that grants access to publish new public dashboards to additional roles and users.
+By default, only admins can share dashboards publicly.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/dashboards/public-dashboards-writer-role-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/dashboards/public-dashboards-writer-role-9-2.png"data-srcset="/static/img/docs/dashboards/public-dashboards-writer-role-9-2.png?w=320 320w, /static/img/docs/dashboards/public-dashboards-writer-role-9-2.png?w=550 550w, /static/img/docs/dashboards/public-dashboards-writer-role-9-2.png?w=750 750w, /static/img/docs/dashboards/public-dashboards-writer-role-9-2.png?w=900 900w, /static/img/docs/dashboards/public-dashboards-writer-role-9-2.png?w=1040 1040w, /static/img/docs/dashboards/public-dashboards-writer-role-9-2.png?w=1240 1240w, /static/img/docs/dashboards/public-dashboards-writer-role-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="The Public Dashboard writer role for users"width="782"height="608"title="The Public Dashboard writer role for users"/>
+        <noscript>
+          <img
+            src="/static/img/docs/dashboards/public-dashboards-writer-role-9-2.png"
+            alt="The Public Dashboard writer role for users"width="782"height="608"title="The Public Dashboard writer role for users"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">The Public Dashboard writer role for users</figcaption></a></figure>
+<h2 id="revamped-ui-for-google-cloud-monitoring">Revamped UI for Google Cloud monitoring</h2>
+<p><em>Generally available in Grafana Open Source and Grafana Cloud Free, Pro, and Advanced.</em></p>
+<p>The Google Cloud monitoring data source UI has been brought up to date with the latest Grafana UI design.
+This new interface provides a more consistent experience as you switch between different data sources.
+It also groups query builder items together more logically, so it&rsquo;s easier to write queries.
+In the case of Cloud monitoring, the query builder&rsquo;s groupings should more closely match the groupings in Google&rsquo;s Cloud console.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png"data-srcset="/static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png?w=320 320w, /static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png?w=550 550w, /static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png?w=750 750w, /static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png?w=900 900w, /static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png?w=1040 1040w, /static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png?w=1240 1240w, /static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Query builder groupings for Google Cloud monitoring"width="918"height="595"title="Query builder groupings for Google Cloud monitoring"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/gcloud-data-source-query-grouping-9-2.png"
+            alt="Query builder groupings for Google Cloud monitoring"width="918"height="595"title="Query builder groupings for Google Cloud monitoring"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Query builder groupings for Google Cloud monitoring</figcaption></a></figure>
+<h2 id="app-plugins-better-handling-for-secure-fields">App Plugins: better handling for secure fields</h2>
+<p>Plugin developers can mark certain fields as secure to encrypt those fields in Grafana&rsquo;s database.
+This is important for sensitive fields like data source passwords or API keys.
+Previously, plugin developers needed to manually track which fields were labeled secure.
+We have extended our plugins platform to simplify this, which means one less thing for developers to worry about and better security for all users&rsquo; data.
+For details on using this functionality, see <a href="https://github.com/grafana/grafana/pull/55313" target="_blank" rel="noopener noreferrer">GitHub pull request #55313</a> and our <a href="https://github.com/grafana/grafana-plugin-examples" target="_blank" rel="noopener noreferrer">plugin examples</a> repository.</p>
+<h2 id="transformations-inner-joins">Transformations: INNER JOINs</h2>
+<p><a href="../../panels-visualizations/query-transform-data/transform-data/">Transformations</a> allow you to shape raw data from data sources, like metrics series or GitHub issues, into a format that&rsquo;s appropriate for the chosen visualization.
+We have extended the <a href="../../panels-visualizations/query-transform-data/transform-data/#join-by-field">Join transformation</a> to support INNER JOINs in addition to OUTER JOINs. These work similarly to SQL JOINs.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/transformations/transform-outer-join-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/transformations/transform-outer-join-9-2.png"data-srcset="/static/img/docs/transformations/transform-outer-join-9-2.png?w=320 320w, /static/img/docs/transformations/transform-outer-join-9-2.png?w=550 550w, /static/img/docs/transformations/transform-outer-join-9-2.png?w=750 750w, /static/img/docs/transformations/transform-outer-join-9-2.png?w=900 900w, /static/img/docs/transformations/transform-outer-join-9-2.png?w=1040 1040w, /static/img/docs/transformations/transform-outer-join-9-2.png?w=1240 1240w, /static/img/docs/transformations/transform-outer-join-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Query builder groupings for Google Cloud monitoring"width="760"height="263"title="Query builder groupings for Google Cloud monitoring"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/transform-outer-join-9-2.png"
+            alt="Query builder groupings for Google Cloud monitoring"width="760"height="263"title="Query builder groupings for Google Cloud monitoring"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Query builder groupings for Google Cloud monitoring</figcaption></a></figure>
+<p>Also, you can now click on the <code>x</code> to clear values in the select fields for the OUTER JOIN and Grouping to Matrix transformations as expected.</p>
+<h2 id="simplified-ui-to-create-template-variable-queries-for-loki-data-source">Simplified UI to create template variable queries for Loki data source</h2>
+<p><em>Generally available in Grafana Open Source.</em></p>
+<p>We have significantly simplified and improved the way you can create template variable queries for Loki data sources in dashboards.
+Use drop-downs to choose query type, label, and stream selector, without needing to worry about templating query syntax.
+For more information, refer to <a href="/docs/grafana/latest/datasources/loki/#query-variable">Loki data source documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/queries/loki-template-variable-queries-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/queries/loki-template-variable-queries-9-2.png"data-srcset="/static/img/docs/queries/loki-template-variable-queries-9-2.png?w=320 320w, /static/img/docs/queries/loki-template-variable-queries-9-2.png?w=550 550w, /static/img/docs/queries/loki-template-variable-queries-9-2.png?w=750 750w, /static/img/docs/queries/loki-template-variable-queries-9-2.png?w=900 900w, /static/img/docs/queries/loki-template-variable-queries-9-2.png?w=1040 1040w, /static/img/docs/queries/loki-template-variable-queries-9-2.png?w=1240 1240w, /static/img/docs/queries/loki-template-variable-queries-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Creating a template variable query for Loki"width="1600"height="694"title="Creating a template variable query for Loki"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/loki-template-variable-queries-9-2.png"
+            alt="Creating a template variable query for Loki"width="1600"height="694"title="Creating a template variable query for Loki"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Creating a template variable query for Loki</figcaption></a></figure>
+<h2 id="authentication-and-authorization">Authentication and authorization</h2>
+<h3 id="teams-can-be-empty-or-without-any-admin-user">Teams can be empty or without any Admin user</h3>
+<p><em>Generally available in all editions.</em></p>
+<p>You can now leave a team empty without any users, or have only Members in a team.
+This helps you sync teams and users from a single sign-on provider like Active Directory or Okta, or if you use teams as collections of permissions.
+Previously, teams required at least one Admin user to be in a team.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/manage-users/member-only-team-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/manage-users/member-only-team-9-2.png"data-srcset="/static/img/docs/manage-users/member-only-team-9-2.png?w=320 320w, /static/img/docs/manage-users/member-only-team-9-2.png?w=550 550w, /static/img/docs/manage-users/member-only-team-9-2.png?w=750 750w, /static/img/docs/manage-users/member-only-team-9-2.png?w=900 900w, /static/img/docs/manage-users/member-only-team-9-2.png?w=1040 1040w, /static/img/docs/manage-users/member-only-team-9-2.png?w=1240 1240w, /static/img/docs/manage-users/member-only-team-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Creating a team without an Admin user"width="2620"height="860"title="Creating a team without an Admin user"/>
+        <noscript>
+          <img
+            src="/static/img/docs/manage-users/member-only-team-9-2.png"
+            alt="Creating a team without an Admin user"width="2620"height="860"title="Creating a team without an Admin user"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Creating a team without an Admin user</figcaption></a></figure>
+<h3 id="role-based-access-control-is-easier-to-use">Role-based access control is easier to use</h3>
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud.</em></p>
+<h4 id="role-picker-when-creating-and-editing-teams">Role picker when creating and editing teams</h4>
+<p>You can now choose a team&rsquo;s roles and permissions when creating a new team or editing an existing team, which helps you grant permissions to teams more efficiently.
+Previously, you could assign roles only when looking at a list of all teams.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png"data-srcset="/static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png?w=320 320w, /static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png?w=550 550w, /static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png?w=750 750w, /static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png?w=900 900w, /static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png?w=1040 1040w, /static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png?w=1240 1240w, /static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Assigning roles to a team when creating it"width="1298"height="1206"title="Assigning roles to a team when creating it"/>
+        <noscript>
+          <img
+            src="/static/img/docs/manage-users/team-role-assignment-during-creation-9-2.png"
+            alt="Assigning roles to a team when creating it"width="1298"height="1206"title="Assigning roles to a team when creating it"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Assigning roles to a team when creating it</figcaption></a></figure>
+<h4 id="rbac-organize-custom-roles-into-groups">RBAC: Organize custom roles into groups</h4>
+<p>If you create many custom roles in Grafana – for example, different roles for editing specific dashboards or folders, or specific roles for certain teams in your company – you can now organize them into groups for more efficient navigation, browsing, and custom role assignment.
+For more information on custom roles, see the <a href="/docs/grafana/latest/developers/http_api/access_control/#create-a-new-custom-role">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/manage-users/rbac-groups-9-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/manage-users/rbac-groups-9-2.png"data-srcset="/static/img/docs/manage-users/rbac-groups-9-2.png?w=320 320w, /static/img/docs/manage-users/rbac-groups-9-2.png?w=550 550w, /static/img/docs/manage-users/rbac-groups-9-2.png?w=750 750w, /static/img/docs/manage-users/rbac-groups-9-2.png?w=900 900w, /static/img/docs/manage-users/rbac-groups-9-2.png?w=1040 1040w, /static/img/docs/manage-users/rbac-groups-9-2.png?w=1240 1240w, /static/img/docs/manage-users/rbac-groups-9-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Organizing custom roles into RBAC groups"width="1728"height="808"title="Organizing custom roles into RBAC groups"/>
+        <noscript>
+          <img
+            src="/static/img/docs/manage-users/rbac-groups-9-2.png"
+            alt="Organizing custom roles into RBAC groups"width="1728"height="808"title="Organizing custom roles into RBAC groups"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Organizing custom roles into RBAC groups</figcaption></a></figure>
+<h4 id="rbac-terraform-resource-for-assigning-fixed-and-custom-roles-to-users-teams-and-service-accounts">RBAC: Terraform resource for assigning fixed and custom roles to users, teams, and service accounts</h4>
+<p>You can now assign fixed and custom roles to users, teams, and service accounts with the Grafana role_assignment resource in Terraform.
+This allows you to provision user permissions in a version-able, repeatable way if you use Terraform.
+Learn more in the <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/role_assignment" target="_blank" rel="noopener noreferrer">documentation</a> for Grafana&rsquo;s Terraform provider.</p>
+<h2 id="saml-role-mapping-improvements">SAML role mapping improvements</h2>
+<p><em>Generally available in Grafana Enterprise, Grafana Cloud Pro, and Advanced.</em></p>
+<h3 id="map-a-user-to-all-organizations-in-grafana">Map a user to all organizations in Grafana</h3>
+<p>You can now use <code>*</code> as the Grafana organization in the mapping to add all users from a given SAML Organization to all existing Grafana organizations.
+For more information, see <a href="/docs/grafana/next/setup-grafana/configure-security/configure-authentication/saml/#configure-organization-mapping">&ldquo;Configure SAML authentication&rdquo;</a> in the documentation.</p>
+<h3 id="skip-organization-role-sync">Skip organization role sync</h3>
+<p>Generally available in Grafana Enterprise, Grafana Cloud Pro, and Advanced.</p>
+<p>If you use a SAML identity provider to manage your users but prefer to assign roles and permissions in the Grafana UI or via API, you can now enable a configuration option to skip user organization and roles synchronization with your SAML provider.</p>
+<p>Use the <code>skip_org_role_sync</code> configuration option when configuring SAML to prevent synchronization with SAML roles and make user roles editable from within Grafana.</p>
+<p>For more information, see the <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/">SAML configuration documentation</a>.</p>
+<h2 id="assign-server-admin-permissions-from-oauth">Assign Server Admin permissions from Oauth</h2>
+<p>You can now map OAuth groups and roles to Server Admin for the GitLab, GitHub, AzureAD, Okta, and Generic OAuth integrations.
+To enable this functionality, set the <code>allow_assign_grafana_admin</code> configuration option to <code>true</code> in the desired OAuth integration section.
+For more information, see the <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/">authentication configuration documentation</a> for each OAuth client.</p>
+<h2 id="match-parameter-support-in-prometheus-labels-api">Match parameter support in prometheus labels API</h2>
+<p>Prometheus users running Prometheus v2.24 and higher can use the <a href="https://prometheus.io/docs/prometheus/latest/querying/api/#querying-label-values" target="_blank" rel="noopener noreferrer">labels endpoint</a> instead of the <a href="https://prometheus.io/docs/prometheus/latest/querying/api/#finding-series-by-label-matchers" target="_blank" rel="noopener noreferrer">series endpoint</a> for the <a href="../../datasources/prometheus/#query-variable"><code>label_values</code> function</a>.
+This decreases load times for templated high-cardinality Prometheus instances.</p>
+<p>If you want to benefit from this endpoint you must first configure the Prometheus type and version in any Prometheus data sources&rsquo; <a href="../../datasources/prometheus/">configuration</a>.</p>
+<h2 id="new-prometheus-streaming-parser">New Prometheus streaming parser</h2>
+<p>In Grafana v9.2, you can enable the <code>prometheusStreamingJSONParser</code> <a href="../../setup-grafana/configure-grafana/#feature_toggles">feature toggle</a> to use a better-performing, memory-efficient streaming JSON client for Prometheus.
+We&rsquo;ll make this client the default in Grafana v9.3.</p>
+<p>When Prometheus returns <code>NaN</code> values, this new client doesn&rsquo;t change them, neither to the value <code>null</code> nor to <code>0</code> as in recent Grafana versions.
+If you use this new Prometheus streaming parser with Grafana Managed Alerts, this change in behavior might trigger alerts.
+To avoid this, select the &ldquo;Drop non-numeric values&rdquo; option in the Reduce expression to drop <code>NaN</code> values.</p>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<h1 id="configure-a-tempo-data-source">Configure a Tempo data source</h1>
+<p>The Tempo data source sets how Grafana connects to your Tempo database and lets you configure features and integrations with other telemetry signals.</p>
+<p>You can configure the data source using either the data source interface in Grafana or using a configuration file.
+This page explains how to set up and enable the data source capabilities using Grafana.</p>
+<p>If you&rsquo;re using your own installation of Grafana, you can provision the Tempo data source using a YAML configuration file.</p>
+<p>Depending upon your tracing environment, you may have more than one Tempo instance.
+Grafana supports multiple Tempo data sources.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To configure a Tempo data source, you need administrator rights to your Grafana instance and a Tempo instance configured to send tracing data to Grafana.</p>
+<p>If you&rsquo;re provisioning a Tempo data source, then you also need administrative rights on the server hosting your Grafana instance.
+Refer to <a href="#provision-the-data-source">Provision the data source</a> for next steps.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/tempo-data-source-provisioned-error.png"
+  alt="Provisioned data source warning" width="1143"
+     height="385"/></p>
+<h2 id="add-or-modify-a-data-source">Add or modify a data source</h2>
+<p>You can use these procedures to configure a new Tempo data source or to edit an existing one.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can&rsquo;t modify a provisioned data source using the Tempo data source settings in Grafana Cloud.</p>
+<p>If you want to modify any capabilities of a provisioned data source, you can clone the provisioned data source and then edit the new data source in the Grafana UI.
+Refer to <a href="#clone-a-provisioned-data-source-for-grafana-cloud">Clone a provisioned data source for Grafana Cloud</a> for more information.</p></blockquote></div>
+
+<h3 id="add-a-new-data-source">Add a new data source</h3>
+<p>Follow these steps to set up a new Tempo data source:</p>
+<ol>
+<li>Select <strong>Connections</strong> in the main menu.</li>
+<li>Enter <code>Tempo</code> in the search bar.</li>
+<li>Select <strong>Tempo</strong>.</li>
+<li>Select <strong>Add new data source</strong> in the top-right corner of the page.</li>
+<li>On the <strong>Settings</strong> tab, complete the <strong>Name</strong>, <strong>Connection</strong>, and <strong>Authentication</strong> sections.</li>
+</ol>
+<ul>
+<li>Use the <strong>Name</strong> field to specify the name used for the data source in panels, queries, and Explore. Toggle the <strong>Default</strong> switch for the data source to be pre-selected for new panels.</li>
+<li>Under <strong>Connection</strong>, enter the <strong>URL</strong> of the Tempo instance, for example, <code>https://example.com:4100</code>.</li>
+<li>Complete the <a href="#authentication"><strong>Authentication</strong> section</a>.</li>
+</ul>
+<ol>
+<li>Optional: Configure other sections to add capabilities to your tracing data. Refer to the additional procedures for instructions.</li>
+<li>Select <strong>Save &amp; test</strong>.</li>
+</ol>
+<h3 id="update-an-existing-data-source">Update an existing data source</h3>
+<p>To modify an existing Tempo data source:</p>
+<ol>
+<li>Select <strong>Connections</strong> in the main menu.</li>
+<li>Select <strong>Data sources</strong> to view a list of configured data sources.</li>
+<li>Select the Tempo data source you wish to modify.</li>
+<li>Configure or update additional sections to add capabilities to your tracing data. Refer to the additional procedures for instructions.</li>
+<li>After completing your updates, select <strong>Save &amp; test</strong>.</li>
+</ol>
+<h2 id="authentication">Authentication</h2>
+<p>Use this section to select an authentication method to access the data source.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use Transport Layer Security (TLS) for an additional layer of security when working with Tempo.
+For additional information on setting up TLS encryption with Tempo, refer to 
+    <a href="/docs/tempo/latest/configuration/network/tls/">Configure TLS communication</a> and 
+    <a href="/docs/tempo/latest/configuration/">Tempo configuration</a>.</p></blockquote></div>
+
+
+
+<div data-shared="datasources/datasouce-authentication.md">
+            
+
+<!-- Authentication procedure from shared file -->
+<p>To set up authentication:</p>
+<ol>
+<li>
+<p>Select an authentication method from the drop-down list:</p>
+<ul>
+<li><strong>Basic authentication</strong>: Authenticates your data source using a username and password</li>
+<li><strong>Forward OAuth identity</strong>: Forwards the OAuth access token and the OIDC ID token, if available, of the user querying to the data source</li>
+<li><strong>No authentication</strong>: No authentication is required to access the data source</li>
+</ul>
+</li>
+<li>
+<p>For <strong>Basic authentication</strong> only: Enter the <strong>User</strong> and <strong>Password</strong>.</p>
+</li>
+<li>
+<p>Optional: Complete the <strong>TLS settings</strong> for additional security methods.</p>
+<dl>
+<dt><strong>TLS Client Authentication</strong></dt>
+<dd>Toggle on to use client authentication. When enabled, it adds the <strong>Server name</strong>, <strong>Client cert</strong>, and <strong>Client key</strong> fields. The client provides a certificate that is validated by the server to establish the client&rsquo;s trusted identity. The client key encrypts the data between client and server. These details are encrypted and stored in the Grafana database.</dd>
+<dt><strong>Add self-signed certificate</strong></dt>
+<dd>Activate this option to use a self-signed TLS certificate. You can add your own Certificate Authority (CA) certificate on top of one generated by the certificate authorities for additional security measure.</dd>
+<dt><strong>Skip TLS certification validation</strong></dt>
+<dd>When activated, it bypasses TLS certificate verification. Not recommended, unless absolutely necessary for testing.
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/tempo-data-source-authentication.png"
+  alt="Authentication section showing the TLS client certificate options" width="633"
+     height="914"/></dd>
+</dl>
+</li>
+<li>
+<p>Optional: Add <strong>HTTP Headers</strong>. You can pass along additional context and metadata data about the request and response. Select <strong>Add header</strong> to add <strong>Header</strong> and <strong>Value</strong> fields.</p>
+</li>
+<li>
+<p>Select <strong>Save &amp; test</strong> to preserve your changes.</p>
+</li>
+</ol>
+
+  </div>
+
+        
+<h2 id="streaming">Streaming</h2>
+<p>Streaming enables TraceQL query results to be displayed as they become available.
+Without streaming, no results are displayed until all results have returned.</p>
+<p>To use streaming, you need to:</p>
+<ul>
+<li>
+<p>Run Tempo version 2.2 or later, or Grafana Enterprise Traces (GET) version 2.2 or later, or use Grafana Cloud Traces.</p>
+</li>
+<li>
+<p>Tempo must have <code>stream_over_http_enabled: true</code> for streaming to work.</p>
+<p>For more information, refer to 
+    <a href="/docs/tempo/latest/api_docs/#tempo-grpc-api">Tempo gRPC API</a>.</p>
+</li>
+<li>
+<p>For self-managed Tempo or GET instances: If your Tempo or GET instance is behind a load balancer or proxy that doesn&rsquo;t supporting gRPC or HTTP2, streaming may not work and should be deactivated.</p>
+</li>
+</ul>
+<h3 id="activate-streaming">Activate streaming</h3>
+<p>Streaming is available in Grafana and Grafana Cloud.
+You can activate streaming by turning the <strong>Streaming</strong> toggle to on in the Tempo data source.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo-data-source-streaming-v11.2.png"
+  alt="Streaming section in Tempo data source" width="926"
+     height="255"/></p>
+<p>When streaming is active, it&rsquo;s shows as <strong>Enabled</strong> in <strong>Explore</strong>.
+To check the status, select Explore in the menu, select your Tempo data source, and expand the <strong>Options</strong> section.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/tempo-query-stream-active.png"
+  alt="The Explore screen shows the Tempo data source with streaming active" width="1196"
+     height="778"/></p>
+<h2 id="trace-to-logs">Trace to logs</h2>
+<p>The <strong>Trace to logs</strong> setting configures 
+    <a href="/docs/grafana/latest/explore/trace-integration/">trace to logs</a> that&rsquo;s available when you integrate Grafana with Tempo.
+Trace to logs can also be used with other tracing data sources, such as Jaeger and Zipkin.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/tempo-data-source-trace-to-logs.png"
+  alt="Trace to logs settings" width="923"
+     height="332"/></p>
+<p>You can configure a custom query where you can use a 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">template language</a> to interpolate variables from the trace or span.</p>
+<h3 id="configure-a-custom-query">Configure a custom query</h3>
+<ol>
+<li>
+<p>Select the target data source from the drop-down list.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to see more options, including adding a data source.</p>
+</li>
+<li>
+<p>Set start and end time shift. As the logs timestamps may not exactly match the timestamps of the spans in the trace it may be necessary to widen or shift the time range to find the desired logs.</p>
+</li>
+<li>
+<p>Optional: Select tags to map. These tags can be used in the custom query with <code>${__tags}</code> variable. This variable interpolates the mapped tags as list in an appropriate syntax for the data source. Only the tags that were present in the span are included; tags that aren&rsquo;t present are omitted You can also configure a new name for the tag. This is useful in cases where the tag has dots in the name and the target data source doesn&rsquo;t allow dots in labels. For example, you can remap <code>http.status</code> to <code>http_status</code>. If you don&rsquo;t map any tags here, you can still use any tag in the query, for example, <code>method=&quot;${__span.tags.method}&quot;</code>. You can learn more about custom query variables <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#custom-query-variables">here</a>.</p>
+</li>
+<li>
+<p>Skip <strong>Filter by trace ID</strong> and <strong>Filter by span ID</strong> settings as these cannot be used with a custom query.</p>
+</li>
+<li>
+<p>Switch on <strong>Use custom query</strong>.</p>
+</li>
+<li>
+<p>Specify a custom query to be used to query the logs. You can use various variables to make that query relevant for current span. The link will only be shown only if all the variables are interpolated with non-empty values to prevent creating an invalid query.</p>
+</li>
+</ol>
+<h3 id="configure-trace-to-logs">Configure trace to logs</h3>
+<p>The following table describes the ways in which you can configure your trace to logs settings:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Data source</strong></td>
+          <td>Defines the target data source. You can select Loki or any compatible log store.</td>
+      </tr>
+      <tr>
+          <td><strong>Span start time shift</strong></td>
+          <td>Shifts the start time for the logs query, based on the span&rsquo;s start time. You can use time units, such as <code>5s</code>, <code>1m</code>, <code>3h</code>. To extend the time to the past, use a negative value. Default: <code>0</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Span end time shift</strong></td>
+          <td>Shifts the end time for the logs query, based on the span&rsquo;s end time. You can use time units. Default: <code>0</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Tags</strong></td>
+          <td>Defines the tags to use in the logs query. Default: <code>cluster</code>, <code>hostname</code>, <code>namespace</code>, <code>pod</code>, <code>service.name</code>, <code>service.namespace</code>. You can change the tag name for example to remove dots from the name if they are not allowed in the target data source. For example, map <code>http.status</code> to <code>http_status</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Filter by trace ID</strong></td>
+          <td>Toggles whether to append the trace ID to the logs query.</td>
+      </tr>
+      <tr>
+          <td><strong>Filter by span ID</strong></td>
+          <td>Toggles whether to append the span ID to the logs query.</td>
+      </tr>
+      <tr>
+          <td><strong>Use custom query</strong></td>
+          <td>Toggles use of custom query with interpolation.</td>
+      </tr>
+      <tr>
+          <td><strong>Query</strong></td>
+          <td>Input to write custom query. Use variable interpolation to customize it with variables from span.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="trace-to-metrics">Trace to metrics</h2>
+<p>The <strong>Trace to metrics</strong> setting configures the <a href="/blog/2022/08/18/new-in-grafana-9.1-trace-to-metrics-allows-users-to-navigate-from-a-trace-span-to-a-selected-data-source/">trace to metrics feature</a> available when integrating Grafana with Tempo.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=TkapvLeMMpc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>There are two ways to configure the trace to metrics feature:</p>
+<ul>
+<li>Use a basic configuration with a default query, or</li>
+<li>Configure one or more custom queries where you can use a 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">template language</a> to interpolate variables from the trace or span.</li>
+</ul>
+<p>Refer to the <a href="#trace-tometrics-configuration-options">Trace to metrics configuration options</a> section to learn about the available options.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/tempo-data-source-trace-to-metrics.png"
+  alt="Trace to metrics settings in the Tempo data source" width="923"
+     height="272"/></p>
+<h3 id="set-up-a-simple-configuration">Set up a simple configuration</h3>
+<p>To use a simple configuration, follow these steps:</p>
+<ol>
+<li>
+<p>Select a metrics data source from the <strong>Data source</strong> drop-down.</p>
+</li>
+<li>
+<p>Optional: Change <strong>Span start time shift</strong> and <strong>Span end time shift</strong>. You can change one or both of these settings. The default start time shift is -2 minutes and 2 minutes for end time shift.</p>
+</li>
+<li>
+<p>Optional: Choose any tags to use in the query. If left blank, the default values of <code>cluster</code>, <code>hostname</code>, <code>namespace</code>, <code>pod</code>, <code>service.name</code> and <code>service.namespace</code> are used.</p>
+<p>The tags you configure must be present in the spans attributes or resources for a trace to metrics span link to appear. You can optionally configure a new name for the tag. This is useful for example if the tag has dots in the name and the target data source doesn&rsquo;t allow using dots in labels. In that case you can for example remap <code>service.name</code> to <code>service_name</code>.</p>
+</li>
+<li>
+<p>Don&rsquo;t select <strong>Add query</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Save and Test</strong>.</p>
+</li>
+</ol>
+<h3 id="set-up-custom-queries">Set up custom queries</h3>
+<p>To use custom queries, you need to configure the tags you’d like to include in the linked queries.
+For each tag, the key is the span attribute name.
+In cases where the attribute name would result in an invalid metrics query or doesn’t exactly match the desired label name, you can enter the label name as the second value.
+For example, you could map the attribute <code>k8s.pod</code> to the label <code>pod</code>.</p>
+<p>You can interpolate the configured tags using the <code>$__tags</code> keyword.
+For example, when you configure the query <code>requests_total{$__tags}</code> with the tags <code>k8s.pod=pod</code> and <code>cluster</code>, it results in <code>requests_total{pod=&quot;nginx-554b9&quot;, cluster=&quot;us-east-1&quot;}</code>.
+The label values are dynamically inserted based on the span attributes’ values.</p>
+<p>You can link to any metric you’d like, but metrics for span durations, counts, and errors filtered by service or span are a great starting point.</p>
+<p>To use custom queries with the configuration, follow these steps:</p>
+<ol>
+<li>
+<p>Select a metrics data source from the <strong>Data source</strong> drop-down.</p>
+</li>
+<li>
+<p>Optional: Choose any tags to use in the query. If left blank, the default values of <code>cluster</code>, <code>hostname</code>, <code>namespace</code>, <code>pod</code>, <code>service.name</code> and <code>service.namespace</code> are used.</p>
+<p>These tags can be used in the custom query with <code>${__tags}</code> variable. This variable interpolates the mapped tags as list in an appropriate syntax for the data source and will only include the tags that were present in the span omitting those that weren’t present. You can optionally configure a new name for the tag. This is useful in cases where the tag has dots in the name and the target data source doesn&rsquo;t allow using dots in labels. For example, you can remap <code>service.name</code> to <code>service_name</code> in such a case. If you don’t map any tags here, you can still use any tag in the query like this <code>method=&quot;${__span.tags.method}&quot;</code>. You can learn more about custom query variables <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#custom-query-variables">here</a>.</p>
+</li>
+<li>
+<p>Click <strong>Add query</strong> to add a custom query.</p>
+</li>
+<li>
+<p>Specify a custom query to be used to query metrics data.</p>
+<p>Each linked query consists of:</p>
+<ul>
+<li><strong>Link Label:</strong> <em>(Optional)</em> Descriptive label for the linked query.</li>
+<li><strong>Query:</strong> The query ran when navigating from a trace to the metrics data source.
+Interpolate tags using the <code>$__tags</code> keyword.
+For example, when you configure the query <code>requests_total{$__tags}</code>with the tags <code>k8s.pod=pod</code> and <code>cluster</code>, the result looks like <code>requests_total{pod=&quot;nginx-554b9&quot;, cluster=&quot;us-east-1&quot;}</code>.</li>
+</ul>
+</li>
+<li>
+<p>Select <strong>Save and Test</strong>.</p>
+</li>
+</ol>
+<h3 id="trace-to-metrics-configuration-options">Trace to metrics configuration options</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Setting name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Data source</strong></td>
+          <td>Defines the target data source.</td>
+      </tr>
+      <tr>
+          <td><strong>Span start time shift</strong></td>
+          <td>Shifts the start time for the metrics query, based on the span&rsquo;s start time. You can use time units, such as <code>5s</code>, <code>1m</code>, <code>3h</code>. To extend the time to the past, use a negative value. Default: <code>0</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Span end time shift</strong></td>
+          <td>Shifts the end time for the metrics query, based on the span&rsquo;s end time. You can use time units. Default: <code>0</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Tags</strong></td>
+          <td>Defines the tags used in linked queries. The key sets the span attribute name, and the optional value sets the corresponding metric label name. For example, you can map <code>k8s.pod</code> to <code>pod</code>. To interpolate these tags into queries, use the <code>$__tags</code> keyword.</td>
+      </tr>
+      <tr>
+          <td><strong>Link Label</strong></td>
+          <td><em>(Optional)</em> Descriptive label for the linked query.</td>
+      </tr>
+      <tr>
+          <td><strong>Query</strong></td>
+          <td>Input to write a custom query. Use variable interpolation to customize it with variables from span.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="trace-to-profiles">Trace to profiles</h2>
+
+
+<div data-shared="datasources/tempo-traces-to-profiles.md">
+            
+
+<!-- # Trace to profiles  -->
+<p>Using Trace to profiles, you can use Grafana’s ability to correlate different signals by adding the functionality to link between traces and profiles.</p>
+<p><strong>Trace to profiles</strong> lets you link your Grafana Pyroscope data source to tracing data.
+When configured, this connection lets you run queries from a trace span into the profile data using <strong>Explore</strong>.
+Each span links to your queries. Clicking a link runs the query in a split panel.
+If tags are configured, Grafana dynamically inserts the span attribute values into the query.
+The query runs over the time range of the (span start time - 60) to (span end time + 60 seconds).</p>
+<p>Embedded flame graphs are also inserted into each span details section that has a linked profile.
+This lets you see resource consumption in a flame graph visualization for each span without having to navigate away from the current view.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=AG8VzfFMLxo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>There are two ways to configure the trace to profiles feature:</p>
+<ul>
+<li>Use a basic configuration with default query, or</li>
+<li>Configure a custom query where you can use a template language to interpolate variables from the trace or span.</li>
+</ul>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/tempo-data-source-trace-to-profiles.png"
+  alt="Traces to profiles section in the Tempo data source" width="919"
+     height="224"/></p>
+<h4 id="before-you-begin">Before you begin</h4>
+<p>Traces to profile requires a Tempo data source with Traces to profiles configured and a 
+    <a href="/docs/grafana/latest/datasources/grafana-pyroscope/">Grafana Pyroscope data source</a>.</p>
+<p>As with traces, your application needs to be instrumented to emit profiling data. For more information, refer to 
+    <a href="/docs/pyroscope/latest/configure-client/trace-span-profiles/">Linking tracing and profiling with span profiles</a>.</p>
+<h4 id="use-a-basic-configuration">Use a basic configuration</h4>
+<p>To use a basic configuration, follow these steps:</p>
+<ol>
+<li>
+<p>In the left menu, select <strong>Connections</strong> &gt; <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Select your configured Tempo data source from the <strong>Data source</strong> list.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>Traces to profiles</strong> section.</p>
+</li>
+<li>
+<p>Select a Pyroscope data source in the <strong>Data source</strong> drop-down.</p>
+</li>
+<li>
+<p>Optional: Add one or more tags to use in the query. If left blank, the default values of <code>service.name</code> and <code>service.namespace</code> are used.</p>
+<p>The tags you configure must be present in the spans attributes or resources for a trace-to-profiles span link to appear.</p>
+<p>You can optionally configure a new name for the tag. This is useful if the tag has dots in the name and the target data source doesn&rsquo;t allow dots in labels. In that case, you can remap <code>service.name</code> to <code>service_name</code>.</p>
+</li>
+<li>
+<p>Select one or more profile types to use in the query. Select the drop-down and choose options from the menu.</p>
+<p>The profile type or app must be selected for the query to be valid. Grafana doesn&rsquo;t show any data if the profile type or app isn’t selected when a query runs.</p>
+</li>
+<li>
+<p>Select <strong>Save and Test</strong>.</p>
+</li>
+</ol>
+<p>If you have configured a Pyroscope data source and no profile data is available or the <strong>Profiles for this span</strong>
+button and the embedded flame graph isn&rsquo;t visible, verify that the <code>pyroscope.profile.id</code> key-value pair exists in your span tags.</p>
+<h4 id="configure-custom-query-traces-profiles">Configure a custom query</h4>
+<p>To use a custom query with the configuration, follow these steps:</p>
+<ol>
+<li>
+<p>In the left menu, select <strong>Connections</strong> &gt; <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Select a configured Tempo data source from the <strong>Data source</strong> list.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>Traces to profiles</strong> section.</p>
+</li>
+<li>
+<p>Select a Pyroscope data source in the <strong>Data source</strong> drop-down.</p>
+</li>
+<li>
+<p>Optional: Choose any tags to use in the query. If left blank, the default values of <code>service.name</code> and <code>service.namespace</code> are used.</p>
+<p>These tags can be used in the custom query with <code>${__tags}</code> variable. This variable interpolates the mapped tags as list in an appropriate syntax for the data source. Only tags present in the span are included. Tags that aren&rsquo;t present are omitted.</p>
+<p>You can also configure a name for the tag. Tag names are useful where the tag has dots in the name and the target data source doesn&rsquo;t allow using dots in labels. For example, you can remap <code>service.name</code> to <code>service_name</code>. If you don’t map any tags here, you can still use any tag in the query, for example: <code>method=&quot;${__span.tags.method}&quot;</code>. Learn more about 
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#custom-query-variables">custom query variables</a>.</p>
+</li>
+<li>
+<p>Select one or more profile types to use in the query. Select the drop-down and choose options from the menu.</p>
+</li>
+<li>
+<p>Switch on <strong>Use custom query</strong> to enter a custom query.</p>
+</li>
+<li>
+<p>Specify a custom query to be used to query profile data. You can use various variables to make that query relevant for current span. The link shows only if all the variables are interpolated with non-empty values to prevent creating an invalid query. You can interpolate the configured tags using the <code>$__tags</code> keyword.</p>
+</li>
+<li>
+<p>Select <strong>Save and Test</strong>.</p>
+</li>
+</ol>
+<h4 id="configuration-options">Configuration options</h4>
+<p>The following table describes options for configuring your <strong>Trace to profiles</strong> settings:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Data source</td>
+          <td>Defines the target data source. You can select a Pyroscope [profiling] data source.</td>
+      </tr>
+      <tr>
+          <td>Tags</td>
+          <td>Defines the tags to use in the profile query. Default: <code>cluster</code>, <code>hostname</code>, <code>namespace</code>, <code>pod</code>, <code>service.name</code>, <code>service.namespace</code>. You can change the tag name for example to remove dots from the name if they&rsquo;re not allowed in the target data source. For example, map <code>http.status</code> to <code>http_status</code>.</td>
+      </tr>
+      <tr>
+          <td>Profile type</td>
+          <td>Defines the profile type that used in the query.</td>
+      </tr>
+      <tr>
+          <td>Use custom query</td>
+          <td>Toggles use of custom query with interpolation.</td>
+      </tr>
+      <tr>
+          <td>Query</td>
+          <td>Input to write custom query. Use variable interpolation to customize it with variables from span.</td>
+      </tr>
+  </tbody>
+</table>
+
+  </div>
+
+        
+<h2 id="custom-query-variables">Custom query variables</h2>
+<p>To use a variable in your trace to logs, metrics, or profiles, you need to wrap it in <code>${}</code>.
+For example, <code>${__span.name}</code>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>__tags</strong></td>
+          <td>This variable uses the tag mapping from the UI to create a label matcher string in the specific data source syntax. The variable only uses tags that are present in the span. The link is still created even if only one of those tags is present in the span. You can use this if all tags are not required for the query to be useful.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.spanId</strong></td>
+          <td>The ID of the span.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.traceId</strong></td>
+          <td>The ID of the trace.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.duration</strong></td>
+          <td>The duration of the span.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.name</strong></td>
+          <td>Name of the span.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.tags</strong></td>
+          <td>Namespace for the tags in the span. To access a specific tag named <code>version</code>, you would use <code>${__span.tags.version}</code>. In case the tag contains dot, you have to access it as <code>${__span.tags[&quot;http.status&quot;]}</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>__trace.traceId</strong></td>
+          <td>The ID of the trace.</td>
+      </tr>
+      <tr>
+          <td><strong>__trace.duration</strong></td>
+          <td>The duration of the trace.</td>
+      </tr>
+      <tr>
+          <td><strong>__trace.name</strong></td>
+          <td>The name of the trace.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="additional-settings">Additional settings</h2>
+<p>Use the down arrow to expand the <strong>Additional settings</strong> section to view these options.</p>
+<h3 id="advanced-http-settings">Advanced HTTP settings</h3>
+<p>The Grafana Proxy deletes forwarded cookies. Use the <strong>Allowed cookies</strong> field to specify cookies by name that should be forwarded to the data source.</p>
+<p>The <strong>Timeout</strong> field sets the HTTP request timeout in seconds.</p>
+<h3 id="service-graph">Service graph</h3>
+<p>The <strong>Service graph</strong> setting configures the <a href="/docs/tempo/latest/metrics-generator/service_graphs/enable-service-graphs/">Service Graph</a> data.</p>
+<p>Configure the <strong>Data source</strong> setting to define in which Prometheus instance the Service Graph data is stored.</p>
+<p>To use the Service Graph, refer to the <a href="#use-the-service-graph">Service Graph documentation</a>.</p>
+<h3 id="node-graph">Node graph</h3>
+<p>The <strong>Node graph</strong> setting enables the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/">node graph visualization</a>, which isn&rsquo;t activated by default.</p>
+<p>Once activated, Grafana displays the node graph above the trace view.</p>
+<h3 id="tempo-search">Tempo search</h3>
+<p>The <strong>Search</strong> setting configures <a href="/docs/tempo/latest/configuration/#search">Tempo search</a>.</p>
+<p>You can configure the <strong>Hide search</strong> setting to hide the search query option in <strong>Explore</strong> if search is not configured in the Tempo instance.</p>
+<h3 id="traceid-query">TraceID query</h3>
+<p>The <strong>TraceID query</strong> setting modifies how TraceID queries are run.
+The time range can be used when there are performance issues or timeouts since it narrows down the search to the defined range.
+This setting is disabled by default.</p>
+<p>You can configure this setting as follows:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Enable time range</strong></td>
+          <td>Use a time range in the TraceID query. Default: <code>disabled</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Time shift start</strong></td>
+          <td>Time shift for start of search. Default: <code>30m</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Time shift end</strong></td>
+          <td>Time shift for end of search. Default: <code>30m</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="tags-time-range">Tags time range</h3>
+<p>The <strong>Tags time range</strong> feature controls how tag and tag-value queries are executed by specifying the time window applied to these requests. You can select one of the following options to constrain your queries:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Last 30 minutes</strong></td>
+          <td>Last 30 minutes of selected range.</td>
+      </tr>
+      <tr>
+          <td><strong>Last 3 hours</strong></td>
+          <td>Last 3 hours of selected range.</td>
+      </tr>
+      <tr>
+          <td><strong>Last 24 hours</strong></td>
+          <td>Last 24 hours of selected range.</td>
+      </tr>
+      <tr>
+          <td><strong>Last 3 days</strong></td>
+          <td>Last 3 days of selected range.</td>
+      </tr>
+      <tr>
+          <td><strong>Last 7 days</strong></td>
+          <td>Last 7 days of selected range.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="tag-limit">Tag limit</h3>
+<p>The <strong>Tag limit</strong> setting modifies the max number of tags and tag values to retrieve from Tempo. Default: 5000</p>
+<h3 id="span-bar">Span bar</h3>
+<p>The <strong>Span bar</strong> setting helps you display additional information in the span bar row.</p>
+<p>You can choose one of three options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>None</strong></td>
+          <td>Adds nothing to the span bar row.</td>
+      </tr>
+      <tr>
+          <td><strong>Duration</strong></td>
+          <td><em>(Default)</em> Displays the span duration on the span bar row.</td>
+      </tr>
+      <tr>
+          <td><strong>Tag</strong></td>
+          <td>Displays the span tag on the span bar row. You must also specify which tag key to use to get the tag value, such as <code>component</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="private-data-source-connect">Private data source connect</h3>
+
+
+<div data-shared="datasources/datasouce-private-ds-connect.md">
+            
+
+<!-- Procedure for using private data source connect section in the data sources -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature is only available in Grafana Cloud.</p></blockquote></div>
+
+<p>Use private data source connect (PDC) to connect to and query data within a secure network without opening that network to inbound traffic from Grafana Cloud.</p>
+<p>Refer to <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect</a> for more information on how PDC works and <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/configure-pdc/#configure-grafana-private-data-source-connect-pdc">Configure Grafana private data source connect (PDC)</a> for steps on setting up a PDC connection.</p>
+<p>Use the drop-down list to select a configured private data source. If you make changes, select <strong>Test &amp; save</strong> to preserve your changes.</p>
+<p>Use <strong>Manage private data source connect</strong> to configure and manage any private data sources you have configured.</p>
+
+  </div>
+
+        
+<h2 id="provision-the-data-source">Provision the data source</h2>
+<p>You can define and configure the Tempo data source in YAML files as part of the Grafana provisioning system.
+Provisioning is primarily used Grafana instances that don&rsquo;t use Grafana Cloud.</p>
+<p>You can use version control, like git, to track and manage file changes.
+Changes can be updated or rolled back as needed.</p>
+<p>For more information about provisioning and available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can&rsquo;t modify a provisioned data source using the Tempo data source settings in Grafana.
+Grafana displays a message for provisioned data sources.</p></blockquote></div>
+
+<h3 id="example-file">Example file</h3>
+<p>This example provision YAML file sets up the equivalents of the options available in the Tempo data source user interface.</p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Tempo
+    type: tempo
+    uid: EbPG8fYoz
+    url: http://localhost:3200
+    access: proxy
+    basicAuth: false
+    jsonData:
+      tracesToLogsV2:
+        # Field with an internal link pointing to a logs data source in Grafana.
+        # datasourceUid value must match the uid value of the logs data source.
+        datasourceUid: &#39;loki&#39;
+        spanStartTimeShift: &#39;-1h&#39;
+        spanEndTimeShift: &#39;1h&#39;
+        tags: [&#39;job&#39;, &#39;instance&#39;, &#39;pod&#39;, &#39;namespace&#39;]
+        filterByTraceID: false
+        filterBySpanID: false
+        customQuery: true
+        query: &#39;method=&#34;$${__span.tags.method}&#34;&#39;
+      tracesToMetrics:
+        datasourceUid: &#39;prom&#39;
+        spanStartTimeShift: &#39;-1h&#39;
+        spanEndTimeShift: &#39;1h&#39;
+        tags: [{ key: &#39;service.name&#39;, value: &#39;service&#39; }, { key: &#39;job&#39; }]
+        queries:
+          - name: &#39;Sample query&#39;
+            query: &#39;sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m]))&#39;
+      tracesToProfiles:
+        datasourceUid: &#39;grafana-pyroscope-datasource&#39;
+        tags: [&#39;job&#39;, &#39;instance&#39;, &#39;pod&#39;, &#39;namespace&#39;]
+        profileTypeId: &#39;process_cpu:cpu:nanoseconds:cpu:nanoseconds&#39;
+        customQuery: true
+        query: &#39;method=&#34;$${__span.tags.method}&#34;&#39;
+      serviceMap:
+        datasourceUid: &#39;prometheus&#39;
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
+      traceQuery:
+        timeShiftEnabled: true
+        spanStartTimeShift: &#39;-1h&#39;
+        spanEndTimeShift: &#39;1h&#39;
+      spanBar:
+        type: &#39;Tag&#39;
+        tag: &#39;http.path&#39;
+      streamingEnabled:
+        search: true</pre>
+<h3 id="clone-a-provisioned-data-source-for-grafana-cloud">Clone a provisioned data source for Grafana Cloud</h3>
+<p>If you have a data source that is provisioned by a configuration file in Grafana Cloud, you can clone that provisioned data source and then edit the new data source in the Grafana UI.</p>
+<p>For example, let&rsquo;s say you want to edit the <strong>Trace to log</strong>s settings in your Tempo data source that is provisioned on Grafana Cloud.
+You&rsquo;d like to enable traceID and spanID but you can&rsquo;t because the data source is provisioned.
+By cloning the data source, you&rsquo;d be able to edit these capabilities.</p>
+<p>To clone a provisioned data source, follow these steps:</p>
+<ol>
+<li>Create a viewer <a href="/docs/grafana-cloud/security-and-account-management/authentication-and-permissions/access-policies/">Cloud Access Policy token</a> in the Grafana Cloud Portal, making sure it has read permissions at least for the data types you are trying to clone.</li>
+<li><a href="#add-a-new-data-source">Create a new data source</a> of the same type you want to clone.</li>
+<li>Copy all of the settings from the existing provisioned data source into the new data source while replacing the password with the API key you created.</li>
+</ol>
+<p>The easiest way to do this is to open separate browser windows with the provisioned data source in one and the newly created data source in another.</p>
+<p>Of course, after copying the HTTP and Auth section details, pasting the Cloud Access Policy token into the Password field, and changing any of the other options that you want, you can save and test the data source.</p>

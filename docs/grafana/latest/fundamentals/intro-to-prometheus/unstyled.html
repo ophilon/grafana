@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<h1 id="what-is-prometheus">What is Prometheus?</h1>
+<p>Observability focuses on understanding the internal state of your systems based on the data they produce, which helps determine if your infrastructure is healthy. Prometheus is a core technology for monitoring and observability of systems, but the term &ldquo;Prometheus&rdquo; can be confusing because it is used in different contexts. Understanding Prometheus basics, why it’s valuable for system observability, and how users use it in practice will both help you better understand it and help you use Grafana.</p>
+<p>Prometheus began in 2012 at SoundCloud because existing technologies were insufficient for their observability needs. Prometheus offers both a robust data model and a query language. Prometheus is also simple and scalable. In 2018, Prometheus graduated from Cloud Native Computing Foundation (CNCF) incubation, and today has a thriving community.</p>
+<h2 id="prometheus-as-data">Prometheus as data</h2>
+<p>The following panel in a Grafana dashboard shows how much disk bandwidth on a Mac laptop is being used. The green line represents disk <code>reads</code>, and the yellow line represents <code>writes</code>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/intro-prometheus/disk-io.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/intro-prometheus/disk-io.png"data-srcset="/media/docs/grafana/intro-prometheus/disk-io.png?w=320 320w, /media/docs/grafana/intro-prometheus/disk-io.png?w=550 550w, /media/docs/grafana/intro-prometheus/disk-io.png?w=750 750w, /media/docs/grafana/intro-prometheus/disk-io.png?w=900 900w, /media/docs/grafana/intro-prometheus/disk-io.png?w=1040 1040w, /media/docs/grafana/intro-prometheus/disk-io.png?w=1240 1240w, /media/docs/grafana/intro-prometheus/disk-io.png?w=1920 1920w"
+          data-sizes="auto"alt="Disk I/O dashboard"width="1128"height="492"title="Disk I/O dashboard"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/intro-prometheus/disk-io.png"
+            alt="Disk I/O dashboard"width="1128"height="492"title="Disk I/O dashboard"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Disk I/O dashboard</figcaption></a></figure>
+<p>Data like these form <em>time series</em>. The X-axis is a moment in time and the Y-axis is a number or measurement; for example, 5 megabytes per second. This type of time series data appears everywhere in systems monitoring, as well as in places such as seasonal temperature charts and stock prices. This data is simply some measurement (such as a company stock price or Disk I/O) through a series of time instants.</p>
+<p>Prometheus is a technology that collects and stores time series data. Time series are fundamental to Prometheus; its <a href="https://prometheus.io/docs/concepts/data_model/" target="_blank" rel="noopener noreferrer">data model</a> is arranged into:</p>
+<ul>
+<li><em>metrics</em> that consist of a <em>timestamp</em> and a <em>sample</em>, which is the numeric value, such as how many disk bytes have been read or a stock price</li>
+<li>a set of labels called <em>dimensions</em>, for example, <code>job</code> and <code>device</code></li>
+</ul>
+<p>You can store time series data in any relational database, however, these systems are not developed to store and query large volumes of time series data. Prometheus and similar software provide tools to compact and optimize time series data.</p>
+<h3 id="simple-dashboard-using-promql">Simple dashboard using PromQL</h3>
+<p>The following Grafana dashboard image shows a Disk I/O graph of raw data from Prometheus derived from a laptop.</p>
+<p>The <strong>Metrics browser</strong> field contains the following query:</p>
+<p><code>node_disk_written_bytes_total{job=&quot;integrations/macos-node&quot;, device!=&quot;&quot;}</code></p>
+<p>In this example, the Y-axis shows the total number of bytes written, and the X-axis shows dates and times. As the laptop runs, the number of bytes written increases over time. Below <strong>Metrics browser</strong> is a counter that counts the number of bytes written over time.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/intro-prometheus/dashboard-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/intro-prometheus/dashboard-example.png"data-srcset="/media/docs/grafana/intro-prometheus/dashboard-example.png?w=320 320w, /media/docs/grafana/intro-prometheus/dashboard-example.png?w=550 550w, /media/docs/grafana/intro-prometheus/dashboard-example.png?w=750 750w, /media/docs/grafana/intro-prometheus/dashboard-example.png?w=900 900w, /media/docs/grafana/intro-prometheus/dashboard-example.png?w=1040 1040w, /media/docs/grafana/intro-prometheus/dashboard-example.png?w=1240 1240w, /media/docs/grafana/intro-prometheus/dashboard-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Metrics browser and counter"width="1600"height="927"title="Metrics browser and counter"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/intro-prometheus/dashboard-example.png"
+            alt="Metrics browser and counter"width="1600"height="927"title="Metrics browser and counter"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Metrics browser and counter</figcaption></a></figure>
+<p>The query is a simple example of <a href="/blog/2020/02/04/introduction-to-promql-the-prometheus-query-language/">PromQL</a>, the Prometheus Query Language. The query identifies the metric of interest (<code>node_disk_written_bytes_total</code>) and provides two labels (<code>job</code> and <code>device</code>). The label selector <code>job=&quot;integrations/macos-node&quot;</code> filters metrics. It both reduces the scope of the metrics to those coming from the MacOS integration job and specifies that the “device” label cannot be empty. The result of this query is the raw stream of numbers that the graph displays.</p>
+<p>Although this view provides some insight into the performance of the system, it doesn’t provide the full story. A clearer picture of system performance requires understanding the rate of change that displays <em>how fast the data being written is changing</em>. To properly monitor disk performance, you need to also see spikes in activity that illustrate if and when the system is under load, and whether disk performance is at risk. PromQL includes a <a href="https://prometheus.io/docs/prometheus/latest/querying/functions/#rate" target="_blank" rel="noopener noreferrer">rate()</a> function that shows the per-second average rate of increase over <code>5m</code> (5-minute) intervals. This view provides a much clearer picture of what’s happening with the system.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/intro-prometheus/rate-function.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/intro-prometheus/rate-function.png"data-srcset="/media/docs/grafana/intro-prometheus/rate-function.png?w=320 320w, /media/docs/grafana/intro-prometheus/rate-function.png?w=550 550w, /media/docs/grafana/intro-prometheus/rate-function.png?w=750 750w, /media/docs/grafana/intro-prometheus/rate-function.png?w=900 900w, /media/docs/grafana/intro-prometheus/rate-function.png?w=1040 1040w, /media/docs/grafana/intro-prometheus/rate-function.png?w=1240 1240w, /media/docs/grafana/intro-prometheus/rate-function.png?w=1920 1920w"
+          data-sizes="auto"alt="Prometheus rate function"width="1600"height="899"title="Prometheus rate function"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/intro-prometheus/rate-function.png"
+            alt="Prometheus rate function"width="1600"height="899"title="Prometheus rate function"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Prometheus rate function</figcaption></a></figure>
+<p>A counter metric is just one type of metric; it is a number (such as total bytes written) that only increases. Prometheus <a href="https://prometheus.io/docs/concepts/metric_types/" target="_blank" rel="noopener noreferrer">supports several others</a>, such as the metric type <code>gauge</code>, which can increase or decrease.</p>
+<p>The following gauge visualization displays the total RAM usage on a computer.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/intro-prometheus/gauge-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/intro-prometheus/gauge-example.png"data-srcset="/media/docs/grafana/intro-prometheus/gauge-example.png?w=320 320w, /media/docs/grafana/intro-prometheus/gauge-example.png?w=550 550w, /media/docs/grafana/intro-prometheus/gauge-example.png?w=750 750w, /media/docs/grafana/intro-prometheus/gauge-example.png?w=900 900w, /media/docs/grafana/intro-prometheus/gauge-example.png?w=1040 1040w, /media/docs/grafana/intro-prometheus/gauge-example.png?w=1240 1240w, /media/docs/grafana/intro-prometheus/gauge-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Gauge visualization"width="618"height="480"title="Gauge visualization"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/intro-prometheus/gauge-example.png"
+            alt="Gauge visualization"width="618"height="480"title="Gauge visualization"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Gauge visualization</figcaption></a></figure>
+<p>The third metric type is called a <code>histogram</code>, which counts observations and organizes them into configurable groups. The following example displays floating-point numbers grouped into ranges that display how frequently each occurred.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/intro-prometheus/histogram-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/intro-prometheus/histogram-example.png"data-srcset="/media/docs/grafana/intro-prometheus/histogram-example.png?w=320 320w, /media/docs/grafana/intro-prometheus/histogram-example.png?w=550 550w, /media/docs/grafana/intro-prometheus/histogram-example.png?w=750 750w, /media/docs/grafana/intro-prometheus/histogram-example.png?w=900 900w, /media/docs/grafana/intro-prometheus/histogram-example.png?w=1040 1040w, /media/docs/grafana/intro-prometheus/histogram-example.png?w=1240 1240w, /media/docs/grafana/intro-prometheus/histogram-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Histogram visualization"width="1206"height="688"title="Histogram visualization"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/intro-prometheus/histogram-example.png"
+            alt="Histogram visualization"width="1206"height="688"title="Histogram visualization"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Histogram visualization</figcaption></a></figure>
+<p>These core concepts of time series, metrics, labels, and aggregation functions are foundational to Grafana and observability.</p>
+<h2 id="why-this-is-valuable">Why this is valuable</h2>
+<p>Software and systems are a difficult business. Sometimes things go wrong. Observability helps you understand a system’s state so that issues can be quickly identified and proactively addressed. And when problems do occur, you can be alerted to them to diagnose and solve them within your Service Level Objectives (SLOs).</p>
+<p>The <a href="https://www.oreilly.com/library/view/distributed-systems-observability/9781492033431/ch04.html" target="_blank" rel="noopener noreferrer">three pillars of observability</a> are metrics, logs, and traces. Prometheus supports the metrics pillar. When software on a computer runs slowly, observability can help you identify whether CPU is saturated, the system is out of memory, or if the disk is writing at maximum speed so you can proactively respond.</p>
+<h2 id="prometheus-as-software">Prometheus as software</h2>
+<p>Prometheus isn’t just a data format; it is also considered an <a href="https://prometheus.io/docs/introduction/overview/" target="_blank" rel="noopener noreferrer">open source systems monitoring and alerting toolkit</a>. That’s because Prometheus is software, not just data.</p>
+<p>Prometheus can scrape metric data from software and infrastructure and store it. Scraping means that Prometheus software periodically revisits the same endpoint to check for new data. Prometheus scrapes data from a piece of software instrumented with a client library.</p>
+<p>For example, a NodeJS application can configure the <a href="https://github.com/siimon/prom-client" target="_blank" rel="noopener noreferrer">prom-client</a> to expose metrics easily at an endpoint, and Prometheus can regularly scrape that endpoint. Prometheus includes a number of other tools within the toolkit to instrument your applications.</p>
+<h2 id="prometheus-as-deployment">Prometheus as deployment</h2>
+<p>The first section of this document introduced the Prometheus as Data concept and how the Prometheus data model and metrics are organized. The second section introduced the concept of Prometheus as Software that is used to collect, process, and store metrics. This section describes how Prometheus as Data and Prometheus as Software come together.</p>
+<p>Consider the following example. Suppose a &lsquo;MyApp&rsquo; application uses a Prometheus client to expose metrics. One approach to collecting metrics data is to use a URL in the application that points to an endpoint <code>http://localhost:3000/metrics</code> that produces Prometheus metrics data.</p>
+<p>The following image shows the two metrics associated with the endpoint. The HELP text explains what the metric means, and the TYPE text indicates what kind of metric it is (in this case, a gauge). <code>MyAppnodejs_active_request_total</code> indicates the number of requests (in this case, <code>1</code>). <code>MyAppnodejs_heap_size_total_bytes</code> indicates the heap size reported in bytes. There are only two numbers because this data shows the value at the moment the data was fetched.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/intro-prometheus/endpoint-data.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/intro-prometheus/endpoint-data.png"data-srcset="/media/docs/grafana/intro-prometheus/endpoint-data.png?w=320 320w, /media/docs/grafana/intro-prometheus/endpoint-data.png?w=550 550w, /media/docs/grafana/intro-prometheus/endpoint-data.png?w=750 750w, /media/docs/grafana/intro-prometheus/endpoint-data.png?w=900 900w, /media/docs/grafana/intro-prometheus/endpoint-data.png?w=1040 1040w, /media/docs/grafana/intro-prometheus/endpoint-data.png?w=1240 1240w, /media/docs/grafana/intro-prometheus/endpoint-data.png?w=1920 1920w"
+          data-sizes="auto"alt="Endpoint example"width="1288"height="228"title="Endpoint example"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/intro-prometheus/endpoint-data.png"
+            alt="Endpoint example"width="1288"height="228"title="Endpoint example"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Endpoint example</figcaption></a></figure>
+<p>The &lsquo;MyApp&rsquo; metrics are available in an HTTP endpoint, but how do they get to Grafana, and subsequently, into a dashboard? The process of recording and transmitting the readings of an application or piece of infrastructure is known as <em>telemetry</em>. Telemetry is critical to observability because it helps you understand exactly what&rsquo;s going on in your infrastructure. The metrics introduced previously, for example, <code>MyAppnodejs_active_requests_total</code>, are telemetry data.</p>
+<p>To get metrics into Grafana, you can use either the Prometheus software or <a href="/docs/alloy/latest/">Grafana Alloy</a> to scrape metrics. Grafana Alloy collects and forwards the telemetry data to open-source deployments of the Grafana Stack, Grafana Cloud, or Grafana Enterprise, where your data can be analyzed. For example, you can configure Grafana Alloy to pull the data from &lsquo;MyApp&rsquo; every five seconds and send the results to Grafana Cloud.</p>
+<p>Metrics data is only one type of telemetry data; the other kinds are logs and traces. Using Grafana Alloy can be a great option to send telemetry data because as you scale your observability practices to include logs and traces, which Grafana Alloy also supports, you&rsquo;ve got a solution already in place.</p>
+<p>The following image illustrates how Grafana Alloy works as an intermediary between &lsquo;MyApp&rsquo; and Grafana Cloud.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1277px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alloy/flow-diagram-small-alloy.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alloy/flow-diagram-small-alloy.png"data-srcset="/media/docs/alloy/flow-diagram-small-alloy.png?w=320 320w, /media/docs/alloy/flow-diagram-small-alloy.png?w=550 550w, /media/docs/alloy/flow-diagram-small-alloy.png?w=750 750w, /media/docs/alloy/flow-diagram-small-alloy.png?w=900 900w, /media/docs/alloy/flow-diagram-small-alloy.png?w=1040 1040w, /media/docs/alloy/flow-diagram-small-alloy.png?w=1240 1240w, /media/docs/alloy/flow-diagram-small-alloy.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana Alloy"width="1277"height="454"title="Grafana Alloy"/>
+        <noscript>
+          <img
+            src="/media/docs/alloy/flow-diagram-small-alloy.png"
+            alt="Grafana Alloy"width="1277"height="454"title="Grafana Alloy"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana Alloy</figcaption></a></figure>
+<h2 id="bringing-it-together">Bringing it together</h2>
+<p>The combination of Prometheus and Grafana Alloy gives you control over the metrics you want to report, where they come from, and where they’re going. Once the data is in Grafana, it can be stored in a Grafana Mimir database. Grafana dashboards consist of visualizations populated by data queried from the Prometheus data source. The PromQL query filters and aggregates the data to provide you the insight you need. With those steps, we’ve gone from raw numbers, generated by software, into Prometheus, delivered to Grafana, queried by PromQL, and visualized by Grafana.</p>
+<h2 id="whats-next">What’s next?</h2>
+<p>Now that you understand how Prometheus metrics work, what will you build?</p>
+<ul>
+<li>One great next step is to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build a dashboard</a> in Grafana and start turning that raw Prometheus telemetry data into insights about what’s going with your services and infrastructure.</li>
+<li>Another great step is to learn about <a href="/oss/mimir/">Grafana Mimir</a>, which is essentially a database for Prometheus data. If you’re wondering how to make this work for a large volumes of metrics with a lot of data and fast querying, check out Grafana Mimir.</li>
+<li>If you’re interested in working with Prometheus data in Grafana directly, check out the 
+    <a href="/docs/grafana/latest/datasources/prometheus/">Prometheus data source</a> documentation, or check out <a href="https://prometheus.io/docs/prometheus/latest/querying/basics/" target="_blank" rel="noopener noreferrer">PromQL basics</a>.</li>
+</ul>

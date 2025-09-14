@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<h1 id="troubleshooting">Troubleshooting</h1>
+<p>This page lists some tools and advice to help troubleshoot common Grafana issues.</p>
+<h2 id="troubleshoot-with-logs">Troubleshoot with logs</h2>
+<p>If you encounter an error or problem, then you can check the Grafana server log. Usually located at <code>/var/log/grafana/grafana.log</code> on Unix systems or in <code>&lt;grafana_install_dir&gt;/data/log</code> on other platforms and manual installations.</p>
+<p>You can enable more logging by changing log level in the Grafana configuration file.</p>
+<p>For more information, refer to <a href="../cli/#enable-debug-logging">Enable debug logging in Grafana CLI</a> and the <a href="../setup-grafana/configure-grafana/#log">log section in Configuration</a>.</p>
+<h2 id="troubleshoot-with-dashboards-panels">Troubleshoot with Dashboards Panels</h2>
+<p>If you have an issue with your Dashboard panel, you can send us debug information. For more information, refer to <a href="send-panel-to-grafana-support/">Send a panel to Grafana Labs support</a>.</p>
+<h2 id="troubleshoot-with-support-bundles">Troubleshoot with support bundles</h2>
+<p>If you have an issue with your Grafana instance, you can generate an archive containing information concerning the state and the configuration of the instance.</p>
+<p>To send us a bundle for advanced support, refer to <a href="support-bundles/">Send a support bundle to Grafana Labs support</a>.</p>
+<h2 id="troubleshoot-transformations">Troubleshoot transformations</h2>
+<p>Order of transformations matters. If the final data output from multiple transformations looks wrong, try changing the transformation order. Each transformation transforms data returned by the previous transformation, not the original raw data.</p>
+<p>For more information, refer to <a href="../panels-visualizations/query-transform-data/transform-data/#debug-a-transformation">Debug a transformation</a>.</p>
+<h2 id="text-missing-with-server-side-image-rendering-rpm-based-linux">Text missing with server-side image rendering (RPM-based Linux)</h2>
+<p>Server-side image (png) rendering is a feature that is optional but very useful when sharing visualizations, for example in alert notifications.</p>
+<p>If the image is missing text, then make sure you have font packages installed.</p>
+<pre>sudo yum install fontconfig
+sudo yum install freetype*
+sudo yum install urw-fonts</pre>
+<h2 id="troubleshoot-backend-performance">Troubleshoot backend performance</h2>
+<p>If you&rsquo;re experiencing backend performance problems, such as high memory or CPU usage, please refer to <a href="../setup-grafana/configure-grafana/configure-tracing/">Configure profiling and tracing to troubleshoot Grafana</a>.</p>
+<h2 id="more-help">More help</h2>
+<p>Check out the <a href="https://community.grafana.com/" target="_blank" rel="noopener noreferrer">Grafana Community</a> for more troubleshooting help (you must be logged in to post or comment).</p>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<h1 id="export-logs-of-usage-insights">Export logs of usage insights</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in <a href="../../../introduction/grafana-enterprise/">Grafana Enterprise</a> and to customers on select Grafana Cloud plans. For pricing information, visit <a href="/pricing/">pricing</a> or contact our sales team.</p></blockquote></div>
+
+<p>By exporting usage logs to Loki, you can directly query them and create dashboards of the information that matters to you most, such as dashboard errors, most active organizations, or your top-10 most-used queries. This configuration is done for you in Grafana Cloud, with provisioned dashboards. Read about them in the <a href="/docs/grafana-cloud/usage-insights/">Grafana Cloud documentation</a>.</p>
+<h2 id="usage-insights-logs">Usage insights logs</h2>
+<p>Usage insights logs are JSON objects that represent certain user activities, such as:</p>
+<ul>
+<li>A user opens a dashboard.</li>
+<li>A query is sent to a data source.</li>
+</ul>
+<h3 id="scope">Scope</h3>
+<p>A log is created every time:</p>
+<ul>
+<li>A user opens a dashboard.</li>
+<li>A query is sent to a data source in the dashboard view.</li>
+<li>A query is performed via Explore.</li>
+</ul>
+<h3 id="format">Format</h3>
+<p>Logs of usage insights contain the following fields, where the fields followed by * are always available, and the others depend on the logged event:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>eventName</code>*</td>
+          <td>string</td>
+          <td>Type of the event, which can be either <code>data-request</code> or <code>dashboard-view</code>.</td>
+      </tr>
+      <tr>
+          <td><code>folderName</code>*</td>
+          <td>string</td>
+          <td>Name of the dashboard folder.</td>
+      </tr>
+      <tr>
+          <td><code>dashboardName</code>*</td>
+          <td>string</td>
+          <td>Name of the dashboard where the event happened.</td>
+      </tr>
+      <tr>
+          <td><code>dashboardId</code>*</td>
+          <td>number</td>
+          <td>ID of the dashboard where the event happened.</td>
+      </tr>
+      <tr>
+          <td><code>datasourceName</code></td>
+          <td>string</td>
+          <td>Name of the data source that was queried.</td>
+      </tr>
+      <tr>
+          <td><code>datasourceType</code></td>
+          <td>string</td>
+          <td>Type of the data source that was queried. For example, <code>prometheus</code>, <code>elasticsearch</code>, or <code>loki</code>.</td>
+      </tr>
+      <tr>
+          <td><code>datasourceId</code></td>
+          <td>number</td>
+          <td>ID of the data source that was queried.</td>
+      </tr>
+      <tr>
+          <td><code>panelId</code></td>
+          <td>number</td>
+          <td>ID of the panel of the query.</td>
+      </tr>
+      <tr>
+          <td><code>panelName</code></td>
+          <td>string</td>
+          <td>Name of the panel of the query.</td>
+      </tr>
+      <tr>
+          <td><code>error</code></td>
+          <td>string</td>
+          <td>Error returned by the query.</td>
+      </tr>
+      <tr>
+          <td><code>duration</code></td>
+          <td>number</td>
+          <td>Duration of the query.</td>
+      </tr>
+      <tr>
+          <td><code>source</code></td>
+          <td>string</td>
+          <td>Source of the query. For example, <code>dashboard</code> or <code>explore</code>.</td>
+      </tr>
+      <tr>
+          <td><code>orgId</code>*</td>
+          <td>number</td>
+          <td>ID of the user’s organization.</td>
+      </tr>
+      <tr>
+          <td><code>orgName</code>*</td>
+          <td>string</td>
+          <td>Name of the user’s organization.</td>
+      </tr>
+      <tr>
+          <td><code>timestamp</code>*</td>
+          <td>string</td>
+          <td>The date and time that the request was made, in Coordinated Universal Time (UTC) in <a href="https://tools.ietf.org/html/rfc3339#section-5.6" target="_blank" rel="noopener noreferrer">RFC3339</a> format.</td>
+      </tr>
+      <tr>
+          <td><code>tokenId</code>*</td>
+          <td>number</td>
+          <td>ID of the user’s authentication token.</td>
+      </tr>
+      <tr>
+          <td><code>username</code>*</td>
+          <td>string</td>
+          <td>Name of the Grafana user that made the request.</td>
+      </tr>
+      <tr>
+          <td><code>userId</code>*</td>
+          <td>number</td>
+          <td>ID of the Grafana user that made the request.</td>
+      </tr>
+      <tr>
+          <td><code>totalQueries</code>*</td>
+          <td>number</td>
+          <td>Number of queries executed for the data request.</td>
+      </tr>
+      <tr>
+          <td><code>cachedQueries</code>*</td>
+          <td>number</td>
+          <td>Number of fetched queries that came from the cache.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="configuration">Configuration</h2>
+<p>To export your logs, enable the usage insights feature and <a href="../../configure-grafana/">configure</a> an export location in the configuration file:</p>
+<pre>[usage_insights.export]
+# Enable the usage insights export feature
+enabled = true
+# Storage type
+storage = loki</pre>
+<p>The options for storage type are <code>loki</code> and <code>logger</code> (added in Grafana Enterprise 8.2).</p>
+<p>If the storage type is set to <code>loki</code> you&rsquo;ll need to also configure Grafana
+to export to a Loki ingestion server. To do this, you&rsquo;ll need Loki installed.
+Refer to <a href="/docs/loki/latest/installation/">Install Loki</a> for instructions
+on how to install Loki.</p>
+<pre>[usage_insights.export.storage.loki]
+# Set the communication protocol to use with Loki (can be grpc or http)
+type = grpc
+# Set the address for writing logs to Loki (format must be host:port)
+url = localhost:9095
+# Defaults to true. If true, it establishes a secure connection to Loki
+tls = true
+# Set the tenant ID for Loki communication, which is disabled by default.
+# The tenant ID is required to interact with Loki running in multi-tenant mode.
+tenant_id =</pre>
+<p>Using <code>logger</code> will print usage insights to your <a href="../../configure-grafana/#log">Grafana server log</a>.
+There is no option for configuring the <code>logger</code> storage type.</p>
+<h2 id="visualize-loki-usage-insights-in-grafana">Visualize Loki usage insights in Grafana</h2>
+<p>If you export logs into Loki, you can build Grafana dashboards to understand your Grafana instance usage.</p>
+<ol>
+<li>Add Loki as a data source. Refer to <a href="/tutorials/grafana-fundamentals/#6">Grafana fundamentals tutorial</a>.</li>
+<li>Import one of the following dashboards:
+<ul>
+<li><a href="/grafana/dashboards/13785">Usage insights</a></li>
+<li><a href="/grafana/dashboards/13786">Usage insights datasource details</a></li>
+</ul>
+</li>
+<li>Play with usage insights to understand them:
+<ul>
+<li>In Explore, you can use the query <code>{datasource=&quot;gdev-loki&quot;,kind=&quot;usage_insights&quot;}</code> to retrieve all logs related to your <code>gdev-loki</code> data source.</li>
+<li>In a dashboard, you can build a table panel with the query <code>topk(10, sum by (error) (count_over_time({kind=&quot;usage_insights&quot;, datasource=&quot;gdev-prometheus&quot;} | json | error != &quot;&quot; [$__interval])))</code> to display the 10 most common errors your users see using the <code>gdev-prometheus</code> data source.</li>
+<li>In a dashboard, you can build a graph panel with the queries <code>sum by(host) (count_over_time({kind=&quot;usage_insights&quot;} | json | eventName=&quot;data-request&quot; | error != &quot;&quot; [$__interval]))</code> and <code>sum by(host) (count_over_time({kind=&quot;usage_insights&quot;} | json | eventName=&quot;data-request&quot; | error = &quot;&quot; [$__interval]))</code> to show the evolution of the data request count over time. Using <code>by (host)</code> allows you to have more information for each Grafana server you have if you have set up Grafana for <a href="../../set-up-for-high-availability/">high availability</a>.</li>
+</ul>
+</li>
+</ol>

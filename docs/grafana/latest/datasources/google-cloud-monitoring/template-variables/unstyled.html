@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<h1 id="google-cloud-monitoring-template-variables">Google Cloud Monitoring template variables</h1>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For an introduction to templating and template variables, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a> documentation.</p>
+<h2 id="use-query-variables">Use query variables</h2>
+<p>Variables of the type <em>Query</em> help you query Google Cloud Monitoring for various types of data.
+The Google Cloud Monitoring data source plugin provides the following <strong>Query Types</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>List returned</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Metric Types</strong></td>
+          <td>Metric type names available for the specified service.</td>
+      </tr>
+      <tr>
+          <td><strong>Labels Keys</strong></td>
+          <td>Keys for <code>metric label</code> and <code>resource label</code> in the specified metric.</td>
+      </tr>
+      <tr>
+          <td><strong>Labels Values</strong></td>
+          <td>Values for the label in the specified metric.</td>
+      </tr>
+      <tr>
+          <td><strong>Resource Types</strong></td>
+          <td>Resource types for the specified metric.</td>
+      </tr>
+      <tr>
+          <td><strong>Aggregations</strong></td>
+          <td>Aggregations (cross-series reducers) for the specified metric.</td>
+      </tr>
+      <tr>
+          <td><strong>Aligners</strong></td>
+          <td>Aligners (per-series aligners) for the specified metric.</td>
+      </tr>
+      <tr>
+          <td><strong>Alignment periods</strong></td>
+          <td>All alignment periods available in the query editor in Grafana.</td>
+      </tr>
+      <tr>
+          <td><strong>Selectors</strong></td>
+          <td>Selectors for SLO (Service Level Objectives) queries.</td>
+      </tr>
+      <tr>
+          <td><strong>SLO Services</strong></td>
+          <td>Service Monitoring services for SLO queries.</td>
+      </tr>
+      <tr>
+          <td><strong>Service Level Objectives (SLO)</strong></td>
+          <td>SLOs for the specified SLO service.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="use-variables-in-queries">Use variables in queries</h2>
+<p>Use Grafana&rsquo;s variable syntax to include variables in queries.
+For details, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">variable syntax documentation</a>.</p>

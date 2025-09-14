@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v103">What’s new in Grafana v10.3</h1>
+<p>Welcome to Grafana 10.3! Read on to learn about changes to navigation, visualizations and transformations, alerting, profiling, and logs.</p>
+<p>We&rsquo;ve also included here features released in Grafana 10.2.3, as well as breaking changes from that release. Features that were included in the 10.2.3 release are marked with an asterisk.</p>
+<p>For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>. For the specific steps we recommend when you upgrade to v10.3, check out our 
+    <a href="/docs/grafana/latest/upgrade-guide/upgrade-v10.3/">Upgrade Guide</a>.</p>
+<h2 id="breaking-changes">Breaking changes</h2>
+<p>For Grafana v10.3, we&rsquo;ve also provided a list of 
+    <a href="/docs/grafana/latest/breaking-changes/breaking-changes-v10-3/">breaking changes</a> to help you upgrade with greater confidence. For information about these along with guidance on how to proceed, refer to 
+    <a href="/docs/grafana/latest/breaking-changes/breaking-changes-v10-3/">Breaking changes in Grafana v10.3</a>.</p>
+<!-- Template below
+
+## Feature
+<!-- Name of contributor -->
+<!--_[Generally available | Available in private/public preview | Experimental] in Grafana [Open Source, Enterprise, all editions of Grafana, some combination of self-managed and Cloud]_
+Description. Include an overview of the feature and problem it solves, and where to learn more (like a link to the docs).
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use full URLs for links. When linking to versioned docs, replace the version with the version interpolation placeholder (for example, &lt;GRAFANA_VERSION&gt;, &lt;TEMPO_VERSION&gt;, &lt;MIMIR_VERSION&gt;) so the system can determine the correct set of docs to point to. For example, &ldquo;/docs/grafana/latest/administration/&rdquo; becomes &ldquo;/docs/grafana/&lt;GRAFANA_VERSION&gt;/administration/&rdquo;.</p></blockquote></div>
+
+
+<!--Add an image, GIF or video  as below-->
+<!--<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards/WidgetVizSplit.png"data-srcset="/media/docs/grafana/dashboards/WidgetVizSplit.png?w=320 320w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=550 550w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=750 750w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=900 900w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1040 1040w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1240 1240w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1920 1920w"
+          data-sizes="auto"alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+            alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">DESCRIPTIVE CAPTION</figcaption></a></figure>
+
+<!--Learn how to upload images here: /docs/writers-toolkit/write/image-guidelines/#where-to-store-media-assets-->
+<!---->
+<h2 id="navigation-updates">Navigation updates*</h2>
+<!--Laura Benz-->
+<p><em>Available in public preview in Grafana Open Source and Enterprise</em></p>
+<p>The improved navigation menu gives you a better overview by showing all levels of navigation items in a more compact design. We also implemented a better dock and improved scrolling behavior. Furthermore, we improved the structure of the nav menu and added several new items.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=IhpghtVykLc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="table-data-in-pdf-reports">Table data in PDF reports</h2>
+<!--Agnès Toulet-->
+<p><em>Available in public preview in Grafana Enterprise and Grafana Cloud</em></p>
+<p>We&rsquo;ve improved the reporting experience with options to make all of your table data accessible in PDFs. Previously, if your dashboard included large table visualizations, you couldn&rsquo;t see all of the table data in your PDF report. Unlike in Grafana, you couldn&rsquo;t scroll in the PDF table visualization or click on the page numbers. With this new feature, you now have the option to see all the data directly in your PDF without losing your dashboard layout.</p>
+<p>We&rsquo;ve added two format options to the report creation form:</p>
+<ul>
+<li><strong>Include table data as PDF appendix</strong> - Adds an appendix to your dashboard PDF.</li>
+<li><strong>Attach a separate PDF of table data</strong> - Generates a separate PDF file for your table panel data.</li>
+</ul>
+<p>To try out this feature, enable the <code>pdfTables</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a> or contact Grafana Support to have it enabled in on your Grafana Cloud stack.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=1fzQQI8O838" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="dashboards-and-visualizations">Dashboards and visualizations</h2>
+<h3 id="moving-average-and-trend-lines-using-transformations">Moving average and trend lines using transformations</h3>
+<!--Oscar Kilhed-->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<h4 id="moving-average">Moving average*</h4>
+<p>Sometimes your data is too noisy to quickly grasp what&rsquo;s going on. A common way to address this issue is to calculate the moving mean, or moving average, to filter out some of that noise. Luckily, many data sources already support calculating the moving mean, but when the support is lacking or you&rsquo;re not well versed in the query language, until now, you were stuck with the noise.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 300px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/transformations/noisy-sensor-data.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/transformations/noisy-sensor-data.png"data-srcset="/media/docs/grafana/transformations/noisy-sensor-data.png?w=320 320w, /media/docs/grafana/transformations/noisy-sensor-data.png?w=550 550w, /media/docs/grafana/transformations/noisy-sensor-data.png?w=750 750w, /media/docs/grafana/transformations/noisy-sensor-data.png?w=900 900w, /media/docs/grafana/transformations/noisy-sensor-data.png?w=1040 1040w, /media/docs/grafana/transformations/noisy-sensor-data.png?w=1240 1240w, /media/docs/grafana/transformations/noisy-sensor-data.png?w=1920 1920w"
+          data-sizes="auto"alt="Graph displaying noisy sensor data"width="599"height="350"title="Noisy data can hide the general trend of your data."/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/noisy-sensor-data.png"
+            alt="Graph displaying noisy sensor data"width="599"height="350"title="Noisy data can hide the general trend of your data."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Noisy data can hide the general trend of your data.</figcaption></a></figure>
+<p>By selecting the <strong>Window functions</strong> mode and using <strong>Mean</strong> as the calculation for the <strong>Add field from calculation</strong> transformation, Grafana adds a field with the moving mean for your selected field.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 609px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/transformations/noisy-sensor-data-moving-average.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/transformations/noisy-sensor-data-moving-average.png"data-srcset="/media/docs/grafana/transformations/noisy-sensor-data-moving-average.png?w=320 320w, /media/docs/grafana/transformations/noisy-sensor-data-moving-average.png?w=550 550w, /media/docs/grafana/transformations/noisy-sensor-data-moving-average.png?w=750 750w, /media/docs/grafana/transformations/noisy-sensor-data-moving-average.png?w=900 900w, /media/docs/grafana/transformations/noisy-sensor-data-moving-average.png?w=1040 1040w, /media/docs/grafana/transformations/noisy-sensor-data-moving-average.png?w=1240 1240w, /media/docs/grafana/transformations/noisy-sensor-data-moving-average.png?w=1920 1920w"
+          data-sizes="auto"alt="Graph displaying the moving mean of noisy data"width="609"height="355"title="Calculating the moving mean of your data will make it easier to grasp what&#39;s going on."/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/noisy-sensor-data-moving-average.png"
+            alt="Graph displaying the moving mean of noisy data"width="609"height="355"title="Calculating the moving mean of your data will make it easier to grasp what&#39;s going on."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Calculating the moving mean of your data will make it easier to grasp what&rsquo;s going on.</figcaption></a></figure>
+<p>The <strong>Window functions</strong> mode also supports moving variance and moving standard deviation calculations if you need to analyze the volatility of your metric.</p>
+<p>
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#add-field-from-calculation">Documentation</a></p>
+<h4 id="trend-lines">Trend lines*</h4>
+<p>We&rsquo;re also adding some basic statistical analysis features as a way to help you visualize trends in your data. The <strong>Regression analysis</strong> transformation will fit a mathematical function to your data and display it as predicted data points in a separate data frame.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 608px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/transformations/trendlines.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/transformations/trendlines.png"data-srcset="/media/docs/grafana/transformations/trendlines.png?w=320 320w, /media/docs/grafana/transformations/trendlines.png?w=550 550w, /media/docs/grafana/transformations/trendlines.png?w=750 750w, /media/docs/grafana/transformations/trendlines.png?w=900 900w, /media/docs/grafana/transformations/trendlines.png?w=1040 1040w, /media/docs/grafana/transformations/trendlines.png?w=1240 1240w, /media/docs/grafana/transformations/trendlines.png?w=1920 1920w"
+          data-sizes="auto"alt="Graph with trendlines"width="608"height="352"title="Linear and polynomial regression trendlines"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/trendlines.png"
+            alt="Graph with trendlines"width="608"height="352"title="Linear and polynomial regression trendlines"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Linear and polynomial regression trendlines</figcaption></a></figure>
+<p>The transformation currently supports linear regression and polynomial regression to the fifth-degree.</p>
+<h3 id="canvas-visualization-supports-pan-and-zoom">Canvas visualization supports pan and zoom</h3>
+<!--Nathan Marrs-->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>Canvas visualizations now support panning and zooming. This allows you to both create and navigate more complex designs.</p>
+<p>To enable this feature, you must first enable the <code>canvasPanelPanZoom</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=CF-HFkcytRA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Documentation</a></p>
+<h3 id="improved-tooltips-in-visualizations">Improved tooltips in visualizations*</h3>
+<!--Nathan Marrs-->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>We&rsquo;ve introduced enhanced tooltips as part of our standardization initiative, unifying the tooltip architecture for a consistent user experience across panels. Packed with features like color indicators, time uniformity, and improved support for long labels, these tooltips go beyond a cosmetic redesign, bringing fundamental changes to elevate your data visualization experience. Stay tuned for more updates!</p>
+<p>To try out the new tooltips, enable the <code>newVizTooltips</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a>. Enhanced tooltips have been implemented for the following visualizations:</p>
+<ul>
+<li>Time series</li>
+<li>Trend</li>
+<li>Heatmap</li>
+<li>Status history</li>
+<li>Candlestick</li>
+<li>State timeline</li>
+<li>XY Chart</li>
+<li>and more coming soon!</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>As this is an ongoing project, the dashboard shared cursor and annotations features are not yet fully supported.</p></blockquote></div>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=0Rp6FYfHu6Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="plot-enum-values-in-your-time-series-and-state-timeline-visualizations">Plot enum values in your time series and state timeline visualizations*</h3>
+<!--Nathan Marrs-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>You can now plot enum values in your time series and state timeline visualizations. This feature is useful when you want to visualize the state of a system, such as the status of a service or the health of a device. For example, you can use this feature to visualize the status of a service as <code>ON</code>, <code>STANDBY</code>, or <code>OFF</code>. To display enum values you can 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#convert-field-type">use the convert field transform</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=FG0hBFfgpps" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="view-percent-change-in-stat-visualizations">View percent change in stat visualizations</h3>
+<!--Nathan Marrs-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>You can now view percent change in stat visualizations. This makes it easier to understand your data by showing how metrics are changing over time.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=mB9FU0myZo8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/#show-percent-change">Documentation</a></p>
+<h4 id="apply-data-transformations-to-annotations">Apply data transformations to annotations</h4>
+<!--Nathan Marrs-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>You can now apply data transformations to annotation data. For example, you can now configure how exemplar data is displayed in tooltips.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-10-3-data-transformations-annotation-support.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Configure how exemplar data appears in tooltip</figcaption></figure>
+</div>
+<h3 id="new-transformations-ui-experience-and-documentation-upgrades">New Transformations UI experience and documentation upgrades</h3>
+<!--Jev Forsberg-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>We&rsquo;ve revamped the Transformations user interface to make it cleaner, more user-friendly, and overall better for visualizing, selecting, and comprehending transformation options for your data.</p>
+<h4 id="improved-ui">Improved UI*</h4>
+<p>In the past, transformations were applied through a dropdown menu, indicated solely by text names like Merge, Sort, JoinByLabels, etc. Now, we&rsquo;ve introduced a much more user-friendly interface. A convenient drawer allows seamless access to all transformation options, each accompanied by visual/graphical representations and a brief description. These enhancements are designed to enhance the user&rsquo;s comprehension of their data transformation choices.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 2880px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/transformations/transformations_ui_drawer_selector.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/transformations/transformations_ui_drawer_selector.png"data-srcset="/media/docs/grafana/transformations/transformations_ui_drawer_selector.png?w=320 320w, /media/docs/grafana/transformations/transformations_ui_drawer_selector.png?w=550 550w, /media/docs/grafana/transformations/transformations_ui_drawer_selector.png?w=750 750w, /media/docs/grafana/transformations/transformations_ui_drawer_selector.png?w=900 900w, /media/docs/grafana/transformations/transformations_ui_drawer_selector.png?w=1040 1040w, /media/docs/grafana/transformations/transformations_ui_drawer_selector.png?w=1240 1240w, /media/docs/grafana/transformations/transformations_ui_drawer_selector.png?w=1920 1920w"
+          data-sizes="auto"alt="Transformation UI drawer"width="2880"height="1600"title="The new Transformation UI drawer"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/transformations_ui_drawer_selector.png"
+            alt="Transformation UI drawer"width="2880"height="1600"title="The new Transformation UI drawer"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">The new Transformation UI drawer</figcaption></a></figure>
+<h4 id="in-app-documentation">In-App documentation</h4>
+<p>We&rsquo;ve also streamlined the user experience by integrating documentation directly into the core Grafana application. Gone are the days of navigating to a separate browser page for Transformation documentation. Now, users can conveniently access documentation within the app interface, providing a more seamless and efficient way to understand and utilize various features. This enhancement aims to save time and enhance user convenience, ensuring that valuable information is readily available at their fingertips.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 2880px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/transformations/transformations_internal_documentation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/transformations/transformations_internal_documentation.png"data-srcset="/media/docs/grafana/transformations/transformations_internal_documentation.png?w=320 320w, /media/docs/grafana/transformations/transformations_internal_documentation.png?w=550 550w, /media/docs/grafana/transformations/transformations_internal_documentation.png?w=750 750w, /media/docs/grafana/transformations/transformations_internal_documentation.png?w=900 900w, /media/docs/grafana/transformations/transformations_internal_documentation.png?w=1040 1040w, /media/docs/grafana/transformations/transformations_internal_documentation.png?w=1240 1240w, /media/docs/grafana/transformations/transformations_internal_documentation.png?w=1920 1920w"
+          data-sizes="auto"alt="Transformation documentation internally available"width="2880"height="1595"title="Transformation documentation is now internally available inside the Grafana app itself."/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/transformations_internal_documentation.png"
+            alt="Transformation documentation internally available"width="2880"height="1595"title="Transformation documentation is now internally available inside the Grafana app itself."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Transformation documentation is now internally available inside the Grafana app itself.</figcaption></a></figure>
+<h3 id="copy-and-paste-time-range">Copy and paste time range</h3>
+<!--Haris Rozajac-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Copying and pasting time range in the time range picker is now available. For example, you can copy a time range in <strong>Explore</strong> and paste it into <strong>Dashboards</strong> and vice versa. You can also copy and paste a time range using the new keyboard shortcuts <code>t+c</code> and <code>t+v</code>, respectively.</p>
+<h2 id="profiles">Profiles</h2>
+<h3 id="trace-to-profiles">Trace to Profiles*</h3>
+<!--Joey Tawadrous-->
+<p><em>Experimental in all editions of Grafana</em></p>
+<p>Using Trace to profiles, you can use Grafana’s ability to correlate different signals by adding the functionality to link between traces and profiles.</p>
+<p><strong>Trace to profiles</strong> lets you link your Grafana Pyroscope data source to tracing data. When configured, this connection lets you run queries from a trace span into the profile data.</p>
+<p>There are two ways to configure the trace to profiles feature:</p>
+<ul>
+<li>Use a simplified configuration with default query, or</li>
+<li>Configure a custom query where you can use a template language to interpolate variables from the trace or span.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 2089px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png"data-srcset="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=320 320w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=550 550w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=750 750w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=900 900w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=1040 1040w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=1240 1240w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace to profiles screenshot"width="2089"height="1112"title="Trace to profiles screenshot"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png"
+            alt="Trace to profiles screenshot"width="2089"height="1112"title="Trace to profiles screenshot"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace to profiles screenshot</figcaption></a></figure>
+<p>To try out <strong>Trace to profiles</strong>, enable the &rsquo;traceToProfiles&rsquo; feature toggle.</p>
+<p>If you would also like to try out the <strong>Embedded Flame Graph</strong> feature, please enable the &rsquo;tracesEmbeddedFlameGraph&rsquo; feature toggle.</p>
+<p>Note: in order to determine that there is a profile for a given span and render the &lsquo;Profiles for this span&rsquo; button or the embedded flame graph in the span details, the &lsquo;pyroscope.profile.id&rsquo; key-value pair must exist in your span tags.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=AG8VzfFMLxo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#trace-to-profiles">Documentation</a></p>
+<h3 id="flamegraph-collapsing-similar-items-in-the-graph">FlameGraph: Collapsing similar items in the graph*</h3>
+<!--Andrej Ocenas-->
+<p><em>Experimental in all editions of Grafana</em></p>
+<p>Sometimes profile stacks contain lots of levels with similar repeating items, for example long stacks of framework code that usually isn&rsquo;t of interest but takes up a lot of visual real estate. With this feature, instead of rendering all of the similar items we render only one and allow to expand those collapsed items on demand.</p>
+<p>To try it out, enable the ‘traceToProfiles’ feature toggle. To enable it in your Grafana Cloud stack, contact Grafana Support.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=Y1c32Cf5nSE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="alerting">Alerting</h2>
+<h3 id="alerting-insights">Alerting insights*</h3>
+<!-- George Robinson -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Use Alerting insights to monitor your alerting data, discover key trends about your organization’s alert management performance, and find patterns in why things go wrong.</p>
+<h3 id="export-alerting-resources-to-terraform">Export alerting resources to Terraform</h3>
+<!-- Yuri Tseretyan-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Export your alerting resources, such as alert rules, contact points, and notification policies as Terraform resources. A new “Modify export” mode for alert rules enables you to edit provisioned alert rules and export a modified version.</p>
+<h3 id="contact-points-list-view-redesign">Contact points list view redesign</h3>
+<!-- Brenda Muir -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The Contact points list view has been redesigned and split into two tabs: Contact Points and Notification Templates, making it easier to view all contact point information at a glance. You can now search for name and type of contact points and integrations, view how many notification policies each contact point is being used for, and navigate directly to the linked notification policies.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=_eOhSmbYK8Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="create-alerts-from-panels">Create alerts from panels*</h3>
+<!-- Brenda Muir -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Create alerts from dashboard panels. You can reuse the panel queries and create alerts based on them.</p>
+<h3 id="support-for-adding-responders-to-opsgenie-alerting-contact-point">Support for adding responders to Opsgenie alerting contact point*</h3>
+<!--Ryan Kehoe-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The Opsgenie contact point has been extended to allow users to optionally fill out responder information for their integration. Responders tell Opsgenie who an alert should notify according to their escalation policies and routing rules.</p>
+<h3 id="recovery-thresholds-for-alerts">Recovery thresholds for alerts</h3>
+<!--Ryan Kehoe-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>To reduce the noise of flapping alerts, you can set a recovery threshold different to the alert threshold.</p>
+<p>Flapping alerts occur when a metric hovers around the alert threshold condition and may lead to frequent state changes, resulting in too many notifications being generated.</p>
+<h2 id="logs">Logs</h2>
+<h3 id="logs-table-ui">Logs Table UI</h3>
+<!--Galen Kistler-->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>Table view was created to help facilitate ease of use in a point and click UI, as opposed to datasource specific query language formatting options, like loki&rsquo;s line_format.</p>
+<p>Tables can be configured and shared with team members via explore URLs or by adding the table to a dashboard panel.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=OAZeqqNpEjc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="data-sources">Data sources</h2>
+<h3 id="data-source-admin-permission">Data source Admin permission*</h3>
+<!--Ieva Vasiljeva-->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>In addition to <code>Query</code> and <code>Edit</code> access, you can now grant users, teams, or basic roles <code>Admin</code> access to data sources. Users with <code>Admin</code> access to a data source can grant and revoke permissions to the data source, as well as to manage query caching settings for the data source. Users are automatically granted <code>Admin</code> access to data sources that they create.</p>
+<h3 id="redshift-and-athena-async-query-caching">Redshift and Athena: Async query caching</h3>
+<!--Isabella Siu-->
+<p><em>Generally available in Grafana Enterprise, Grafana Cloud Advanced and Cloud Pro</em></p>
+<p>Introducing query caching for async queries in the Athena and Redshift data source plugins. We previously introduced async queries for the Athena and Redshift plugins, and this feature adds support for caching those queries. To use this, you must have query caching enabled for the Athena or Redshift data source you wish to cache. This feature was previously available behind a feature toggle and is now generally available and enabled by default.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>useCachingService</code> feature toggle must also be enabled to use this feature.</p></blockquote></div>
+
+<h3 id="loki-data-source-improvements-or-filter-syntax-filter-by-label-types-derived-fields-by-labels">Loki data source improvements: &ldquo;or&rdquo; filter syntax, filter by label types, derived fields by labels</h3>
+<!--Sven Grossmann-->
+<!--enablement videos to come?-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Introducing several improvements to the Loki data source.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=ievPSzmCrAk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h4 id="line-filter-or-syntax">Line filter &ldquo;or&rdquo; syntax*</h4>
+<p>Loki&rsquo;s line filter syntax is great to find specific substrings of your log lines. If users want to find multiple different substrings it was cumbersome to use the regex <code>=~</code> operator. With this change it is possible to chain multiple strings with the existing filter operators.</p>
+<p>Example:</p>
+<pre>{app=&#34;foo&#34;} |= &#34;foo&#34; or &#34;bar&#34; != &#34;baz&#34; or &#34;qux&#34;</pre>
+<h4 id="filter-based-on-label-type">Filter based on label type*</h4>
+<p>Grafana users can use the action buttons in the log details to filter for specific labels. Those would be always added as a LabelFilter expression regardless of the type of the label. Now, filtered labels will be added either to the stream selector if the label is an indexed label, or as a LabelFilter expression if the label is a parsed label or part of structured metadata.</p>
+<h4 id="derived-fields-based-on-labels">Derived fields based on labels*</h4>
+<p>Derived fields or data links are a concept to add correlations based on your log lines. Previously it was only possible to add derived fields based on a regular expression of your log line and doing it based on labels was not possible. With this change derived fields can be added either based on a regex of a log line or based on a label, parsed label or structured metadata.</p>
+<p>The following example would add the derived field <code>traceID regex</code> based on a regular expression and another <code>app label</code> field based on the <code>app</code> label.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 951px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/2024-01-05_loki-derived-fields.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/2024-01-05_loki-derived-fields.png"data-srcset="/media/docs/grafana/2024-01-05_loki-derived-fields.png?w=320 320w, /media/docs/grafana/2024-01-05_loki-derived-fields.png?w=550 550w, /media/docs/grafana/2024-01-05_loki-derived-fields.png?w=750 750w, /media/docs/grafana/2024-01-05_loki-derived-fields.png?w=900 900w, /media/docs/grafana/2024-01-05_loki-derived-fields.png?w=1040 1040w, /media/docs/grafana/2024-01-05_loki-derived-fields.png?w=1240 1240w, /media/docs/grafana/2024-01-05_loki-derived-fields.png?w=1920 1920w"
+          data-sizes="auto"alt="Derived fields added based on a regular expression and an app label"width="951"height="476"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/2024-01-05_loki-derived-fields.png"
+            alt="Derived fields added based on a regular expression and an app label"width="951"height="476"/>
+        </noscript></div></a></figure>
+<h3 id="influxdb-native-sql-support">InfluxDB native SQL support</h3>
+<!--Ismail Simsek-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>InfluxDB introduced <a href="https://www.influxdata.com/blog/introducing-influxdb-3-0/" target="_blank" rel="noopener noreferrer">a new version, 3.0</a>, in April. With this new version, InfluxDB has put <a href="https://www.influxdata.com/blog/the-plan-for-influxdb-3-0-open-source/#heading4" target="_blank" rel="noopener noreferrer">Flux in maintenance mode</a>. But with the new version we have a new querying language, <a href="https://www.influxdata.com/products/sql/" target="_blank" rel="noopener noreferrer">Native SQL</a>. With v10.3.0, Grafana has built-in support for SQL query language in InfluxDB.</p>
+<p>All you need to do is set up your InfluxDB Cloud Account and create your InfluxDB data source on Grafana with the query language &ldquo;SQL&rdquo; selected.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=jGclGsv5PBA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="authentication-and-authorization">Authentication and authorization</h2>
+<h3 id="grafana-anonymous-access">Grafana Anonymous Access*</h3>
+<!--Eric Leijonmarck-->
+<p><em>Generally available in Grafana Open Source and Enterprise</em></p>
+<p>We&rsquo;ve identified a need for users who enable anonymous authentication to monitor the anonymous devices connected to their Grafana instance. This feature is part of our ongoing efforts to enhance control and transparency regarding anonymous usage.</p>
+<p>Anonymous access now allows users, including those in open-source and enterprise self-managed environments, to view and monitor their anonymous access. They can also set a device limit, configuring a specific number of anonymous devices to connect to their instance.</p>
+<p>Once this limit is reached, any new devices attempting to connect will be denied access until existing devices disconnect.</p>
+<p>The anonymous devices feature improves the management and monitoring of anonymous access within your Grafana instance.</p>
+<p><strong>Anonymous Device:</strong></p>
+<p>When anonymous access has been enabled, any device which accesses Grafana in the last 30 days (without logging in) is considered an active anonymous device. Users can now view anonymous devices on the users page, anonymous usage statistics, including the count of devices and users over this period.</p>
+<p><strong>Grafana UI:</strong></p>
+<ul>
+<li>
+<p>Navigate to Administration -&gt; Users to access the anonymous devices tab.</p>
+</li>
+<li>
+<p>A new statistic has been added to the Usage &amp; Stats page, displaying active anonymous devices from the last 30 days.</p>
+</li>
+</ul>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=B72X3_9e-ds" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/grafana/">Documentation</a></p>

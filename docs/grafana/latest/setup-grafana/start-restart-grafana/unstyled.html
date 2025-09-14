@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<h1 id="start-the-grafana-server">Start the Grafana server</h1>
+<p>This topic includes instructions for starting the Grafana server. For certain configuration changes, you might have to restart the Grafana server for them to take effect.</p>
+<p>The following instructions start the <code>grafana-server</code> process as the <code>grafana</code> user, which was created during the package installation.</p>
+<p>If you installed with the APT repository or <code>.deb</code> package, then you can start the server using <code>systemd</code> or <code>init.d</code>. If you installed a binary <code>.tar.gz</code> file, then you execute the binary.</p>
+<h2 id="linux">Linux</h2>
+<p>The following subsections describe three methods of starting and restarting the Grafana server: with systemd, initd, or by directly running the binary. You should follow only one set of instructions, depending on how your machine is configured.</p>
+<h3 id="start-the-grafana-server-with-systemd">Start the Grafana server with systemd</h3>
+<p>Complete the following steps to start the Grafana server using systemd and verify that it is running.</p>
+<ol>
+<li>
+<p>To start the service, run the following commands:</p>
+<pre>sudo systemctl daemon-reload
+sudo systemctl start grafana-server</pre>
+</li>
+<li>
+<p>To verify that the service is running, run the following command:</p>
+<pre>sudo systemctl status grafana-server</pre>
+</li>
+</ol>
+<h3 id="configure-the-grafana-server-to-start-at-boot-using-systemd">Configure the Grafana server to start at boot using systemd</h3>
+<p>To configure the Grafana server to start at boot, run the following command:</p>
+<pre>sudo systemctl enable grafana-server.service</pre>
+<h4 id="serve-grafana-on-a-port--1024">Serve Grafana on a port &lt; 1024</h4>
+
+
+<div data-shared="systemd/bind-net-capabilities.md">
+            <p>If you are using <code>systemd</code> and want to start Grafana on a port that is lower than 1024, you must add a <code>systemd</code> unit override.</p>
+<ol>
+<li>
+<p>Run the following command to create an override file in your configured editor.</p>
+<pre># Alternatively, create a file in /etc/systemd/system/grafana-server.service.d/override.conf
+sudo systemctl edit grafana-server.service</pre>
+</li>
+<li>
+<p>Add the following additional settings to grant the <code>CAP_NET_BIND_SERVICE</code> capability.</p>
+<p>To learn more about capabilities, refer to <a href="https://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank" rel="noopener noreferrer">capabilities(7) — Linux manual page</a>.</p>
+<pre>[Service]
+# Give the CAP_NET_BIND_SERVICE capability
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+# A private user cannot have process capabilities on the host&#39;s user
+# namespace and thus CAP_NET_BIND_SERVICE has no effect.
+PrivateUsers=false</pre>
+</li>
+</ol>
+</div>
+
+        
+<h3 id="restart-the-grafana-server-using-systemd">Restart the Grafana server using systemd</h3>
+<p>To restart the Grafana server, run the following command:</p>
+<pre>sudo systemctl restart grafana-server</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>SUSE or openSUSE users might need to start the server with the systemd method, then use the init.d method to configure Grafana to start at boot.</p></blockquote></div>
+
+<h3 id="start-the-grafana-server-using-initd">Start the Grafana server using init.d</h3>
+<p>Complete the following steps to start the Grafana server using init.d and verify that it is running:</p>
+<ol>
+<li>
+<p>To start the Grafana server, run the following command:</p>
+<pre>sudo service grafana-server start</pre>
+</li>
+<li>
+<p>To verify that the service is running, run the following command:</p>
+<pre>sudo service grafana-server status</pre>
+</li>
+</ol>
+<h3 id="configure-the-grafana-server-to-start-at-boot-using-initd">Configure the Grafana server to start at boot using init.d</h3>
+<p>To configure the Grafana server to start at boot, run the following command:</p>
+<pre>sudo update-rc.d grafana-server defaults</pre>
+<h4 id="restart-the-grafana-server-using-initd">Restart the Grafana server using init.d</h4>
+<p>To restart the Grafana server, run the following command:</p>
+<pre>sudo service grafana-server restart</pre>
+<h3 id="start-the-server-using-the-binary">Start the server using the binary</h3>
+<p>The <code>grafana</code> binary .tar.gz needs the working directory to be the root install directory where the binary and the <code>public</code> folder are located.</p>
+<p>To start the Grafana server, run the following command:</p>
+<pre>./bin/grafana server</pre>
+<h2 id="docker">Docker</h2>
+<p>To restart the Grafana service, use the <code>docker restart</code> command.</p>
+<p><code>docker restart grafana</code></p>
+<p>Alternatively, you can use the <code>docker compose restart</code> command to restart Grafana. For more information, refer to <a href="https://docs.docker.com/compose/" target="_blank" rel="noopener noreferrer">docker compose documentation</a>.</p>
+<h3 id="docker-compose-example">Docker compose example</h3>
+<p>Configure your <code>docker-compose.yml</code> file. For example:</p>
+<pre>version: &#39;3.8&#39;
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - TERM=linux
+      - GF_PLUGINS_PREINSTALL=grafana-clock-panel,grafana-polystat-panel
+    ports:
+      - &#39;3000:3000&#39;
+    volumes:
+      - &#39;grafana_storage:/var/lib/grafana&#39;
+volumes:
+  grafana_storage: {}</pre>
+<p>Start the Grafana server:</p>
+<p><code>docker compose up -d</code></p>
+<p>This starts the Grafana server container in detached mode along with the two plugins specified in the YAML file.</p>
+<p>To restart the running container, use this command:</p>
+<p><code>docker compose restart grafana</code></p>
+<h2 id="windows">Windows</h2>
+<p>Complete the following steps to start the Grafana server on Windows:</p>
+<ol>
+<li>
+<p>Execute <code>grafana.exe server</code>; the <code>grafana</code> binary is located in the <code>bin</code> directory.</p>
+<p>We recommend that you run <code>grafana.exe server</code> from the command line.</p>
+<p>If you want to run Grafana as a Windows service, you can download <a href="https://nssm.cc/" target="_blank" rel="noopener noreferrer">NSSM</a>.</p>
+</li>
+<li>
+<p>To run Grafana, open your browser and go to the Grafana port (http://localhost:3000/ is default).</p>
+<blockquote>
+<p><strong>Note:</strong> The default Grafana port is <code>3000</code>. This port might require extra permissions on Windows. If it does not appear in the default port, you can try changing to a different port.</p></blockquote>
+</li>
+<li>
+<p>To change the port, complete the following steps:</p>
+<p>a. In the <code>conf</code> directory, copy <code>sample.ini</code> to <code>custom.ini</code>.</p>
+<blockquote>
+<p><strong>Note:</strong> You should edit <code>custom.ini</code>, never <code>defaults.ini</code>.</p></blockquote>
+<p>b. Edit <code>custom.ini</code> and uncomment the <code>http_port</code> configuration option (<code>;</code> is the comment character in ini files) and change it to something similar to <code>8080</code>, which should not require extra Windows privileges.</p>
+</li>
+</ol>
+<p>To restart the Grafana server, complete the following steps:</p>
+<ol>
+<li>Open the <strong>Services</strong> app.</li>
+<li>Right-click on the <strong>Grafana</strong> service.</li>
+<li>In the context menu, click <strong>Restart</strong>.</li>
+</ol>
+<h2 id="macos">macOS</h2>
+<p>Restart methods differ depending on whether you installed Grafana using Homebrew or as standalone macOS binaries.</p>
+<h3 id="start-grafana-using-homebrew">Start Grafana using Homebrew</h3>
+<p>To start Grafana using <a href="http://brew.sh/" target="_blank" rel="noopener noreferrer">Homebrew</a>, run the following start command:</p>
+<pre>brew services start grafana</pre>
+<h3 id="restart-grafana-using-homebrew">Restart Grafana using Homebrew</h3>
+<p>Use the <a href="http://brew.sh/" target="_blank" rel="noopener noreferrer">Homebrew</a> restart command:</p>
+<pre>brew services restart grafana</pre>
+<h3 id="restart-standalone-macos-binaries">Restart standalone macOS binaries</h3>
+<p>To restart Grafana:</p>
+<ol>
+<li>Open a terminal and go to the directory where you copied the install setup files.</li>
+<li>Run the command:</li>
+</ol>
+<pre>./bin/grafana server</pre>
+<h2 id="next-steps">Next steps</h2>
+<p>After the Grafana server is up and running, consider taking the next steps:</p>
+<ul>
+<li>Refer to <a href="../../getting-started/">Get Started</a> to learn how to build your first dashboard.</li>
+<li>Refer to <a href="../configure-grafana/">Configuration</a> to learn about how you can customize your environment.</li>
+</ul>

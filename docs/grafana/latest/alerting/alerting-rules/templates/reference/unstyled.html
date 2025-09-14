@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<h1 id="annotation-and-label-template-reference">Annotation and label template reference</h1>
+<p>Annotations and labels in alert rules can be defined using plain text. However, you can also define templates to customize their values with dynamic data from alert rule queries.</p>
+<p>For example, you can template the <code>summary</code> annotation to include information from query values, providing relevant alert context for responders. Refer to 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">Template annotations and labels</a> for various use cases.</p>
+<p>In templates, variables represent dynamic values from queries, while functions perform actions to transform or format this data.</p>
+<h2 id="variables">Variables</h2>
+<p>Variables represent dynamic values from alert rule queries that can be displayed or accessed in your templates.</p>
+<p>The <code>$</code> and <code>.</code> symbols are used to reference variables and their properties. You can reference variables directly in your alert rule definitions using the <code>$</code> symbol followed by the variable name. Similarly, you can access properties of variables using the dot (<code>.</code>) notation in alert rule templates.</p>
+<pre>{{ $values.A.Value }}</pre>
+<p>Templates are based on the <strong>Go templating system</strong>. Refer to 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/language/">Template language</a> for additional information.</p>
+<p>The following variables are available when templating annotations and labels:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variables</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#labels">$labels</a></td>
+          <td>Contains all labels from the query, only query labels.</td>
+      </tr>
+      <tr>
+          <td><a href="#values">$values</a></td>
+          <td>Contains the labels and floating point values of all instant queries and expressions, indexed by their Ref IDs.</td>
+      </tr>
+      <tr>
+          <td><a href="#value">$value</a></td>
+          <td>A string containing the labels and values of all instant queries; threshold, reduce and math expressions, and classic conditions in the alert rule. When a single data source is used, it returns the value of the query. It is generally recommended to use <a href="#values">$values</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="labels">$labels</h3>
+<p>The <code>$labels</code> variable contains all labels from the query. It excludes 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#label-types">user-configured and reserved labels</a>, containing only query labels.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/query-labels-and-values.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/query-labels-and-values.png"data-srcset="/media/docs/alerting/query-labels-and-values.png?w=320 320w, /media/docs/alerting/query-labels-and-values.png?w=550 550w, /media/docs/alerting/query-labels-and-values.png?w=750 750w, /media/docs/alerting/query-labels-and-values.png?w=900 900w, /media/docs/alerting/query-labels-and-values.png?w=1040 1040w, /media/docs/alerting/query-labels-and-values.png?w=1240 1240w, /media/docs/alerting/query-labels-and-values.png?w=1920 1920w"
+          data-sizes="auto"alt="An alert rule displaying labels and value from a query."width="1275"height="367"title="An alert rule displaying labels and value from a query."/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/query-labels-and-values.png"
+            alt="An alert rule displaying labels and value from a query."width="1275"height="367"title="An alert rule displaying labels and value from a query."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">An alert rule displaying labels and value from a query.</figcaption></a></figure>
+<p>For example, suppose you have a query that returns CPU usage for all of your servers, and you have an alert rule that fires when any of your servers have exceeded 80% CPU usage for the last 5 minutes. You want to add a summary annotation to the alert that tells you which server is experiencing high CPU usage. With the <code>$labels</code> variable you can write a template that prints a human-readable sentence such as:</p>
+<pre>CPU usage for {{ $labels.instance }} has exceeded 80% for the last 5 minutes</pre>
+<p>The outcome of this template would be:</p>
+<pre>CPU usage for server1 has exceeded 80% for the last 5 minutes</pre>
+<blockquote>
+<p>If you are using a classic condition then <code>$labels</code> will not contain any labels from the query. Classic conditions discard these labels in order to enforce uni-dimensional behavior (at most one alert per alert rule). If you want to use labels from the query in your template then use the example 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/examples/#print-all-labels-from-a-classic-condition">here</a>.</p></blockquote>
+<h3 id="values">$values</h3>
+<p>The <code>$values</code> variable is a table containing the labels and floating point values of all instant queries and expressions, indexed by their Ref IDs (e.g, <code>A</code>, <code>B</code>, <code>C</code>, etc.). It does not contain the results of range queries, as they can return hundreds or thousands of rows.</p>
+<p>Each Ref IDs, such as <code>$values.A</code>, has the following properties</p>
+<table>
+  <thead>
+      <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Value</code></td>
+          <td>Float</td>
+          <td>The value returned by the instant query or expression.</td>
+      </tr>
+      <tr>
+          <td><code>Labels</code></td>
+          <td>Key/value pairs</td>
+          <td>The labels associated with the instance query or expression.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Here&rsquo;s the previous example printing now the value of the instant query with Ref ID <code>A</code>:</p>
+<pre>{{ $values.A.Value }} CPU usage for {{ $labels.instance }} over the last 5 minutes.</pre>
+<p>If the alert has the label <code>instance=server1</code> and the query returns <code>81.2345</code>, the template would print:</p>
+<pre>81.2345 CPU usage for instance1 over the last 5 minutes.</pre>
+<p>If the query in Ref ID <code>A</code> is a range query rather than an instant query then add a reduce expression with Ref ID <code>B</code> and replace <code>$values.A.Value</code> with <code>$values.B.Value</code>:</p>
+<pre>{{ $values.B.Value }} CPU usage for {{ $labels.instance }} over the last 5 minutes.</pre>
+<p>Alternatively, you can use the <code>index()</code> function to retrieve the query value:</p>
+<pre>{{ index $values &#34;B&#34; }} CPU usage for {{ index $labels &#34;instance&#34; }} over the last 5 minutes.</pre>
+<h4 id="value">$value</h4>
+<p>The <code>$value</code> variable is a string containing the labels and values of all instant queries; threshold, reduce and math expressions, and classic conditions in the alert rule.</p>
+<p>When a single data source is used in the alert rule, <code>$value</code> will return the query value directly.</p>
+<p>This example prints the <code>$value</code> variable:</p>
+<pre>{{ $value }}: CPU usage has exceeded 80% for the last 5 minutes.</pre>
+<p>When using multiple data sources, it would display something like this:</p>
+<pre>[ var=&#39;A&#39; labels={instance=instance1} value=81.234, , [ var=&#39;B&#39; labels={instance=instance2} value=1 ] ]: CPU usage has exceeded 80% for the last 5 minutes.</pre>
+<p>But with a single data source, it would display just the value of the query:</p>
+<pre>81.234: CPU usage has exceeded 80% for the last 5 minutes.</pre>
+<p>Instead, we recommend using <a href="#values">$values</a>, which contains the same information as <code>$value</code> but is structured in an easier-to-use table format.</p>
+<h2 id="functions">Functions</h2>
+<p>Functions can perform actions in templates such as transforming or formatting data.</p>
+<p>Note that the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/language/#functions">functions provided by Go&rsquo;s template language</a>, such as <code>index</code>, <code>and</code>, <code>printf</code>, and <code>len</code>, are available, along with many others.</p>
+<p>In addition, the following functions are also available for templating annotations and labels:</p>
+<p><strong>Numbers</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#humanize">humanize</a></td>
+          <td>number or string</td>
+          <td>string</td>
+          <td>Humanizes decimal numbers.</td>
+      </tr>
+      <tr>
+          <td><a href="#humanize1024">humanize1024</a></td>
+          <td>number or string</td>
+          <td>string</td>
+          <td>Like <code>humanize</code>, but but uses 1024 as the base rather than 1000.</td>
+      </tr>
+      <tr>
+          <td><a href="#humanizeduration">humanizeDuration</a></td>
+          <td>number or string</td>
+          <td>string</td>
+          <td>Humanizes a duration in seconds.</td>
+      </tr>
+      <tr>
+          <td><a href="#humanizepercentage">humanizePercentage</a></td>
+          <td>number or string</td>
+          <td>string</td>
+          <td>Humanizes a ratio value to a percentage.</td>
+      </tr>
+      <tr>
+          <td><a href="#humanizetimestamp">humanizeTimestamp</a></td>
+          <td>number or string</td>
+          <td>string</td>
+          <td>Humanizes a Unix timestamp.</td>
+      </tr>
+      <tr>
+          <td><a href="#totime">toTime</a></td>
+          <td>number or string</td>
+          <td>time</td>
+          <td>Converts a Unix timestamp in seconds to time.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Strings</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#title">title</a></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Capitalizes the first character of each word.</td>
+      </tr>
+      <tr>
+          <td><a href="#toupper">toUpper</a></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Returns all text in uppercase.</td>
+      </tr>
+      <tr>
+          <td><a href="#tolower">toLower</a></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Returns all text in lowercase.</td>
+      </tr>
+      <tr>
+          <td><a href="#stripport">stripPort</a></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Returns only host.</td>
+      </tr>
+      <tr>
+          <td><a href="#match">match</a></td>
+          <td>pattern, text</td>
+          <td>boolean</td>
+          <td>Matches the text against a regular expression pattern.</td>
+      </tr>
+      <tr>
+          <td><a href="#rereplaceall">reReplaceAll</a></td>
+          <td>pattern, replacement, text</td>
+          <td>string</td>
+          <td>Replaces text matching the regular expression.</td>
+      </tr>
+      <tr>
+          <td><a href="#graphlink">graphLink</a></td>
+          <td>expr</td>
+          <td>string</td>
+          <td>Returns the path to the graphical view in <code>Explore</code> for the given expression and data source.</td>
+      </tr>
+      <tr>
+          <td><a href="#tablelink">tableLink</a></td>
+          <td>expr</td>
+          <td>string</td>
+          <td>Returns the path to the tabular view in <code>Explore</code> for the given expression and data source.</td>
+      </tr>
+      <tr>
+          <td><a href="#parseduration">parseDuration</a></td>
+          <td>string</td>
+          <td>float</td>
+          <td>Parses a duration string such as &ldquo;1h&rdquo; into the number of seconds it represents.</td>
+      </tr>
+      <tr>
+          <td><a href="#stripdomain">stripDomain</a></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Returns the result of removing the domain part of a FQDN.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Others</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#args">args</a></td>
+          <td>[]interface{}</td>
+          <td>map[string]interface{}</td>
+          <td>Translates a list of objects to a map with keys arg0, arg1 etc.</td>
+      </tr>
+      <tr>
+          <td><a href="#safehtml">safeHtml</a></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Marks string as HTML not requiring auto-escaping.</td>
+      </tr>
+      <tr>
+          <td><a href="#externalurl">externalURL</a></td>
+          <td>none</td>
+          <td>string</td>
+          <td>Returns the external URL of the Grafana server as configured in the ini file(s).</td>
+      </tr>
+      <tr>
+          <td><a href="#pathprefix">pathPrefix</a></td>
+          <td>none</td>
+          <td>string</td>
+          <td>Returns the path of the Grafana server as configured in the ini file(s).</td>
+      </tr>
+  </tbody>
+</table>
+<p>For further context on these functions, note that templating in Grafana is based on the <a href="https://prometheus.io/docs/prometheus/latest/configuration/template_reference/" target="_blank" rel="noopener noreferrer">Prometheus template implementation</a>, enabling the use of these functions and Prometheus-like templates for formatting alert messages within Grafana.</p>
+<h4 id="humanize">humanize</h4>
+<p>The <code>humanize</code> function humanizes decimal numbers:</p>
+<pre>{{ humanize 1000.0 }}</pre>
+<pre>1k</pre>
+<h4 id="humanize1024">humanize1024</h4>
+<p>The <code>humanize1024</code> works similar to <code>humanize</code> but but uses 1024 as the base rather than 1000:</p>
+<pre>{{ humanize1024 1024.0 }}</pre>
+<pre>1ki</pre>
+<h4 id="humanizeduration">humanizeDuration</h4>
+<p>The <code>humanizeDuration</code> function humanizes a duration in seconds:</p>
+<pre>{{ humanizeDuration 60.0 }}</pre>
+<pre>1m 0s</pre>
+<h4 id="humanizepercentage">humanizePercentage</h4>
+<p>The <code>humanizePercentage</code> function humanizes a ratio value between 0 and 1 to a percentage:</p>
+<pre>{{ humanizePercentage 0.2 }}</pre>
+<pre>20%</pre>
+<h4 id="humanizetimestamp">humanizeTimestamp</h4>
+<p>The <code>humanizeTimestamp</code> function humanizes a Unix timestamp:</p>
+<pre>{{ humanizeTimestamp 1577836800.0 }}</pre>
+<pre>2020-01-01 00:00:00 +0000 UTC</pre>
+<h4 id="totime">toTime</h4>
+<p>The <code>toTime</code> function converts a Unix timestamp in seconds to time.:</p>
+<pre>{{ toTime 1727802106 }}</pre>
+<pre>2024-10-01 17:01:46 +0000 UTC</pre>
+<h4 id="title">title</h4>
+<p>The <code>title</code> function capitalizes the first character of each word:</p>
+<pre>{{ title &#34;hello, world!&#34; }}</pre>
+<pre>Hello, World!</pre>
+<h4 id="toupper">toUpper</h4>
+<p>The <code>toUpper</code> function returns all text in uppercase:</p>
+<pre>{{ toUpper &#34;Hello, world!&#34; }}</pre>
+<pre>HELLO, WORLD!</pre>
+<h4 id="tolower">toLower</h4>
+<p>The <code>toLower</code> function returns all text in lowercase:</p>
+<pre>{{ toLower &#34;Hello, world!&#34; }}</pre>
+<pre>hello, world!</pre>
+<h4 id="stripport">stripPort</h4>
+<p>The <code>stripPort</code> splits string into host and port, then returns only host:</p>
+<pre>{{ stripPort &#34;example.com:8080&#34; }}</pre>
+<pre>example.com</pre>
+<h4 id="match">match</h4>
+<p>The <code>match</code> function matches the text against a regular expression pattern:</p>
+<pre>{{ match &#34;a.*&#34; &#34;abc&#34; }}</pre>
+<pre>true</pre>
+<h4 id="rereplaceall">reReplaceAll</h4>
+<p>The <code>reReplaceAll</code> function replaces text matching the regular expression:</p>
+<pre>{{ reReplaceAll &#34;localhost:(.*)&#34; &#34;example.com:$1&#34; &#34;localhost:8080&#34; }}</pre>
+<pre>example.com:8080</pre>
+<h4 id="graphlink">graphLink</h4>
+<p>The <code>graphLink</code> function returns the path to the graphical view in 
+    <a href="/docs/grafana/latest/explore/">Explore</a> for the given expression and data source:</p>
+<pre>{{ graphLink &#34;{\&#34;expr\&#34;: \&#34;up\&#34;, \&#34;datasource\&#34;: \&#34;gdev-prometheus\&#34;}&#34; }}</pre>
+<pre>/explore?left=[&#34;now-1h&#34;,&#34;now&#34;,&#34;gdev-prometheus&#34;,{&#34;datasource&#34;:&#34;gdev-prometheus&#34;,&#34;expr&#34;:&#34;up&#34;,&#34;instant&#34;:false,&#34;range&#34;:true}]</pre>
+<h4 id="parseduration">parseDuration</h4>
+<p>The <code>parseDuration</code> function parses a duration string such as &ldquo;1h&rdquo; into the number of seconds it represents.</p>
+<pre>{{ parseDuration &#34;1h&#34; }}</pre>
+<pre>3600</pre>
+<h4 id="stripdomain">stripDomain</h4>
+<p>The <code>stripDomain</code> removes the domain part of a FQDN, leaving port untouched:</p>
+<pre>{{ stripDomain &#34;example.com:8080&#34; }}</pre>
+<pre>example:8080</pre>
+<h4 id="tablelink">tableLink</h4>
+<p>The <code>tableLink</code> function returns the path to the tabular view in 
+    <a href="/docs/grafana/latest/explore/">Explore</a> for the given expression and data source:</p>
+<pre>{{ tableLink &#34;{\&#34;expr\&#34;: \&#34;up\&#34;, \&#34;datasource\&#34;: \&#34;gdev-prometheus\&#34;}&#34; }}</pre>
+<pre>/explore?left=[&#34;now-1h&#34;,&#34;now&#34;,&#34;gdev-prometheus&#34;,{&#34;datasource&#34;:&#34;gdev-prometheus&#34;,&#34;expr&#34;:&#34;up&#34;,&#34;instant&#34;:true,&#34;range&#34;:false}]</pre>
+<h4 id="args">args</h4>
+<p>The <code>args</code> function translates a list of objects to a map with keys arg0, arg1 etc. This is intended to allow multiple arguments to be passed to templates:</p>
+<pre>{{define &#34;x&#34;}}{{.arg0}} {{.arg1}}{{end}}{{template &#34;x&#34; (args 1 &#34;2&#34;)}}</pre>
+<pre>1 2</pre>
+<h4 id="safehtml">safeHtml</h4>
+<p>The <code>safeHtml</code> function marks string as HTML not requiring auto-escaping:</p>
+<pre>{{ safeHtml &#34;&lt;b&gt;Text&lt;/b&gt;&#34;}}</pre>
+<pre>&lt;b&gt;Text&lt;/b&gt;</pre>
+<h4 id="externalurl">externalURL</h4>
+<p>The <code>externalURL</code> function returns the external URL of the Grafana server as configured in the ini file(s):</p>
+<pre>{{ externalURL }}</pre>
+<pre>https://example.com/grafana</pre>
+<h4 id="pathprefix">pathPrefix</h4>
+<p>The <code>pathPrefix</code> function returns the path of the Grafana server as configured in the ini file(s):</p>
+<pre>{{ pathPrefix }}</pre>
+<pre>/grafana</pre>
+<h2 id="differences-with-notification-templates">Differences with notification templates</h2>
+<p>Both notification templates and alert rule templates use the Go templating system. However, the 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/">functions and variables available in notification templates</a> differ from those used in annotations and labels templates, which are described in this documentation.</p>
+<p>Annotation and label templates operate in the context of an individual alert instance, while notification templates apply to a notification that includes a group of alert(s).</p>
+<p>For example, notification templates provide the <code>.Alerts</code> variable, which includes the list of all firing and resolved alerts in the notification. This variable is not available in alert rule templates, which operate within the context of a single alert instance.</p>
+<p>Additionally, you cannot reuse templates for labels and annotations as you can with notification templates. Instead, you need to write each template inline within the label or annotation fields and manually copy them wherever you want to reuse the templates.</p>

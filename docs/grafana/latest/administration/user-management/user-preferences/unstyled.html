@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<h1 id="manage-user-preferences">Manage user preferences</h1>
+<p>Grafana allows you to manage certain aspects of your user account, including your user name, email, and password.</p>
+<p>You can also view important information about your account, such as the organizations and roles to which you are assigned and the Grafana sessions associated with your account.</p>
+<h2 id="change-your-grafana-password">Change your Grafana password</h2>
+<p>You can change your Grafana password at any time.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If your Grafana instance uses an external authentication provider, then you might not be able to change your password in Grafana. Contact your Grafana administrator for more information.</p></blockquote></div>
+
+<p><strong>To change your password</strong>:</p>
+<ol>
+<li>Sign in to Grafana.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Change Password</strong>.</li>
+<li>Enter your old password and a new password.</li>
+<li>Confirm your new password.</li>
+<li>Click <strong>Change Password</strong>.</li>
+</ol>
+<h2 id="edit-your-profile">Edit your profile</h2>
+<p>Your profile includes your name, user name, and email address, which you can update.</p>
+<p><strong>To edit your profile</strong>:</p>
+<ol>
+<li>Sign in to Grafana.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>In the <strong>Profile</strong> section, update your details and click <strong>Save</strong>.</li>
+</ol>
+<h2 id="edit-your-preferences">Edit your preferences</h2>
+<p>You can choose the way you would like data to appear in Grafana, including the user interface theme, home dashboard, timezone, and first day of the week. You can set these preferences for your own account, for a team, for an organization, or Grafana-wide using configuration settings. Your user preferences take precedence over team, organization, and Grafana default preferences. For more information, see <a href="../../organization-preferences/">Grafana preferences</a>.</p>
+<ul>
+<li><strong>Interface theme</strong> determines whether Grafana appears in light mode or dark mode. You can also choose from several experimental modes. By default, the interface theme is set to dark mode. You can also <a href="#view-and-change-themes">quickly view and change themes</a> using the <strong>Change theme</strong> option.</li>
+<li><strong>Home dashboard</strong> refers to the dashboard you see when you sign in to Grafana. By default, this is set to the Home dashboard.</li>
+<li><strong>Timezone</strong> is used by dashboards when you set time ranges, so that you view data in your timezone instead of UTC.</li>
+<li><strong>Week start</strong> is the first day of the week you want to use in dashboard time ranges, for example, <code>This week</code>.</li>
+<li><strong>Language</strong> determines the language used for parts of the Grafana interface.</li>
+</ul>
+<p><strong>To edit your preferences</strong>:</p>
+<ol>
+<li>Sign in to Grafana.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>Update any of the values in the Preferences section.</li>
+<li>Click <strong>Save</strong> at the bottom of the section.</li>
+</ol>
+<h3 id="view-and-change-themes">View and change themes</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <strong>Change theme</strong> drawer is an experimental feature. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. Enable the <code>grafanaconThemes</code> feature toggle in Grafana to use this feature. This feature is automatically enabled in Grafana Cloud.</p></blockquote></div>
+
+<p>The <strong>Change theme</strong> drawer allows you to see the color scheme of a theme without having to select it first.
+It also lets you quickly change a color scheme from anywhere in Grafana without first going to your profile.</p>
+<p>To access the <strong>Change theme</strong> drawer, click the user icon in the top-right corner of the page and select <strong>Change theme</strong>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 650px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/screenshot-themes-drawer-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/screenshot-themes-drawer-v11.6.png"data-srcset="/media/docs/grafana/screenshot-themes-drawer-v11.6.png?w=320 320w, /media/docs/grafana/screenshot-themes-drawer-v11.6.png?w=550 550w, /media/docs/grafana/screenshot-themes-drawer-v11.6.png?w=750 750w, /media/docs/grafana/screenshot-themes-drawer-v11.6.png?w=900 900w, /media/docs/grafana/screenshot-themes-drawer-v11.6.png?w=1040 1040w, /media/docs/grafana/screenshot-themes-drawer-v11.6.png?w=1240 1240w, /media/docs/grafana/screenshot-themes-drawer-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="The Change theme drawer opened"width="1540"height="1492"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-themes-drawer-v11.6.png"
+            alt="The Change theme drawer opened"width="1540"height="1492"/>
+        </noscript></div></a></figure>
+<h2 id="switch-organizations">Switch organizations</h2>
+<p>When you sign in to Grafana, the system signs you in to a default organization. If you are assigned to multiple organizations, then you might need to switch organizations. For example, if you need to view a dashboard not associated with your current organization, then you should switch organizations to view associated dashboards.</p>
+<p><strong>To switch organizations</strong>:</p>
+<ol>
+<li>Sign in to Grafana.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Switch organization</strong>.</li>
+<li>Next to the organization that you want to sign in to, click <strong>Switch to</strong>.</li>
+</ol>
+<h2 id="view-your-assigned-organizations">View your assigned organizations</h2>
+<p>Every user is a member of at least one organization. You can have different roles in each organization of which you are a member.</p>
+<p><strong>To view your assigned organizations</strong>:</p>
+<ol>
+<li>Sign in to Grafana.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>Scroll down to the Organizations section and review the following information:
+<ul>
+<li><strong>Name</strong>: The name of the organizations of which you are a member.</li>
+<li><strong>Role</strong>: The role to which you are assigned in the organization. For more information about roles and permissions, refer to <a href="../../roles-and-permissions/#organization-users-and-permissions">Organization users and permissions</a>.</li>
+<li><strong>Current</strong>: Grafana indicates the organization that you are currently signed into as <em>Current</em>. If you are a member of multiple organizations, you can click <strong>Select</strong> to switch to that organization.</li>
+</ul>
+</li>
+</ol>
+<h2 id="view-your-grafana-sessions">View your Grafana sessions</h2>
+<p>Grafana logs your sessions in each Grafana instance. You can review this section if you suspect someone has misused your Grafana credentials.</p>
+<p><strong>To view your Grafana sessions</strong>:</p>
+<ol>
+<li>Sign in to Grafana.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>Scroll down to the <strong>Sessions</strong> section.</li>
+</ol>
+<h2 id="sign-out-a-user-session">Sign out a user session</h2>
+<p>You can sign out other sessions using your account in order to prevent other people from accessing Grafana using your credentials.</p>
+<p><strong>To sign out one of your Grafana sessions</strong>:</p>
+<ol>
+<li>Sign in to Grafana.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>Scroll down to the <strong>Sessions</strong> section.</li>
+<li>Click the red &ldquo;sign out&rdquo; icon next to the session you would like to sign out.</li>
+</ol>

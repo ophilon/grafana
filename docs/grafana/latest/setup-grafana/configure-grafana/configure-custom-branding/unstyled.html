@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<h1 id="configure-custom-branding">Configure custom branding</h1>
+<p>Custom branding enables you to replace the Grafana Labs brand and logo with your corporate brand and logo.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in <a href="../../../introduction/grafana-enterprise/">Grafana Enterprise</a> and to customers on select Grafana Cloud plans. For pricing information, visit <a href="/pricing/">pricing</a> or contact our sales team. For Cloud customers, please provide custom elements and logos to our Support team. We will help you host your images and update your custom branding.</p></blockquote></div>
+
+<p>The <code>grafana.ini</code> file includes Grafana Enterprise custom branding. As with all configuration options, you can use environment variables to set custom branding.</p>
+<p>With custom branding, you have the ability to modify the following elements:</p>
+<ul>
+<li>Application title</li>
+<li>Login background</li>
+<li>Login logo</li>
+<li>Side menu top logo</li>
+<li>Footer and help menu links</li>
+<li>Fav icon (shown in browser tab)</li>
+<li>Login title (will not appear if a login logo is set)</li>
+<li>Login subtitle (will not appear if a login logo is set)</li>
+<li>Login box background</li>
+<li>Loading logo</li>
+</ul>
+<blockquote>
+<p>You will have to host your logo and other images used by the custom branding feature separately. Make sure Grafana can access the URL where the assets are stored.</p></blockquote>
+<p>The configuration file in Grafana Enterprise contains the following options. For more information about configuring Grafana, refer to <a href="../">Configure Grafana</a>.</p>
+<pre># Enterprise only
+[white_labeling]
+# Set to your company name to override application title
+;app_title =
+
+# Set to main title on the login page (Will not appear if a login logo is set)
+;login_title =
+
+# Set to login subtitle (Will not appear if a login logo is set)
+;login_subtitle =
+
+# Set to complete URL to override login logo
+;login_logo =
+
+# Set to complete CSS background expression to override login background
+# example: login_background = url(http://www.bhmpics.com/wallpapers/starfield-1920x1080.jpg)
+;login_background =
+
+# Set to complete CSS background expression to override login box background
+;login_box_background =
+
+# Set to complete URL to override menu logo
+;menu_logo =
+
+# Set to complete URL to override fav icon (icon shown in browser tab)
+;fav_icon =
+
+# Set to complete URL to override apple/ios icon
+;apple_touch_icon =
+
+# Set to complete URL to override loading logo
+;loading_logo =
+
+# Set to `true` to remove the Grafana edition from appearing in the footer
+;hide_edition =</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For the <code>login_logo</code> option, Grafana recommends using SVG files that are 48 pixels by 48 pixels or smaller. You also don&rsquo;t need to use the <code>url()</code> function for <code>login_logo</code>.</p>
+<p>Additionally, you can copy images to the local Grafana image directory, <code>/usr/share/grafana/public/img/</code>, and set <code>login_logo</code> to the stored image. For example:</p>
+<pre>login_logo = /public/img/&lt;YOUR_LOGO.svg&gt;</pre></blockquote></div>
+
+<p>You have the option of adding custom links in place of the default footer links (Documentation, Support, Community). Below is an example of how to replace the default footer and help links with custom links.</p>
+<pre>footer_links = support guides extracustom
+footer_links_support_text = Support
+footer_links_support_url = http://your.support.site
+footer_links_guides_text = Guides
+footer_links_guides_url = http://your.guides.site
+footer_links_extracustom_text = Custom text
+footer_links_extracustom_url = http://your.custom.site</pre>
+<p>The following example shows configuring custom branding using environment variables instead of the <code>custom.ini</code> or <code>grafana.ini</code> files.</p>
+<pre>GF_WHITE_LABELING_FOOTER_LINKS=support guides extracustom
+GF_WHITE_LABELING_FOOTER_LINKS_SUPPORT_TEXT=Support
+GF_WHITE_LABELING_FOOTER_LINKS_SUPPORT_URL=http://your.support.site
+GF_WHITE_LABELING_FOOTER_LINKS_GUIDES_TEXT=Guides
+GF_WHITE_LABELING_FOOTER_LINKS_GUIDES_URL=http://your.guides.site
+GF_WHITE_LABELING_FOOTER_LINKS_EXTRACUSTOM_TEXT=Custom Text
+GF_WHITE_LABELING_FOOTER_LINKS_EXTRACUSTOM_URL=http://your.custom.site</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The following two links are always present in the footer:</p></blockquote></div>
+
+<ul>
+<li>Grafana edition</li>
+<li>Grafana version with build number</li>
+</ul>
+<p>If you specify <code>footer_links</code> or <code>GF_WHITE_LABELING_FOOTER_LINKS</code>, then all other default links are removed from the footer, and only what is specified is included.</p>
+<h2 id="custom-branding-for-shared-dashboards">Custom branding for shared dashboards</h2>
+<p>In addition to the customizations described below, you can customize the footer of your shared dashboards.
+To customize the footer of a shared dashboard, add the following section to the <code>grafana.ini</code> file.</p>
+<pre>[white_labeling.public_dashboards]
+
+# Hides the footer for the shared dashboards if set to `true`.
+# example: footer_hide = &#34;true&#34;
+;footer_hide =
+
+# Set to text shown in the footer
+;footer_text =
+
+# Set to complete url to override shared dashboard footer logo. Default is `grafana-logo` and will display the Grafana logo.
+# An empty value will hide the footer logo.
+;footer_logo =
+
+# Set to link for the footer
+;footer_link =
+
+# Set to `true` to hide the Grafana logo next to the title
+;header_logo_hide =</pre>
+<p>If you specify <code>footer_hide</code> to <code>true</code>, all the other values are ignored because the footer will not be shown.</p>

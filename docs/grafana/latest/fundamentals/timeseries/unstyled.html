@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<h1 id="introduction-to-time-series">Introduction to time series</h1>
+<p>Imagine you wanted to know how the temperature outside changes throughout the day. Once every hour, you&rsquo;d check the thermometer and write down the time along with the current temperature. After a while, you&rsquo;d have something like this:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>09:00</td>
+          <td>24°C</td>
+      </tr>
+      <tr>
+          <td>10:00</td>
+          <td>26°C</td>
+      </tr>
+      <tr>
+          <td>11:00</td>
+          <td>27°C</td>
+      </tr>
+  </tbody>
+</table>
+<p>Temperature data like this is one example of what we call a <em>time series</em> — a sequence of measurements, ordered in time. Every row in the table represents one individual measurement at a specific time.</p>
+<p>Tables are useful when you want to identify individual measurements, but they make it difficult to see the big picture. A more common visualization for time series is the <em>graph</em>, which instead places each measurement along a time axis. Visual representations like the graph make it easier to discover patterns and features of the data that otherwise would be difficult to see.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 850px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/example_graph.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/example_graph.png"data-srcset="/static/img/docs/example_graph.png?w=320 320w, /static/img/docs/example_graph.png?w=550 550w, /static/img/docs/example_graph.png?w=750 750w, /static/img/docs/example_graph.png?w=900 900w, /static/img/docs/example_graph.png?w=1040 1040w, /static/img/docs/example_graph.png?w=1240 1240w, /static/img/docs/example_graph.png?w=1920 1920w"
+          data-sizes="auto"alt="Temperature data displayed on dashboard"width="1736"height="444"/>
+        <noscript>
+          <img
+            src="/static/img/docs/example_graph.png"
+            alt="Temperature data displayed on dashboard"width="1736"height="444"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>Temperature data like the one in the example, is far from the only example of a time series. Other examples of time series are:</p>
+<ul>
+<li>CPU and memory usage</li>
+<li>Sensor data</li>
+<li>Stock market index</li>
+</ul>
+<p>While each of these examples are sequences of chronologically ordered measurements, they also share other attributes:</p>
+<ul>
+<li>New data is appended at the end, at regular intervals — for example, hourly at 09:00, 10:00, 11:00, and so on.</li>
+<li>Measurements are seldom updated after they were added — for example, yesterday&rsquo;s temperature doesn&rsquo;t change.</li>
+</ul>
+<p>Time series are powerful. They help you understand the past by letting you analyze the state of the system at any point in time. Time series could tell you that the server crashed moments after the free disk space went down to zero.</p>
+<p>Time series can also help you predict the future, by uncovering trends in your data. If the number of registered users has been increasing monthly by 4% for the past few months, you can predict how big your user base is going to be at the end of the year.</p>
+<p>Some time series have patterns that repeat themselves over a known period. For example, the temperature is typically higher during the day, before it dips down at night. By identifying these periodic, or <em>seasonal</em>, time series, you can make confident predictions about the next period. If you know that the system load peaks every day around 18:00, you can add more machines right before.</p>
+<h2 id="aggregating-time-series">Aggregating time series</h2>
+<p>Depending on what you&rsquo;re measuring, the data can vary greatly. What if you wanted to compare periods longer than the interval between measurements? If you&rsquo;d measure the temperature once every hour, you&rsquo;d end up with 24 data points per day. To compare the temperature in August over the years, you&rsquo;d have to combine the 31 times 24 data points into one.</p>
+<p>Combining a collection of measurements is called <em>aggregation</em>. There are several ways to aggregate time series data. Here are some common ones:</p>
+<ul>
+<li><strong>Average</strong> returns the sum of all values divided by the total number of values.</li>
+<li><strong>Min</strong> and <strong>Max</strong> return the smallest and largest value in the collection.</li>
+<li><strong>Sum</strong> returns the sum of all values in the collection.</li>
+<li><strong>Count</strong> returns the number of values in the collection.</li>
+</ul>
+<p>For example, by aggregating the data in a month, you can determine that August 2017 was, on average, warmer than the year before. Instead, to see which month had the highest temperature, you&rsquo;d compare the maximum temperature for each month.</p>
+<p>How you choose to aggregate your time series data is an important decision and depends on the story you want to tell with your data. It&rsquo;s common to use different aggregations to visualize the same time series data in different ways.</p>
+<h2 id="time-series-and-monitoring">Time series and monitoring</h2>
+<p>In the IT industry, time series data is often collected to monitor things like infrastructure, hardware, or application events. Machine-generated time series data is typically collected with short intervals, which allows you to react to any unexpected changes, moments after they occur. As a consequence, data accumulates at a rapid pace, making it vital to have a way to store and query data efficiently. As a result, databases optimized for time series data have seen a rise in popularity in recent years.</p>
+<h3 id="time-series-databases">Time series databases</h3>
+<p>A time series database (TSDB) is a database explicitly designed for time series data. While it&rsquo;s possible to use any regular database to store measurements, a TSDB comes with some useful optimizations.</p>
+<p>Modern time series databases take advantage of the fact that measurements are only ever appended, and rarely updated or removed. For example, the timestamps for each measurement change very little over time, which results in redundant data being stored.</p>
+<p>Look at this sequence of Unix timestamps:</p>
+<pre>1572524345, 1572524375, 1572524404, 1572524434, 1572524464</pre>
+<p>Looking at these timestamps, they all start with <code>1572524</code>, leading to poor use of disk space. Instead, we could store each subsequent timestamp as the difference, or <em>delta</em>, from the first one:</p>
+<pre>1572524345, +30, +29, +30, +30</pre>
+<p>We could even take it a step further, by calculating the deltas of these deltas:</p>
+<pre>1572524345, +30, -1, +1, +0</pre>
+<p>If measurements are taken at regular intervals, most of these delta-of-deltas will be 0. Because of optimizations like these, TSDBs use drastically less space than other databases.</p>
+<p>Another feature of a TSDB is the ability to filter measurements using <em>tags</em>. Each data point is labeled with a tag that adds context information, such as where the measurement was taken. Here&rsquo;s an example of the <a href="https://docs.influxdata.com/influxdb/v1.7/write_protocols/line_protocol_tutorial/#syntax" target="_blank" rel="noopener noreferrer">InfluxDB data format</a> that demonstrates how each measurement is stored.</p>
+<pre>weather,location=us-midwest temperature=82 1465839830100400200
+  |    -------------------- --------------  |
+  |             |             |             |
+  |             |             |             |
++-----------+--------+-+---------+-+---------+
+|measurement|,tag_set| |field_set| |timestamp|
++-----------+--------+-+---------+-+---------+</pre>
+<p>Here are some of the TSDBs supported by Grafana:</p>
+<ul>
+<li><a href="https://graphiteapp.org/" target="_blank" rel="noopener noreferrer">Graphite</a></li>
+<li><a href="https://www.influxdata.com/products/influxdb-overview/" target="_blank" rel="noopener noreferrer">InfluxDB</a></li>
+<li><a href="https://prometheus.io/" target="_blank" rel="noopener noreferrer">Prometheus</a></li>
+</ul>
+<h3 id="collecting-time-series-data">Collecting time series data</h3>
+<p>Now that we have a place to store our time series, how do we actually gather the measurements? To collect time series data, you&rsquo;d typically install a <em>collector</em> on the device, machine, or instance you want to monitor. Some collectors are made with a specific database in mind, and some support different output destinations.</p>
+<p>Here are some examples of collectors:</p>
+<ul>
+<li><a href="https://collectd.org/" target="_blank" rel="noopener noreferrer">collectd</a></li>
+<li><a href="https://github.com/statsd/statsd" target="_blank" rel="noopener noreferrer">statsd</a></li>
+<li><a href="https://prometheus.io/docs/instrumenting/exporters/" target="_blank" rel="noopener noreferrer">Prometheus exporters</a></li>
+<li><a href="https://github.com/influxdata/telegraf" target="_blank" rel="noopener noreferrer">Telegraf</a></li>
+</ul>
+<p>A collector either <em>pushes</em> data to a database or lets the database <em>pull</em> the data from it. Both methods come with their own set of pros and cons:</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>Pros</th>
+          <th>Cons</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Push</td>
+          <td>Easier to replicate data to multiple destinations.</td>
+          <td>The TSDB has no control over how much data gets sent.</td>
+      </tr>
+      <tr>
+          <td>Pull</td>
+          <td>Better control of how much data that gets ingested, and its authenticity.</td>
+          <td>Firewalls, VPNs or load balancers can make it hard to access the agents.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Since it would be inefficient to write every measurement to the database, collectors pre-aggregate the data and write to the time series database at regular intervals.</p>

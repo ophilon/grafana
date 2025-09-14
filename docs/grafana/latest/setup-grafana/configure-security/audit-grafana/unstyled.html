@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<h1 id="audit-a-grafana-instance">Audit a Grafana instance</h1>
+<p>Auditing allows you to track important changes to your Grafana instance. By default, audit logs are logged to file but the auditing feature also supports sending logs directly to Loki.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To enable sending Grafana Cloud audit logs to your Grafana Cloud Logs instance, please <a href="/profile/org/tickets/new">file a support ticket</a>. Note that standard ingest and retention rates apply for ingesting these audit logs.</p></blockquote></div>
+
+<p>Only API requests or UI actions that trigger an API request generate an audit log.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in <a href="../../../introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<h2 id="audit-logs">Audit logs</h2>
+<p>Audit logs are JSON objects representing user actions like:</p>
+<ul>
+<li>Modifications to resources such as dashboards and data sources.</li>
+<li>A user failing to log in.</li>
+</ul>
+<h3 id="format">Format</h3>
+<p>Audit logs contain the following fields. The fields followed by <strong>*</strong> are always available, the others depend on the type of action logged.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>timestamp</code>*</td>
+          <td>string</td>
+          <td>The date and time the request was made, in coordinated universal time (UTC) using the <a href="https://tools.ietf.org/html/rfc3339#section-5.6" target="_blank" rel="noopener noreferrer">RFC3339</a> format.</td>
+      </tr>
+      <tr>
+          <td><code>user</code>*</td>
+          <td>object</td>
+          <td>Information about the user that made the request. Either one of the <code>UserID</code> or <code>ApiKeyID</code> fields will contain content if <code>isAnonymous=false</code>.</td>
+      </tr>
+      <tr>
+          <td><code>user.userId</code></td>
+          <td>number</td>
+          <td>ID of the Grafana user that made the request.</td>
+      </tr>
+      <tr>
+          <td><code>user.orgId</code>*</td>
+          <td>number</td>
+          <td>Current organization of the user that made the request.</td>
+      </tr>
+      <tr>
+          <td><code>user.orgRole</code></td>
+          <td>string</td>
+          <td>Current role of the user that made the request.</td>
+      </tr>
+      <tr>
+          <td><code>user.name</code></td>
+          <td>string</td>
+          <td>Name of the Grafana user that made the request.</td>
+      </tr>
+      <tr>
+          <td><code>user.authTokenId</code></td>
+          <td>number</td>
+          <td>ID of the user authentication token.</td>
+      </tr>
+      <tr>
+          <td><code>user.apiKeyId</code></td>
+          <td>number</td>
+          <td>ID of the Grafana API key used to make the request.</td>
+      </tr>
+      <tr>
+          <td><code>user.isAnonymous</code>*</td>
+          <td>boolean</td>
+          <td>If an anonymous user made the request, <code>true</code>. Otherwise, <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td><code>action</code>*</td>
+          <td>string</td>
+          <td>The request action. For example, <code>create</code>, <code>update</code>, or <code>manage-permissions</code>.</td>
+      </tr>
+      <tr>
+          <td><code>request</code>*</td>
+          <td>object</td>
+          <td>Information about the HTTP request.</td>
+      </tr>
+      <tr>
+          <td><code>request.params</code></td>
+          <td>object</td>
+          <td>Request’s path parameters.</td>
+      </tr>
+      <tr>
+          <td><code>request.query</code></td>
+          <td>object</td>
+          <td>Request’s query parameters.</td>
+      </tr>
+      <tr>
+          <td><code>request.body</code></td>
+          <td>string</td>
+          <td>Request’s body. Filled with <code>&lt;non-marshalable format&gt;</code> when it isn&rsquo;t a valid JSON.</td>
+      </tr>
+      <tr>
+          <td><code>result</code>*</td>
+          <td>object</td>
+          <td>Information about the HTTP response.</td>
+      </tr>
+      <tr>
+          <td><code>result.statusType</code></td>
+          <td>string</td>
+          <td>If the request action was successful, <code>success</code>. Otherwise, <code>failure</code>.</td>
+      </tr>
+      <tr>
+          <td><code>result.statusCode</code></td>
+          <td>number</td>
+          <td>HTTP status of the request.</td>
+      </tr>
+      <tr>
+          <td><code>result.failureMessage</code></td>
+          <td>string</td>
+          <td>HTTP error message.</td>
+      </tr>
+      <tr>
+          <td><code>result.body</code></td>
+          <td>string</td>
+          <td>Response body. Filled with <code>&lt;non-marshalable format&gt;</code> when it isn&rsquo;t a valid JSON.</td>
+      </tr>
+      <tr>
+          <td><code>resources</code></td>
+          <td>array</td>
+          <td>Information about the resources that the request action affected. This field can be null for non-resource actions such as <code>login</code> or <code>logout</code>.</td>
+      </tr>
+      <tr>
+          <td><code>resources[x].id</code>*</td>
+          <td>number</td>
+          <td>ID of the resource.</td>
+      </tr>
+      <tr>
+          <td><code>resources[x].type</code>*</td>
+          <td>string</td>
+          <td>The type of the resource that was logged: <code>alert</code>, <code>alert-notification</code>, <code>annotation</code>, <code>api-key</code>, <code>auth-token</code>, <code>dashboard</code>, <code>datasource</code>, <code>folder</code>, <code>org</code>, <code>panel</code>, <code>playlist</code>, <code>report</code>, <code>team</code>, <code>user</code>, or <code>version</code>.</td>
+      </tr>
+      <tr>
+          <td><code>requestUri</code>*</td>
+          <td>string</td>
+          <td>Request URI.</td>
+      </tr>
+      <tr>
+          <td><code>ipAddress</code>*</td>
+          <td>string</td>
+          <td>IP address that the request was made from.</td>
+      </tr>
+      <tr>
+          <td><code>userAgent</code>*</td>
+          <td>string</td>
+          <td>Agent through which the request was made.</td>
+      </tr>
+      <tr>
+          <td><code>grafanaVersion</code>*</td>
+          <td>string</td>
+          <td>Current version of Grafana when this log is created.</td>
+      </tr>
+      <tr>
+          <td><code>additionalData</code></td>
+          <td>object</td>
+          <td>Additional information that can be provided about the request.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The <code>additionalData</code> field can contain the following information:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Action</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>loginUsername</code></td>
+          <td><code>login</code></td>
+          <td>Login used in the Grafana authentication form.</td>
+      </tr>
+      <tr>
+          <td><code>extUserInfo</code></td>
+          <td><code>login</code></td>
+          <td>User information provided by the external system that was used to log in.</td>
+      </tr>
+      <tr>
+          <td><code>authTokenCount</code></td>
+          <td><code>login</code></td>
+          <td>Number of active authentication tokens for the user that logged in.</td>
+      </tr>
+      <tr>
+          <td><code>terminationReason</code></td>
+          <td><code>logout</code></td>
+          <td>The reason why the user logged out, such as a manual logout or a token expiring.</td>
+      </tr>
+      <tr>
+          <td><code>billing_role</code></td>
+          <td><code>billing-information</code></td>
+          <td>The billing role associated with the billing information being sent.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="recorded-actions">Recorded actions</h3>
+<p>The audit logs include records about the following categories of actions. Each action is
+distinguished by the <code>action</code> and <code>resources[...].type</code> fields in the JSON record.</p>
+<p>For example, creating an API key produces an audit log like this:</p>
+<pre>{
+  &#34;action&#34;: &#34;create&#34;,
+  &#34;resources&#34;: [
+    {
+      &#34;id&#34;: 1,
+      &#34;type&#34;: &#34;api-key&#34;
+    }
+  ],
+  &#34;timestamp&#34;: &#34;2021-11-12T22:12:36.144795692Z&#34;,
+  &#34;user&#34;: {
+    &#34;userId&#34;: 1,
+    &#34;orgId&#34;: 1,
+    &#34;orgRole&#34;: &#34;Admin&#34;,
+    &#34;username&#34;: &#34;admin&#34;,
+    &#34;isAnonymous&#34;: false,
+    &#34;authTokenId&#34;: 1
+  },
+  &#34;request&#34;: {
+    &#34;body&#34;: &#34;{\&#34;name\&#34;:\&#34;example\&#34;,\&#34;role\&#34;:\&#34;Viewer\&#34;,\&#34;secondsToLive\&#34;:null}&#34;
+  },
+  &#34;result&#34;: {
+    &#34;statusType&#34;: &#34;success&#34;,
+    &#34;statusCode&#34;: 200,
+    &#34;responseBody&#34;: &#34;{\&#34;id\&#34;:1,\&#34;name\&#34;:\&#34;example\&#34;}&#34;
+  },
+  &#34;resources&#34;: [
+    {
+      &#34;id&#34;: 1,
+      &#34;type&#34;: &#34;api-key&#34;
+    }
+  ],
+  &#34;requestUri&#34;: &#34;/api/auth/keys&#34;,
+  &#34;ipAddress&#34;: &#34;127.0.0.1:54652&#34;,
+  &#34;userAgent&#34;: &#34;Mozilla/5.0 (X11; Linux x86_64; rv:94.0) Gecko/20100101 Firefox/94.0&#34;,
+  &#34;grafanaVersion&#34;: &#34;8.3.0-pre&#34;
+}</pre>
+<p>Some actions can only be distinguished by their <code>requestUri</code> fields. For those actions, the relevant
+pattern of the <code>requestUri</code> field is given.</p>
+<p>Note that almost all these recorded actions are actions that correspond to API requests or UI actions that
+trigger an API request. Therefore, the action <code>{&quot;action&quot;: &quot;email&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;report&quot;}]}</code> corresponds
+to the action when the user requests a report&rsquo;s preview to be sent through email, and not the scheduled ones.</p>
+<h4 id="sessions">Sessions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Log in</td>
+          <td><code>{&quot;action&quot;: &quot;login-AUTH-MODULE&quot;}</code> *</td>
+      </tr>
+      <tr>
+          <td>Log out **</td>
+          <td><code>{&quot;action&quot;: &quot;logout&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Force logout for user</td>
+          <td><code>{&quot;action&quot;: &quot;logout-user&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Remove user authentication token</td>
+          <td><code>{&quot;action&quot;: &quot;revoke-auth-token&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;auth-token&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Create API key</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;api-key&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete API key</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;api-key&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>* Where <code>AUTH-MODULE</code> is the name of the authentication module: <code>grafana</code>, <code>saml</code>,
+<code>ldap</code>, etc. <br />
+** Includes manual log out, token expired/revoked, and <a href="../configure-authentication/saml/#single-logout">SAML Single Logout</a>.</p>
+<h4 id="service-accounts">Service accounts</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create service account</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;service-account&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update service account</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;service-account&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete service account</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;service-account&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Create service account token</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;service-account&quot;}, {&quot;type&quot;: &quot;service-account-token&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete service account token</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;service-account&quot;}, {&quot;type&quot;: &quot;service-account-token&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Hide API keys</td>
+          <td><code>{&quot;action&quot;: &quot;hide-api-keys&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Migrate API keys</td>
+          <td><code>{&quot;action&quot;: &quot;migrate-api-keys&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Migrate API key</td>
+          <td><code>{&quot;action&quot;: &quot;migrate-api-keys&quot;}, &quot;resources&quot;: [{&quot;type&quot;: &quot;api-key&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="access-control">Access control</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create role</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update role</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete role</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Assign built-in role</td>
+          <td><code>{&quot;action&quot;: &quot;assign-builtin-role&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}, {&quot;type&quot;: &quot;builtin-role&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Remove built-in role</td>
+          <td><code>{&quot;action&quot;: &quot;remove-builtin-role&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}, {&quot;type&quot;: &quot;builtin-role&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Grant team role</td>
+          <td><code>{&quot;action&quot;: &quot;grant-team-role&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set team roles</td>
+          <td><code>{&quot;action&quot;: &quot;set-team-roles&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Revoke team role</td>
+          <td><code>{&quot;action&quot;: &quot;revoke-team-role&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}, {&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Grant user role</td>
+          <td><code>{&quot;action&quot;: &quot;grant-user-role&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set user roles</td>
+          <td><code>{&quot;action&quot;: &quot;set-user-roles&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Revoke user role</td>
+          <td><code>{&quot;action&quot;: &quot;revoke-user-role&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;role&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set user permissions on folder</td>
+          <td><code>{&quot;action&quot;: &quot;set-user-permissions-on-folder&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;folder&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set team permissions on folder</td>
+          <td><code>{&quot;action&quot;: &quot;set-team-permissions-on-folder&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;folder&quot;}, {&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set basic role permissions on folder</td>
+          <td><code>{&quot;action&quot;: &quot;set-basic-role-permissions-on-folder&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;folder&quot;}, {&quot;type&quot;: &quot;builtin-role&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set user permissions on dashboard</td>
+          <td><code>{&quot;action&quot;: &quot;set-user-permissions-on-dashboards&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set team permissions on dashboard</td>
+          <td><code>{&quot;action&quot;: &quot;set-team-permissions-on-dashboards&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}, {&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set basic role permissions on dashboard</td>
+          <td><code>{&quot;action&quot;: &quot;set-basic-role-permissions-on-dashboards&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}, {&quot;type&quot;: &quot;builtin-role&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set user permissions on team</td>
+          <td><code>{&quot;action&quot;: &quot;set-user-permissions-on-teams&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;teams&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set user permissions on service account</td>
+          <td><code>{&quot;action&quot;: &quot;set-user-permissions-on-service-accounts&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;service-account&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set user permissions on datasource</td>
+          <td><code>{&quot;action&quot;: &quot;set-user-permissions-on-data-sources&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set team permissions on datasource</td>
+          <td><code>{&quot;action&quot;: &quot;set-team-permissions-on-data-sources&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}, {&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Set basic role permissions on datasource</td>
+          <td><code>{&quot;action&quot;: &quot;set-basic-role-permissions-on-data-sources&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}, {&quot;type&quot;: &quot;builtin-role&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="user-management">User management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create user</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update user</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete user</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Disable user</td>
+          <td><code>{&quot;action&quot;: &quot;disable&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Enable user</td>
+          <td><code>{&quot;action&quot;: &quot;enable&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update password</td>
+          <td><code>{&quot;action&quot;: &quot;update-password&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Send password reset email</td>
+          <td><code>{&quot;action&quot;: &quot;send-reset-email&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Reset password</td>
+          <td><code>{&quot;action&quot;: &quot;reset-password&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Update permissions</td>
+          <td><code>{&quot;action&quot;: &quot;update-permissions&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Send signup email</td>
+          <td><code>{&quot;action&quot;: &quot;signup-email&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Click signup link</td>
+          <td><code>{&quot;action&quot;: &quot;signup&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Reload LDAP configuration</td>
+          <td><code>{&quot;action&quot;: &quot;ldap-reload&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Get user in LDAP</td>
+          <td><code>{&quot;action&quot;: &quot;ldap-search&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Sync user with LDAP</td>
+          <td><code>{&quot;action&quot;: &quot;ldap-sync&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}]</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="team-and-organization-management">Team and organization management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Add team</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;requestUri&quot;: &quot;/api/teams&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Update team</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;requestUri&quot;: &quot;/api/teams/TEAM-ID&quot;}</code>*</td>
+      </tr>
+      <tr>
+          <td>Delete team</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;requestUri&quot;: &quot;/api/teams/TEAM-ID&quot;}</code>*</td>
+      </tr>
+      <tr>
+          <td>Add external group for team</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;requestUri&quot;: &quot;/api/teams/TEAM-ID/groups&quot;}</code>*</td>
+      </tr>
+      <tr>
+          <td>Remove external group for team</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;requestUri&quot;: &quot;/api/teams/TEAM-ID/groups/GROUP-ID&quot;}</code>*</td>
+      </tr>
+      <tr>
+          <td>Add user to team</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}, {&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update team member permissions</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}, {&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Remove user from team</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}, {&quot;type&quot;: &quot;team&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Create organization</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;org&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update organization</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;org&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete organization</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;org&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Add user to organization</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;org&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Change user role in organization</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}, {&quot;type&quot;: &quot;org&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Remove user from organization</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;user&quot;}, {&quot;type&quot;: &quot;org&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Invite external user to organization</td>
+          <td><code>{&quot;action&quot;: &quot;org-invite&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;org&quot;}, {&quot;type&quot;: &quot;user&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Revoke invitation</td>
+          <td><code>{&quot;action&quot;: &quot;revoke-org-invite&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;org&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>* Where <code>TEAM-ID</code> is the ID of the affected team, and <code>GROUP-ID</code> (if present) is the ID of the
+external group.</p>
+<h4 id="folder-and-dashboard-management">Folder and dashboard management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create folder</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;folder&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update folder</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;folder&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update folder permissions</td>
+          <td><code>{&quot;action&quot;: &quot;manage-permissions&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;folder&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete folder</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;folder&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Create/update dashboard</td>
+          <td><code>{&quot;action&quot;: &quot;create-update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Import dashboard</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update dashboard permissions</td>
+          <td><code>{&quot;action&quot;: &quot;manage-permissions&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Restore old dashboard version</td>
+          <td><code>{&quot;action&quot;: &quot;restore&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete dashboard</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="library-elements-management">Library elements management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create library element</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;library-element&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update library element</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;library-element&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete library element</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;library-element&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="data-sources-management">Data sources management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create datasource</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update datasource</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete datasource</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Enable permissions for datasource</td>
+          <td><code>{&quot;action&quot;: &quot;enable-permissions&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Disable permissions for datasource</td>
+          <td><code>{&quot;action&quot;: &quot;disable-permissions&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Grant datasource permission to role, team, or user</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}, {&quot;type&quot;: &quot;dspermission&quot;}]}</code>*</td>
+      </tr>
+      <tr>
+          <td>Remove datasource permission</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}, {&quot;type&quot;: &quot;dspermission&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Enable caching for datasource</td>
+          <td><code>{&quot;action&quot;: &quot;enable-cache&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Disable caching for datasource</td>
+          <td><code>{&quot;action&quot;: &quot;disable-cache&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update datasource caching configuration</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>* <code>resources</code> may also contain a third item with <code>&quot;type&quot;:</code> set to <code>&quot;user&quot;</code> or <code>&quot;team&quot;</code>.</p>
+<h4 id="data-source-query">Data source query</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Query datasource</td>
+          <td><code>{&quot;action&quot;: &quot;query&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;datasource&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="reporting">Reporting</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create report</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;report&quot;}, {&quot;type&quot;: &quot;dashboard&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update report</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;report&quot;}, {&quot;type&quot;: &quot;dashboard&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete report</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;report&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Send report by email</td>
+          <td><code>{&quot;action&quot;: &quot;email&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;report&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update reporting settings</td>
+          <td><code>{&quot;action&quot;: &quot;change-settings&quot;}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="annotations-playlists-and-snapshots-management">Annotations, playlists and snapshots management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Create annotation</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;annotation&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Create Graphite annotation</td>
+          <td><code>{&quot;action&quot;: &quot;create-graphite&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;annotation&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update annotation</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;annotation&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Patch annotation</td>
+          <td><code>{&quot;action&quot;: &quot;patch&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;annotation&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete annotation</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;annotation&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete all annotations from panel</td>
+          <td><code>{&quot;action&quot;: &quot;mass-delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}, {&quot;type&quot;: &quot;panel&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Create playlist</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;playlist&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Update playlist</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;playlist&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete playlist</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;playlist&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Create a snapshot</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;dashboard&quot;}, {&quot;type&quot;: &quot;snapshot&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete a snapshot</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;snapshot&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Delete a snapshot by delete key</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;snapshot&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="provisioning">Provisioning</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Reload provisioned dashboards</td>
+          <td><code>{&quot;action&quot;: &quot;provisioning-dashboards&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Reload provisioned datasources</td>
+          <td><code>{&quot;action&quot;: &quot;provisioning-datasources&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Reload provisioned plugins</td>
+          <td><code>{&quot;action&quot;: &quot;provisioning-plugins&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Reload provisioned alerts</td>
+          <td><code>{&quot;action&quot;: &quot;provisioning-alerts&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Reload provisioned access control</td>
+          <td><code>{&quot;action&quot;: &quot;provisioning-accesscontrol&quot;}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="plugins-management">Plugins management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Install plugin</td>
+          <td><code>{&quot;action&quot;: &quot;install&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Uninstall plugin</td>
+          <td><code>{&quot;action&quot;: &quot;uninstall&quot;}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="miscellaneous">Miscellaneous</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Set licensing token</td>
+          <td><code>{&quot;action&quot;: &quot;create&quot;, &quot;requestUri&quot;: &quot;/api/licensing/token&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Save billing information</td>
+          <td><code>{&quot;action&quot;: &quot;billing-information&quot;}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="cloud-migration-management">Cloud migration management</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Connect to a cloud instance</td>
+          <td><code>{&quot;action&quot;: &quot;connect-instance&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Disconnect from a cloud instance</td>
+          <td><code>{&quot;action&quot;: &quot;disconnect-instance&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>Build a snapshot</td>
+          <td><code>{&quot;action&quot;: &quot;build&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;snapshot&quot;}]}</code></td>
+      </tr>
+      <tr>
+          <td>Upload a snapshot</td>
+          <td><code>{&quot;action&quot;: &quot;upload&quot;, &quot;resources&quot;: [{&quot;type&quot;: &quot;snapshot&quot;}]}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="generic-actions">Generic actions</h4>
+<p>In addition to the actions listed above, any HTTP request (<code>POST</code>, <code>PATCH</code>, <code>PUT</code>, and <code>DELETE</code>)
+against the API is recorded with one of the following generic actions.</p>
+<p>Furthermore, you can also record <code>GET</code> requests. See below how to configure it.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Distinguishing fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>POST request</td>
+          <td><code>{&quot;action&quot;: &quot;post-action&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>PATCH request</td>
+          <td><code>{&quot;action&quot;: &quot;partial-update&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>PUT request</td>
+          <td><code>{&quot;action&quot;: &quot;update&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>DELETE request</td>
+          <td><code>{&quot;action&quot;: &quot;delete&quot;}</code></td>
+      </tr>
+      <tr>
+          <td>GET request</td>
+          <td><code>{&quot;action&quot;: &quot;retrieve&quot;}</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="configuration">Configuration</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The auditing feature is disabled by default.</p></blockquote></div>
+
+<p>Audit logs can be saved into files, sent to a Loki instance or sent to the Grafana default logger. By default, only the file exporter is enabled.
+You can choose which exporter to use in the <a href="../../configure-grafana/">configuration file</a>.</p>
+<p>Options are <code>file</code>, <code>loki</code>, and <code>logger</code>. Use spaces to separate multiple modes, such as <code>file loki</code>.</p>
+<p>By default, when a user creates or updates a dashboard, its content will not appear in the logs as it can significantly increase the size of your logs. If this is important information for you and you can handle the amount of data generated, then you can enable this option in the configuration.</p>
+<pre>[auditing]
+# Enable the auditing feature
+enabled = false
+# List of enabled loggers
+loggers = file
+# Keep dashboard content in the logs (request or response fields); this can significantly increase the size of your logs.
+log_dashboard_content = false
+# Whether to record data source queries&#39; request body. This can significantly increase the size of your logs. Enabled by default.
+log_datasource_query_request_body = true
+# Whether to record data source queries&#39; response body. This can significantly increase the size of your logs. Enabled by default.
+log_datasource_query_response_body = true
+# Keep requests and responses body; this can significantly increase the size of your logs.
+verbose = false
+# Write an audit log for every status code.
+# By default it only logs the following ones: 2XX, 3XX, 401, 403 and 500.
+log_all_status_codes = false
+# Maximum response body (in bytes) to be audited; 500KiB by default.
+# May help reducing the memory footprint caused by auditing.
+max_response_size_bytes = 512000</pre>
+<p>Each exporter has its own configuration fields.</p>
+<h3 id="file-exporter">File exporter</h3>
+<p>Audit logs are saved into files. You can configure the folder to use to save these files. Logs are rotated when the file size is exceeded and at the start of a new day.</p>
+<pre>[auditing.logs.file]
+# Path to logs folder
+path = data/log
+# Maximum log files to keep
+max_files = 5
+# Max size in megabytes per log file
+max_file_size_mb = 256</pre>
+<h3 id="loki-exporter">Loki exporter</h3>
+<p>Audit logs are sent to a <a href="/oss/loki/">Loki</a> service, through HTTP or gRPC.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The HTTP option for the Loki exporter is available only in Grafana Enterprise version 7.4 and later.</p></blockquote></div>
+
+<pre>[auditing.logs.loki]
+# Set the communication protocol to use with Loki (can be grpc or http)
+type = grpc
+# Set the address for writing logs to Loki
+url = localhost:9095
+# Defaults to true. If true, it establishes a secure connection to Loki
+tls = true
+# Set the tenant ID for Loki communication, which is disabled by default.
+# The tenant ID is required to interact with Loki running in multi-tenant mode.
+tenant_id =</pre>
+<p>If you have multiple Grafana instances sending logs to the same Loki service or if you are using Loki for non-audit logs, audit logs come with additional labels to help identifying them:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Label</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>host</td>
+          <td>OS hostname on which the Grafana instance is running</td>
+      </tr>
+      <tr>
+          <td>grafana_instance</td>
+          <td>Application URL</td>
+      </tr>
+      <tr>
+          <td>kind</td>
+          <td><code>auditing</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>When basic authentication is needed to ingest logs in your Loki instance, you can specify credentials in the URL field. For example:</p>
+<pre># Set the communication protocol to use with Loki (can be grpc or http)
+type = http
+# Set the address for writing logs to Loki
+url = user:password@localhost:3000</pre>
+<h3 id="console-exporter">Console exporter</h3>
+<p>Audit logs are sent to the Grafana default logger. The audit logs use the <code>auditing.console</code> logger and are logged on <code>debug</code>-level, learn how to enable debug logging in the <a href="../../configure-grafana/#log">log configuration</a> section of the documentation. Accessing the audit logs in this way is not recommended for production use.</p>

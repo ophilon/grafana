@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<h1 id="configure-saml-with-microsoft-entra-id">Configure SAML with Microsoft Entra ID</h1>
+<p>Grafana supports user authentication through Microsoft Entra ID. This topic shows you how to configure SAML authentication in Grafana with <a href="https://www.microsoft.com/en-us/security/business/identity-access/microsoft-entra-id" target="_blank" rel="noopener noreferrer">Entra ID</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If an Entra ID user belongs to more than 150 groups, a Graph API endpoint is used instead.</p>
+<p>Grafana versions 11.1 and below, do not support fetching the groups from the Graph API endpoint. As a result, users with more than 150 groups will not be able to retrieve their groups. Instead, it is recommended that you use the Azure AD connector.</p>
+<p>As of Grafana 11.2, the SAML integration offers a mechanism to retrieve user groups from the Graph API.</p>
+<p>Related links:</p>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#groups-overage-claim" target="_blank" rel="noopener noreferrer">Entra ID SAML limitations</a></li>
+<li><a href="#configure-a-graph-api-application-in-entra-id">Configure a Graph API application in Entra ID</a></li>
+</ul></blockquote></div>
+
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Ensure you have permission to administer SAML authentication. For more information about roles and permissions in Grafana, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/">Roles and permissions</a>.</p>
+<p>If you have users that belong to more than 150 groups, configure a registered application to provide an Entra ID Graph API to retrieve the groups. Refer to <a href="#configure-a-graph-api-application-in-entra-id">Setup Entra ID Graph API applications</a>.</p>
+<h2 id="generate-self-signed-certificates">Generate self-signed certificates</h2>
+<p>Entra ID requires a certificate to verify the SAML requests&rsquo; signature. You can generate a private key and a self-signed certificate using the following command (the private key used to sign the requests and the certificate contains the public key for verification):</p>
+<pre>$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes</pre>
+<p>This will generate a <code>key.pem</code> and <code>cert.pem</code> file that you can use for the <code>private_key_path</code> and <code>certificate_path</code> configuration options.</p>
+<h2 id="add-microsoft-entra-saml-toolkit-from-the-gallery">Add Microsoft Entra SAML Toolkit from the gallery</h2>
+<blockquote>
+<p>Taken from <a href="https://learn.microsoft.com/en-us/entra/identity/saas-apps/saml-toolkit-tutorial#add-microsoft-entra-saml-toolkit-from-the-gallery" target="_blank" rel="noopener noreferrer">https://learn.microsoft.com/en-us/entra/identity/saas-apps/saml-toolkit-tutorial#add-microsoft-entra-saml-toolkit-from-the-gallery</a></p></blockquote>
+<ol>
+<li>Go to the <a href="https://portal.azure.com/#home" target="_blank" rel="noopener noreferrer">Azure portal</a> and sign in with your Entra ID account.</li>
+<li>Search for <strong>Enterprise Applications</strong>.</li>
+<li>In the <strong>Enterprise applications</strong> pane, select <strong>New application</strong>.</li>
+<li>In the search box, enter <strong>SAML Toolkit</strong>, and then select the <strong>Microsoft Entra SAML Toolkit</strong> from the results panel.</li>
+<li>Add a descriptive name and select <strong>Create</strong>.</li>
+</ol>
+<h2 id="configure-the-saml-toolkit-application-endpoints">Configure the SAML Toolkit application endpoints</h2>
+<p>In order to validate Entra ID users with Grafana, you need to configure the SAML Toolkit application endpoints by creating a new SAML integration in the Entra ID organization.</p>
+<blockquote>
+<p>For the following configuration, we will use <code>https://localhost</code> as the Grafana URL. Replace it with your Grafana URL.</p></blockquote>
+<ol>
+<li>In the <strong>SAML Toolkit application</strong>, select <strong>Set up single sign-on</strong>.</li>
+<li>In the <strong>Single sign-on</strong> pane, select <strong>SAML</strong>.</li>
+<li>In the Set up <strong>Single Sign-On with SAML</strong> pane, select the pencil icon for <strong>Basic SAML Configuration</strong> to edit the settings.</li>
+<li>In the <strong>Basic SAML Configuration</strong> pane, click on the <strong>Edit</strong> button and update the following fields:
+<ul>
+<li>In the <strong>Identifier (Entity ID)</strong> field, enter <code>https://localhost/saml/metadata</code>.</li>
+<li>In the <strong>Reply URL (Assertion Consumer Service URL)</strong> field, enter <code>https://localhost/saml/acs</code>.</li>
+<li>In the <strong>Sign on URL</strong> field, enter <code>https://localhost</code>.</li>
+<li>In the <strong>Relay State</strong> field, enter <code>https://localhost</code>.</li>
+<li>In the <strong>Logout URL</strong> field, enter <code>https://localhost/saml/slo</code>.</li>
+</ul>
+</li>
+<li>Select <strong>Save</strong>.</li>
+<li>At the <strong>SAML Certificate</strong> section, copy the <strong>App Federation Metadata Url</strong>.
+<ul>
+<li>Use this URL in the <code>idp_metadata_url</code> field in the <code>custom.ini</code> file.</li>
+</ul>
+</li>
+</ol>
+<h3 id="generate-a-client-secret">Generate a client secret</h3>
+<ol>
+<li>In the <strong>Overview</strong> pane, select <strong>Certificates &amp; secrets</strong>.</li>
+<li>Select <strong>New client secret</strong>.</li>
+<li>In the <strong>Add a client secret</strong> pane, enter a description for the secret.</li>
+<li>Set the expiration date for the secret.</li>
+<li>Select <strong>Add</strong>.</li>
+<li>Copy the value of the secret. This value is used in the <code>client_secret</code> field in the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/saml-configuration-options/">SAML configuration</a>.</li>
+</ol>
+<h2 id="configure-saml-assertions-when-using-scim-provisioning">Configure SAML assertions when using SCIM provisioning</h2>
+<p>In order to verify the logged in user is the same user that was provisioned through Azure AD, you need to include the same <code>externalId</code> in the SAML assertion by mapping the SAML assertion <code>assertion_attribute_external_id</code>.</p>
+<ol>
+<li>Open your Entra ID application.</li>
+<li>Select the SAML single sign-on configuration.</li>
+<li>Edit the <code>Attributes &amp; Claims</code> section.</li>
+<li>Add a new claim with the following settings:
+<ul>
+<li>Name: <code>userUID</code></li>
+<li>Namespace: leave blank</li>
+<li>Source: Attribute</li>
+<li>Source attribute: <code>user.objectId</code></li>
+</ul>
+</li>
+<li><strong>Save</strong> the current configuration.</li>
+</ol>
+<h2 id="configure-a-graph-api-application-in-entra-id">Configure a Graph API application in Entra ID</h2>
+<p>While an Entra ID tenant can be configured in Grafana via SAML, some additional information is only accessible via the Graph API. To retrieve this information, create a new application in Entra ID and grant it the necessary permissions.</p>
+<blockquote>
+<p><a href="https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#groups-overage-claim" target="_blank" rel="noopener noreferrer">Entra ID SAML limitations</a></p></blockquote>
+<blockquote>
+<p>For the following configuration, the URL <code>https://localhost</code> will be used as the Grafana URL. Replace it with your Grafana instance URL.</p></blockquote>
+<h3 id="create-a-new-app-registration">Create a new App registration</h3>
+<p>This app registration will be used as a Service Account to retrieve more information about the user from the Entra ID.</p>
+<ol>
+<li>Go to the <a href="https://portal.azure.com/#home" target="_blank" rel="noopener noreferrer">Azure portal</a> and sign in with your Entra ID account.</li>
+<li>In the left-hand navigation pane, select the Microsoft Entra ID service, and then select <strong>App registrations</strong>.</li>
+<li>Click the <strong>New registration</strong> button.</li>
+<li>In the <strong>Register an application</strong> pane, enter a name for the application.</li>
+<li>In the <strong>Supported account types</strong> section, select the account types that can use the application.</li>
+<li>In the <strong>Redirect URI</strong> section, select Web and enter <code>https://localhost/login/azuread</code>.</li>
+<li>Click the <strong>Register</strong> button.</li>
+</ol>
+<h3 id="set-up-permissions-for-the-application">Set up permissions for the application</h3>
+<ol>
+<li>In the overview pane, look for <strong>API permissions</strong> section and select <strong>Add a permission</strong>.</li>
+<li>In the <strong>Request API permissions</strong> pane, select <strong>Microsoft Graph</strong>, and click <strong>Application permissions</strong>.</li>
+<li>In the <strong>Select permissions</strong> pane, under the <strong>GroupMember</strong> section, select <strong>GroupMember.Read.All</strong>.</li>
+<li>In the <strong>Select permissions</strong> pane, under the <strong>User</strong> section, select <strong>User.Read.All</strong>.</li>
+<li>Click the <strong>Add permissions</strong> button at the bottom of the page.</li>
+<li>In the <strong>Request API permissions</strong> pane, select <strong>Microsoft Graph</strong>, and click <strong>Delegated permissions</strong>.</li>
+<li>In the <strong>Select permissions</strong> pane, under the <strong>User</strong> section, select <strong>User.Read</strong>.</li>
+<li>Click the <strong>Add permissions</strong> button at the bottom of the page.</li>
+<li>In the <strong>API permissions</strong> section, select <strong>Grant admin consent for <code>&lt;directory-name&gt;</code></strong>.</li>
+</ol>
+<p>The following table shows what the permissions look like from the Entra ID portal:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Permissions name</th>
+          <th>Type</th>
+          <th>Admin consent required</th>
+          <th>Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Group.Read.All</code></td>
+          <td>Application</td>
+          <td>Yes</td>
+          <td>Granted</td>
+      </tr>
+      <tr>
+          <td><code>User.Read</code></td>
+          <td>Delegated</td>
+          <td>No</td>
+          <td>Granted</td>
+      </tr>
+      <tr>
+          <td><code>User.Read.All</code></td>
+          <td>Application</td>
+          <td>Yes</td>
+          <td>Granted</td>
+      </tr>
+  </tbody>
+</table>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 779px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/saml/graph-api-app-permissions.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/saml/graph-api-app-permissions.png"data-srcset="/media/docs/grafana/saml/graph-api-app-permissions.png?w=320 320w, /media/docs/grafana/saml/graph-api-app-permissions.png?w=550 550w, /media/docs/grafana/saml/graph-api-app-permissions.png?w=750 750w, /media/docs/grafana/saml/graph-api-app-permissions.png?w=900 900w, /media/docs/grafana/saml/graph-api-app-permissions.png?w=1040 1040w, /media/docs/grafana/saml/graph-api-app-permissions.png?w=1240 1240w, /media/docs/grafana/saml/graph-api-app-permissions.png?w=1920 1920w"
+          data-sizes="auto"alt="Screen shot of the permissions listed in Entra ID for the App registration"width="779"height="221"title="Screen shot of the permissions listed in Entra ID for the App registration"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/saml/graph-api-app-permissions.png"
+            alt="Screen shot of the permissions listed in Entra ID for the App registration"width="779"height="221"title="Screen shot of the permissions listed in Entra ID for the App registration"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screen shot of the permissions listed in Entra ID for the App registration</figcaption></a></figure>
+<p>To test that Graph API has the correct permissions, refer to the <a href="../troubleshoot-saml/#troubleshoot-graph-api-calls">Troubleshoot Graph API calls</a> section.</p>

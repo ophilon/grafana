@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<h1 id="manage-dashboard-version-history">Manage dashboard version history</h1>
+<p>Whenever you save a version of your dashboard, a copy of that version is saved so that previous versions of your dashboard are never lost. You can see a list of dashboard versions in the <strong>Versions</strong> tab of the dashboard settings:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-dashboard-version-list-11.2.png"
+  alt="Dashboards versions list" width="1154"
+     height="409"/></p>
+<p>The dashboard version history feature lets you compare and restore to previously saved dashboard versions.</p>
+<h2 id="compare-two-dashboard-versions">Compare two dashboard versions</h2>
+<p>To compare two dashboard versions, follow these steps:</p>
+<ol>
+<li>Click <strong>Edit</strong> in the top-right corner of the dashboard.</li>
+<li>Click <strong>Settings</strong>.</li>
+<li>Go to the <strong>Versions</strong> tab.</li>
+<li>Select the two dashboard versions that you want to compare.</li>
+<li>Click <strong>Compare versions</strong> to view the diff between the two versions.</li>
+<li>Review the text descriptions of the differences between the versions.</li>
+<li>(Optional) Expand the <strong>View JSON Diff</strong> section of the page to see the diff of the raw JSON that represents your dashboard.</li>
+<li>When you&rsquo;ve finished comparing versions, click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</li>
+</ol>
+<p>When you&rsquo;re comparing versions, if one of the versions you&rsquo;ve selected is the latest version, a button to restore the previous version is also displayed, so you can restore a version from the compare view:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-dashboard-compare-versions-restore-11.2.png"
+  alt="Dashboards versions diff" width="1032"
+     height="420"/></p>
+<h2 id="restore-a-previously-dashboard-version">Restore a previously dashboard version</h2>
+<p>To restore to a previously saved dashboard version, follow these steps:</p>
+<ol>
+<li>Click <strong>Edit</strong> in the top-right corner of the dashboard.</li>
+<li>Click <strong>Settings</strong>.</li>
+<li>Go to the <strong>Versions</strong> tab.</li>
+<li>Click the <strong>Restore</strong> button next to the version.</li>
+</ol>
+<p>When you restore a version, the dashboard is immediately saved and you&rsquo;re no longer in edit mode.</p>
+<p>After you restore a previous version, a new version of the dashboard is created containing the same exact data as the previous version, but with a different version number. This is indicated in the <strong>Notes column</strong> in the <strong>Versions</strong> tab of the dashboard settings. This is done simply to ensure your previous dashboard versions are not affected by the change.</p>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<h1 id="server-user-management">Server user management</h1>
+<p>A <em>user</em> is defined as any individual who can log in to Grafana. Each user is associated with a <em>role</em> that includes <em>permissions</em>. Permissions determine the tasks a user can perform in the system.</p>
+<p>If you have <a href="../../roles-and-permissions/#grafana-server-administrators">server administrator</a> permissions in Grafana, you can manage all users for a Grafana instance in the Server Admin section:</p>
+<ul><li>
+    <a href="/docs/grafana/latest/administration/user-management/server-user-management/assign-remove-server-admin-privileges/">Assign or remove Grafana server administrator privileges</a></li><li>
+    <a href="/docs/grafana/latest/administration/user-management/server-user-management/add-remove-user-to-org/">Add or remove a user in an organization</a></li><li>
+    <a href="/docs/grafana/latest/administration/user-management/server-user-management/change-user-org-permissions/">Change a user&#39;s organization permissions</a></li></ul>
+<p>If you have <a href="../../roles-and-permissions/#organization-roles">organization administrator</a> permissions and <em>not</em> <a href="../../roles-and-permissions/#grafana-server-administrators">server administrator</a> permissions, refer to <a href="../manage-org-users/">Manage users in a organization</a>.</p>
+<p>For more information about user roles and permissions, refer to <a href="../../roles-and-permissions/">Roles and permissions</a>. For more information about managing users in general, see <a href="../">User management</a>.</p>
+<h2 id="view-a-list-of-users">View a list of users</h2>
+<p>You can see a list of users with accounts on your Grafana server. This action might be useful when you want to know which role you assigned to each user.</p>
+<h3 id="before-you-begin">Before you begin</h3>
+<ul>
+<li>Ensure you have Grafana server administrator privileges</li>
+</ul>
+<p><strong>To view a list of users</strong>:</p>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you have <a href="../../roles-and-permissions/#organization-roles">organization administrator</a> permissions and <em>not</em> <a href="../../roles-and-permissions/#grafana-server-administrators">server administrator</a> permissions, you can still <a href="../manage-org-users/#view-a-list-of-organization-users">view of list of users in a given organization</a>.</p></blockquote></div>
+
+<h2 id="view-user-details">View user details</h2>
+<p>View user details when you want to see login, and organizations and permissions settings associated with a user.</p>
+<h3 id="before-you-begin-1">Before you begin:</h3>
+<ul>
+<li>Ensure you have Grafana server administrator privileges</li>
+</ul>
+<p><strong>To view user details</strong>:</p>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+<li>Click a user.</li>
+</ol>
+<p>A user account contains the following sections.</p>
+<h4 id="user-information">User information</h4>
+<p>This section contains basic user information, which users can update.</p>
+<h4 id="permissions">Permissions</h4>
+<p>This indicates whether the user account has the Grafana administrator flag applied. If the flag is set to <strong>Yes</strong>, then the user is a Grafana server administrator.</p>
+<h4 id="organizations">Organizations</h4>
+<p>This section lists the organizations the user belongs to and their assigned role.</p>
+<h4 id="sessions">Sessions</h4>
+<p>This section includes recent user sessions and information about the time the user logged in and they system they used. You can force logouts, if necessary.</p>
+<h2 id="edit-a-user-account">Edit a user account</h2>
+<p>Edit a user account when you want to modify user login credentials, or delete, disable, or enable a user.</p>
+<h3 id="before-you-begin-2">Before you begin</h3>
+<ul>
+<li>Ensure you have Grafana server administrator privileges</li>
+</ul>
+<p><strong>To edit a user account</strong>:</p>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+<li>Click a user.</li>
+<li>Complete any of the following actions, as necessary.</li>
+</ol>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Update name, email, or username</td>
+          <td><strong>Is the user notified of these changes?</strong>. Click <strong>Save</strong> after you make a change.</td>
+      </tr>
+      <tr>
+          <td>Change the user&rsquo;s password</td>
+          <td>The new password must be at least four characters long. Click <strong>Save</strong> after you make a change.</td>
+      </tr>
+      <tr>
+          <td>Delete a user</td>
+          <td>This action permanently removes the user from the Grafana server. The user can no longer sign in after you make this change.</td>
+      </tr>
+      <tr>
+          <td>Disable user account</td>
+          <td>This action prevents a user from signing in with this account, but does not delete the account. You might disable an account if a colleague goes on sabbatical.</td>
+      </tr>
+      <tr>
+          <td>Enable a user account</td>
+          <td>This action enables a user account.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="add-a-user">Add a user</h2>
+<p>Add users when you want to manually provide individuals with access to Grafana.</p>
+<p>When you create a user using this method, you must create their password. The user does not receive a notification by email. To invite a user to Grafana and allow them to create their own password, <a href="../manage-org-users/#invite-a-user-to-join-an-organization">invite a user to join an organization</a>.</p>
+<p>When you configure advanced authentication using Oauth, SAML, LDAP, or the Auth proxy, users are created automatically.</p>
+<h3 id="before-you-begin-3">Before you begin</h3>
+<ul>
+<li>Ensure that you have Grafana server administrator privileges</li>
+</ul>
+<p><strong>To add a user</strong>:</p>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+<li>Click <strong>New user</strong>.</li>
+<li>Complete the fields and click <strong>Create user</strong>.</li>
+</ol>
+<p>When you create a user, the system assigns the user viewer permissions in a default organization, which you can change. You can now <a href="add-remove-user-to-org/">add a user to a second organization</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you have <a href="../../roles-and-permissions/#organization-roles">organization administrator</a> permissions and <em>not</em> <a href="../../roles-and-permissions/#grafana-server-administrators">server administrator</a> permissions, you can still add users by <a href="../manage-org-users/#invite-a-user-to-join-an-organization">inviting a user to join an organization</a>.</p></blockquote></div>
+
+<h2 id="force-a-user-to-log-out-of-grafana">Force a user to log out of Grafana</h2>
+<p>If you suspect a user account is compromised or is no longer authorized to access the Grafana server, then you can force the user to log out of Grafana.</p>
+<p>The force logout action can apply to one device that is logged in to Grafana, or all devices logged in to Grafana.</p>
+<h3 id="before-you-begin-4">Before you begin</h3>
+<ul>
+<li>Ensure you have Grafana server administrator privileges</li>
+</ul>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+<li>Click a user.</li>
+<li>Scroll down to the Sessions section.</li>
+<li>Perform one of the following actions:
+<ul>
+<li>Click <strong>Force logout</strong> next to the session entry that you want logged out of Grafana.</li>
+<li>Click <strong>Force logout from all devices</strong>.</li>
+</ul>
+</li>
+<li>Confirm the logout.</li>
+</ol>

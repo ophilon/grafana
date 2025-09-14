@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<h1 id="git-sync">Git Sync</h1>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Git Sync is an <a href="/docs/release-life-cycle/">experimental feature</a> introduced in Grafana v12 for open source and Enterprise editions. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. Enable the <code>provisioning</code> and <code>kubernetesDashboards</code> feature toggles in Grafana to use this feature. This feature is not publicly available in Grafana Cloud yet. Only the cloud-hosted version of GitHub (GitHub.com) is supported at this time. GitHub Enterprise is not yet compatible.</p>
+<p>Sign up for Grafana Cloud Git Sync early access using <a href="https://forms.gle/WKkR3EVMcbqsNnkD9" target="_blank" rel="noopener noreferrer">this form</a>.</p></blockquote></div>
+
+<p>Using Git Sync, you can:</p>
+<ul>
+<li>Introduce a review process for creating and modifying dashboards</li>
+<li>Manage dashboard configuration outside of Grafana instances</li>
+<li>Replicate dashboards across multiple instances</li>
+</ul>
+<p>Whenever a dashboard is modified, Grafana can commit changes to Git upon saving. Users can configure settings to either enforce PR approvals before merging or allow direct commits.</p>
+<p>Users can push changes directly to GitHub and see them in Grafana. Similarly, automated workflows can do changes that will be automatically represented in Grafana by updating Git.</p>
+<p>Because the dashboards are defined in JSON files, you can enable as-code workflows where the JSON is output from Go, TypeScript, or another coding language in the format of a dashboard schema.</p>
+<p>To learn more about creating dashboards in a coding language to provision them for Git Sync, refer to the 
+    <a href="/docs/grafana/latest/observability-as-code/foundation-sdk/">Foundation SDK</a> documentation.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>Git Sync is bidirectional and also works with changes done directly in GitHub as well as within the Grafana UI.
+Grafana periodically polls GitHub at a regular internal to synchronize any changes.
+With the webhooks feature enabled, repository notifications appear almost immediately.
+Without webhooks, Grafana polls for changes at the specified interval.
+The default polling interval is 60 seconds.</p>
+<p>Any changes made in the provisioned files stored in the GitHub repository are reflected in the Grafana database.
+The Grafana UI reads the database and updates the UI to reflect these changes.</p>
+<h2 id="common-use-cases">Common use cases</h2>
+<p>Git Sync in Grafana lets you manage dashboards as code.
+Because your dashboard JSON files are stored in GitHub, you and your team can version control, collaborate, and automate deployments efficiently.</p>
+<h3 id="version-control-and-auditing">Version control and auditing</h3>
+<p>Organizations can maintain a structured, version-controlled history of Grafana dashboards.
+The version control lets you revert to previous versions when necessary, compare modifications across commits, and ensure transparency in dashboard management.
+Additionally, having a detailed history of changes enhances compliance efforts, as teams can generate audit logs that document who made changes, when they were made, and why.</p>
+<h3 id="automated-deployment-and-cicd-integration">Automated deployment and CI/CD integration</h3>
+<p>Teams can streamline their workflow by integrating dashboard updates into their CI/CD pipelines.
+By pushing changes to GitHub, automated processes can trigger validation checks, test dashboard configurations, and deploy updates programmatically using the <code>grafanactl</code> CLI and Foundation SDK.
+This reduces the risk of human errors, ensures consistency across environments, and enables a faster, more reliable release cycle for dashboards used in production monitoring and analytics.</p>
+<h3 id="collaborative-dashboard-development">Collaborative dashboard development</h3>
+<p>With Git Sync, multiple users can work on dashboards simultaneously without overwriting each other’s modifications.
+By leveraging pull requests and branch-based workflows, teams can submit changes for review before merging them into the main branch. This process not only improves quality control but also ensures that dashboards adhere to best practices and organizational standards. Additionally, GitHub’s built-in discussion and review tools facilitate effective collaboration, making it easier to address feedback before changes go live.</p>
+<h3 id="multi-environment-synchronization">Multi-environment synchronization</h3>
+<p>Enterprises managing multiple Grafana instances, such as development, staging, and production environments, can seamlessly sync dashboards across these instances.
+This ensures consistency in visualization and monitoring configurations, reducing discrepancies that might arise from manually managing dashboards in different environments.
+By using Git Sync, teams can automate deployments across environments, eliminating repetitive setup tasks and maintaining a standardized monitoring infrastructure across the organization.</p>
+<h3 id="disaster-recovery-and-backup">Disaster recovery and backup</h3>
+<p>By continuously syncing dashboards to GitHub, organizations can create an always-updated backup, ensuring dashboards are never lost due to accidental deletion or system failures.
+If an issue arises&ndash;such as a corrupted dashboard, unintended modification, or a system crash&ndash;teams can quickly restore the latest functional version from the Git repository.
+This not only minimizes downtime but also adds a layer of resilience to Grafana monitoring setups, ensuring critical dashboards remain available when needed.</p>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<h1 id="encrypt-database-secrets-using-google-cloud-kms">Encrypt database secrets using Google Cloud KMS</h1>
+<p>You can use an encryption key from Google Cloud Key Management Service to encrypt secrets in the Grafana database.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>A Google Cloud account with permission to list and create KMS keys and service accounts to access those keys</li>
+<li>Access to the Grafana <a href="../../../configure-grafana/#configuration-file-location">configuration</a> file</li>
+</ul>
+<ol>
+<li>
+<p><a href="https://cloud.google.com/kms/docs/creating-keys#kms-create-key-ring-console" target="_blank" rel="noopener noreferrer">Create a key ring</a> in Google Cloud KMS.</p>
+</li>
+<li>
+<p><a href="https://cloud.google.com/kms/docs/creating-keys#create_a_key" target="_blank" rel="noopener noreferrer">Create a symmetric encryption key</a> in the key ring.</p>
+</li>
+<li>
+<p><a href="https://cloud.google.com/iam/docs/creating-managing-service-accounts#creating" target="_blank" rel="noopener noreferrer">Create a service account</a> and assign it a role: it can be a predefined role or custom role with permissions to encrypt and decrypt secrets with Key Management Service.</p>
+</li>
+<li>
+<p><a href="https://cloud.google.com/iam/docs/creating-managing-service-account-keys#creating" target="_blank" rel="noopener noreferrer">Create a service account key and save its JSON file</a> to you computer, for example, as <code>~/.config/gcloud/sample-project-credentials.json</code>.</p>
+</li>
+<li>
+<p>From within Grafana, turn on envelope encryption.</p>
+</li>
+<li>
+<p>Add your Google Cloud KMS details to the Grafana configuration file; depending on your operating system, is usually named <code>grafana.ini</code>:
+<br><br>a. Add a new section to the configuration file, with a name in the format of <code>[security.encryption.azurekv.&lt;KEY-NAME&gt;]</code>, where <code>&lt;KEY-NAME&gt;</code> is any name that uniquely identifies this key among other provider keys.
+<br><br>b. Fill in the section with the following values:
+<br></p>
+<ul>
+<li><code>key_id</code>: encryption key ID, refer to <a href="https://cloud.google.com/kms/docs/getting-resource-ids#getting_the_id_for_a_key_and_version" target="_blank" rel="noopener noreferrer">Getting the ID for a Key</a>.</li>
+<li><code>credentials_file</code>: full path to service account key JSON file on your computer.</li>
+</ul>
+<p>An example of a Google Cloud KMS provider section in the <code>grafana.ini</code> file is as follows:</p>
+<pre># Example of Google Cloud KMS provider setup
+;[security.encryption.googlekms.example-encryption-key]
+# Google Cloud KMS key ID
+key_id = 1234abcd-12ab-34cd-56ef-1234567890ab
+# Full path to a JSON file with a service account key
+credentials_file = ~/.config/gcloud/sample-project-credentials.json</pre>
+</li>
+<li>
+<p>Update the <code>[security]</code> section of the <code>grafana.ini</code> configuration file with the new Encryption Provider key that you created:</p>
+<pre>[security]
+# previous encryption key, used for legacy alerts, decrypting existing secrets or used as default provider when external providers are not configured
+secret_key = AaaaAaaa
+# encryption provider key in the format &lt;PROVIDER&gt;.&lt;KEY-NAME&gt;
+encryption_provider = googlekms.example-encryption-key
+# list of configured key providers, space separated
+available_encryption_providers = googlekms.example-encryption-key</pre>
+</li>
+<li>
+<p><a href="/docs/grafana/latest/installation/restart-grafana/">Restart Grafana</a>.</p>
+</li>
+<li>
+<p>(Optional) From the command line and the root directory of Grafana Enterprise, re-encrypt all of the secrets within the Grafana database with the new key using the following command:</p>
+<p><code>grafana cli admin secrets-migration re-encrypt</code></p>
+<p>If you do not re-encrypt existing secrets, then they will remain encrypted by the previous encryption key. Users will still be able to access them.</p>
+<p><strong>&gt; Note:</strong> This process could take a few minutes to complete, depending on the number of secrets (such as data sources) in your database. Users might experience errors while this process is running, and alert notifications might not be sent.</p>
+<p><strong>&gt; Note:</strong> If you are updating this encryption key during the initial setup of Grafana before any data sources or dashboards have been created, then this step is not necessary because there are no secrets in Grafana to migrate.</p>
+</li>
+</ol>

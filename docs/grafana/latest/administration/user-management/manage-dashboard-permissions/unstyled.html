@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<h1 id="manage-dashboard-permissions">Manage dashboard permissions</h1>
+<p>Dashboard and folder permissions enable you to grant a viewer the ability to edit and save dashboard changes, or limit an editor&rsquo;s permission to modify a dashboard.</p>
+<p>For more information about dashboard permissions, refer to <a href="../../roles-and-permissions/#dashboard-permissions">Dashboard permissions</a>.</p>
+<h2 id="grant-folder-permissions">Grant folder permissions</h2>
+<p>When you grant user permissions for folders, that setting applies to all dashboards and subfolders contained in the folder. Consider using this approach to assigning dashboard and folder permissions when you have users, service accounts or teams who require access to groups of related dashboards or folders.</p>
+<h3 id="before-you-begin">Before you begin</h3>
+<ul>
+<li>Ensure you have organization administrator privileges</li>
+<li>Identify the dashboard folder permissions you want to modify and the users, service accounts or teams to which you want to grant access. For more information about dashboard permissions, refer to <a href="../../roles-and-permissions/#dashboard-permissions">Dashboard permissions</a>.</li>
+</ul>
+<p><strong>To grant dashboard folder permissions</strong>:</p>
+<ol>
+<li>Sign in to Grafana as an organization administrator.</li>
+<li>In the left-side menu, click <strong>Dashboards</strong>.</li>
+<li>Hover your mouse cursor over a folder and click <strong>Go to folder</strong>.</li>
+<li>Click the <strong>Permissions</strong> tab, and then click <strong>Add a permission</strong>.</li>
+<li>In the <strong>Add Permission For</strong> dropdown menu, select <strong>User</strong>, <strong>Service Account</strong>, <strong>Team</strong>, or <strong>Role</strong>.</li>
+<li>Select the user, service account, team, or role.</li>
+<li>Select the permission and click <strong>Save</strong>.</li>
+</ol>
+<h2 id="grant-dashboard-permissions">Grant dashboard permissions</h2>
+<p>When you grant folder permissions, that setting applies to all dashboards and subfolders in the folder. For a more granular approach to assigning permissions, you can also assign user permissions to individual dashboards.</p>
+<p>For example, if a user with the viewer organization role requires editor (or admin) access to a dashboard, you can assign those elevated permissions on an individual basis.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you have assigned a user dashboard folder permissions, you cannot also assign the user permission to dashboards contained in the folder.</p></blockquote></div>
+
+<p>Grant dashboard permissions when you want to restrict or enhance dashboard access for users who do not have permissions defined in the associated folder.</p>
+<h3 id="before-you-begin-1">Before you begin</h3>
+<ul>
+<li>Ensure you have organization administrator privileges</li>
+<li>Identify the dashboard permissions you want to modify and the users, service accounts, or teams to which you want to grant access</li>
+</ul>
+<p><strong>To grant dashboard permissions</strong>:</p>
+<ol>
+<li>Sign in to Grafana as an organization administrator.</li>
+<li>In the left-side menu, click <strong>Dashboards</strong>.</li>
+<li>Open a dashboard.</li>
+<li>In the top right corner of the dashboard, click <strong>Dashboard settings</strong> (the cog icon).</li>
+<li>Click <strong>Permissions</strong> in left-side menu, and then <strong>Add a permission</strong>.</li>
+<li>In the <strong>Add Permission For</strong> dropdown menu, select <strong>User</strong>, <strong>Service Account</strong>, <strong>Team</strong>, or <strong>Role</strong>.</li>
+<li>Select the user, service account, team, or role.</li>
+<li>Select the permission and click <strong>Save</strong>.</li>
+</ol>
+<h1 id="edit-dashboard-permissions">Edit dashboard permissions</h1>
+<p>Edit dashboard permissions when you are want to enhance or restrict a user&rsquo;s access to a dashboard. For more information about dashboard permissions, refer to <a href="../../roles-and-permissions/#dashboard-permissions">Dashboard permissions</a>.</p>
+<h3 id="before-you-begin-2">Before you begin</h3>
+<ul>
+<li>Identify the dashboard and user permission you want to change</li>
+<li>Ensure you have organization administrator privileges</li>
+</ul>
+<p><strong>To edit dashboard permissions</strong>:</p>
+<ol>
+<li>Sign in to Grafana as an organization administrator.</li>
+<li>In the left-side menu, click <strong>Dashboards</strong>.</li>
+<li>Open a dashboard.</li>
+<li>In the top-right corner of the dashboard, click <strong>Dashboard settings</strong> (the cog icon).</li>
+<li>Click <strong>Permissions</strong> in left-side menu.</li>
+<li>In the dropdown, update the permissions, and click <strong>Save</strong>.</li>
+</ol>
+<h2 id="restrict-access-to-dashboards">Restrict access to dashboards</h2>
+<p>Grafana applies the highest permission a given user has to access a resource like a dashboard, so if you want to prevent a user from accessing a folder or dashboard you need to consider the user&rsquo;s organization role, folder permissions, and dashboard permissions.</p>
+<ul>
+<li>You cannot override organization administrator permissions. Organization administrators have access to all organization resources.</li>
+<li>User permissions set for a folder propagate to all dashboards and subfolders contained in a folder. Permissions also cascade down to all dashboards and folders under the subfolders, and so on.</li>
+<li>A lower permission level does not affect access if a more general rule exists with a higher permission.</li>
+</ul>
+<p>Refer to the following examples to understand how organization and dashboard permissions impact a user&rsquo;s access to dashboards.</p>
+<h3 id="example-1">Example 1</h3>
+<p>In this example, user1 has the editor organization role.</p>
+<p>Dashboard permissions settings:</p>
+<ul>
+<li>Everyone with Editor role can edit</li>
+<li>user1 is set to <code>view</code></li>
+</ul>
+<p>Result: User1 has edit permissions because the user&rsquo;s organization role is Editor.</p>
+<h3 id="example-2">Example 2</h3>
+<p>In this example, user1 has the viewer organization role and is a member of team1.</p>
+<p>Dashboard permissions settings:</p>
+<ul>
+<li>Everyone with Viewer role can view</li>
+<li>user1 is set to <code>edit</code></li>
+<li>team1 is set to <code>admin</code></li>
+</ul>
+<p>Result: User1 has administrator permissions for the dashboard because user1 is a member of team1.</p>
+<h3 id="example-3">Example 3</h3>
+<p>In this example, user1 has the viewer organization role.</p>
+<p>Dashboard permissions settings:</p>
+<ul>
+<li>user1 is set to <code>admin</code>, which is inherited from the permissions set in parent folder</li>
+<li>user1 is set to <code>edit</code></li>
+</ul>
+<p>Result: You receive an error message that cannot override a higher permission with a lower permission in the same dashboard. User1 has administrator permissions.</p>
+<h3 id="example-4">Example 4</h3>
+<p>In this example, user1 has the viewer organization role.</p>
+<p>Folder permissions settings:</p>
+<ul>
+<li>user1 is set to <code>edit</code>, which is inherited from the permissions set in grandparent folder</li>
+</ul>
+<p>Result: User1 has editor permissions for the folder because user1 has permissions on a folder that contains this folder.</p>
+<blockquote>
+<p>Refer to <a href="../../roles-and-permissions/access-control/">Role-based access Control</a> in Grafana Enterprise to understand how to use RBAC permissions to restrict access to dashboards, folders, administrative functions, and other resources.</p></blockquote>

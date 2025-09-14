@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<!-- vale GoogleWe = NO -->
+<!-- vale We = NO -->
+<h1 id="whats-new-in-grafana-v110">What’s new in Grafana v11.0</h1>
+<p>Welcome to Grafana 11.0! This release contains some major improvements: most notably, the ability to explore your Prometheus metrics and Loki logs without writing any PromQL or LogQL, using Explore Metrics and Explore Logs. The dashboard experience is better than ever with edit mode for dashboards, AI-generated dashboard names and descriptions, and general availability for subfolders. You can also take advantage of improvements to the canvas and table visualizations, new transformations, a revamp of the Alert Rule page, and more.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=96ZXShRyMB8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>. For the specific steps we recommend when you upgrade to v11.0, check out our 
+    <a href="/docs/grafana/latest/upgrade-guide/upgrade-v11.0/">Upgrade Guide</a>.</p>
+<h2 id="breaking-changes">Breaking changes</h2>
+<p>For Grafana v11.0, we&rsquo;ve also provided a list of 
+    <a href="/docs/grafana/latest/breaking-changes/breaking-changes-v11-0/">breaking changes</a> to help you upgrade with greater confidence. For information about these along with guidance on how to proceed, refer to 
+    <a href="/docs/grafana/latest/breaking-changes/breaking-changes-v11-0/">Breaking changes in Grafana v11.0</a>.</p>
+<!-- Template below
+
+## Feature
+<!-- Name of contributor -->
+<!--_[Generally available | Available in private/public preview | Experimental] in Grafana [Open Source, Enterprise, all editions of Grafana, some combination of self-managed and Cloud]_
+Description. Include an overview of the feature and problem it solves, and where to learn more (like a link to the docs).
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use full URLs for links. When linking to versioned docs, replace the version with the version interpolation placeholder (for example, &lt;GRAFANA_VERSION&gt;, &lt;TEMPO_VERSION&gt;, &lt;MIMIR_VERSION&gt;) so the system can determine the correct set of docs to point to. For example, &ldquo;/docs/grafana/latest/administration/&rdquo; becomes &ldquo;/docs/grafana/&lt;GRAFANA_VERSION&gt;/administration/&rdquo;.</p></blockquote></div>
+
+
+<!--Add an image, GIF or video  as below-->
+<!--<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards/WidgetVizSplit.png"data-srcset="/media/docs/grafana/dashboards/WidgetVizSplit.png?w=320 320w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=550 550w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=750 750w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=900 900w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1040 1040w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1240 1240w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1920 1920w"
+          data-sizes="auto"alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+            alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">DESCRIPTIVE CAPTION</figcaption></a></figure>
+
+<!--Learn how to upload images here: /docs/writers-toolkit/write/image-guidelines/#where-to-store-media-assets-->
+<!---->
+<h2 id="explore-metrics-and-logs">Explore Metrics and Logs</h2>
+<h3 id="explore-metrics">Explore Metrics</h3>
+<!-- #proj-datatrails-dev, PM: Jay Goodson, Engineering: Darren Janeczek, André Pereira, Design: Catherine Gui -->
+<p><em>Public preview in all editions of Grafana</em></p>
+<p>Explore Metrics is a query-less experience for browsing Prometheus-compatible metrics. Search for or filter to find a metric. Quickly find related metrics - all in just a few clicks. You do not need to learn PromQL! With Explore Metrics, you can:</p>
+<ul>
+<li>easily slice and dice metrics based on their labels, so you can see anomalies right away</li>
+<li>See the right visualization for your metric based on its type (e.g. gauge vs. counter) without building it yourself</li>
+<li>surface other metrics relevant to the current metric</li>
+<li>“explore in a drawer” - expand a drawer over a dashboard with more content, so you don’t lose your place</li>
+<li>view a history of user steps when navigating through metrics and their filters</li>
+<li>easily pivot to other related telemetry - IE, logs or traces</li>
+</ul>
+<p>… all without writing any queries!</p>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/explore/explore-metrics/">Explore Metrics</a> as well as the following video demo:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=JbaPufQs5LY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="explore-logs">Explore Logs</h3>
+<!-- Slack: #proj-lokiapp-dev, PM: Steven Dungan, Engineering: Andrew Stucky, Cyril Tovena, Design: Joan Wortman -->
+<p><em>Experimental in Grafana Open Source and Enterprise</em></p>
+<p>Explore Logs is a queryless experience for exploring Loki logs - no LogQL required! The primary interaction modes are point-and-click based on log volume, similar to Explore Metrics.</p>
+<p>Highlights:</p>
+<ul>
+<li>View log volume and log line samples when you first land in Explore Logs (no more &ldquo;blank screen!&rdquo;)</li>
+<li>Explore additional labels and detected fields in a similar way, focusing on volume and distribution; add them to your &ldquo;query&rdquo; to refine your logs search without needing LogQL
+– See common patterns in your log lines, to easily filter out noise or focus in on anomalies</li>
+<li>For power users, an easy way to hop into the familiar Explore while preserving context</li>
+</ul>
+<p>Explore Logs is Open Source, and experimental - some papercuts are to be expected. Give it a try and let us know what you think!</p>
+<h2 id="dashboards-and-visualizations">Dashboards and visualizations</h2>
+<h3 id="scenes-powered-dashboards">Scenes powered Dashboards</h3>
+<!-- #grafana-dashboards -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>For the past few months we&rsquo;ve been working on a major update of our <strong>Dashboards</strong> architecture and migrated it to the Scenes library. This migration provides us with more stable, dynamic, and flexible dashboards as well as setting the foundation for what we envision the future of Grafana dashboards will be. Here are two of the improvements that are being introduced as part of this work.</p>
+<h4 id="edit-mode">Edit mode</h4>
+<p>It can be difficult to efficiently navigate through the visually cluttered options during the dashboard editing process. With the introduction of the edit mode, we aim to provide an easier way to discover and interact with the dashboard edit experience.</p>
+<h4 id="fixed-positioning-of-template-variables-and-time-picker">Fixed positioning of template variables and time picker</h4>
+<p>We moved the time picker into the dashboard canvas and now, together with template variables, it will stick to the top as you scroll through your dashboard. This has historically been a very <a href="https://github.com/grafana/grafana/issues/11166" target="_blank" rel="noopener noreferrer">requested feature</a> that we&rsquo;re very happy to be able to finally roll out!</p>
+<h4 id="known-limitations">Known limitations</h4>
+<ul>
+<li>The 
+    <a href="/docs/grafana/latest/dashboards/variables/inspect-variable/">variable dependency graph</a> is not yet available.</li>
+<li>It&rsquo;s no longer possible to switch a regular panel to a library panel from the edit view.</li>
+</ul>
+<p>If you want to learn more, in detail, about all the improvements we&rsquo;ve made, don&rsquo;t miss our blog post.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=kcKwBhvrsHc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="scenes-for-viewers">Scenes for viewers</h3>
+<!-- #grafana-dashboards, Dominik Prokop, Natalia Bernarte -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Dashboards, when accessed by users with the Viewer role, are now using the Scenes library. Those users shouldn&rsquo;t see any difference in the dashboards apart from two small changes to the user interface (UI): the variables UI has slightly changed and the time picker is now part of the dashboard container.</p>
+<p>Dashboards aren&rsquo;t affected for users in other roles.</p>
+<p>This is the first step towards a more robust and dynamic dashboarding system that we&rsquo;ll be releasing in the upcoming months.</p>
+<h3 id="subfolders">Subfolders</h3>
+<!-- #wg-nested-folders -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Subfolders are here at last!</p>
+<p>Some of you want subfolders in order to keep things tidier. It’s easy for dashboard sprawl to get out of control, and setting up folders in a nested hierarchy helps with that.</p>
+<p>Others of you want subfolders in order to create nested layers of permissions, where teams have access at different levels that reflect their organization’s hierarchy.</p>
+<p>We are thrilled to bring this long-awaited functionality to our community of users! Subfolders are currently being rolled out to Grafana Cloud instances and will be generally available to all Grafana users for the Grafana 11 release.</p>
+<p><strong>Just a quick note</strong>: the upgrade to enable subfolders can cause some issues with alerts in certain cases. We think these cases are pretty rare, but just in case, you’ll want to check for this:</p>
+<p>If you&rsquo;ve previously set up a folder that uses a forward slash in its name, and you have an alert rule in that folder, and the notification policy is set to match that folder&rsquo;s name, notifications will be sent to the default receiver instead of the configured receiver.</p>
+<p>To correct this, take the following steps:</p>
+<ul>
+<li>Create a copy of the affected routes</li>
+<li>Rewrite the matchers for the new copy. For example, if the original matcher was <code>grafanafolder=folder_with/in_title</code>, then the new route matcher will be <code>grafana_folder=folder_with/_in_title</code></li>
+<li>After rewriting the matchers, you can delete the old routes.</li>
+</ul>
+<p>If you use file provisioning, you can upgrade and update the routes at the same time.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=R9mehA0EssU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="use-ai-to-generate-titles-and-descriptions-for-panels-and-dashboards">Use AI to generate titles and descriptions for panels and dashboards</h3>
+<!-- Ivan Ortega -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>You can now use generative AI to assist you in your Grafana dashboards. So far generative AI can help you generate <strong>panel and dashboard titles and descriptions</strong> - You can now generate a title and description for your panel or dashboard based on the data you&rsquo;ve added to it. This is useful when you want to quickly visualize your data and don&rsquo;t want to spend time coming up with a title or description.</p>
+<p>Make sure to enable and configure Grafana&rsquo;s LLM app plugin. For more information, refer to the <a href="/docs/grafana-cloud/alerting-and-irm/machine-learning/llm-plugin/">Grafana LLM app plugin documentation</a>.</p>
+<p>When enabled, look for the <strong>✨ Auto generate</strong> option next to the <strong>Title</strong> and <strong>Description</strong> fields in your panels and dashboards, or when you press the <strong>Save</strong> button.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/auto-generate-description-10-2.gif"
+  alt="Auto-generate a panel description using AI" width="1262"
+     height="674"/></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=s61WHREHuYE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="improvements-to-the-canvas-visualization">Improvements to the canvas visualization</h3>
+<!-- #dataviz-squad -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>We&rsquo;ve made a number of improvements to the canvas visualization.</p>
+<h4 id="enhanced-flowcharting-functionality">Enhanced flowcharting functionality</h4>
+<p>With this release, we&rsquo;ve updated the canvas visualization to include much-requested flowcharting features. These improvements are:</p>
+<ul>
+<li>Addition of widely-used elements: cloud, parallelogram, and triangle.</li>
+<li>Addition of midpoint controls so that the connectors no longer have to be straight lines.</li>
+<li>Addition of more connector styles including dashed lines as well as corner radius and direction control.</li>
+<li>Horizontal and vertical snapping for connectors.</li>
+<li>Addition of rounded corner styling for elements.</li>
+<li>Ability to rotate elements in the canvas.</li>
+</ul>
+<h4 id="universal-data-link-support">Universal data link support</h4>
+<p>We&rsquo;ve updated data links so that you can add them to almost all elements or element properties that are tied to data. Previously, you could only add data links to text elements or elements that used the <code>TextConfig</code> object. This update removes that limitation.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This update doesn&rsquo;t apply to the drone and button elements.</p></blockquote></div>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=0iO2gqv0XNA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Documentation</a></p>
+<h3 id="infinite-panning-for-the-canvas-visualization">Infinite panning for the canvas visualization</h3>
+<!-- Nathan Marrs, #grafana-dataviz -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>With the newly added <strong>Infinite panning</strong> editor option, you can now view and navigate very large canvases. This option is displayed when the <strong>Pan and zoom</strong> switch is enabled.</p>
+<p>To try out this feature, you must first enable the <code>canvasPanelPanZoom</code> feature toggle.</p>
+<p>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Documentation</a></p>
+<h3 id="colored-table-rows-with-conditional-formatting">Colored table rows with conditional formatting</h3>
+<!-- #grafana-dataviz, Kyle Cunningham -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Grafana 11 adds the ability to color full table rows using the <strong>Colored background</strong> cell type of the table visualization. When you configure fields in a table to use this cell type, an option to apply the color of the cell to the entire row becomes available.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tables/colored-rows.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tables/colored-rows.png"data-srcset="/static/img/docs/tables/colored-rows.png?w=320 320w, /static/img/docs/tables/colored-rows.png?w=550 550w, /static/img/docs/tables/colored-rows.png?w=750 750w, /static/img/docs/tables/colored-rows.png?w=900 900w, /static/img/docs/tables/colored-rows.png?w=1040 1040w, /static/img/docs/tables/colored-rows.png?w=1240 1240w, /static/img/docs/tables/colored-rows.png?w=1920 1920w"
+          data-sizes="auto"alt="Colored row background"width="2180"height="526"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tables/colored-rows.png"
+            alt="Colored row background"width="2180"height="526"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>This feature is useful for a wide variety of use cases including mapping status fields to colors (for example, <code>info</code>, <code>debug</code>, <code>warning</code>) and allowing rows to be colored based on threshold values. This is one of the first steps in making formatting tables more seamless, and allows for quick scanning of data using the table visualization.</p>
+<p>To learn more, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/#color-background-gradient-or-solid">documentation for the Colored background cell type</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=PLfADTtCnmg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="set-threshold-colors-in-the-config-from-query-transformation">Set threshold colors in the Config from query transformation</h3>
+<!--  #grafana-dataviz" -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>You now have the ability to customize specific colors for individual thresholds when using the <strong>Config from query results</strong> transformer. Previously, when you added multiple thresholds, they all defaulted to the same color, red. With this addition, you gain the flexibility to assign distinct colors to each threshold.</p>
+<p>This feature addresses a common pain point highlighted by users. With customizable threshold colors, you now have greater control over your data representation, fostering more insightful and impactful analyses across diverse datasets.</p>
+<h3 id="substring-matcher-added-to-the-filter-by-value-transformation">Substring matcher added to the Filter by value transformation</h3>
+<!-- #grafana-dataviz -->
+<p><em>Generally available in Grafana Cloud and Open Source</em></p>
+<p>This update to the <strong>Filter data by values</strong> transformation simplifies data filtering by enabling partial string matching on field values thanks to two new matchers: <strong>Contains substring</strong> and <strong>Does not contain substring</strong>. With the substring matcher built into the <strong>Filter data by values</strong> transformation, you can efficiently filter large datasets, displaying relevant information with speed and precision. Whether you&rsquo;re searching for keywords, product names, or user IDs, this feature streamlines the process, saving time and effort while ensuring accurate data output.</p>
+<p>In the <strong>Filter data by values</strong> transformation, simply add a condition, choose a field, choose your matcher, and then input the string to match against.</p>
+<p>This update will be rolled out to customers over the next few weeks.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/substring-matcher.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h2 id="reporting">Reporting</h2>
+<h3 id="pdf-export-improvements">PDF export improvements</h3>
+<!-- #grafana-sharing -->
+<p><em>Available in public preview in Grafana Cloud and Enterprise</em></p>
+<p>Introducing a major performance improvement for the PDF export feature.</p>
+<p>Are you tired of waiting for your PDF to be generated or your report to be sent? We&rsquo;re working on a major update of the dashboard-to-PDF feature to make it faster for large dashboards. The generation time will no longer be proportional to the number of panels in your dashboard. As an example, an SLO dashboard containing around 200 panels has gone from taking more than seven minutes to be generated to only eleven seconds.</p>
+<p>This update also fixes all 
+    <a href="/docs/grafana/latest/dashboards/create-reports/#caveats">caveats</a> related to rendering a report with panels or rows set to repeat by a variable, like rendering repeating panels inside collapsed rows.</p>
+<p>To try out this update, enable the <code>newPDFRendering</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=ypk1usnE7D8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="alerting">Alerting</h2>
+<h3 id="keep-last-state-for-grafana-managed-alerting">Keep Last State for Grafana Managed Alerting</h3>
+<!-- "#alerting" -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>(Re-)introducing &ldquo;Keep Last State&rdquo; to Grafana managed alert rules.</p>
+<p>You can now choose to keep the last evaluated state of an alert rule when that rule produces &ldquo;No Data&rdquo; or &ldquo;Error&rdquo; results. Simply choose the &ldquo;Keep Last State&rdquo; option for no data or error handling when editing a rule. Refer to the Alerting documentation on state and health of alert rules for more information.
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/state-and-health/#state-and-health-of-alert-rules"></a></p>
+<h3 id="alert-detail-view-redesign">Alert detail view redesign</h3>
+<!-- Gilles deMey -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The new alert rule detail view has a new look and feel with helpful metadata at the top. The namespace and group are shown in the breadcrumb navigation. This is interactive and can be used to filter rules by namespace or group. The rest of the alert detail content is split up into tabs:</p>
+<p><strong>Query and conditions</strong></p>
+<p>View the details of the query that is used for the alert rule, including the expressions and intermediate values for each step of the expression pipeline. A graph view is included for range queries and data sources that return time series-like data frames.</p>
+<p><strong>Instances</strong></p>
+<p>Explore each alert instance, its status, labels and various other metadata for multi-dimensional alert rules.</p>
+<p><strong>History</strong></p>
+<p>Explore the recorded history for an alert rule.</p>
+<p><strong>Details</strong></p>
+<p>Debug or audit using the alert rule metadata and view the alert rule annotations.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/alerting/alert-detail-view.png"
+  alt="Image shows details of an alert rule" width="1394"
+     height="862"/></p>
+<h3 id="rbac-for-alert-rule-provisioning-apis">RBAC for alert rule provisioning APIs</h3>
+<!-- Yuri Tseretyan -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The Alerting Provisioning HTTP API has been updated to enforce Role-Based Access Control (RBAC).</p>
+<ul>
+<li>For Grafana OSS, users with the <strong>Editor</strong> role can now use the API.</li>
+<li>For Grafana Enterprise and Grafana Cloud, users with the role <strong>Rules Writer</strong> and <strong>Set Provisioning status</strong> can access the API and limit access to alert rules that use a particular data source.</li>
+<li>Other roles related to provisioning, for example <strong>Access to alert rules</strong> provisioning API still work.</li>
+</ul>
+<h2 id="data-sources">Data sources</h2>
+<h3 id="removal-of-old-tempo-search-and-loki-search-in-tempo">Removal of old Tempo Search and Loki Search in Tempo</h3>
+<!-- Joey Tawadrous -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<h4 id="removal-of-old-tempo-search-tab">Removal of old Tempo Search tab</h4>
+<p>In Grafana v10.1, we added a Tempo search editor powered by TraceQL (search tab). We also recommended using this new editor over the older non-TraceQL powered editor.</p>
+<p>The older non-TraceQL powered editor has been removed. Any existing queries using the older editor will be automatically migrated to the new TraceQL-powered editor.</p>
+<p>The new TraceQL-powered editor makes it much easier to build your query by way of static filters, better input/selection validation, copy query to the TraceQL tab, query preview, dedicated status filter, and the ability to run aggregate by (metrics summary) queries.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/datasources/tempo/query-editor/">Query tracing data</a> to learn more.</p>
+<h4 id="removal-of-loki-search-tab-in-tempo">Removal of Loki Search tab in Tempo</h4>
+<p>The Loki Search tab has been around since before we could natively query Tempo for traces.
+This search is used by a low number of users in comparison to the TraceQL-powered editor (Search tab) or the TraceQL tab itself.</p>
+<p>If you would like to see what logs are linked to a specific trace or service, you can use the 
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#trace-to-logs">Trace to logs feature</a>, which provides an easy way to create a custom link and set an appropriate time range if necessary.</p>
+<h3 id="mssql-windows-active-directory-kerberos-authentication">MSSQL: Windows Active Directory (Kerberos) authentication</h3>
+<!--#grafana-partner-datasources, @adam -->
+<p><em>Generally available in Grafana Open Source and Enterprise</em></p>
+<p>You can now use Windows Active Directory (or Kerberos) to authenticate to MSSQL servers from Grafana.</p>
+<p>There are four primary ways to authenticate from Grafana to a MSSQL instance with Windows Active Directory:</p>
+<ol>
+<li>Windows Active Directory username and password</li>
+<li>Specify the path to a valid <a href="https://web.mit.edu/kerberos/krb5-1.12/doc/basic/keytab_def.html" target="_blank" rel="noopener noreferrer">keytab file</a>.</li>
+<li>Specify the path to an up to date <a href="https://web.mit.edu/kerberos/krb5-1.12/doc/basic/ccache_def.html" target="_blank" rel="noopener noreferrer">credential cache</a>.</li>
+<li>Specify the path to a JSON document that holds information about several credential caches and the user and database for each one.</li>
+</ol>
+<p>To get started, refer to the 
+    <a href="/docs/grafana/latest/getting-started/get-started-grafana-ms-sql-server/#windows-active-directory-kerberos">Getting Started documentation for MSSQL</a>.</p>
+<h2 id="authentication-and-authorization">Authentication and authorization</h2>
+<h3 id="new-strong-password-policy">New strong password policy</h3>
+<!-- #iam-identity-dev -->
+<p><em>Available in public preview in Grafana Open Source and Enterprise</em></p>
+<p>If you manage your users using Grafana&rsquo;s built-in basic authorization as an identity provider, consider enabling our new strong password policy feature.</p>
+<p>Starting with Grafana v11.0, you can enable an opinionated strong password policy feature. This configuration option validates all password updates to comply with our strong password policy.</p>
+<p>To learn more about Grafana&rsquo;s strong password policy, refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/grafana/#strong-password-policy">documentation</a>.</p>
+<h3 id="anonymous-users-are-billed-in-grafana-enterprise">Anonymous users are billed in Grafana Enterprise</h3>
+<!-- Daniel Ken Lee -->
+<p><em>Generally available in Grafana Enterprise</em></p>
+<p>We are announcing a license change to the anonymous access feature in Grafana 11. As you may already be aware, anonymous access allows users access to Grafana without login credentials. Anonymous access was an early feature of Grafana to share dashboards; however, we recently introduced 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">Public Dashboards</a> which allows you to share dashboards in a more secure manner. We also noticed that anonymous access inadvertently resulted in user licensing issues. After careful consideration, we have decided to charge for the continued use of anonymous access starting in Grafana 11.</p>
+<p><strong>Affected Grafana versions</strong></p>
+<p>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/grafana/#anonymous-authentication">Anonymous authentication</a> is disabled by default in Grafana Cloud. This licensing change only affects Grafana Enterprise (self-managed) edition. Anonymous users will be charged as active users in Grafana Enterprise.</p>
+<p>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/grafana/#anonymous-devices">Documentation</a></p>

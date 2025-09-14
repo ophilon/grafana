@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<h1 id="snapshot-api">Snapshot API</h1>
+<h2 id="create-new-snapshot">Create new snapshot</h2>
+<p><code>POST /api/snapshots</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>    POST /api/snapshots HTTP/1.1
+    Accept: application/json
+    Content-Type: application/json
+    Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+    {
+      &#34;dashboard&#34;: {
+        &#34;editable&#34;:false,
+        &#34;nav&#34;:[
+        {
+          &#34;enable&#34;:false,
+        &#34;type&#34;:&#34;timepicker&#34;
+        }
+        ],
+        &#34;rows&#34;: [
+          {
+
+          }
+        ],
+        &#34;style&#34;:&#34;dark&#34;,
+        &#34;tags&#34;:[],
+        &#34;templating&#34;:{
+          &#34;list&#34;:[
+          ]
+        },
+        &#34;time&#34;:{
+        },
+        &#34;timezone&#34;:&#34;browser&#34;,
+        &#34;title&#34;:&#34;Home&#34;,
+        &#34;version&#34;:5
+        },
+      &#34;expires&#34;: 3600
+    }</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>dashboard</strong> – Required. The complete dashboard model.</li>
+<li><strong>name</strong> – Optional. snapshot name</li>
+<li><strong>expires</strong> - Optional. When the snapshot should expire in seconds. 3600 is 1 hour, 86400 is 1 day. Default is never to expire.</li>
+<li><strong>external</strong> - Optional. Save the snapshot on an external server rather than locally. Default is <code>false</code>.</li>
+<li><strong>key</strong> - Optional. Define the unique key. Required if <strong>external</strong> is <code>true</code>.</li>
+<li><strong>deleteKey</strong> - Optional. Unique key used to delete the snapshot. It is different from the <strong>key</strong> so that only the creator can delete the snapshot. Required if <strong>external</strong> is <code>true</code>.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When creating a snapshot using the API, you have to provide the full dashboard payload including the snapshot data. This endpoint is designed for the Grafana UI.</p></blockquote></div>
+
+<p><strong>Example Response</strong>:</p>
+<pre>    HTTP/1.1 200
+    Content-Type: application/json
+    {
+      &#34;deleteKey&#34;:&#34;XXXXXXX&#34;,
+      &#34;deleteUrl&#34;:&#34;myurl/api/snapshots-delete/XXXXXXX&#34;,
+      &#34;key&#34;:&#34;YYYYYYY&#34;,
+      &#34;url&#34;:&#34;myurl/dashboard/snapshot/YYYYYYY&#34;,
+      &#34;id&#34;: 1
+    }</pre>
+<p>Keys:</p>
+<ul>
+<li><strong>deleteKey</strong> – Key generated to delete the snapshot</li>
+<li><strong>key</strong> – Key generated to share the dashboard</li>
+</ul>
+<h2 id="get-list-of-snapshots">Get list of Snapshots</h2>
+<p><code>GET /api/dashboard/snapshots</code></p>
+<p>Query parameters:</p>
+<ul>
+<li><strong>query</strong> – Search Query</li>
+<li><strong>limit</strong> – Limit the number of returned results</li>
+</ul>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/dashboard/snapshots HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;:8,
+    &#34;name&#34;:&#34;Home&#34;,
+    &#34;key&#34;:&#34;YYYYYYY&#34;,
+    &#34;orgId&#34;:1,
+    &#34;userId&#34;:1,
+    &#34;external&#34;:false,
+    &#34;externalUrl&#34;:&#34;&#34;,
+    &#34;expires&#34;:&#34;2200-13-32T25:23:23+02:00&#34;,
+    &#34;created&#34;:&#34;2200-13-32T28:24:23+02:00&#34;,
+    &#34;updated&#34;:&#34;2200-13-32T28:24:23+02:00&#34;
+  }
+]</pre>
+<h2 id="get-snapshot-by-key">Get Snapshot by Key</h2>
+<p><code>GET /api/snapshots/:key</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/snapshots/YYYYYYY HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;meta&#34;:{
+    &#34;isSnapshot&#34;:true,
+    &#34;type&#34;:&#34;snapshot&#34;,
+    &#34;canSave&#34;:false,
+    &#34;canEdit&#34;:false,
+    &#34;canStar&#34;:false,
+    &#34;slug&#34;:&#34;&#34;,
+    &#34;expires&#34;:&#34;2200-13-32T25:23:23+02:00&#34;,
+    &#34;created&#34;:&#34;2200-13-32T28:24:23+02:00&#34;
+  },
+  &#34;dashboard&#34;: {
+    &#34;editable&#34;:false,
+    &#34;nav&#34;: [
+      {
+        &#34;enable&#34;:false,
+        &#34;type&#34;:&#34;timepicker&#34;
+      }
+    ],
+    &#34;rows&#34;: [
+      {
+
+      }
+    ],
+    &#34;style&#34;:&#34;dark&#34;,
+    &#34;tags&#34;:[],
+    &#34;templating&#34;:{
+      &#34;list&#34;:[
+      ]
+    },
+    &#34;time&#34;:{
+    },
+    &#34;timezone&#34;:&#34;browser&#34;,
+    &#34;title&#34;:&#34;Home&#34;,
+    &#34;version&#34;:5
+  }
+}</pre>
+<h2 id="delete-snapshot-by-key">Delete Snapshot by Key</h2>
+<p><code>DELETE /api/snapshots/:key</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>DELETE /api/snapshots/YYYYYYY HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;Snapshot deleted. It might take an hour before it&#39;s cleared from any CDN caches.&#34;, &#34;id&#34;: 1}</pre>
+<h2 id="delete-snapshot-by-deletekey">Delete Snapshot by deleteKey</h2>
+<p>This API call can be used without authentication by using the secret delete key for the snapshot.</p>
+<p><code>GET /api/snapshots-delete/:deleteKey</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/snapshots-delete/XXXXXXX HTTP/1.1
+Accept: application/json</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;Snapshot deleted. It might take an hour before it&#39;s cleared from any CDN caches.&#34;, &#34;id&#34;: 1}</pre>

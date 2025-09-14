@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<h1 id="alertmanager-data-source">Alertmanager data source</h1>
+<p>Grafana includes built-in support for Alertmanager implementations in Prometheus and Mimir.</p>
+<p>Once you add an Alertmanager as a data source, you can use the <code>Choose Alertmanager</code> drop-down on 
+    <a href="/docs/grafana/latest/alerting/">Grafana Alerting</a> to view and manage Alertmanager resources, such as silences, contact points, and notification policies. Additionally, you can enable the Alertmanager to receive Grafana-managed alerts.</p>
+<p>For more details about using other Alertmanagers, refer to 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alertmanager/">Alertmanagers in the Grafana Alerting documentation</a>.</p>
+<h2 id="alertmanager-implementations">Alertmanager implementations</h2>
+<p>The data source supports <a href="https://prometheus.io/" target="_blank" rel="noopener noreferrer">Prometheus</a> and <a href="/docs/mimir/latest/">Grafana Mimir</a> (default) implementations of Alertmanager. You can specify the implementation in the data source&rsquo;s Settings page.</p>
+<p>When using Prometheus, you can manage silences in the Grafana Alerting UI. However, other Alertmanager resources such as contact points, notification policies, and templates are read-only because the Prometheus Alertmanager HTTP API does not support updates for these resources.</p>
+<h2 id="configure-the-data-source">Configure the data source</h2>
+<p>To configure basic settings for the data source, complete the following steps:</p>
+
+
+<div data-shared="alerts/add-alertmanager-ds.md">
+            <ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>Alertmanager</code> in the search bar.</p>
+</li>
+<li>
+<p>Click <strong>Alertmanager</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+<li>
+<p>Set the data source&rsquo;s basic configuration options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Name</strong></td>
+          <td>Sets the name you use to refer to the data source</td>
+      </tr>
+      <tr>
+          <td><strong>Default</strong></td>
+          <td>Sets whether the data source is pre-selected for new panels and queries</td>
+      </tr>
+      <tr>
+          <td><strong>Alertmanager Implementation</strong></td>
+          <td>Alertmanager implementation. <strong>Mimir</strong>, <strong>Cortex,</strong> and <strong>Prometheus</strong> are supported</td>
+      </tr>
+      <tr>
+          <td><strong>Receive Grafana Alerts</strong></td>
+          <td>When enabled, the Alertmanager can receive Grafana-managed alerts. <strong>Important:</strong> This works only if receiving alerts is enabled for the Alertmanager in the Grafana Alerting Settings page</td>
+      </tr>
+      <tr>
+          <td><strong>HTTP URL</strong></td>
+          <td>Sets the HTTP protocol, IP, and port of your Alertmanager instance, such as <code>https://alertmanager.example.org:9093</code></td>
+      </tr>
+      <tr>
+          <td><strong>Access</strong></td>
+          <td>Only <strong>Server</strong> access mode is functional</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ol>
+</div>
+
+        
+<h2 id="provision-the-alertmanager-data-source">Provision the Alertmanager data source</h2>
+<p>You can provision Alertmanager data sources by updating Grafana&rsquo;s configuration files.
+For more information on provisioning, and common settings available, refer to the 
+    <a href="/docs/grafana/latest/administration/provisioning/#datasources">provisioning docs page</a>.</p>
+<p>Here is an example for provisioning the Alertmanager data source:</p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Alertmanager
+    type: alertmanager
+    url: http://localhost:9093
+    access: proxy
+    jsonData:
+      # Valid options for implementation include mimir, cortex and prometheus
+      implementation: prometheus
+      # Whether or not Grafana should send alert instances to this Alertmanager
+      handleGrafanaManagedAlerts: false
+    # optionally
+    basicAuth: true
+    basicAuthUser: my_user
+    secureJsonData:
+      basicAuthPassword: test_password</pre>

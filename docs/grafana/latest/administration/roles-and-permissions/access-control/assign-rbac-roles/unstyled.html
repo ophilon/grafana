@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<h1 id="assign-rbac-roles">Assign RBAC roles</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>In this topic you&rsquo;ll learn how to use the role picker, provisioning, and the HTTP API to assign fixed and custom roles to users and teams.</p>
+<h2 id="assign-fixed-roles-in-the-ui-using-the-role-picker">Assign fixed roles in the UI using the role picker</h2>
+<p>This section describes how to:</p>
+<ul>
+<li>Assign a fixed role to a user, team or service account as an organization administrator.</li>
+<li>Assign a fixed role to a user as a server administrator. This approach enables you to assign a fixed role to a user in multiple organizations, without needing to switch organizations.</li>
+</ul>
+<p>In both cases, the assignment applies only to the user, team or service account within the affected organization, and no other organizations. For example, if you grant the user the <strong>Data source editor</strong> role in the <strong>Main</strong> organization, then the user can edit data sources in the <strong>Main</strong> organization, but not in other organizations.</p>
+<p><strong>Before you begin:</strong></p>
+<ul>
+<li>
+<p>
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/plan-rbac-rollout-strategy/">Plan your RBAC rollout strategy</a>.</p>
+</li>
+<li>
+<p>Identify the fixed roles that you want to assign to the user, team or service account.</p>
+<p>For more information about available fixed roles, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-fixed-basic-role-definitions/">RBAC role definitions</a>.</p>
+</li>
+<li>
+<p>Ensure that your own user account has the correct permissions:</p>
+<ul>
+<li>If you are assigning permissions to a user, team or service account within an organization, you must have organization administrator or server administrator permissions.</li>
+<li>If you are assigning permissions to a user who belongs to multiple organizations, you must have server administrator permissions.</li>
+<li>Your Grafana user can also assign fixed role if it has either the <code>fixed:roles:writer</code> fixed role assigned to the same organization to which you are assigning RBAC to a user, or a custom role with <code>users.roles:add</code> and <code>users.roles:remove</code> permissions.</li>
+<li>Your own user account must have the roles you are granting. For example, if you would like to grant the <code>fixed:users:writer</code> role to a team, you must have that role yourself.</li>
+</ul>
+</li>
+</ul>
+<p><strong>To assign a fixed role to a user, team or service account:</strong></p>
+<ol>
+<li>
+<p>Sign in to Grafana.</p>
+</li>
+<li>
+<p>Switch to the organization that contains the user, team or service account.</p>
+<p>For more information about switching organizations, refer to 
+    <a href="/docs/grafana/latest/administration/user-management/user-preferences/#switch-organizations">Switch organizations</a>.</p>
+</li>
+<li>
+<p>In the left-side menu, click <strong>Administration</strong>, <strong>Users and access</strong>, and then <strong>Users</strong>, <strong>Teams</strong>, or <strong>Service accounts</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Role</strong> column, select the fixed role that you want to assign to the user, team, or service account.</p>
+</li>
+<li>
+<p>Click <strong>Update</strong>.</p>
+</li>
+</ol>
+<p><strong>To assign a fixed role as a server administrator:</strong></p>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+<li>Click a user.</li>
+<li>In the Organizations section, click <strong>Change role</strong>.</li>
+<li>Select a role within an organization that you want to assign to the user.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h2 id="assign-fixed-or-custom-roles-using-the-http-api">Assign fixed or custom roles using the HTTP API</h2>
+<p>This section describes how to:</p>
+<ul>
+<li>Assign a fixed role to a user, team or service account as an organization administrator.</li>
+</ul>
+<p><strong>Before you begin:</strong></p>
+<ul>
+<li>
+<p>
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/plan-rbac-rollout-strategy/">Plan your RBAC rollout strategy</a>.</p>
+</li>
+<li>
+<p>Identify the fixed roles that you want to assign to the user, team or service account.</p>
+<p>For more information about available fixed roles, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-fixed-basic-role-definitions/">RBAC role definitions</a>.</p>
+</li>
+<li>
+<p>Ensure that your own user account has the correct permissions:</p>
+<ul>
+<li>If you are assigning permissions to a user, team or service account within an organization, you must have organization administrator or server administrator permissions.</li>
+<li>If you are assigning permissions to a user who belongs to multiple organizations, you must have server administrator permissions.</li>
+<li>Your Grafana user can also assign fixed role if it has either the <code>fixed:roles:writer</code> fixed role assigned to the same organization to which you are assigning RBAC to a user, or a custom role with <code>users.roles:add</code> and <code>users.roles:remove</code> permissions.</li>
+<li>Your own user account must have the roles you are granting. For example, if you would like to grant the <code>fixed:users:writer</code> role to a team, you must have that role yourself.</li>
+</ul>
+</li>
+</ul>
+<p><strong>To assign a fixed role to a user or service account:</strong></p>
+<p>Refer to the 
+    <a href="/docs/grafana/latest/developers/http_api/access_control/#add-a-user-role-assignment">RBAC HTTP API for user role assignment</a>.</p>
+<p>The service account ID can be used in place of the user ID.</p>
+<p><strong>To assign a fixed role to a team:</strong></p>
+<p>Refer to the 
+    <a href="/docs/grafana/latest/developers/http_api/access_control/#add-a-team-role-assignment">RBAC HTTP API for team role assignment</a>.</p>
+<h2 id="assign-fixed-or-custom-roles-to-a-team-using-provisioning">Assign fixed or custom roles to a team using provisioning</h2>
+<p>Instead of using the Grafana role picker, you can use file-based provisioning to assign fixed roles to teams. If you have a large number of teams, provisioning can provide an easier approach to assigning and managing role assignments.</p>
+<p><strong>Before you begin:</strong></p>
+<ul>
+<li>Refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-grafana-provisioning/">Role provisioning</a></li>
+<li>Ensure that the team to which you are adding the fixed role exists. For more information about creating teams, refer to 
+    <a href="/docs/grafana/latest/administration/team-management/">Manage teams</a></li>
+</ul>
+<p><strong>To assign a role to a team:</strong></p>
+<ol>
+<li>
+<p>Open the YAML configuration file.</p>
+</li>
+<li>
+<p>Refer to the following table to add attributes and values.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Attribute</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>roles</code></td>
+          <td>Enter the custom role or custom roles you want to create/update.</td>
+      </tr>
+      <tr>
+          <td><code>roles &gt; name</code></td>
+          <td>Enter the name of the custom role.</td>
+      </tr>
+      <tr>
+          <td><code>roles &gt; version</code></td>
+          <td>Enter the custom role version number. Role assignments are independent of the role version number.</td>
+      </tr>
+      <tr>
+          <td><code>roles &gt; global</code></td>
+          <td>Enter <code>true</code>. You can specify the <code>orgId</code> otherwise.</td>
+      </tr>
+      <tr>
+          <td><code>roles &gt; permissions</code></td>
+          <td>Enter the permissions <code>action</code> and <code>scope</code> values. For more information about permissions actions and scopes, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">RBAC permissions, actions, and scopes</a></td>
+      </tr>
+      <tr>
+          <td><code>teams</code></td>
+          <td>Enter the team or teams to which you are adding the custom role.</td>
+      </tr>
+      <tr>
+          <td><code>teams &gt; orgId</code></td>
+          <td>Because teams belong to organizations, you must add the <code>orgId</code> value.</td>
+      </tr>
+      <tr>
+          <td><code>teams &gt; name</code></td>
+          <td>Enter the name of the team.</td>
+      </tr>
+      <tr>
+          <td><code>teams &gt; roles</code></td>
+          <td>Enter the custom or fixed role or roles that you want to grant to the team.</td>
+      </tr>
+      <tr>
+          <td><code>teams &gt; roles &gt; name</code></td>
+          <td>Enter the name of the role.</td>
+      </tr>
+      <tr>
+          <td><code>teams &gt; roles &gt; global</code></td>
+          <td>Enter <code>true</code>, or specify <code>orgId</code> of the role you want to assign to the team. Fixed roles are global.</td>
+      </tr>
+  </tbody>
+</table>
+<p>For more information about managing custom roles, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/manage-rbac-roles/#create-custom-roles-using-provisioning">Create custom roles using provisioning</a>.</p>
+</li>
+<li>
+<p>Reload the provisioning configuration file.</p>
+<p>For more information about reloading the provisioning configuration at runtime, refer to 
+    <a href="/docs/grafana/latest/developers/http_api/admin/#reload-provisioning-configurations">Reload provisioning configurations</a>.</p>
+</li>
+</ol>
+<p>The following example creates the <code>custom:users:writer</code> role and assigns it to the <code>user writers</code> and <code>user admins</code> teams along with the <code>fixed:users:writer</code> role:</p>
+<p>The following example:</p>
+<ul>
+<li>Creates the <code>custom:users:writer</code> role.</li>
+<li>Assigns the <code>custom:users:writer</code> role and the <code>fixed:users:writer</code> role to the <code>user admins</code> and <code>user writers</code> teams.</li>
+</ul>
+<pre># config file version
+apiVersion: 2
+
+# Roles to insert/update in the database
+roles:
+  - name: &#39;custom:users:writer&#39;
+    description: &#39;List/update other users in the organization&#39;
+    version: 1
+    global: true
+    permissions:
+      - action: &#39;org.users:read&#39;
+        scope: &#39;users:*&#39;
+      - action: &#39;org.users:write&#39;
+        scope: &#39;users:*&#39;
+
+# Assignments to teams
+teams:
+  - name: &#39;user writers&#39;
+    orgId: 1
+    roles:
+      # Custom role assignment
+      - name: &#39;custom:users:writer&#39;
+        global: true
+      # Fixed role assignment
+      - name: &#39;fixed:users:writer&#39;
+        global: true
+  - name: &#39;user admins&#39;
+    orgId: 1
+    roles:
+      - name: &#39;custom:users:writer&#39;
+        global: true
+      - name: &#39;fixed:users:writer&#39;
+        global: true</pre>
+<blockquote>
+<p><strong>Note</strong>: The roles don&rsquo;t have to be defined in the provisioning configuration files to be assigned. If roles exist in the database, they can be assigned.</p></blockquote>
+<p><strong>Remove a role assignment from a team:</strong></p>
+<p>If you want to remove an assignment from a team, add <code>state: absent</code> to the <code>teams &gt; roles</code> section, and reload the configuration file.</p>
+<p>The following example:</p>
+<ul>
+<li>Creates the <code>custom:users:writer</code> role</li>
+<li>Assigns the <code>custom:users:writer</code> role and the <code>fixed:users:writer</code> role to the <code>user admins</code> team</li>
+<li>Removes the <code>custom:users:writer</code> and the <code>fixed:users:writer</code> assignments from the <code>user writers</code> team, if those assignments exist.</li>
+</ul>
+<pre># config file version
+apiVersion: 2
+
+# Roles to insert/update in the database
+roles:
+  - name: &#39;custom:users:writer&#39;
+    description: &#39;List/update other users in the organization&#39;
+    version: 1
+    global: true
+    permissions:
+      - action: &#39;org.users:read&#39;
+        scope: &#39;users:*&#39;
+      - action: &#39;org.users:write&#39;
+        scope: &#39;users:*&#39;
+
+# Assignments to teams
+teams:
+  - name: &#39;user writers&#39;
+    orgId: 1
+    roles:
+      - name: &#39;fixed:users:writer&#39;
+        global: true
+        state: &#39;absent&#39; # Remove assignment
+      - name: &#39;custom:users:writer&#39;
+        global: true
+        state: &#39;absent&#39; # Remove assignment
+  - name: &#39;user admins&#39;
+    orgId: 1
+    roles:
+      - name: &#39;fixed:users:writer&#39;
+        global: true
+      - name: &#39;custom:users:writer&#39;
+        global: true</pre>
+<blockquote>
+<p><strong>Note</strong>: The roles don&rsquo;t have to be defined in the provisioning configuration files to be revoked. If roles exist in the database, they can be revoked.</p></blockquote>

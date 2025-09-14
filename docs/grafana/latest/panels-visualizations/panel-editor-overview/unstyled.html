@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<h1 id="panel-editor">Panel editor</h1>
+<p>In the panel editor, you can update all the elements of a visualization including the data source, queries, time range, and visualization display options.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-panel-editor-v11.6.png"
+  alt="Panel editor" width="3024"
+     height="1516"/></p>
+<p>This following sections describe the areas of the Grafana panel editor.</p>
+<h2 id="panel-header">Panel header</h2>
+<p>The header section lists the dashboard in which the panel appears and the following controls:</p>
+<ul>
+<li><strong>Back to dashboard</strong> - Return to the dashboard with changes applied, but not yet saved.</li>
+<li><strong>Discard panel changes</strong> - Discard changes you have made to the panel since you last saved the dashboard.</li>
+<li><strong>Save dashboard</strong> - Save your changes to the dashboard.</li>
+</ul>
+<h2 id="visualization-preview">Visualization preview</h2>
+<p>The visualization preview section contains the following options:</p>
+<ul>
+<li><strong>Table view</strong> - Convert any visualization to a table so you can see the data. Table views are helpful for troubleshooting. This view only contains the raw data. It doesn&rsquo;t include transformations you might have applied to the data or the formatting options available in the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a> visualization.</li>
+<li><strong>Time range controls</strong> - <strong>Default</strong> is either the browser local timezone or the timezone selected at a higher level.</li>
+<li><strong>Refresh</strong> - Query the data source.</li>
+</ul>
+<h2 id="data-section">Data section</h2>
+<p>The data section contains tabs where you enter queries, transform your data, and create alert rules (if applicable).</p>
+<ul>
+<li>
+<p><strong>Queries</strong></p>
+<ul>
+<li>Select your data source. You can also set or update the data source in existing dashboards using the drop-down menu in the <strong>Queries</strong> tab.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#add-a-query">Add queries</a>. Write or construct a query in the query language of your data source or click <strong>+ Add from saved queries</strong> to add a previously saved query. If you&rsquo;ve already written a query, you can click the <strong>Replace with saved query</strong> icon to use a previously saved query instead. To 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#save-a-query">save the query</a> for reuse, click the <strong>Save query</strong> icon.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#saved-queries">Saved queries</a> is in <a href="/docs/release-life-cycle/">public preview</a> in Grafana Enterprise and Cloud only.</p></blockquote></div>
+
+</li>
+<li>
+<p><strong>Transformations</strong> - Apply data transformations. For more information, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/">Transform data</a>.</p>
+</li>
+<li>
+<p><strong>Alert</strong> - Write alert rules. For more information, refer to 
+    <a href="/docs/grafana/latest/alerting/">the overview of Grafana Alerting</a>.</p>
+</li>
+</ul>
+<h2 id="panel-display-options">Panel display options</h2>
+<p>The display options section contains tabs where you configure almost every aspect of your data visualization.</p>

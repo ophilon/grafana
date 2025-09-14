@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<h1 id="create-grafana-managed-recording-rules-for-tempo">Create Grafana-managed recording rules for Tempo</h1>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana-managed recording rules for Tempo is currently in <a href="/docs/release-life-cycle/">private preview</a>. Grafana Labs offers support on a best-effort basis, and breaking changes might occur prior to the feature being made generally available.</p></blockquote></div>
+
+
+<p>Grafana-managed recording rules let you pre-compute query results and store them as new time series metrics. These metrics can then be reused in dashboards, alerts, or downstream queries, improving performance and reliability.</p>
+<p>This guide explains how to configure recording rules for the <strong>Tempo data source</strong>, including product-specific considerations, such as TraceQL metrics queries, time range alignment, and evaluation delays.</p>
+<p>For additional information, refer to <a href="/docs/grafana/latest/alerting/alerting-rules/create-recording-rules/create-grafana-managed-recording-rules/">Grafana-managed recording rules</a>.</p>
+<h2 id="create-a-new-tempo-recording-rule">Create a new Tempo recording rule</h2>
+<ol>
+<li>
+<p>In Grafana, go to <strong>Alerts &amp; IRM</strong> &gt; <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</p>
+</li>
+<li>
+<p>From the <strong>More+</strong> menu, select <strong>New Grafana recording rule</strong>.</p>
+</li>
+<li>
+<p>Enter recording rule and metric name.</p>
+<p>In the <strong>New recording rule</strong> window, configure the following:</p>
+<ul>
+<li><strong>Name</strong>: A human-readable identifier for the recording rule.</li>
+<li><strong>Metric</strong>: The Prometheus-compatible name of the new metric series that will be generated. For details, refer to <a href="https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels" target="_blank" rel="noopener noreferrer">Prometheus metric names</a>.</li>
+<li><strong>Target data source</strong>: Must be a <strong>Prometheus</strong> data source with <em>write</em> permissions (to store the rule&rsquo;s results). Ensure your Prometheus or Mimir metrics backend allows Grafana to write the new series.</li>
+</ul>
+</li>
+<li>
+<p>Define the recording rule.</p>
+<ul>
+<li>
+<p><strong>Data source</strong>: Select the <strong>Tempo</strong> data source with <em>read</em> permissions.</p>
+</li>
+<li>
+<p>In the <strong>Options</strong> dropdown, specify a time range.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Alerting only supports fixed relative time ranges, for example, <code>now-5m: now-4m</code>.</p>
+<p>It does not support absolute time ranges: <code>2021-12-02 00:00:00 to 2021-12-05 23:59:592</code> or semi-relative time ranges: <code>now/d to: now</code>.</p></blockquote></div>
+
+<ul>
+<li>TraceQL metrics queries are executed as <strong>instant queries</strong> over a window of time.</li>
+<li>The range you select defines the aggregation window. For example use <code>now-5m: now-4m</code> for a 1-minute recording-rule interval with a 4-minute delay. The TraceQL query will run over the selected interval.</li>
+<li>Always include a <strong>delay</strong> of a few minutes (for example, 2–5 minutes) to account for traces still in flight. This avoids missing late-arriving spans.</li>
+<li><strong>Max data points</strong> and <strong>Interval</strong> are not relevant for TraceQL instant queries.</li>
+</ul>
+</li>
+<li>
+<p><strong>Query</strong>: Enter a valid TraceQL metrics query.</p>
+<pre>{ resource.service.name = &#34;checkout&#34; }  | count_over_time()</pre>
+</li>
+<li>
+<p><strong>Expressions</strong>: Typically use <strong>Reduce</strong> &gt; <strong>Last</strong> to take the most recent computed value.</p>
+</li>
+</ul>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1501px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png"data-srcset="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png?w=320 320w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png?w=550 550w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png?w=750 750w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png?w=900 900w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png?w=1040 1040w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png?w=1240 1240w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png?w=1920 1920w"
+             data-sizes="auto"alt="Defining the recording rule for Tempo."width="1501"height="1284"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-definition-private-preview.png"
+               alt="Defining the recording rule for Tempo."width="1501"height="1284"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Organize the rule by selecting a <strong>folder</strong> and adding <strong>labels</strong>.</p>
+<ul>
+<li>Labels can help group or filter rules later.</li>
+<li>Folders provide UI organization and RBAC scoping.</li>
+</ul>
+</li>
+<li>
+<p>Set evaluation behavior.</p>
+<p>Recording rules are executed by evaluation groups at fixed intervals. Align this interval with the query&rsquo;s time range.</p>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>The <strong>Evaluation interval</strong> of the evaluation group should equal the size of the query window. For example, if your query covers <code>now-5m: now-4m</code> (1-minute window with 4-minute delay), use a <strong>1-minute evaluation interval</strong>. This ensures each evaluation produces a new, non-overlapping sample.</p></blockquote></div>
+
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 400px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png"data-srcset="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png?w=320 320w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png?w=550 550w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png?w=750 750w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png?w=900 900w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png?w=1040 1040w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png?w=1240 1240w, /media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png?w=1920 1920w"
+             data-sizes="auto"alt="Defining the recording rule evaluation group for Tempo."width="679"height="481"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/alerting/screenshot-recording-rule-tempo-evaluation-group-private-preview.png"
+               alt="Defining the recording rule evaluation group for Tempo."width="679"height="481"/>
+           </noscript></div></a></figure>
+</li>
+</ol>
+<h2 id="best-practices">Best practices</h2>
+<ul>
+<li>Always include a delay of at least 2 minutes in the query range to avoid losing in-flight spans.</li>
+<li>Align the evaluation interval with your query window size.</li>
+<li>The time series generated by a recording rule will be time-shifted based on the selected query time range. To align it back with the original timeline, you can apply the <code>offset</code> modifier in your Prometheus queries.</li>
+</ul>

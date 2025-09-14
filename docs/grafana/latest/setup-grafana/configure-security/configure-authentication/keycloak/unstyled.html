@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<h1 id="configure-keycloak-oauth2-authentication">Configure Keycloak OAuth2 authentication</h1>
+<p>Keycloak OAuth2 authentication allows users to log in to Grafana using their Keycloak credentials. This guide explains how to set up Keycloak as an authentication provider in Grafana.</p>
+<p>Refer to <a href="../generic-oauth/">Generic OAuth authentication</a> for extra configuration options available for this provider.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If Users use the same email address in Keycloak that they use with other authentication providers (such as Grafana.com), you need to do additional configuration to ensure that the users are matched correctly. Please refer to the <a href="../#using-the-same-email-address-to-login-with-different-identity-providers">Using the same email address to login with different identity providers</a> documentation for more information.</p></blockquote></div>
+
+<p>You may have to set the <code>root_url</code> option of <code>[server]</code> for the callback URL to be
+correct. For example in case you are serving Grafana behind a proxy.</p>
+<p>Example config:</p>
+<pre>[auth.generic_oauth]
+enabled = true
+name = Keycloak-OAuth
+allow_sign_up = true
+client_id = YOUR_APP_CLIENT_ID
+client_secret = YOUR_APP_CLIENT_SECRET
+scopes = openid email profile offline_access roles
+email_attribute_path = email
+login_attribute_path = username
+name_attribute_path = full_name
+auth_url = https://&lt;PROVIDER_DOMAIN&gt;/realms/&lt;REALM_NAME&gt;/protocol/openid-connect/auth
+token_url = https://&lt;PROVIDER_DOMAIN&gt;/realms/&lt;REALM_NAME&gt;/protocol/openid-connect/token
+api_url = https://&lt;PROVIDER_DOMAIN&gt;/realms/&lt;REALM_NAME&gt;/protocol/openid-connect/userinfo
+role_attribute_path = contains(roles[*], &#39;admin&#39;) &amp;&amp; &#39;Admin&#39; || contains(roles[*], &#39;editor&#39;) &amp;&amp; &#39;Editor&#39; || &#39;Viewer&#39;</pre>
+<p>As an example, <code>&lt;PROVIDER_DOMAIN&gt;</code> can be <code>keycloak-demo.grafana.org</code>
+and <code>&lt;REALM_NAME&gt;</code> can be <code>grafana</code>.</p>
+<p>To configure the <code>kc_idp_hint</code> parameter for Keycloak, you need to change the <code>auth_url</code> configuration to include the <code>kc_idp_hint</code> parameter. For example if you want to hint the Google identity provider:</p>
+<pre>auth_url = https://&lt;PROVIDER_DOMAIN&gt;/realms/&lt;REALM_NAME&gt;/protocol/openid-connect/auth?kc_idp_hint=google</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>api_url is not required if the id_token contains all the necessary user information and can add latency to the login process.
+It is useful as a fallback or if the user has more than 150 group memberships.</p></blockquote></div>
+
+<h2 id="keycloak-configuration">Keycloak configuration</h2>
+<ol>
+<li>Create a client in Keycloak with the following settings:</li>
+</ol>
+<ul>
+<li>Client ID: <code>grafana-oauth</code></li>
+<li>Enabled: <code>ON</code></li>
+<li>Client Protocol: <code>openid-connect</code></li>
+<li>Access Type: <code>confidential</code></li>
+<li>Standard Flow Enabled: <code>ON</code></li>
+<li>Implicit Flow Enabled: <code>OFF</code></li>
+<li>Direct Access Grants Enabled: <code>ON</code></li>
+<li>Root URL: <code>&lt;grafana_root_url&gt;</code></li>
+<li>Valid Redirect URIs: <code>&lt;grafana_root_url&gt;/login/generic_oauth</code></li>
+<li>Web Origins: <code>&lt;grafana_root_url&gt;</code></li>
+<li>Admin URL: <code>&lt;grafana_root_url&gt;</code></li>
+<li>Base URL: <code>&lt;grafana_root_url&gt;</code></li>
+</ul>
+<p>As an example, <code>&lt;grafana_root_url&gt;</code> can be <code>https://play.grafana.org</code>.
+Non-listed configuration options can be left at their default values.</p>
+<ol start="2">
+<li>In the client scopes configuration, <em>Assigned Default Client Scopes</em> should match:</li>
+</ol>
+<pre>email
+offline_access
+profile
+roles</pre>
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>These scopes do not add group claims to the <code>id_token</code>. Without group claims, teamsync will not work. Teamsync is covered further down in this document.</p></blockquote></div>
+
+<ol start="3">
+<li>For role mapping to work with the example configuration above,
+you need to create the following roles and assign them to users:</li>
+</ol>
+<pre>admin
+editor
+viewer</pre>
+<h2 id="team-sync">Team sync</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and to customers on select Grafana Cloud plans. For pricing information, visit <a href="/pricing/">pricing</a> or contact our sales team.</p></blockquote></div>
+
+<p>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-team-sync/">Teamsync</a> is a feature that allows you to map groups from your identity provider to Grafana teams. This is useful if you want to give your users access to specific dashboards or folders based on their group membership.</p>
+<p>To enable teamsync, you need to add a <code>groups</code> mapper to the client configuration in Keycloak.
+This will add the <code>groups</code> claim to the id_token. You can then use the <code>groups</code> claim to map groups to teams in Grafana.</p>
+<ol>
+<li>In the client configuration, head to <code>Mappers</code> and create a mapper with the following settings:</li>
+</ol>
+<ul>
+<li>Name: <code>Group Mapper</code></li>
+<li>Mapper Type: <code>Group Membership</code></li>
+<li>Token Claim Name: <code>groups</code></li>
+<li>Full group path: <code>OFF</code></li>
+<li>Add to ID token: <code>ON</code></li>
+<li>Add to access token: <code>OFF</code></li>
+<li>Add to userinfo: <code>ON</code></li>
+</ul>
+<ol start="2">
+<li>In Grafana&rsquo;s configuration add the following option:</li>
+</ol>
+<pre>[auth.generic_oauth]
+groups_attribute_path = groups</pre>
+<p>If you use nested groups containing special characters such as quotes or colons, the JMESPath parser can perform a harmless reverse function so Grafana can properly evaluate nested groups. The following example shows a parent group named <code>Global</code> with nested group <code>department</code> that contains a list of groups:</p>
+<pre>[auth.generic_oauth]
+groups_attribute_path = reverse(&#34;Global:department&#34;)</pre>
+<h2 id="enable-single-logout">Enable Single Logout</h2>
+<p>To enable Single Logout, you need to add the following option to the configuration of Grafana:</p>
+<pre>[auth.generic_oauth]
+signout_redirect_url = https://&lt;PROVIDER_DOMAIN&gt;/realms/&lt;REALM_NAME&gt;/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2F&lt;GRAFANA_DOMAIN&gt;%2Flogin</pre>
+<p>As an example, <code>&lt;PROVIDER_DOMAIN&gt;</code> can be <code>keycloak-demo.grafana.org</code>,
+<code>&lt;REALM_NAME&gt;</code> can be <code>grafana</code> and <code>&lt;GRAFANA_DOMAIN&gt;</code> can be <code>play.grafana.org</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana supports ID token hints for single logout. Grafana automatically adds the <code>id_token_hint</code> parameter to the logout request if it detects OAuth as the authentication method.</p></blockquote></div>
+
+<h2 id="allow-assigning-grafana-admin">Allow assigning Grafana Admin</h2>
+<p>If the application role received by Grafana is <code>GrafanaAdmin</code> , Grafana grants the user server administrator privileges.</p>
+<p>This is useful if you want to grant server administrator privileges to a subset of users.
+Grafana also assigns the user the <code>Admin</code> role of the default organization.</p>
+<pre>role_attribute_path = contains(roles[*], &#39;grafanaadmin&#39;) &amp;&amp; &#39;GrafanaAdmin&#39; || contains(roles[*], &#39;admin&#39;) &amp;&amp; &#39;Admin&#39; || contains(roles[*], &#39;editor&#39;) &amp;&amp; &#39;Editor&#39; || &#39;Viewer&#39;
+allow_assign_grafana_admin = true</pre>
+<h3 id="configure-refresh-token">Configure refresh token</h3>
+<p>When a user logs in using an OAuth provider, Grafana verifies that the access token has not expired. When an access token expires, Grafana uses the provided refresh token (if any exists) to obtain a new access token.</p>
+<p>Grafana uses a refresh token to obtain a new access token without requiring the user to log in again. If a refresh token doesn&rsquo;t exist, Grafana logs the user out of the system after the access token has expired.</p>
+<p>To enable a refresh token for Keycloak, do the following:</p>
+<ol>
+<li>
+<p>Extend the <code>scopes</code> in <code>[auth.generic_oauth]</code> with <code>offline_access</code>.</p>
+</li>
+<li>
+<p>Add <code>use_refresh_token = true</code> to <code>[auth.generic_oauth]</code> configuration.</p>
+</li>
+</ol>

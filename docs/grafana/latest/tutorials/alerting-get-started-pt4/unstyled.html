@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<!-- INTERACTIVE page intro.md START -->
+<p>This tutorial is a continuation of the <a href="http://www.grafana.com/tutorials/alerting-get-started-pt3/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting - Grouping notifications</a> tutorial.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=9CSrQGKeZwQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>In this tutorial, you will learn:</p>
+<ul>
+<li>The two types of templates in Grafana Alerting: labels and annotations and notification templates.</li>
+<li>How to configure alert rules with summary and description annotations.</li>
+<li>How to create a notification template that integrates with alert rule annotations.</li>
+<li>How to use a built-in notification template to group and format multiple alert instances.</li>
+<li>How to preview alert notifications by leveraging alert instances in the notification template payload.</li>
+</ul>
+<!-- INTERACTIVE page intro.md END -->
+<!-- INTERACTIVE page step1.md START -->
+<!-- INTERACTIVE ignore START -->
+
+<h2 id="before-you-begin">Before you begin</h2>
+<p>There are different ways you can follow along with this tutorial.</p>
+<blockquote>
+<p>Note: Some of the templating features in Grafana Alerting discussed in this tutorial are currently available in Grafana Cloud but have not yet been released to the Open Source (OSS) version.</p></blockquote>
+<ul>
+<li>
+<p><strong>Grafana Cloud</strong></p>
+<ul>
+<li>As a Grafana Cloud user, you don&rsquo;t have to install anything. <a href="http://www.grafana.com/auth/sign-up/create-user" target="_blank" rel="noopener noreferrer">Create your free account</a>.</li>
+</ul>
+<p>Continue to <a href="#how-templating-works">how templating works</a>.</p>
+</li>
+<li>
+<p><strong>Interactive learning environment</strong></p>
+<ul>
+<li>Alternatively, you can try out this example in our interactive learning environment: <a href="https://killercoda.com/grafana-labs/course/grafana/alerting-get-started-pt4/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting - Templating</a>. It&rsquo;s a fully configured environment with all the dependencies already installed.</li>
+</ul>
+</li>
+<li>
+<p><strong>Grafana OSS</strong></p>
+<ul>
+<li>
+<p>If you opt to run a Grafana stack locally, ensure you have the following applications installed:</p>
+</li>
+<li>
+<p><a href="https://docs.docker.com/get-docker/" target="_blank" rel="noopener noreferrer">Docker Compose</a> (included in Docker for Desktop for macOS and Windows)</p>
+</li>
+<li>
+<p><a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer">Git</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="set-up-the-grafana-stack-oss-users">Set up the Grafana stack (OSS users)</h3>
+<!-- INTERACTIVE ignore END -->
+<p>To demonstrate the observation of data using the Grafana stack, download and run the following files.</p>
+<ol>
+<li>
+<p>Clone the <a href="https://www.github.com/grafana/tutorial-environment" target="_blank" rel="noopener noreferrer">tutorial environment repository</a>.</p>
+<!-- INTERACTIVE exec START -->
+<pre>git clone https://github.com/grafana/tutorial-environment.git</pre>
+<!-- INTERACTIVE exec END -->
+</li>
+<li>
+<p>Change to the directory where you cloned the repository:</p>
+<!-- INTERACTIVE exec START -->
+<pre>cd tutorial-environment</pre>
+<!-- INTERACTIVE exec END -->
+</li>
+<li>
+<p>Run the Grafana stack:</p>
+<!-- INTERACTIVE ignore START -->
+<pre>docker compose up -d</pre>
+<!-- INTERACTIVE ignore END -->
+
+<p>The first time you run <code>docker compose up -d</code>, Docker downloads all the necessary resources for the tutorial. This might take a few minutes, depending on your internet connection.</p>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you already have Grafana, Loki, or Prometheus running on your system, you might see errors, because the Docker image is trying to use ports that your local installations are already using. If this is the case, stop the services, then run the command again.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+</li>
+</ol>
+<!-- INTERACTIVE page step1.md END -->
+<!-- INTERACTIVE page step2.md START -->
+<h2 id="how-templating-works">How templating works</h2>
+<p>In Grafana, you can use <a href="/docs/grafana/latest/alerting/fundamentals/templates/">templates</a> to dynamically pull in specific data about the alert rule. This results in more flexible and informative alert notification messages. You can template either alert rule labels and annotations, or notification templates. Both use the Go template language.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/how-notification-templates-works.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/how-notification-templates-works.png"data-srcset="/media/docs/alerting/how-notification-templates-works.png?w=320 320w, /media/docs/alerting/how-notification-templates-works.png?w=550 550w, /media/docs/alerting/how-notification-templates-works.png?w=750 750w, /media/docs/alerting/how-notification-templates-works.png?w=900 900w, /media/docs/alerting/how-notification-templates-works.png?w=1040 1040w, /media/docs/alerting/how-notification-templates-works.png?w=1240 1240w, /media/docs/alerting/how-notification-templates-works.png?w=1920 1920w"
+          data-sizes="auto"alt="How templating works"width="1072"height="699"title="How templating works"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/how-notification-templates-works.png"
+            alt="How templating works"width="1072"height="699"title="How templating works"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">How templating works</figcaption></a></figure>
+<h3 id="templating-alert-rule-labels-and-annotations">Templating alert rule labels and annotations</h3>
+<p><a href="/docs/grafana/latest/alerting/alerting-rules/templates/">Labels and annotations</a> are key fields where templates are applied. One of the main advantages of using templating in annotations is the ability to incorporate dynamic data from queries, allowing alerts to reflect real-time information relevant to the triggered condition. By using templating in annotations, you can customize the content of each alert instance, such as including instance names and metric values, so the notification becomes more informative.</p>
+<h3 id="notification-templates">Notification templates</h3>
+<p>The real power of templating lies in how it helps you format notifications with dynamic alert data. <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">Notification templates</a> let you pull in details from annotations to create clear and consistent messages. They also make it simple to reuse the same format across different contact points, saving time and effort.</p>
+<p>Notification templates allow you to customize how information is presented in each notification. For example, you can use templates to organize and format details about firing or resolved alerts, making it easier for recipients to understand the status of each alert at a glance—all within a single notification.</p>
+<p>This particular notification template pulls in summary and description annotations for each alert instance and organizes them into separate sections, such as &ldquo;firing&rdquo; and &ldquo;resolved.&rdquo; This way, instead of getting a long list of individual alert notifications, users can receive one well-structured message with all the relevant details grouped together.</p>
+<p>This approach is helpful when you want to reduce notification noise, especially in situations where multiple instances of an alert are firing at the same time (e.g., high CPU usage across several instances). You can leverage templates to create a unified, easy-to-read notification that includes all the pertinent details.</p>
+<!-- INTERACTIVE page step2.md END -->
+<!-- INTERACTIVE page step3.md START -->
+<h2 id="step-1-template-labels-and-annotations">Step 1: Template labels and annotations</h2>
+<p>Now that we&rsquo;ve introduced how templating works, let’s move on to the next step. We guide you through creating an alert rule with a summary and description annotation. In doing so, we incorporate CPU usage and instance names, which we later use in our notification template.</p>
+<h3 id="create-an-alert-rule">Create an alert rule</h3>
+<ol>
+<li>
+<p>Sign in to Grafana:</p>
+<ul>
+<li><strong>Grafana Cloud</strong> users: Log in via Grafana Cloud.</li>
+<li><strong>OSS users</strong>: Go to <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a>.</li>
+</ul>
+</li>
+<li>
+<p>Create an alert rule that includes a summary and description annotation:</p>
+<ul>
+<li>Navigate to <strong>Alerts &amp; IRM &gt; Alerting &gt; Alert rules</strong>.</li>
+<li>Click <strong>+ New alert rule</strong>.</li>
+<li>Enter an <strong>alert rule name</strong>. Name it <code>High CPU usage</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Define query an alert condition</strong> section:</p>
+<ul>
+<li>
+<p>Select TestData data source from the drop-down menu.</p>
+<p><a href="/docs/grafana/latest/datasources/testdata/">TestData</a> is included in the demo environment. If you’re working in Grafana Cloud or your own local Grafana instance, you can add the data source through the Connections menu.</p>
+</li>
+<li>
+<p>From <strong>Scenario</strong> select <strong>CSV Content</strong>.</p>
+</li>
+<li>
+<p>Copy in the following CSV data:</p>
+<pre>region,cpu-usage,service,instance
+us-west,88,web-server-1,server-01
+us-west,81,web-server-1,server-02
+us-east,79,web-server-2,server-03
+us-east,52,web-server-2,server-04</pre>
+<p>This dataset simulates a data source returning multiple time series, with each time series generating a separate alert instance.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Alert condition</strong> section:</p>
+<ul>
+<li>Keep Last as the value for the reducer function (<code>WHEN</code>), and <code>IS ABOVE 75</code> as the threshold value, representing CPU usage above 75% .This is the value above which the alert rule should trigger.</li>
+<li>Click <strong>Preview alert rule condition</strong> to run the queries.</li>
+</ul>
+<p>It should return 3 series in Firing state, and 1 in Normal state.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/part-4-firing-instances-preview.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/part-4-firing-instances-preview.png"data-srcset="/media/docs/alerting/part-4-firing-instances-preview.png?w=320 320w, /media/docs/alerting/part-4-firing-instances-preview.png?w=550 550w, /media/docs/alerting/part-4-firing-instances-preview.png?w=750 750w, /media/docs/alerting/part-4-firing-instances-preview.png?w=900 900w, /media/docs/alerting/part-4-firing-instances-preview.png?w=1040 1040w, /media/docs/alerting/part-4-firing-instances-preview.png?w=1240 1240w, /media/docs/alerting/part-4-firing-instances-preview.png?w=1920 1920w"
+             data-sizes="auto"alt="Preview of a query returning alert instances"width="804"height="625"title="Preview of a query returning alert instances"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/part-4-firing-instances-preview.png"
+               alt="Preview of a query returning alert instances"width="804"height="625"title="Preview of a query returning alert instances"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Preview of a query returning alert instances</figcaption></a></figure>
+</li>
+<li>
+<p>Add folders and labels section:</p>
+<ul>
+<li>
+<p>In <strong>Folder</strong>, click <strong>+ New folder</strong> and enter a name. For example: <code>System metrics</code> . This folder contains our alert rules.</p>
+<p>Note: while it&rsquo;s possible to template labels here, in this tutorial, we focus on templating the summary and annotations fields instead.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Set evaluation behaviour</strong> section:</p>
+<ul>
+<li>In the <strong>Evaluation group and interval</strong>, enter a name. For example: <code>High usage</code>.</li>
+<li>Choose an <strong>Evaluation interval</strong> (how often the alert will be evaluated). Choose <code>1m</code>.</li>
+<li>Set the <strong>pending period</strong> to 0s (zero seconds), so the alert rule fires the moment the condition is met (this minimizes the waiting time for the demonstration.).</li>
+<li>Set <strong>Keep firing for</strong> to, <code>0s</code>, so the alert stops firing immediately after the condition is no longer true.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure notifications</strong> section:</p>
+<p>Select who should receive a notification when an alert rule fires.</p>
+<ul>
+<li>Select a <strong>Contact point</strong>. If you don’t have any contact points, click <em>View or create contact points</em>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure notification message</strong> section:</p>
+<p>In this step, you’ll configure the <strong>summary</strong> and <strong>description</strong> annotations to make your alert notifications informative and easy to understand. These annotations use templates to dynamically include key information about the alert.</p>
+<ul>
+<li>
+<p><strong>Summary</strong> annotation: Enter the following code as the value for the annotation.:</p>
+<pre>{{- &#34;\n&#34; -}}
+Instance: {{ index $labels &#34;instance&#34; }}
+{{- &#34;\t&#34; -}} Usage: {{ index $values &#34;A&#34;}}%{{- &#34;\n&#34; -}}</pre>
+<p>This template automatically adds the instance name (from the <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#labels">$labels</a> data) and its current CPU usage (from <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#values">$values[&ldquo;A&rdquo;]</a>) into the alert summary. <code>\t</code>: Adds a tab space between the instance name and the value. And, <code>\n</code>: Inserts a new line after the value.</p>
+<p>Output example:</p>
+<pre>server-01	88</pre>
+<p>This output helps you quickly see which instance is affected and its usage level.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Optional: Add a description to help the on-call engineer to better understand what the alert rule is about. Eg. This alert monitors CPU usage across instances and triggers if any instance exceeds a usage threshold of 75%.</p>
+</li>
+<li>
+<p>Click <strong>Save rule and exit</strong>.</p>
+</li>
+</ol>
+<p>Now that we’ve configured an alert rule with dynamic templates for the <strong>summary</strong> annotation, the next step is to customize the alert notifications themselves. While the default notification message includes the summary annotation and works well, it can often be too verbose.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/templated-annotation-alert.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/templated-annotation-alert.png"data-srcset="/media/docs/alerting/templated-annotation-alert.png?w=320 320w, /media/docs/alerting/templated-annotation-alert.png?w=550 550w, /media/docs/alerting/templated-annotation-alert.png?w=750 750w, /media/docs/alerting/templated-annotation-alert.png?w=900 900w, /media/docs/alerting/templated-annotation-alert.png?w=1040 1040w, /media/docs/alerting/templated-annotation-alert.png?w=1240 1240w, /media/docs/alerting/templated-annotation-alert.png?w=1920 1920w"
+          data-sizes="auto"alt="Default email alert notification with templated annotation"width="862"height="643"title="Default email alert notification with templated annotation"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/templated-annotation-alert.png"
+            alt="Default email alert notification with templated annotation"width="862"height="643"title="Default email alert notification with templated annotation"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Default email alert notification with templated annotation</figcaption></a></figure>
+<p>To make our alert notifications more concise and tailored to our needs, we’ll create a custom <strong>notification template</strong> that references the summary annotation we just set up. Notification templates are especially useful because they can be reused across multiple contact points, ensuring consistent alert messages.</p>
+<!-- INTERACTIVE page step3.md END -->
+<!-- INTERACTIVE page step4.md START -->
+<h2 id="step-2-template-notifications">Step 2: Template notifications</h2>
+<p>In this step, we use a built-in notification template to format alert notifications in a clear and organized way. Notification templates allow us to customize the structure of alert messages, making them easier to read and more relevant.</p>
+<p>Without a notification template, the alert messages would include the default Grafana formatting (<code>default.message</code>, see image above).</p>
+<h3 id="adding-a-notification-template">Adding a notification template:</h3>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> &gt; <strong>Alerting</strong> &gt; <strong>Contact point</strong>s.</li>
+<li>Select the <strong>Notification Templates</strong> tab.</li>
+<li>Click <strong>+ Add notification template group</strong>.</li>
+<li>Enter a name. E.g <code>instance-cpu-summary</code>.</li>
+<li>From the <strong>Add example</strong> dropdown menu, choose <code>Print firing and resolved alerts</code>.</li>
+</ol>
+<p>This template prints out alert instances into two sections: <strong>firing alerts</strong> and <strong>resolved alerts</strong>, and includes only the key details for each. In addition, it adds our summary and description annotations.</p>
+<pre>{{- /* Example displaying firing and resolved alerts separately in the notification. */ -}}
+{{- /* Edit the template name and template content as needed. */ -}}
+{{ define &#34;custom.firing_and_resolved_alerts&#34; -}}
+{{ len .Alerts.Resolved }} resolved alert(s)
+{{ range .Alerts.Resolved -}}
+  {{ template &#34;alert.summary_and_description&#34; . -}}
+{{ end }}
+{{ len .Alerts.Firing }} firing alert(s)
+{{ range .Alerts.Firing -}}
+  {{ template &#34;alert.summary_and_description&#34; . -}}
+{{ end -}}
+{{ end -}}
+{{ define &#34;alert.summary_and_description&#34; }}
+  Summary: {{.Annotations.summary}}
+  Status: {{ .Status }}
+  Description: {{.Annotations.description}}
+{{ end -}}</pre>
+
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Your notification template name (<code>{{define &quot;&lt;NAME&gt;&quot;}}</code>) must be unique. You cannot have two templates with the same name in the same notification template group or in different notification template groups.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+<p>Here’s a breakdown of the template:</p>
+<ul>
+<li><code>{{ define &quot;custom.firing_and_resolved_alerts&quot; -}}</code> section: Displays the number of resolved alerts and their summaries, using the <code>alert.summary_and_description</code> template to include the summary, status, and description for each alert.</li>
+<li><code>.Alerts.Firing</code> section: Similarly lists the number of firing alert instances and their details.</li>
+<li><code>alert.summary_and_description</code>: This sub-template pulls the summary annotation you configured earlier.</li>
+</ul>
+<p>In the <strong>Preview</strong> area, you can see a sample of how the notification would look. Since we’ve already created our alert rule, you can take it a step further by previewing how an actual alert instance from your rule would appear in the notification.</p>
+<ol>
+<li>
+<p>Click <strong>Edit payload</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Use existing alert instance</strong>.</p>
+<p>You should see our alert rule listed on the left.</p>
+</li>
+<li>
+<p>Click the alert rule.</p>
+</li>
+<li>
+<p>Select an instance.</p>
+</li>
+<li>
+<p>Click <strong>Add alert data to payload</strong>.</p>
+<p>The alert instance is added to the bottom of the preview.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/alert-instance-preview-in-template.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/alert-instance-preview-in-template.png"data-srcset="/media/docs/alerting/alert-instance-preview-in-template.png?w=320 320w, /media/docs/alerting/alert-instance-preview-in-template.png?w=550 550w, /media/docs/alerting/alert-instance-preview-in-template.png?w=750 750w, /media/docs/alerting/alert-instance-preview-in-template.png?w=900 900w, /media/docs/alerting/alert-instance-preview-in-template.png?w=1040 1040w, /media/docs/alerting/alert-instance-preview-in-template.png?w=1240 1240w, /media/docs/alerting/alert-instance-preview-in-template.png?w=1920 1920w"
+             data-sizes="auto"alt="Preview of an alert instance in a notification template"width="709"height="256"title="Preview of an alert instance in a notification template"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/alert-instance-preview-in-template.png"
+               alt="Preview of an alert instance in a notification template"width="709"height="256"title="Preview of an alert instance in a notification template"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Preview of an alert instance in a notification template</figcaption></a></figure>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<p>With the notification template ready, the next step is to apply it to your contact point to see it in action.</p>
+<!-- INTERACTIVE page step4.md END -->
+<!-- INTERACTIVE page step5.md START -->
+<h3 id="apply-the-template-to-your-contact-point">Apply the template to your contact point</h3>
+<ol>
+<li>Apply the template to your contact point.
+<ul>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> &gt; <strong>Alerting</strong> &gt; <strong>Contact points</strong>.</li>
+<li>Edit your contact point.</li>
+</ul>
+</li>
+<li><strong>Optional</strong> [email] <strong>settings</strong> section:
+<ul>
+<li>Click <strong>Edit Message</strong>.</li>
+<li>Under <strong>Select notification template</strong>, search <code>custom.firing_and_resolved_alerts</code>.</li>
+<li>Click <strong>Save</strong>.</li>
+</ul>
+</li>
+<li>Save your contact point.</li>
+</ol>
+<!-- INTERACTIVE page step5.md END -->
+<!-- INTERACTIVE page step6.md START -->
+<h3 id="receiving-notifications">Receiving notifications</h3>
+<p>Now that the template has been applied to the contact point, you should receive notifications in the specified contact point.</p>
+<p>Note: you might need to pause the alert rule evaluation and resume it to trigger the notification.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/templated-notification-cpu.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/templated-notification-cpu.png"data-srcset="/media/docs/alerting/templated-notification-cpu.png?w=320 320w, /media/docs/alerting/templated-notification-cpu.png?w=550 550w, /media/docs/alerting/templated-notification-cpu.png?w=750 750w, /media/docs/alerting/templated-notification-cpu.png?w=900 900w, /media/docs/alerting/templated-notification-cpu.png?w=1040 1040w, /media/docs/alerting/templated-notification-cpu.png?w=1240 1240w, /media/docs/alerting/templated-notification-cpu.png?w=1920 1920w"
+          data-sizes="auto"alt="Templated email notification for CPU and memory usage"width="765"height="742"title="Templated email notification for CPU and memory usage"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/templated-notification-cpu.png"
+            alt="Templated email notification for CPU and memory usage"width="765"height="742"title="Templated email notification for CPU and memory usage"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Templated email notification for CPU and memory usage</figcaption></a></figure>
+<p>In the screen capture, you can see how the notification template groups the alert instances into two sections: <strong>firing alerts</strong> and <strong>resolved alerts</strong>. Each section includes only the key details for each alert, ensuring the message remains concise and focused. Additionally, the summary and description annotations we created earlier are included, providing affected instance and CPU usage.</p>
+<!-- INTERACTIVE page step6.md END -->
+<!-- INTERACTIVE page finish.md START -->
+<h2 id="conclusion">Conclusion</h2>
+<p>In this tutorial, we learned how to use templating in Grafana Alerting to create dynamic and actionable alert notifications. We explored how to configure alert rules with annotations, design custom notification templates, and apply them to contact points to enhance the clarity and efficiency of alert messages. By organizing alert instances into concise notifications, you can reduce noise and ensure on-call engineers quickly understand and address critical issues.</p>
+<p>To deepen your understanding of Grafana’s templating, explore the following resources:</p>
+<ul>
+<li>
+<p><strong>Overview of the functions and operators used in templates</strong>:</p>
+<ul>
+<li><a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/language/">Notification template language</a></li>
+<li><a href="/docs/grafana/latest/alerting/alerting-rules/templates/language/">Alert rule template language</a></li>
+</ul>
+</li>
+<li>
+<p><a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/"><strong>Notification template reference</strong></a>: Lists the data available for use in notification templates and explores specific functions.</p>
+</li>
+<li>
+<p><a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/"><strong>Alert rule template reference</strong></a>: Covers the specifics of creating dynamic labels and annotations for alert rules using elements such as variables and functions.</p>
+</li>
+</ul>
+<h2 id="learn-more-in-grafana-alerting-route-alerts-using-dynamic-labels">Learn more in <a href="http://www.grafana.com/tutorials/alerting-get-started-pt5/" target="_blank" rel="noopener noreferrer">Grafana Alerting: Route alerts using dynamic labels</a></h2>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>In <a href="http://www.grafana.com/tutorials/alerting-get-started-pt5/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting: Route alerts using dynamic labels</a> you learn how to dynamically route alerts and link them to dashboards.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page finish.md END -->

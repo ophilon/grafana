@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<h1 id="configure-grafana-enterprise">Configure Grafana Enterprise</h1>
+<p>This page describes Grafana Enterprise-specific configuration options that you can specify in a <code>.ini</code> configuration file or using environment variables. Refer to <a href="../">Configuration</a> for more information about available configuration options.</p>
+<h2 id="enterprise">[enterprise]</h2>
+<h3 id="license_path">license_path</h3>
+<p>Local filesystem path to Grafana Enterprise&rsquo;s license file.
+Defaults to <code>&lt;paths.data&gt;/license.jwt</code>.</p>
+<h3 id="license_text">license_text</h3>
+<p>When set to the text representation (i.e. content of the license file)
+of the license, Grafana will evaluate and apply the given license to
+the instance.</p>
+<h3 id="auto_refresh_license">auto_refresh_license</h3>
+<p>When enabled, Grafana will send the license and usage statistics to
+the license issuer. If the license has been updated on the issuer&rsquo;s
+side to be valid for a different number of users or a new duration,
+your Grafana instance will be updated with the new terms
+automatically. Defaults to <code>true</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The license only automatically updates once per day. To immediately update the terms for a license, use the Grafana UI to renew your license token.</p></blockquote></div>
+
+<h3 id="license_validation_type">license_validation_type</h3>
+<p>When set to <code>aws</code>, Grafana will validate its license status with Amazon Web Services (AWS) instead of with Grafana Labs. Only use this setting if you purchased an Enterprise license from AWS Marketplace. Defaults to empty, which means that by default Grafana Enterprise will validate using a license issued by Grafana Labs. For details about licenses issued by AWS, refer to <a href="../../../administration/enterprise-licensing/activate-aws-marketplace-license/">Activate a Grafana Enterprise license purchased through AWS Marketplace</a>.</p>
+<h2 id="white_labeling">[white_labeling]</h2>
+<h3 id="app_title">app_title</h3>
+<p>Set to your company name to override application title.</p>
+<h3 id="login_logo">login_logo</h3>
+<p>Set to complete URL to override login logo.</p>
+<h3 id="login_background">login_background</h3>
+<p>Set to complete CSS background expression to override login background. Example:</p>
+<pre>[white_labeling]
+login_background = url(http://www.bhmpics.com/wallpapers/starfield-1920x1080.jpg)</pre>
+<h3 id="menu_logo">menu_logo</h3>
+<p>Set to complete URL to override menu logo.</p>
+<h3 id="fav_icon">fav_icon</h3>
+<p>Set to complete URL to override fav icon (icon shown in browser tab).</p>
+<h3 id="apple_touch_icon">apple_touch_icon</h3>
+<p>Set to complete URL to override Apple/iOS icon.</p>
+<h3 id="hide_edition">hide_edition</h3>
+<p>Set to <code>true</code> to remove the Grafana edition from appearing in the footer.</p>
+<h3 id="footer_links">footer_links</h3>
+<p>List the link IDs to use here. Grafana will look for matching link configurations, the link IDs should be space-separated and contain no whitespace.</p>
+<h2 id="usage_insightsexport">[usage_insights.export]</h2>
+<p>By <a href="../../configure-security/export-logs/">exporting usage logs</a>, you can directly query them and create dashboards of the information that matters to you most, such as dashboard errors, most active organizations, or your top-10 most-used queries.</p>
+<h3 id="enabled">enabled</h3>
+<p>Enable the usage insights export feature.</p>
+<h3 id="storage">storage</h3>
+<p>Specify a storage type. Defaults to <code>loki</code>.</p>
+<h2 id="usage_insightsexportstorageloki">[usage_insights.export.storage.loki]</h2>
+<h3 id="type">type</h3>
+<p>Set the communication protocol to use with Loki, which is either <code>grpc</code> or <code>http</code>. Defaults to <code>grpc</code>.</p>
+<h3 id="url">url</h3>
+<p>Set the address for writing logs to Loki (format must be host:port).</p>
+<h3 id="tls">tls</h3>
+<p>Decide whether or not to enable the TLS (Transport Layer Security) protocol when establishing the connection to Loki. Defaults to true.</p>
+<h3 id="tenant_id">tenant_id</h3>
+<p>Set the tenant ID for Loki communication, which is disabled by default. The tenant ID is required to interact with Loki running in <a href="/docs/loki/latest/operations/multi-tenancy/">multi-tenant mode</a>.</p>
+<h2 id="analyticssummaries">[analytics.summaries]</h2>
+<h3 id="buffer_write_interval">buffer_write_interval</h3>
+<p>Interval for writing dashboard usage stats buffer to database.</p>
+<h3 id="buffer_write_timeout">buffer_write_timeout</h3>
+<p>Timeout for writing dashboard usage stats buffer to database.</p>
+<h3 id="rollup_interval">rollup_interval</h3>
+<p>Interval for trying to roll up per dashboard usage summary. Only rolled up at most once per day.</p>
+<h3 id="rollup_timeout">rollup_timeout</h3>
+<p>Timeout for trying to rollup per dashboard usage summary.</p>
+<h2 id="analyticsviews">[analytics.views]</h2>
+<h3 id="recent_users_age">recent_users_age</h3>
+<p>Age for recent active users.</p>
+<h2 id="reporting">[reporting]</h2>
+<h3 id="enabled-1">enabled</h3>
+<p>Enable or disable the reporting feature. When disabled, no reports are generated, and the UI is hidden. By default, reporting is enabled (<code>true</code>).</p>
+<h3 id="rendering_timeout">rendering_timeout</h3>
+<p>Timeout for the following reporting rendering requests: generating PDFs, generating embedded dashboard images for report emails, and generating attached CSV files. Default is 10 seconds (<code>10s</code>).</p>
+<h3 id="concurrent_render_limit">concurrent_render_limit</h3>
+<p>Maximum number of concurrent calls to the rendering service. Default is <code>4</code>.</p>
+<h3 id="image_scale_factor">image_scale_factor</h3>
+<p>Scale factor for rendering images. Value <code>2</code> is enough for monitor resolutions, <code>4</code> would be better for printed material. Setting a higher value affects performance and memory. Default is <code>2</code>.</p>
+<h3 id="max_attachment_size_mb">max_attachment_size_mb</h3>
+<p>Set the maximum file size in megabytes for the report email attachments. Default is <code>10</code>.</p>
+<h3 id="fonts_path">fonts_path</h3>
+<p>Path to the directory containing font files.</p>
+<h3 id="font_regular">font_regular</h3>
+<p>Name of the TrueType font file with regular style. Default is <code>DejaVuSansCondensed.ttf</code>.</p>
+<h3 id="font_bold">font_bold</h3>
+<p>Name of the TrueType font file with bold style.</p>
+<h3 id="font_italic">font_italic</h3>
+<p>Name of the TrueType font file with italic style. Default is <code>DejaVuSansCondensed-Oblique.ttf</code>.</p>
+<h3 id="max_retries_per_panel">max_retries_per_panel</h3>
+<p>Maximum number of times the following reporting rendering requests are retried before returning an error: generating PDFs, generating embedded dashboard images for report emails, and generating attached CSV files. To disable the retry feature, enter <code>0</code>. This is available in public preview and requires the <code>reportingRetries</code> feature toggle. Default is <code>3</code>.</p>
+<h3 id="allowed_domains">allowed_domains</h3>
+<p>Allowed domains to receive reports. Use an asterisk (<code>*</code>) to allow all domains. Use a comma-separated list to allow multiple domains. Example: <code>allowed_domains = grafana.com</code>, example.org. Default is <code>*</code>.</p>
+<h2 id="auditing">[auditing]</h2>
+<p><a href="../../configure-security/audit-grafana/">Auditing</a> allows you to track important changes to your Grafana instance. By default, audit logs are logged to file but the auditing feature also supports sending logs directly to Loki.</p>
+<h3 id="enabled-2">enabled</h3>
+<p>Enable the auditing feature. Defaults to false.</p>
+<h3 id="loggers">loggers</h3>
+<p>List of enabled loggers.</p>
+<h3 id="log_dashboard_content">log_dashboard_content</h3>
+<p>Keep dashboard content in the logs (request or response fields). This can significantly increase the size of your logs.</p>
+<h3 id="log_datasource_query_request_body">log_datasource_query_request_body</h3>
+<p>Whether to record data source queries&rsquo; request body. This can significantly increase the size of your logs. Enabled by default.</p>
+<h3 id="log_datasource_query_response_body">log_datasource_query_response_body</h3>
+<p>Whether to record data source queries&rsquo; response body. This can significantly increase the size of your logs. Enabled by default.</p>
+<h3 id="verbose">verbose</h3>
+<p>Log all requests and keep requests and responses body. This can significantly increase the size of your logs.</p>
+<h3 id="log_all_status_codes">log_all_status_codes</h3>
+<p>Set to false to only log requests with 2xx, 3xx, 401, 403, 500 responses.</p>
+<h3 id="max_response_size_bytes">max_response_size_bytes</h3>
+<p>Maximum response body (in bytes) to be recorded. May help reducing the memory footprint caused by auditing.</p>
+<h2 id="auditinglogsfile">[auditing.logs.file]</h2>
+<h3 id="path">path</h3>
+<p>Path to logs folder.</p>
+<h3 id="max_files">max_files</h3>
+<p>Maximum log files to keep.</p>
+<h3 id="max_file_size_mb">max_file_size_mb</h3>
+<p>Max size in megabytes per log file.</p>
+<h2 id="auditinglogsloki">[auditing.logs.loki]</h2>
+<h3 id="url-1">url</h3>
+<p>Set the URL for writing logs to Loki.</p>
+<h3 id="tls-1">tls</h3>
+<p>If true, it establishes a secure connection to Loki. Defaults to true.</p>
+<h3 id="tenant_id-1">tenant_id</h3>
+<p>Set the tenant ID for Loki communication, which is disabled by default. The tenant ID is required to interact with Loki running in <a href="/docs/loki/latest/operations/multi-tenancy/">multi-tenant mode</a>.</p>
+<h2 id="authsaml">[auth.saml]</h2>
+<h3 id="enabled-3">enabled</h3>
+<p>If true, the feature is enabled. Defaults to false.</p>
+<h3 id="allow_sign_up">allow_sign_up</h3>
+<p>If true, allow new Grafana users to be created through SAML logins. Defaults to true.</p>
+<h3 id="certificate">certificate</h3>
+<p>Base64-encoded public X.509 certificate. Used to sign requests to the IdP.</p>
+<h3 id="certificate_path">certificate_path</h3>
+<p>Path to the public X.509 certificate. Used to sign requests to the IdP.</p>
+<h3 id="private_key">private_key</h3>
+<p>Base64-encoded private key. Used to decrypt assertions from the IdP.</p>
+<h3 id="private_key_path">private_key_path</h3>
+<p>Path to the private key. Used to decrypt assertions from the IdP.</p>
+<h3 id="idp_metadata">idp_metadata</h3>
+<p>Base64-encoded IdP SAML metadata XML. Used to verify and obtain binding locations from the IdP.</p>
+<h3 id="idp_metadata_path">idp_metadata_path</h3>
+<p>Path to the SAML metadata XML. Used to verify and obtain binding locations from the IdP.</p>
+<h3 id="idp_metadata_url">idp_metadata_url</h3>
+<p>URL to fetch SAML IdP metadata. Used to verify and obtain binding locations from the IdP.</p>
+<h3 id="max_issue_delay">max_issue_delay</h3>
+<p>Time since the IdP issued a response and the SP is allowed to process it. Defaults to 90 seconds.</p>
+<h3 id="metadata_valid_duration">metadata_valid_duration</h3>
+<p>How long the SPs metadata is valid. Defaults to 48 hours.</p>
+<h3 id="assertion_attribute_name">assertion_attribute_name</h3>
+<p>Friendly name or name of the attribute within the SAML assertion to use as the user name. Alternatively, this can be a template with variables that match the names of attributes within the SAML assertion.</p>
+<h3 id="assertion_attribute_login">assertion_attribute_login</h3>
+<p>Friendly name or name of the attribute within the SAML assertion to use as the user login handle. Defaults to <code>login</code>.</p>
+<h3 id="assertion_attribute_email">assertion_attribute_email</h3>
+<p>Friendly name or name of the attribute within the SAML assertion to use as the user email. Defaults to <code>email</code>.</p>
+<h3 id="assertion_attribute_groups">assertion_attribute_groups</h3>
+<p>Friendly name or name of the attribute within the SAML assertion to use as the user groups.</p>
+<h3 id="assertion_attribute_role">assertion_attribute_role</h3>
+<p>Friendly name or name of the attribute within the SAML assertion to use as the user roles.</p>
+<h3 id="assertion_attribute_org">assertion_attribute_org</h3>
+<p>Friendly name or name of the attribute within the SAML assertion to use as the user organization.</p>
+<h3 id="assertion_attribute_external_uid">assertion_attribute_external_uid</h3>
+<p>Friendly name or name of the attribute within the SAML assertion to use as the user external UID. Defaults to <code>userUID</code>.</p>
+<h3 id="allowed_organizations">allowed_organizations</h3>
+<p>List of comma- or space-separated organizations. Each user must be a member of at least one organization to log in.</p>
+<h3 id="org_mapping">org_mapping</h3>
+<p>List of comma- or space-separated Organization:OrgId:Role mappings. Organization can be <code>*</code> meaning &ldquo;All users&rdquo;. Role is optional and can have the following values: <code>Admin</code>, <code>Editor</code> ,<code>Viewer</code> or <code>None</code>.</p>
+<h3 id="role_values_none">role_values_none</h3>
+<p>List of comma- or space-separated roles that will be mapped to the None role.</p>
+<h3 id="role_values_viewer">role_values_viewer</h3>
+<p>List of comma- or space-separated roles that will be mapped to the Viewer role.</p>
+<h3 id="role_values_editor">role_values_editor</h3>
+<p>List of comma- or space-separated roles that will be mapped to the Editor role.</p>
+<h3 id="role_values_admin">role_values_admin</h3>
+<p>List of comma- or space-separated roles that will be mapped to the Admin role.</p>
+<h3 id="role_values_grafana_admin">role_values_grafana_admin</h3>
+<p>List of comma- or space-separated roles that will be mapped to the Grafana Admin (Super Admin) role.</p>
+<h2 id="keystorevault">[keystore.vault]</h2>
+<h3 id="url-2">url</h3>
+<p>Location of the Vault server.</p>
+<h3 id="namespace">namespace</h3>
+<p>Vault namespace if using Vault with multi-tenancy.</p>
+<h3 id="auth_method">auth_method</h3>
+<p>Method for authenticating towards Vault. Vault is inactive if this option is not set. Current possible values: <code>token</code>.</p>
+<h3 id="token">token</h3>
+<p>Secret token to connect to Vault when auth_method is <code>token</code>.</p>
+<h3 id="lease_renewal_interval">lease_renewal_interval</h3>
+<p>Time between checking if there are any secrets which needs to be renewed.</p>
+<h3 id="lease_renewal_expires_within">lease_renewal_expires_within</h3>
+<p>Time until expiration for tokens which are renewed. Should have a value higher than lease_renewal_interval.</p>
+<h3 id="lease_renewal_increment">lease_renewal_increment</h3>
+<p>New duration for renewed tokens. Vault may be configured to ignore this value and impose a stricter limit.</p>
+<h2 id="securityegress">[security.egress]</h2>
+<p>Security egress makes it possible to control outgoing traffic from the Grafana server.</p>
+<h3 id="host_deny_list">host_deny_list</h3>
+<p>A list of hostnames or IP addresses separated by spaces for which requests are blocked.</p>
+<h3 id="host_allow_list">host_allow_list</h3>
+<p>A list of hostnames or IP addresses separated by spaces for which requests are allowed. All other requests are blocked.</p>
+<h3 id="header_drop_list">header_drop_list</h3>
+<p>A list of headers that are stripped from the outgoing data source and alerting requests.</p>
+<h3 id="cookie_drop_list">cookie_drop_list</h3>
+<p>A list of cookies that are stripped from the outgoing data source and alerting requests.</p>
+<h2 id="securityencryption">[security.encryption]</h2>
+<h3 id="algorithm">algorithm</h3>
+<p>Encryption algorithm used to encrypt secrets stored in the database and cookies. Possible values are <code>aes-cfb</code> (default) and <code>aes-gcm</code>. AES-CFB stands for <em>Advanced Encryption Standard</em> in <em>cipher feedback</em> mode, and AES-GCM stands for <em>Advanced Encryption Standard</em> in <em>Galois/Counter Mode</em>.</p>
+<h2 id="caching">[caching]</h2>
+<p>When query caching is enabled, Grafana can temporarily store the results of data source queries and serve cached responses to similar requests.</p>
+<h3 id="backend">backend</h3>
+<p>The caching backend to use when storing cached queries. Options: <code>memory</code>, <code>redis</code>, and <code>memcached</code>.</p>
+<p>The default is <code>memory</code>.</p>
+<h3 id="enabled-4">enabled</h3>
+<p>Setting &rsquo;enabled&rsquo; to <code>true</code> allows users to configure query caching for data sources.</p>
+<p>This value is <code>true</code> by default.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This setting enables the caching feature, but it does not turn on query caching for any data source. To turn on query caching for a data source, update the setting on the data source configuration page. For more information, refer to the <a href="../../../administration/data-source-management/#enable-and-configure-query-caching">query caching docs</a>.</p></blockquote></div>
+
+<h3 id="ttl">ttl</h3>
+<p><em>Time to live</em> (TTL) is the time that a query result is stored in the caching system before it is deleted or refreshed. This setting defines the time to live for query caching, when TTL is not configured in data source settings. The default value is <code>1m</code> (1 minute).</p>
+<h3 id="max_ttl">max_ttl</h3>
+<p>The max duration that a query result is stored in the caching system before it is deleted or refreshed. This value will override <code>ttl</code> config option or data source setting if the <code>ttl</code> value is greater than <code>max_ttl</code>. To disable this constraint, set this value to <code>0s</code>.</p>
+<p>The default is <code>0s</code> (disabled).</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Disabling this constraint is not recommended in production environments.</p></blockquote></div>
+
+<h3 id="max_value_mb">max_value_mb</h3>
+<p>This value limits the size of a single cache value. If a cache value (or query result) exceeds this size, then it is not cached. To disable this limit, set this value to <code>0</code>.</p>
+<p>The default is <code>1</code>.</p>
+<h3 id="connection_timeout">connection_timeout</h3>
+<p>This setting defines the duration to wait for a connection to the caching backend.</p>
+<p>The default is <code>5s</code>.</p>
+<h3 id="read_timeout">read_timeout</h3>
+<p>This setting defines the duration to wait for the caching backend to return a cached result. To disable this timeout, set this value to <code>0s</code>.</p>
+<p>The default is <code>0s</code> (disabled).</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Disabling this timeout is not recommended in production environments.</p></blockquote></div>
+
+<h3 id="write_timeout">write_timeout</h3>
+<p>This setting defines the number of seconds to wait for the caching backend to store a result. To disable this timeout, set this value to <code>0s</code>.</p>
+<p>The default is <code>0s</code> (disabled).</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Disabling this timeout is not recommended in production environments.</p></blockquote></div>
+
+<h2 id="cachingencryption">[caching.encryption]</h2>
+<h3 id="enabled-5">enabled</h3>
+<p>When &rsquo;enabled&rsquo; is <code>true</code>, query values in the cache are encrypted.</p>
+<p>The default is <code>false</code>.</p>
+<h3 id="encryption_key">encryption_key</h3>
+<p>A string used to generate a key for encrypting the cache. For the encrypted cache data to persist between Grafana restarts, you must specify this key. If it is empty when encryption is enabled, then the key is automatically generated on startup, and the cache clears upon restarts.</p>
+<p>The default is <code>&quot;&quot;</code>.</p>
+<h2 id="cachingmemory">[caching.memory]</h2>
+<h3 id="gc_interval">gc_interval</h3>
+<p>When storing cache data in-memory, this setting defines how often a background process cleans up stale data from the in-memory cache. More frequent &ldquo;garbage collection&rdquo; can keep memory usage from climbing but will increase CPU usage.</p>
+<p>The default is <code>1m</code>.</p>
+<h3 id="max_size_mb">max_size_mb</h3>
+<p>The maximum size of the in-memory cache in megabytes. Once this size is reached, new cache items are rejected. For more flexible control over cache eviction policies and size, use the Redis or Memcached backend.</p>
+<p>To disable the maximum, set this value to <code>0</code>.</p>
+<p>The default is <code>25</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Disabling the maximum is not recommended in production environments.</p></blockquote></div>
+
+<h2 id="cachingredis">[caching.redis]</h2>
+<h3 id="url-3">url</h3>
+<p>The full Redis URL of your Redis server. For example: <code>redis://username:password@localhost:6379</code>. To enable TLS, use the <code>rediss</code> scheme.</p>
+<p>The default is <code>&quot;redis://localhost:6379&quot;</code>.</p>
+<h3 id="cluster">cluster</h3>
+<p>A comma-separated list of Redis cluster members, either in <code>host:port</code> format or using the full Redis URLs (<code>redis://username:password@localhost:6379</code>). For example, <code>localhost:7000, localhost: 7001, localhost:7002</code>.
+If you use the full Redis URLs, then you can specify the scheme, username, and password only once. For example, <code>redis://username:password@localhost:0000,localhost:1111,localhost:2222</code>. You cannot specify a different username and password for each URL.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you have specify <code>cluster</code>, the value for <code>url</code> is ignored.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can enable TLS for cluster mode using the <code>rediss</code> scheme in Grafana Enterprise v8.5 and later versions.</p></blockquote></div>
+
+<h3 id="prefix">prefix</h3>
+<p>A string that prefixes all Redis keys. This value must be set if using a shared database in Redis. If <code>prefix</code> is empty, then one will not be used.</p>
+<p>The default is <code>&quot;grafana&quot;</code>.</p>
+<h2 id="cachingmemcached">[caching.memcached]</h2>
+<h3 id="servers">servers</h3>
+<p>A space-separated list of memcached servers. Example: <code>memcached-server-1:11211 memcached-server-2:11212 memcached-server-3:11211</code>. Or if there&rsquo;s only one server: <code>memcached-server:11211</code>.</p>
+<p>The default is <code>&quot;localhost:11211&quot;</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The following memcached configuration requires the <code>tlsMemcached</code> feature toggle.</p></blockquote></div>
+
+<h3 id="tls_enabled">tls_enabled</h3>
+<p>Enables TLS authentication for memcached. Defaults to <code>false</code>.</p>
+<h3 id="tls_cert_path">tls_cert_path</h3>
+<p>Path to the client certificate, which will be used for authenticating with the server. Also requires the key path to be configured.</p>
+<h3 id="tls_key_path">tls_key_path</h3>
+<p>Path to the key for the client certificate. Also requires the client certificate to be configured.</p>
+<h3 id="tls_ca_path">tls_ca_path</h3>
+<p>Path to the CA certificates to validate the server certificate against. If not set, the host&rsquo;s root CA certificates are used.</p>
+<h3 id="tls_server_name">tls_server_name</h3>
+<p>Override the expected name on the server certificate.</p>
+<h3 id="connection_timeout-1">connection_timeout</h3>
+<p>Timeout for the memcached client to connect to memcached. Defaults to <code>0</code>, which uses the memcached client default timeout per connection scheme.</p>
+<h2 id="recorded_queries">[recorded_queries]</h2>
+<h3 id="enabled-6">enabled</h3>
+<p>Whether the recorded queries feature is enabled</p>
+<h3 id="min_interval">min_interval</h3>
+<p>Sets the minimum interval to enforce between query evaluations. The default value is <code>10s</code>. Query evaluation will be
+adjusted if they are less than this value. Higher values can help with resource management.</p>
+<p>The interval string is a possibly signed sequence of decimal numbers, followed by a unit suffix (ms, s, m, h, d), e.g.
+30s or 1m.</p>
+<h3 id="max_queries">max_queries</h3>
+<p>The maximum number of recorded queries that can exist.</p>
+<h3 id="default_remote_write_datasource_uid">default_remote_write_datasource_uid</h3>
+<p>The UID of the datasource where the query data will be written.</p>
+<p>If all <code>default_remote_write_*</code> properties are set, this information will be populated at startup. If a remote write target has
+already been configured, nothing will happen.</p>
+<h3 id="default_remote_write_path">default_remote_write_path</h3>
+<p>The api path where metrics will be written</p>
+<p>If all <code>default_remote_write_*</code> properties are set, this information will be populated at startup. If a remote write target has
+already been configured, nothing will happen.</p>
+<h3 id="default_remote_write_datasource_org_id">default_remote_write_datasource_org_id</h3>
+<p>The org id of the datasource where the query data will be written.</p>
+<p>If all <code>default_remote_write_*</code> properties are set, this information will be populated at startup. If a remote write target has
+already been configured, nothing will happen.</p>

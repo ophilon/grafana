@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<h1 id="install-grafana-on-rhel-or-fedora">Install Grafana on RHEL or Fedora</h1>
+<p>This topic explains how to install Grafana dependencies, install Grafana on RHEL or Fedora, and start the Grafana server on your system.</p>
+<p>You can install Grafana from the RPM repository, from standalone RPM, or with the binary <code>.tar.gz</code> file.</p>
+<p>If you install via RPM or the <code>.tar.gz</code> file, then you must manually update Grafana for each new version.</p>
+<p>The following video demonstrates how to install Grafana on RHEL or Fedora as outlined in this document:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=4khbLlyoqzE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="install-grafana-from-the-rpm-repository">Install Grafana from the RPM repository</h2>
+<p>If you install from the RPM repository, then Grafana is automatically updated every time you update your applications.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Grafana Version</th>
+          <th>Package</th>
+          <th>Repository</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Grafana Enterprise</td>
+          <td>grafana-enterprise</td>
+          <td><code>https://rpm.grafana.com</code></td>
+      </tr>
+      <tr>
+          <td>Grafana Enterprise (Beta)</td>
+          <td>grafana-enterprise</td>
+          <td><code>https://rpm-beta.grafana.com</code></td>
+      </tr>
+      <tr>
+          <td>Grafana OSS</td>
+          <td>grafana</td>
+          <td><code>https://rpm.grafana.com</code></td>
+      </tr>
+      <tr>
+          <td>Grafana OSS (Beta)</td>
+          <td>grafana</td>
+          <td><code>https://rpm-beta.grafana.com</code></td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Enterprise is the recommended and default edition. It is available for free and includes all the features of the OSS edition. You can also upgrade to the <a href="/products/enterprise/?utm_source=grafana-install-page">full Enterprise feature set</a>, which has support for <a href="/grafana/plugins/?enterprise=1&amp;utcm_source=grafana-install-page">Enterprise plugins</a>.</p></blockquote></div>
+
+<p>To install Grafana from the RPM repository, complete the following steps:</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you wish to install beta versions of Grafana, substitute the repository URL for the beta URL listed above.</p></blockquote></div>
+
+<ol>
+<li>
+<p>Import the GPG key:</p>
+<pre>wget -q -O gpg.key https://rpm.grafana.com/gpg.key
+sudo rpm --import gpg.key</pre>
+</li>
+<li>
+<p>Create <code>/etc/yum.repos.d/grafana.repo</code> with the following content:</p>
+<pre>[grafana]
+name=grafana
+baseurl=https://rpm.grafana.com
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://rpm.grafana.com/gpg.key
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt</pre>
+</li>
+<li>
+<p>To install Grafana OSS, run the following command:</p>
+<pre>sudo dnf install grafana</pre>
+</li>
+<li>
+<p>To install Grafana Enterprise, run the following command:</p>
+<pre>sudo dnf install grafana-enterprise</pre>
+</li>
+</ol>
+<h2 id="install-the-grafana-rpm-package-manually">Install the Grafana RPM package manually</h2>
+<p>If you install Grafana manually using YUM or RPM, then you must manually update Grafana for each new version. This method varies according to which Linux OS you are running.</p>
+<p><strong>Note:</strong> The RPM files are signed. You can verify the signature with this <a href="https://rpm.grafana.com/gpg.key" target="_blank" rel="noopener noreferrer">public GPG key</a>.</p>
+<ol>
+<li>
+<p>On the <a href="/grafana/download">Grafana download page</a>, select the Grafana version you want to install.</p>
+<ul>
+<li>The most recent Grafana version is selected by default.</li>
+<li>The <strong>Version</strong> field displays only finished releases. If you want to install a beta version, click <strong>Nightly Builds</strong> and then select a version.</li>
+</ul>
+</li>
+<li>
+<p>Select an <strong>Edition</strong>.</p>
+<ul>
+<li><strong>Enterprise</strong> - Recommended download. Functionally identical to the open source version, but includes features you can unlock with a license if you so choose.</li>
+<li><strong>Open Source</strong> - Functionally identical to the Enterprise version, but you will need to download the Enterprise version if you want Enterprise features.</li>
+</ul>
+</li>
+<li>
+<p>Depending on which system you are running, click <strong>Linux</strong> or <strong>ARM</strong>.</p>
+</li>
+<li>
+<p>Copy and paste the RPM package URL and the local RPM package information from the <a href="/grafana/download">download page</a> into the pattern shown below and run the command.</p>
+<pre>sudo yum install -y &lt;rpm package url&gt;</pre>
+</li>
+</ol>
+<h2 id="install-grafana-as-a-standalone-binary">Install Grafana as a standalone binary</h2>
+<p>If you install Grafana manually using the standalone binaries, then you must manually update Grafana for each new version.</p>
+<p>Complete the following steps to install Grafana using the standalone binaries:</p>
+<ol>
+<li>
+<p>Navigate to the <a href="/grafana/download">Grafana download page</a>.</p>
+</li>
+<li>
+<p>Select the Grafana version you want to install.</p>
+<ul>
+<li>The most recent Grafana version is selected by default.</li>
+<li>The <strong>Version</strong> field displays only tagged releases. If you want to install a nightly build, click <strong>Nightly Builds</strong> and then select a version.</li>
+</ul>
+</li>
+<li>
+<p>Select an <strong>Edition</strong>.</p>
+<ul>
+<li><strong>Enterprise:</strong> This is the recommended version. It is functionally identical to the open source version but includes features you can unlock with a license if you so choose.</li>
+<li><strong>Open Source:</strong> This version is functionally identical to the Enterprise version, but you will need to download the Enterprise version if you want Enterprise features.</li>
+</ul>
+</li>
+<li>
+<p>Depending on which system you are running, click the <strong>Linux</strong> or <strong>ARM</strong> tab on the <a href="/grafana/download">download page</a>.</p>
+</li>
+<li>
+<p>Copy and paste the code from the <a href="/grafana/download">download page</a> page into your command line and run.</p>
+</li>
+<li>
+<p>Create a user account for Grafana on your system:</p>
+<pre>sudo useradd -r -s /bin/false grafana</pre>
+</li>
+<li>
+<p>Move the unpacked binary to <code>/usr/local/grafana</code>:</p>
+<pre>sudo mv &lt;DOWNLOAD PATH&gt; /usr/local/grafana</pre>
+</li>
+<li>
+<p>Change the owner of <code>/usr/local/grafana</code> to Grafana users:</p>
+<pre>sudo chown -R grafana:users /usr/local/grafana</pre>
+</li>
+<li>
+<p>Create a Grafana server systemd unit file:</p>
+<pre>sudo touch /etc/systemd/system/grafana-server.service</pre>
+</li>
+<li>
+<p>Add the following to the unit file in a text editor of your choice:</p>
+<pre>[Unit]
+Description=Grafana Server
+After=network.target
+
+[Service]
+Type=simple
+User=grafana
+Group=users
+ExecStart=/usr/local/grafana/bin/grafana server --config=/usr/local/grafana/conf/grafana.ini --homepath=/usr/local/grafana
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target</pre>
+</li>
+<li>
+<p>Use the binary to manually start the Grafana server:</p>
+<pre>/usr/local/grafana/bin/grafana-server --homepath /usr/local/grafana</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Manually invoking the binary in this step automatically creates the <code>/usr/local/grafana/data</code> directory, which needs to be created and configured before the installation can be considered complete.</p></blockquote></div>
+
+</li>
+<li>
+<p>Press <code>CTRL+C</code> to stop the Grafana server.</p>
+</li>
+<li>
+<p>Change the owner of <code>/usr/local/grafana</code> to Grafana users again to apply the ownership to the newly created <code>/usr/local/grafana/data</code> directory:</p>
+<pre>sudo chown -R grafana:users /usr/local/grafana</pre>
+</li>
+<li>
+<p><a href="../../start-restart-grafana/#configure-the-grafana-server-to-start-at-boot-using-systemd">Configure the Grafana server to start at boot time using systemd</a>.</p>
+</li>
+</ol>
+<h2 id="uninstall-on-rhel-or-fedora">Uninstall on RHEL or Fedora</h2>
+<p>To uninstall Grafana, run the following commands in a terminal window:</p>
+<ol>
+<li>
+<p>If you configured Grafana to run with systemd, stop the systemd service for Grafana server:</p>
+<pre>sudo systemctl stop grafana-server</pre>
+</li>
+<li>
+<p>If you configured Grafana to run with init.d, stop the init.d service for Grafana server:</p>
+<pre>sudo service grafana-server stop</pre>
+</li>
+<li>
+<p>To uninstall Grafana OSS:</p>
+<pre>sudo dnf remove grafana</pre>
+</li>
+<li>
+<p>To uninstall Grafana Enterprise:</p>
+<pre>sudo dnf remove grafana-enterprise</pre>
+</li>
+<li>
+<p>Optional: To remove the Grafana repository:</p>
+<pre>sudo rm -i /etc/yum.repos.d/grafana.repo</pre>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>Refer to <a href="../../start-restart-grafana/">Start the Grafana server</a>.</p>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<h1 id="visualizations">Visualizations</h1>
+<p>Grafana offers a variety of visualizations to support different use cases. This section of the documentation highlights the built-in visualizations, their options and typical usage.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=JwF6FgeotaU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you are unsure which visualization to pick, Grafana can provide visualization suggestions based on the panel query. When you select a visualization, Grafana will show a preview with that visualization applied.</p></blockquote></div>
+
+<ul>
+<li>Graphs &amp; charts
+<ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a> is the default and main graph visualization. Alerts are supported in this panel.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a> for state changes over time.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a> for periodic state over time.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a> shows any categorical data.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">Histogram</a> calculates and shows value distribution in a bar chart.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/heatmap/">Heatmap</a> visualizes data in two dimensions, used typically for the magnitude of a phenomenon.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/pie-chart/">Pie chart</a> is typically used where proportionality is important.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a> is typically for financial data where the focus is price/data movement.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/gauge/">Gauge</a> is the traditional rounded visual showing how far a single metric is from a threshold.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a> for datasets that have a sequential, numeric x that is not time.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/xy-chart/">XY chart</a> provides a way to visualize arbitrary x and y values in a graph.</li>
+</ul>
+</li>
+<li>Stats &amp; numbers
+<ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/">Stat</a> for big stats and optional sparkline.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-gauge/">Bar gauge</a> is a horizontal or vertical bar gauge.</li>
+</ul>
+</li>
+<li>Misc
+<ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a> is the main and only table visualization.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/logs/">Logs</a> is the main visualization for logs.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/">Node graph</a> for directed graphs or networks.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/traces/">Traces</a> is the main visualization for traces.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">Flame graph</a> is the main visualization for profiling.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Canvas</a> allows you to explicitly place elements within static and dynamic layouts.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/">Geomap</a> helps you visualize geospatial data.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/datagrid/">Datagrid</a> allows you to create and manipulate data, and act as data source for other panels.</li>
+</ul>
+</li>
+<li>Widgets
+<ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/dashboard-list/">Dashboard list</a> can list dashboards.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/alert-list/">Alert list</a> can list alerts.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/annotations/">Annotations list</a> can list available annotations.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/text/">Text</a> can show markdown and html.</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/news/">News</a> can show RSS feeds.</li>
+</ul>
+</li>
+</ul>
+<p>The following video shows you how to create gauge, time series line graph, stats, logs, and node graph visualizations:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=yNRnLyVntUw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="get-more">Get more</h2>
+<p>You can add more visualization types by installing <a href="/grafana/plugins/?type=panel">panel plugins</a>.</p>
+<h2 id="examples">Examples</h2>
+<p>Below you can find some good examples for how all the visualizations in Grafana can be configured. You can also explore <a href="https://play.grafana.org" target="_blank" rel="noopener noreferrer">play.grafana.org</a> which has a large set of demo dashboards that showcase all the different visualizations.</p>
+<h3 id="graphs">Graphs</h3>
+<p>For time based line, area and bar charts we recommend the default 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">time series</a> visualization. <a href="https://play.grafana.org/d/000000016/1-time-series-graphs?orgId=1" target="_blank" rel="noopener noreferrer">This public demo dashboard</a> contains many different examples for how this visualization can be configured and styled.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/time-series-panel/time_series_small_example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/time-series-panel/time_series_small_example.png"data-srcset="/static/img/docs/time-series-panel/time_series_small_example.png?w=320 320w, /static/img/docs/time-series-panel/time_series_small_example.png?w=550 550w, /static/img/docs/time-series-panel/time_series_small_example.png?w=750 750w, /static/img/docs/time-series-panel/time_series_small_example.png?w=900 900w, /static/img/docs/time-series-panel/time_series_small_example.png?w=1040 1040w, /static/img/docs/time-series-panel/time_series_small_example.png?w=1240 1240w, /static/img/docs/time-series-panel/time_series_small_example.png?w=1920 1920w"
+          data-sizes="auto"alt="Time series"width="1203"height="313"title="Time series"/>
+        <noscript>
+          <img
+            src="/static/img/docs/time-series-panel/time_series_small_example.png"
+            alt="Time series"width="1203"height="313"title="Time series"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Time series</figcaption></a></figure>
+<p>For categorical data use a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">bar chart</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/bar-chart-panel/barchart_small_example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/bar-chart-panel/barchart_small_example.png"data-srcset="/static/img/docs/bar-chart-panel/barchart_small_example.png?w=320 320w, /static/img/docs/bar-chart-panel/barchart_small_example.png?w=550 550w, /static/img/docs/bar-chart-panel/barchart_small_example.png?w=750 750w, /static/img/docs/bar-chart-panel/barchart_small_example.png?w=900 900w, /static/img/docs/bar-chart-panel/barchart_small_example.png?w=1040 1040w, /static/img/docs/bar-chart-panel/barchart_small_example.png?w=1240 1240w, /static/img/docs/bar-chart-panel/barchart_small_example.png?w=1920 1920w"
+          data-sizes="auto"alt="Bar chart"width="1337"height="422"title="Bar chart"/>
+        <noscript>
+          <img
+            src="/static/img/docs/bar-chart-panel/barchart_small_example.png"
+            alt="Bar chart"width="1337"height="422"title="Bar chart"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Bar chart</figcaption></a></figure>
+<h3 id="big-numbers--stats">Big numbers &amp; stats</h3>
+<p>A 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/">stat</a> shows one large stat value with an optional graph sparkline. You can control the background or value color using thresholds or color scales.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v66/stat_panel_dark3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v66/stat_panel_dark3.png"data-srcset="/static/img/docs/v66/stat_panel_dark3.png?w=320 320w, /static/img/docs/v66/stat_panel_dark3.png?w=550 550w, /static/img/docs/v66/stat_panel_dark3.png?w=750 750w, /static/img/docs/v66/stat_panel_dark3.png?w=900 900w, /static/img/docs/v66/stat_panel_dark3.png?w=1040 1040w, /static/img/docs/v66/stat_panel_dark3.png?w=1240 1240w, /static/img/docs/v66/stat_panel_dark3.png?w=1920 1920w"
+          data-sizes="auto"alt="Stat"width="1040"height="159"title="Stat"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v66/stat_panel_dark3.png"
+            alt="Stat"width="1040"height="159"title="Stat"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Stat</figcaption></a></figure>
+<h3 id="gauge">Gauge</h3>
+<p>If you want to present a value as it relates to a min and max value you have two options. First a standard radial 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/gauge/">gauge</a> shown below.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v66/gauge_panel_cover.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v66/gauge_panel_cover.png"data-srcset="/static/img/docs/v66/gauge_panel_cover.png?w=320 320w, /static/img/docs/v66/gauge_panel_cover.png?w=550 550w, /static/img/docs/v66/gauge_panel_cover.png?w=750 750w, /static/img/docs/v66/gauge_panel_cover.png?w=900 900w, /static/img/docs/v66/gauge_panel_cover.png?w=1040 1040w, /static/img/docs/v66/gauge_panel_cover.png?w=1240 1240w, /static/img/docs/v66/gauge_panel_cover.png?w=1920 1920w"
+          data-sizes="auto"alt="A gauge visualization"width="1030"height="281"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v66/gauge_panel_cover.png"
+            alt="A gauge visualization"width="1030"height="281"/>
+        </noscript></div></a></figure>
+<p>Secondly Grafana also has a horizontal or vertical 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-gauge/">bar gauge</a> with three different distinct display modes.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v66/bar_gauge_lcd.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v66/bar_gauge_lcd.png"data-srcset="/static/img/docs/v66/bar_gauge_lcd.png?w=320 320w, /static/img/docs/v66/bar_gauge_lcd.png?w=550 550w, /static/img/docs/v66/bar_gauge_lcd.png?w=750 750w, /static/img/docs/v66/bar_gauge_lcd.png?w=900 900w, /static/img/docs/v66/bar_gauge_lcd.png?w=1040 1040w, /static/img/docs/v66/bar_gauge_lcd.png?w=1240 1240w, /static/img/docs/v66/bar_gauge_lcd.png?w=1920 1920w"
+          data-sizes="auto"alt="A bar gauge visualization"width="993"height="270"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v66/bar_gauge_lcd.png"
+            alt="A bar gauge visualization"width="993"height="270"/>
+        </noscript></div></a></figure>
+<h3 id="table">Table</h3>
+<p>To show data in a table layout, use a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">table</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/tables/table_visualization.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/tables/table_visualization.png"data-srcset="/static/img/docs/tables/table_visualization.png?w=320 320w, /static/img/docs/tables/table_visualization.png?w=550 550w, /static/img/docs/tables/table_visualization.png?w=750 750w, /static/img/docs/tables/table_visualization.png?w=900 900w, /static/img/docs/tables/table_visualization.png?w=1040 1040w, /static/img/docs/tables/table_visualization.png?w=1240 1240w, /static/img/docs/tables/table_visualization.png?w=1920 1920w"
+          data-sizes="auto"alt="Table visualization"width="1222"height="419"title="Table visualization"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tables/table_visualization.png"
+            alt="Table visualization"width="1222"height="419"title="Table visualization"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Table visualization</figcaption></a></figure>
+<h3 id="pie-chart">Pie chart</h3>
+<p>To display reduced series, or values in a series, from one or more queries, as they relate to each other, use a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/pie-chart/">pie chart</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/pie-chart-panel/pie-chart-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/pie-chart-panel/pie-chart-example.png"data-srcset="/static/img/docs/pie-chart-panel/pie-chart-example.png?w=320 320w, /static/img/docs/pie-chart-panel/pie-chart-example.png?w=550 550w, /static/img/docs/pie-chart-panel/pie-chart-example.png?w=750 750w, /static/img/docs/pie-chart-panel/pie-chart-example.png?w=900 900w, /static/img/docs/pie-chart-panel/pie-chart-example.png?w=1040 1040w, /static/img/docs/pie-chart-panel/pie-chart-example.png?w=1240 1240w, /static/img/docs/pie-chart-panel/pie-chart-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Pie chart"width="1130"height="341"title="Pie chart"/>
+        <noscript>
+          <img
+            src="/static/img/docs/pie-chart-panel/pie-chart-example.png"
+            alt="Pie chart"width="1130"height="341"title="Pie chart"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Pie chart</figcaption></a></figure>
+<h3 id="heatmaps">Heatmaps</h3>
+<p>To show value distribution over, time use a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/heatmap/">heatmap</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1000px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v43/heatmap_panel_cover.jpg"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v43/heatmap_panel_cover.jpg"data-srcset="/static/img/docs/v43/heatmap_panel_cover.jpg?w=320 320w, /static/img/docs/v43/heatmap_panel_cover.jpg?w=550 550w, /static/img/docs/v43/heatmap_panel_cover.jpg?w=750 750w, /static/img/docs/v43/heatmap_panel_cover.jpg?w=900 900w, /static/img/docs/v43/heatmap_panel_cover.jpg?w=1040 1040w, /static/img/docs/v43/heatmap_panel_cover.jpg?w=1240 1240w, /static/img/docs/v43/heatmap_panel_cover.jpg?w=1920 1920w"
+          data-sizes="auto"alt="Heatmap"width="1330"height="134"title="Heatmap"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v43/heatmap_panel_cover.jpg"
+            alt="Heatmap"width="1330"height="134"title="Heatmap"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Heatmap</figcaption></a></figure>
+<h3 id="state-timeline">State timeline</h3>
+<p>A state timeline shows discrete state changes over time. When used with time series, the thresholds are used to turn the numerical values into discrete state regions.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v8/state_timeline_strings.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v8/state_timeline_strings.png"data-srcset="/static/img/docs/v8/state_timeline_strings.png?w=320 320w, /static/img/docs/v8/state_timeline_strings.png?w=550 550w, /static/img/docs/v8/state_timeline_strings.png?w=750 750w, /static/img/docs/v8/state_timeline_strings.png?w=900 900w, /static/img/docs/v8/state_timeline_strings.png?w=1040 1040w, /static/img/docs/v8/state_timeline_strings.png?w=1240 1240w, /static/img/docs/v8/state_timeline_strings.png?w=1920 1920w"
+          data-sizes="auto"alt="State timeline with string states"width="1055"height="303"title="State timeline with string states"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v8/state_timeline_strings.png"
+            alt="State timeline with string states"width="1055"height="303"title="State timeline with string states"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">State timeline with string states</figcaption></a></figure>

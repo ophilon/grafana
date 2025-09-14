@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!-- INTERACTIVE page intro.md START -->
+<h1 id="how-to-create-alert-rules-with-log-data">How to create alert rules with log data</h1>
+<p>Loki stores your logs and only indexes labels for each log stream. Using Loki with Grafana Alerting is a powerful way to keep track of what’s happening in your environment. You can create metric alert rules based on content in your log lines to notify your team. What’s even better is that you can add label data from the log message directly into your alert notification.</p>
+<p>In this tutorial, you&rsquo;ll:</p>
+<ul>
+<li>Generate sample logs and pull them with Promtail to Grafana.</li>
+<li>Create an alert rule based on a Loki query (LogQL).</li>
+<li>Create a Webhook contact point to send alert notifications to.</li>
+</ul>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>In <a href="http://www.grafana.com/tutorials/alerting-get-started-pt2/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting - Part 2</a> you can advance your skills by exploring alert instances and notification routing.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page intro.md END -->
+<!-- INTERACTIVE page step1.md START -->
+<h2 id="before-you-begin">Before you begin</h2>
+<!-- INTERACTIVE ignore START -->
+<p>There are different ways you can follow along with this tutorial.</p>
+<ul>
+<li>
+<p><strong>Grafana OSS</strong></p>
+<p>To run a Grafana stack locally, ensure you have the following applications installed:</p>
+<ul>
+<li><a href="https://docs.docker.com/get-docker/" target="_blank" rel="noopener noreferrer">Docker Compose</a> (included in Docker for Desktop for macOS and Windows)</li>
+<li><a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer">Git</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Interactive learning environment</strong></p>
+<ul>
+<li>Alternatively, you can <a href="https://killercoda.com/grafana-labs/course/grafana/alerting-loki-logs" target="_blank" rel="noopener noreferrer">try out this example in our interactive learning environment</a>. It&rsquo;s a fully configured environment with all the dependencies already installed.</li>
+</ul>
+</li>
+</ul>
+<h2 id="set-up-the-grafana-stack">Set up the Grafana stack</h2>
+<!-- INTERACTIVE ignore END -->
+<p>To demonstrate the observation of data using the Grafana stack, download and run the following files.</p>
+<ol>
+<li>
+<p>Download and save a Docker compose file to run Grafana, Loki and Promtail.</p>
+<pre>wget https://raw.githubusercontent.com/grafana/loki/refs/heads/main/production/docker-compose.yaml -O docker-compose.yaml</pre>
+</li>
+<li>
+<p>Run the Grafana stack.</p>
+<pre>docker compose up -d</pre>
+</li>
+</ol>
+<p>The first time you run <code>docker compose up -d</code>, Docker downloads all the necessary resources for the tutorial. This might take a few minutes, depending on your internet connection.</p>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you already have Grafana, Loki, or Prometheus running on your system, you might see errors, because the Docker image is trying to use ports that your local installations are already using. If this is the case, stop the services, then run the command again.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page step1.md END -->
+<!-- INTERACTIVE page step2.md START -->
+<h2 id="generate-sample-logs">Generate sample logs</h2>
+<p>To demonstrate how to create alert rules based on logs, you’ll use a script that generates realistic log entries to simulate typical monitoring data in Grafana. Running this script outputs logs continuously, each containing a timestamp, HTTP method (either GET or POST), status code (200 for success or 500 for failures), and request duration in milliseconds.</p>
+<ol>
+<li>
+<p>Download and save a Python file that generates logs.</p>
+<pre>wget https://raw.githubusercontent.com/grafana/tutorial-environment/master/app/loki/web-server-logs-simulator.py</pre>
+</li>
+<li>
+<p>Execute the log-generating Python script.</p>
+<pre>python3 ./web-server-logs-simulator.py | sudo tee -a /var/log/web_requests.log</pre>
+</li>
+</ol>
+<h3 id="troubleshooting-the-script">Troubleshooting the script</h3>
+<p>If you don&rsquo;t see the sample logs in Explore:</p>
+<ul>
+<li>Does the output file exist, check <code>/var/log/web_requests.log</code> to see if it contains logs.</li>
+<li>If the file is empty, check that you followed the steps above to create the file.</li>
+<li>If the file exists, verify that promtail container is running.</li>
+<li>In Grafana Explore, check that the time range is only for the last 5 minutes.</li>
+</ul>
+<!-- INTERACTIVE page step2.md END -->
+<!-- INTERACTIVE page step3.md START -->
+<h2 id="create-a-contact-point">Create a contact point</h2>
+<p>Besides being an open-source observability tool, Grafana has its own built-in alerting service. This means that you can receive notifications whenever there is an event of interest in your data, and even see these events graphed in your visualizations.</p>
+<p>In this step, we set up a new contact point. This contact point uses the <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/">webhook integration</a>. This contact point uses the <em>webhooks</em> integration. In order to make this work, we also need an endpoint for our webhook integration to receive the alert. We can use <a href="https://webhook.site/" target="_blank" rel="noopener noreferrer">Webhook.site</a> to quickly set up that test endpoint. This way we can make sure that our alert is actually sending a notification somewhere.</p>
+<!-- INTERACTIVE ignore START -->
+<ol>
+<li>
+<p>In your browser, <strong>sign in</strong> to your Grafana Cloud account.</p>
+<p>OSS users: To log in, navigate to <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a>, where Grafana should be running.</p>
+</li>
+<li>
+<p>In another tab, go to <a href="https://webhook.site/" target="_blank" rel="noopener noreferrer">Webhook.site</a>.</p>
+</li>
+<li>
+<p>Copy Your unique URL.</p>
+</li>
+</ol>
+<!-- INTERACTIVE ignore END -->
+
+<p>Your webhook endpoint is now waiting for the first request.</p>
+<p>Next, let&rsquo;s configure a contact point in Grafana&rsquo;s Alerting UI to send notifications to our webhook endpoint.</p>
+<ol>
+<li>
+<p>Return to Grafana. In Grafana&rsquo;s sidebar, hover over the <strong>Alerting</strong> (bell) icon and then click <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Create contact point</strong>.</p>
+</li>
+<li>
+<p>In <strong>Name</strong>, write <strong>Webhook</strong>.</p>
+</li>
+<li>
+<p>In <strong>Integration</strong>, choose <strong>Webhook</strong>.</p>
+</li>
+<li>
+<p>In <strong>URL</strong>, paste the endpoint to your webhook endpoint.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong>, and then click <strong>Send test notification</strong> to send a test alert to your webhook endpoint.</p>
+</li>
+<li>
+<p>Navigate back to <em>Webhook.site</em>. On the left side, there&rsquo;s now a <code>POST /</code> entry. Click it to see what information Grafana sent.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/alerting-webhook-detail.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/alerting-webhook-detail.png"data-srcset="/media/docs/alerting/alerting-webhook-detail.png?w=320 320w, /media/docs/alerting/alerting-webhook-detail.png?w=550 550w, /media/docs/alerting/alerting-webhook-detail.png?w=750 750w, /media/docs/alerting/alerting-webhook-detail.png?w=900 900w, /media/docs/alerting/alerting-webhook-detail.png?w=1040 1040w, /media/docs/alerting/alerting-webhook-detail.png?w=1240 1240w, /media/docs/alerting/alerting-webhook-detail.png?w=1920 1920w"
+             data-sizes="auto"alt="A POST entry in Webhook.site"width="1446"height="359"title="A POST entry in Webhook.site"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/alerting-webhook-detail.png"
+               alt="A POST entry in Webhook.site"width="1446"height="359"title="A POST entry in Webhook.site"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">A POST entry in Webhook.site</figcaption></a></figure>
+</li>
+<li>
+<p>Return to Grafana and click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<p>We have created a dummy Webhook endpoint and created a new Alerting contact point in Grafana. Now, we can create an alert rule and link it to this new integration.</p>
+<!-- INTERACTIVE page step3.md END -->
+<!-- INTERACTIVE page step4.md START -->
+<h2 id="create-an-alert-rule">Create an alert rule</h2>
+<p>Next, we&rsquo;ll establish an <a href="/docs/grafana/next/alerting/fundamentals/alert-rule-evaluation/">alert rule</a> within Grafana Alerting to notify us whenever alert rules are triggered and resolved.</p>
+<ol>
+<li>In Grafana, <strong>navigate to Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Click on <strong>New alert rule</strong>.</li>
+<li>Enter alert rule name for your alert rule. Make it short and descriptive as this appears in your alert notification. For instance, <strong>web-requests-logs</strong></li>
+</ol>
+<h3 id="define-query-and-alert-condition">Define query and alert condition</h3>
+<p>In this section, we use the default options for Grafana-managed alert rule creation. The default options let us define the query, a expression (used to manipulate the data &ndash; the <code>WHEN</code> field in the UI), and the condition that must be met for the alert to be triggered (in default mode is the threshold).</p>
+<ol>
+<li>
+<p>Select the <strong>Loki</strong> datasource from the drop-down.</p>
+</li>
+<li>
+<p>In the Query editor, switch to <strong>Code</strong> mode by clicking the button on the right.</p>
+</li>
+<li>
+<p>Paste the query below.</p>
+<pre>sum by (message)(count_over_time({filename=&#34;/var/log/web_requests.log&#34;} != &#34;status=200&#34; | pattern &#34;&lt;_&gt; &lt;message&gt; duration&lt;_&gt;&#34; [10m]))</pre>
+<p>This query counts the number of log lines with a status code that is not 200 (OK), then sum the result set by message type using an <strong>instant query</strong> and the time interval indicated in brackets. It uses the LogQL pattern parser to add a new label called <code>message</code> that contains the level, method, url, and status from the log line.</p>
+<p>You can use the <strong>explain query</strong> toggle button for a full explanation of the query syntax. The optional log-generating script creates a sample log line similar to the one below:</p>
+<pre>2023-04-22T02:49:32.562825+00:00 level=info method=GET url=test.com status=200 duration=171ms</pre>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you&rsquo;re using your own logs, modify the LogQL query to match your own log message. Refer to the Loki docs to understand the <a href="/docs/loki/latest/logql/log_queries/#pattern">pattern parser</a>.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+</li>
+<li>
+<p>In the <strong>Alert condition</strong> section:</p>
+<ul>
+<li>Keep <code>Last</code> as the value for the reducer function (<code>WHEN</code>), and <code>0</code> as the threshold value. This is the value above which the alert rule should trigger.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Preview alert rule condition</strong> to run the query.</p>
+<p>It should return alert instances from log lines with a status code that is not 200 (OK), and that has met the alert condition. The condition for the alert rule to fire is any occurrence that goes over the threshold of <code>0</code>. Since the Loki query has returned more than zero alert instances, the alert rule is <code>Firing</code>.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/firing-loki-alert-rule.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/firing-loki-alert-rule.png"data-srcset="/media/docs/alerting/firing-loki-alert-rule.png?w=320 320w, /media/docs/alerting/firing-loki-alert-rule.png?w=550 550w, /media/docs/alerting/firing-loki-alert-rule.png?w=750 750w, /media/docs/alerting/firing-loki-alert-rule.png?w=900 900w, /media/docs/alerting/firing-loki-alert-rule.png?w=1040 1040w, /media/docs/alerting/firing-loki-alert-rule.png?w=1240 1240w, /media/docs/alerting/firing-loki-alert-rule.png?w=1920 1920w"
+             data-sizes="auto"alt="Preview of a firing alert instances"width="1420"height="685"title="Preview of a firing alert instances"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/firing-loki-alert-rule.png"
+               alt="Preview of a firing alert instances"width="1420"height="685"title="Preview of a firing alert instances"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Preview of a firing alert instances</figcaption></a></figure>
+</li>
+</ol>
+<h3 id="set-evaluation-behavior">Set evaluation behavior</h3>
+<p>An <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/rule-evaluation/">evaluation group</a> defines when an alert rule fires, and it’s based on two settings:</p>
+<ul>
+<li><strong>Evaluation group</strong>: how frequently the alert rule is evaluated.</li>
+<li><strong>Evaluation interval</strong>: how long the condition must be met to start firing. This allows your data time to stabilize before triggering an alert, helping to reduce the frequency of unnecessary notifications.</li>
+</ul>
+<p>To set up the evaluation:</p>
+<ol>
+<li>In <strong>Folder</strong>, click <strong>+ New folder</strong> and enter a name. For example: <em>web-server-alerts</em>. This folder contains our alerts.</li>
+<li>In the <strong>Evaluation group</strong>, repeat the above step to create a new evaluation group. Name it <em>1m-evaluation</em>.</li>
+<li>Choose an <strong>Evaluation interval</strong> (how often the alert are evaluated).
+For example, every <code>1m</code> (1 minute).</li>
+<li>Set the pending period to, <code>0s</code> (zero seconds), so the alert rule fires the moment the condition is met.</li>
+</ol>
+<h3 id="configure-labels-and-notifications">Configure labels and notifications</h3>
+<p>Choose the contact point where you want to receive your alert notifications.</p>
+<ol>
+<li>Under <strong>Contact point</strong>, select <strong>Webhook</strong> from the drop-down menu.</li>
+<li>Click <strong>Save rule and exit</strong> at the top right corner.</li>
+</ol>
+<!-- INTERACTIVE page step4.md END -->
+<!-- INTERACTIVE page step5.md START -->
+<h2 id="trigger-the-alert-rule">Trigger the alert rule</h2>
+<p>Since the Python script continues to generate log data that matches the alert rule condition, once the evaluation interval has concluded, you should receive an alert notification in the Webhook endpoint.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alerting-webhook-firing-alert.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alerting-webhook-firing-alert.png"data-srcset="/media/docs/alerting/alerting-webhook-firing-alert.png?w=320 320w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=550 550w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=750 750w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=900 900w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=1040 1040w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=1240 1240w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=1920 1920w"
+          data-sizes="auto"alt="Firing alert notification details"width="921"height="694"title="Firing alert notification details"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-webhook-firing-alert.png"
+            alt="Firing alert notification details"width="921"height="694"title="Firing alert notification details"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Firing alert notification details</figcaption></a></figure>
+<!-- INTERACTIVE page step5.md END -->
+<!-- INTERACTIVE page finish.md START -->
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>In <a href="http://www.grafana.com/tutorials/alerting-get-started-pt2/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting - Part 2</a> you can advance your skills by exploring alert instances and notification routing.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page finish.md END -->

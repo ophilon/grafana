@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<h1 id="new-folders-apis">New Folders APIs</h1>
+<blockquote>
+<p>If you are running Grafana Enterprise, for some endpoints you&rsquo;ll need to have specific permissions. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a> for more information.</p></blockquote>
+<blockquote>
+<p>To view more about the new api structure, refer to 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</p></blockquote>
+<h3 id="get-all-folders">Get all folders</h3>
+<p><code>GET /apis/folder.grafana.app/v1beta1/namespaces/:namespace/folders</code></p>
+<p>Returns all folders that the authenticated user has permission to view within the given organization. Use the <code>limit</code> query parameter to control the maximum number of dashboards returned. To retrieve additional dashboards, utilize the <code>continue</code> token provided in the response to fetch the next page.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:read</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /apis/folder.grafana.app/v1beta1/namespaces/default/folders?limit=1 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;kind&#34;: &#34;FolderList&#34;,
+  &#34;apiVersion&#34;: &#34;folder.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;continue&#34;: &#34;org:1/start:1158/folder:&#34;
+  },
+  &#34;items&#34;: [
+    {
+      &#34;kind&#34;: &#34;Folder&#34;,
+      &#34;apiVersion&#34;: &#34;folder.grafana.app/v1beta1&#34;,
+      &#34;metadata&#34;: {
+        &#34;name&#34;: &#34;aef30vrzxs3y8d&#34;,
+        &#34;namespace&#34;: &#34;default&#34;,
+        &#34;uid&#34;: &#34;KCtv1FXDsJmTYQoTgcPnfuwZhDZge3uMpXOefaOHjb4X&#34;,
+        &#34;resourceVersion&#34;: &#34;1741343686000&#34;,
+        &#34;creationTimestamp&#34;: &#34;2025-03-07T10:34:46Z&#34;,
+        &#34;annotations&#34;: {
+          &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+          &#34;grafana.app/updatedBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+          &#34;grafana.app/updatedTimestamp&#34;: &#34;2025-03-07T10:34:46Z&#34;
+        }
+      },
+      &#34;spec&#34;: {
+        &#34;title&#34;: &#34;example&#34;
+      }
+    }
+  ]
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access Denied</li>
+</ul>
+<h3 id="get-folder-by-uid">Get folder by uid</h3>
+<p><code>GET /apis/folder.grafana.app/v1beta1/namespaces/:namespace/folders/:uid</code></p>
+<p>Will return the folder given the folder uid.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+<li>uid: the unique identifier of the folder to update. this will be the <em>name</em> in the folder response</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:read</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /apis/folder.grafana.app/v1beta1/namespaces/default/folders/aef30vrzxs3y8d HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;kind&#34;: &#34;Folder&#34;,
+  &#34;apiVersion&#34;: &#34;folder.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;aef30vrzxs3y8d&#34;,
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;KCtv1FXDsJmTYQoTgcPnfuwZhDZge3uMpXOefaOHjb4X&#34;,
+    &#34;resourceVersion&#34;: &#34;1741343686000&#34;,
+    &#34;creationTimestamp&#34;: &#34;2025-03-07T10:34:46Z&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedTimestamp&#34;: &#34;2025-03-07T10:34:46Z&#34;,
+      &#34;grafana.app/folder&#34;: &#34;fef30w4jaxla8b&#34;
+    }
+  },
+  &#34;spec&#34;: {
+    &#34;title&#34;: &#34;test&#34;
+  }
+}</pre>
+<p>Note the annotation <code>grafana.app/folder</code> which contains the uid of the parent folder.</p>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Found</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access Denied</li>
+<li><strong>404</strong> – Folder not found</li>
+</ul>
+<h3 id="create-folder">Create folder</h3>
+<p><code>POST /apis/folder.grafana.app/v1beta1/namespaces/:namespace/folders</code></p>
+<p>Creates a new folder.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<p><code>folders:create</code> allows creating folders and subfolders. If granted with scope <code>folders:uid:general</code>, allows creating root level folders. Otherwise, allows creating subfolders under the specified folders.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:create</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+      <tr>
+          <td><code>folders:write</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /apis/folder.grafana.app/v1beta1/namespaces/default/folders HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;aef30vrzxs3y8d&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;fef30w4jaxla8b&#34;
+    }
+  }
+  &#34;spec&#34;: {
+    &#34;title&#34;: &#34;child-folder&#34;
+  },
+}</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>metadata.name</strong> – The Grafana <a href="#identifier-id-vs-unique-identifier-uid">unique identifier</a>. If you do not want to provide this, set metadata.generateName to the prefix you would like for the uid.</li>
+<li><strong>metadata.annotations.grafana.app/folder</strong> - Optional field, the unique identifier of the parent folder under which the folder should be created. Requires nested folders to be enabled.</li>
+<li><strong>spec.title</strong> – The title of the folder.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;kind&#34;: &#34;Folder&#34;,
+  &#34;apiVersion&#34;: &#34;folder.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;eef33r1fprd34d&#34;,
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;X8momvVZnsXdOqvLD9I4ngqLVif2CgRWXHy9xb2UgjQX&#34;,
+    &#34;resourceVersion&#34;: &#34;1741320415009&#34;,
+    &#34;creationTimestamp&#34;: &#34;2025-03-07T04:06:55Z&#34;,
+    &#34;labels&#34;: {
+      &#34;grafana.app/deprecatedInternalID&#34;: &#34;1159&#34;
+    },
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;fef30w4jaxla8b&#34;,
+      &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;
+    }
+  },
+  &#34;spec&#34;: {
+    &#34;title&#34;: &#34;child-folder&#34;
+  }
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>201</strong> – Created</li>
+<li><strong>400</strong> – Errors (invalid json, missing or invalid fields, etc)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>409</strong> – Conflict (folder with the same uid already exists)</li>
+</ul>
+<h3 id="update-folder">Update folder</h3>
+<p><code>PUT /apis/folder.grafana.app/v1beta1/namespaces/:namespace/folders/:uid</code></p>
+<p>Updates an existing folder identified by uid.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+<li>uid: the unique identifier of the folder to update. this will be the <em>name</em> in the folder response</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:write</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>PUT /apis/folder.grafana.app/v1beta1/namespaces/default/folders/fef30w4jaxla8b HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+&#34;metadata&#34;: {
+    &#34;name&#34;: &#34;aef30vrzxs3y8d&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;xkj92m5pqw3vn4&#34;
+    }
+  }
+  &#34;spec&#34;: {
+    &#34;title&#34;: &#34;updated title&#34;
+  },</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>metadata.name</strong> – The <a href="#identifier-id-vs-unique-identifier-uid">unique identifier</a> of the folder.</li>
+<li><strong>metadata.annotations.grafana.app/folder</strong> - Optional field, the unique identifier of the parent folder under which the folder should be - update this to move the folder under a different parent folder. Requires nested folders to be enabled.</li>
+<li><strong>spec.title</strong> – The title of the folder.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;kind&#34;: &#34;Folder&#34;,
+  &#34;apiVersion&#34;: &#34;folder.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;fef30w4jaxla8b&#34;,
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;YaWLsFrMwEaTlIQwX2iMnhHlJuZHtZugps50BQoyjXEX&#34;,
+    &#34;resourceVersion&#34;: &#34;1741345736000&#34;,
+    &#34;creationTimestamp&#34;: &#34;2025-03-07T11:08:56Z&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;xkj92m5pqw3vn4&#34;,
+      &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedTimestamp&#34;: &#34;2025-03-07T11:08:56Z&#34;
+    }
+  },
+  &#34;spec&#34;: {
+    &#34;title&#34;: &#34;updated title&#34;
+  }
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Updated</li>
+<li><strong>400</strong> – Errors (invalid json, missing or invalid fields, etc)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access Denied</li>
+<li><strong>404</strong> – Folder not found</li>
+<li><strong>412</strong> – Precondition failed (the folder has been changed by someone else). With this status code, the response body will have the following properties:</li>
+</ul>
+<pre>HTTP/1.1 412 Precondition Failed
+Content-Type: application/json; charset=UTF-8
+Content-Length: 97
+
+{
+  &#34;message&#34;: &#34;The folder has been changed by someone else&#34;,
+  &#34;status&#34;: &#34;version-mismatch&#34;
+}</pre>
+<h3 id="delete-folder">Delete folder</h3>
+<p><code>DELETE /apis/folder.grafana.app/v1beta1/namespaces/:namespace/folders/:uid</code></p>
+<p>Deletes an existing folder identified by UID along with all dashboards (and their alerts) stored in the folder. This operation cannot be reverted.</p>
+<p>If 
+    <a href="/docs/grafana/latest/alerting/">Grafana Alerting</a> is enabled, you can set an optional query parameter <code>forceDeleteRules=false</code> so that requests will fail with 400 (Bad Request) error if the folder contains any Grafana alerts. However, if this parameter is set to <code>true</code> then it will delete any Grafana alerts under this folder.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+<li>uid: the unique identifier of the folder to delete. this will be the <em>name</em> in the folder response</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:delete</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>DELETE /apis/folder.grafana.app/v1beta1/namespaces/default/folders/fef30w4jaxla8b HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;kind&#34;: &#34;Folder&#34;,
+  &#34;apiVersion&#34;: &#34;folder.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;fef30w4jaxla8b&#34;,
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;YaWLsFrMwEaTlIQwX2iMnhHlJuZHtZugps50BQoyjXEX&#34;,
+    &#34;resourceVersion&#34;: &#34;1741345736000&#34;,
+    &#34;creationTimestamp&#34;: &#34;2025-03-07T11:08:56Z&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;xkj92m5pqw3vn4&#34;,
+      &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedTimestamp&#34;: &#34;2025-03-07T11:08:56Z&#34;
+    }
+  },
+  &#34;spec&#34;: {
+    &#34;title&#34;: &#34;updated title&#34;
+  }
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Deleted</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>400</strong> – Bad Request</li>
+<li><strong>403</strong> – Access Denied</li>
+<li><strong>404</strong> – Folder not found</li>
+</ul>
+<h2 id="apis">APIs</h2>
+<h2 id="identifier-id-vs-unique-identifier-uid">Identifier (id) vs unique identifier (uid)</h2>
+<p>The unique identifier (uid) of a folder can be used for uniquely identify folders within an org. It&rsquo;s automatically generated if not provided when creating a folder. The uid allows having consistent URLs for accessing folders and when syncing folders between multiple Grafana installs. This means that changing the title of a folder will not break any bookmarked links to that folder.</p>
+<p>The uid can have a maximum length of 40 characters.</p>
+<p>The identifier (id) of a folder is deprecated in favor of the unique identifier (uid).</p>
+<h3 id="get-all-folders-1">Get all folders</h3>
+<p><code>GET /api/folders</code></p>
+<p>Returns all folders that the authenticated user has permission to view. You can control the maximum number of folders returned through the <code>limit</code> query parameter, the default is 1000. You can also pass the <code>page</code> query parameter for fetching folders from a page other than the first one.</p>
+<p>If nested folders are enabled, the operation expects an additional optional query parameter <code>parentUid</code> with the parent folder UID, and returns the immediate subfolders that the authenticated user has permission to view.
+If the parameter is not supplied, then the operation returns immediate subfolders under the root
+that the authenticated user has permission to view.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:read</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/folders?limit=10 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;:1,
+    &#34;uid&#34;: &#34;nErXDvCkzz&#34;,
+    &#34;title&#34;: &#34;Department ABC&#34;
+  },
+  {
+    &#34;id&#34;:2,
+    &#34;uid&#34;: &#34;k3S1cklGk&#34;,
+    &#34;title&#34;: &#34;Department RND&#34;
+  }
+]</pre>
+<h3 id="get-folder-by-uid-1">Get folder by uid</h3>
+<p><code>GET /api/folders/:uid</code></p>
+<p>Will return the folder given the folder uid.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:read</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/folders/nErXDvCkzzh HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;id&#34;:1,
+  &#34;uid&#34;: &#34;nErXDvCkzz&#34;,
+  &#34;title&#34;: &#34;Department ABC&#34;,
+  &#34;url&#34;: &#34;/dashboards/f/nErXDvCkzz/department-abc&#34;,
+  &#34;hasAcl&#34;: false,
+  &#34;canSave&#34;: true,
+  &#34;canEdit&#34;: true,
+  &#34;canAdmin&#34;: true,
+  &#34;createdBy&#34;: &#34;admin&#34;,
+  &#34;created&#34;: &#34;2018-01-31T17:43:12+01:00&#34;,
+  &#34;updatedBy&#34;: &#34;admin&#34;,
+  &#34;updated&#34;: &#34;2018-01-31T17:43:12+01:00&#34;,
+  &#34;version&#34;: 1
+}</pre>
+<p>If nested folders are enabled, and the folder is nested (lives under another folder), then the response additionally contains:</p>
+<ul>
+<li><strong>parentUid</strong> - The parent folder UID.</li>
+<li><strong>parents</strong> - An array with the whole tree hierarchy, starting from the root going down up to the parent folder.</li>
+</ul>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Found</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access Denied</li>
+<li><strong>404</strong> – Folder not found</li>
+</ul>
+<h3 id="create-folder-1">Create folder</h3>
+<p><code>POST /api/folders</code></p>
+<p>Creates a new folder.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<p><code>folders:create</code> allows creating folders and subfolders. If granted with scope <code>folders:uid:general</code>, allows creating root level folders. Otherwise, allows creating subfolders under the specified folders.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:create</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+      <tr>
+          <td><code>folders:write</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/folders HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;uid&#34;: &#34;nErXDvCkzz&#34;,
+  &#34;title&#34;: &#34;Department ABC&#34;,
+  &#34;parentUid&#34;: &#34;fgnj5e52gel76g&#34;
+}</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>uid</strong> – Optional <a href="#identifier-id-vs-unique-identifier-uid">unique identifier</a>.</li>
+<li><strong>title</strong> – The title of the folder.</li>
+<li><strong>parentUid</strong> - Optional field, the unique identifier of the parent folder under which the folder should be created. Requires nested folders to be enabled.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;id&#34;:1,
+  &#34;uid&#34;: &#34;nErXDvCkzz&#34;,
+  &#34;title&#34;: &#34;Department ABC&#34;,
+  &#34;url&#34;: &#34;/dashboards/f/nErXDvCkzz/department-abc&#34;,
+  &#34;hasAcl&#34;: false,
+  &#34;canSave&#34;: true,
+  &#34;canEdit&#34;: true,
+  &#34;canAdmin&#34;: true,
+  &#34;createdBy&#34;: &#34;admin&#34;,
+  &#34;created&#34;: &#34;2018-01-31T17:43:12+01:00&#34;,
+  &#34;updatedBy&#34;: &#34;admin&#34;,
+  &#34;updated&#34;: &#34;2018-01-31T17:43:12+01:00&#34;,
+  &#34;version&#34;: 1
+}</pre>
+<p>If nested folders are enabled, and the folder is nested (lives under another folder) then the response additionally contains:</p>
+<ul>
+<li><strong>parentUid</strong> - the parent folder UID.</li>
+<li><strong>parents</strong> - an array with the whole tree hierarchy starting from the root going down up to the parent folder.</li>
+</ul>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Created</li>
+<li><strong>400</strong> – Errors (invalid json, missing or invalid fields, etc)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access Denied</li>
+<li><strong>412</strong> - Folder already exists</li>
+</ul>
+<h3 id="update-folder-1">Update folder</h3>
+<p><code>PUT /api/folders/:uid</code></p>
+<p>Updates an existing folder identified by uid.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:write</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>PUT /api/folders/nErXDvCkzz HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;title&#34;:&#34;Department DEF&#34;,
+  &#34;version&#34;: 1
+}</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>title</strong> – The title of the folder.</li>
+<li><strong>version</strong> – Provide the current version to be able to update the folder. Not needed if <code>overwrite=true</code>.</li>
+<li><strong>overwrite</strong> – Set to true if you want to overwrite existing folder with newer version.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;id&#34;:1,
+  &#34;uid&#34;: &#34;nErXDvCkzz&#34;,
+  &#34;title&#34;: &#34;Department DEF&#34;,
+  &#34;url&#34;: &#34;/dashboards/f/nErXDvCkzz/department-def&#34;,
+  &#34;hasAcl&#34;: false,
+  &#34;canSave&#34;: true,
+  &#34;canEdit&#34;: true,
+  &#34;canAdmin&#34;: true,
+  &#34;createdBy&#34;: &#34;admin&#34;,
+  &#34;created&#34;: &#34;2018-01-31T17:43:12+01:00&#34;,
+  &#34;updatedBy&#34;: &#34;admin&#34;,
+  &#34;updated&#34;: &#34;2018-01-31T17:43:12+01:00&#34;,
+  &#34;version&#34;: 1
+}</pre>
+<p>If nested folders are enabled, and the folder is nested (lives under another folder) then the response additionally contains:</p>
+<ul>
+<li><strong>parentUid</strong> - the parent folder UID.</li>
+<li><strong>parents</strong> - an array with the whole tree hierarchy starting from the root going down up to the parent folder.</li>
+</ul>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Updated</li>
+<li><strong>400</strong> – Errors (invalid json, missing or invalid fields, etc)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access Denied</li>
+<li><strong>404</strong> – Folder not found</li>
+<li><strong>412</strong> – Precondition failed</li>
+</ul>
+<p>The <strong>412</strong> status code is used for explaining that you cannot update the folder and why.
+There can be different reasons for this:</p>
+<ul>
+<li>The folder has been changed by someone else, <code>status=version-mismatch</code></li>
+</ul>
+<p>The response body will have the following properties:</p>
+<pre>HTTP/1.1 412 Precondition Failed
+Content-Type: application/json; charset=UTF-8
+Content-Length: 97
+
+{
+  &#34;message&#34;: &#34;The folder has been changed by someone else&#34;,
+  &#34;status&#34;: &#34;version-mismatch&#34;
+}</pre>
+<h3 id="delete-folder-1">Delete folder</h3>
+<p><code>DELETE /api/folders/:uid</code></p>
+<p>Deletes an existing folder identified by UID along with all dashboards (and their alerts) stored in the folder. This operation cannot be reverted.</p>
+<p>If <a href="/docs/grafana/latest/alerting/">Grafana Alerting</a> is enabled, you can set an optional query parameter <code>forceDeleteRules=false</code> so that requests will fail with 400 (Bad Request) error if the folder contains any Grafana alerts. However, if this parameter is set to <code>true</code> then it will delete any Grafana alerts under this folder.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:delete</code></td>
+          <td><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>DELETE /api/folders/nErXDvCkzz HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;message&#34;:&#34;Folder deleted&#34;,
+  &#34;id&#34;: 2
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Deleted</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>400</strong> – Bad Request</li>
+<li><strong>403</strong> – Access Denied</li>
+<li><strong>404</strong> – Folder not found</li>
+</ul>
+<h3 id="move-folder">Move folder</h3>
+<p><code>POST /api/folders/:uid/move</code></p>
+<p>Moves the folder.</p>
+<p>This is relevant only if nested folders are enabled.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#folder-api">introduction</a> for an explanation.</p>
+<p>If moving the folder under another folder:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:create</code></td>
+          <td><code>folders:uid:&lt;destination folder UID&gt;</code><br><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>If moving the folder under root:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folders:create</code></td>
+          <td><code>folders:uid:general</code><br><code>folders:*</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>JSON body schema:</p>
+<ul>
+<li><strong>parentUid</strong> – Optional <a href="#identifier-id-vs-unique-identifier-uid">unique identifier</a> of the new parent folder. If this is empty, then the folder is moved under the root.</li>
+</ul>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/folders/a5393ec3-5568-4e88-8809-b866968ae8a6/move HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;parentUid&#34;: &#34;d80b18c0-266a-4aa4-ad5d-5537a00cb8e8&#34;,
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+	&#34;id&#34;: 4,
+	&#34;uid&#34;: &#34;a5393ec3-5568-4e88-8809-b866968ae8a6&#34;,
+	&#34;title&#34;: &#34;just-testing&#34;,
+	&#34;url&#34;: &#34;/dashboards/f/a5393ec3-5568-4e88-8809-b866968ae8a6/just-testing&#34;,
+	&#34;hasAcl&#34;: false,
+	&#34;canSave&#34;: true,
+	&#34;canEdit&#34;: true,
+	&#34;canAdmin&#34;: true,
+	&#34;canDelete&#34;: true,
+	&#34;createdBy&#34;: &#34;Anonymous&#34;,
+	&#34;created&#34;: &#34;2023-04-27T21:55:01.593741+03:00&#34;,
+	&#34;updatedBy&#34;: &#34;Anonymous&#34;,
+	&#34;updated&#34;: &#34;2023-04-27T21:55:15.747444+03:00&#34;,
+	&#34;parentUid&#34;: &#34;d80b18c0-266a-4aa4-ad5d-5537a00cb8e8&#34;,
+	&#34;parents&#34;: [
+		{
+			&#34;id&#34;: 2,
+			&#34;uid&#34;: &#34;d80b18c0-266a-4aa4-ad5d-5537a00cb8e8&#34;,
+			&#34;title&#34;: &#34;f0&#34;,
+			&#34;url&#34;: &#34;&#34;,
+			&#34;hasAcl&#34;: false,
+			&#34;canSave&#34;: true,
+			&#34;canEdit&#34;: true,
+			&#34;canAdmin&#34;: true,
+			&#34;canDelete&#34;: true,
+			&#34;createdBy&#34;: &#34;Anonymous&#34;,
+			&#34;created&#34;: &#34;2023-04-27T21:53:46.070672+03:00&#34;,
+			&#34;updatedBy&#34;: &#34;Anonymous&#34;,
+			&#34;updated&#34;: &#34;2023-04-27T21:53:46.070673+03:00&#34;
+		}
+	]
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Moved</li>
+<li><strong>400</strong> – Errors (invalid JSON, missing or invalid fields, and so on)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>404</strong> – Not found</li>
+</ul>

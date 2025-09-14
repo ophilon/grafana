@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<h1 id="news">News</h1>
+<p>The news visualization displays an RSS feed. By default, it displays articles from the Grafana Labs blog, but you can change this by entering a different RSS feed URL.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/news/news-visualization.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/news/news-visualization.png"data-srcset="/static/img/docs/news/news-visualization.png?w=320 320w, /static/img/docs/news/news-visualization.png?w=550 550w, /static/img/docs/news/news-visualization.png?w=750 750w, /static/img/docs/news/news-visualization.png?w=900 900w, /static/img/docs/news/news-visualization.png?w=1040 1040w, /static/img/docs/news/news-visualization.png?w=1240 1240w, /static/img/docs/news/news-visualization.png?w=1920 1920w"
+          data-sizes="auto"alt="A news visualization showing the latest Grafana news feed"width="2068"height="834"/>
+        <noscript>
+          <img
+            src="/static/img/docs/news/news-visualization.png"
+            alt="A news visualization showing the latest Grafana news feed"width="2068"height="834"/>
+        </noscript></div></a></figure>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In version 8.5, we discontinued the &ldquo;Use Proxy&rdquo; option for Grafana news visualizations. As a result, RSS feeds that are not configured for request by Grafana&rsquo;s frontend (with the appropriate <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS" target="_blank" rel="noopener noreferrer">CORS headers</a>) may not load.</p></blockquote></div>
+
+<p>You can use the news visualization to provide regular news and updates to your users.</p>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/cdodkwspaaa68b/" target="_blank" rel="noopener noreferrer">News Panel</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/cdodkwspaaa68b/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="configure-a-news-visualization">Configure a news visualization</h2>
+<p>After you’ve created a 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">dashboard</a>, enter the URL of an RSS in the <strong>URL</strong> field in the <strong>News</strong> section. This visualization type doesn&rsquo;t accept any other queries, and you shouldn&rsquo;t expect to be able to filter or query the RSS feed data in any way using this visualization.</p>
+<p>If you&rsquo;re having trouble loading an RSS feed, you can try rehosting the feed on a different server or using a CORS proxy. A CORS proxy is a tool that allows you to bypass CORS restrictions by making requests to the RSS feed on your behalf. You can find more information about using CORS proxies online.</p>
+<p>If you&rsquo;re unable to display an RSS feed using the news visualization, you can try using the community RSS/Atom data source plugin <a href="/grafana/plugins/volkovlabs-rss-datasource/">RSS/Atom data source</a> in combination with the Dynamic text community panel <a href="/grafana/plugins/marcusolsson-dynamictext-panel/">Dynamic text</a>. This will allow you to display the RSS feed in a different way.</p>
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>The news visualization supports RSS and Atom feeds.</p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="news-options">News options</h3>
+<p>Use the following options to refine your news visualization:</p>
+<ul>
+<li><strong>URL</strong> - The URL of the RSS or Atom feed.</li>
+<li><strong>Show image</strong> - Controls if the news social image is displayed beside the text content.</li>
+</ul>

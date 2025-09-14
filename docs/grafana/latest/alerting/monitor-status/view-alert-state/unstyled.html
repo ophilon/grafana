@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<h1 id="view-alert-state">View alert state</h1>
+<p>An alert rule and its corresponding alert instances can transition through distinct states during the alert rule evaluation.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alert-state-diagram2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alert-state-diagram2.png"data-srcset="/media/docs/alerting/alert-state-diagram2.png?w=320 320w, /media/docs/alerting/alert-state-diagram2.png?w=550 550w, /media/docs/alerting/alert-state-diagram2.png?w=750 750w, /media/docs/alerting/alert-state-diagram2.png?w=900 900w, /media/docs/alerting/alert-state-diagram2.png?w=1040 1040w, /media/docs/alerting/alert-state-diagram2.png?w=1240 1240w, /media/docs/alerting/alert-state-diagram2.png?w=1920 1920w"
+          data-sizes="auto"alt="A diagram of the distinct alert instance states and transitions."width="960"height="540"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-state-diagram2.png"
+            alt="A diagram of the distinct alert instance states and transitions."width="960"height="540"/>
+        </noscript></div></a></figure>
+<p>There are three key components that helps us understand the behavior of our alerts:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/nodata-and-error-states/#alert-instance-states">Alert Instance State</a>: Refers to the state of the individual alert instances.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/alert-rule-state-and-health/">Alert Rule State</a>: Determined by the &ldquo;worst state&rdquo; among its alert instances.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/alert-rule-state-and-health/">Alert Rule Health</a>: Indicates the status in cases of <code>Error</code> or <code>NoData</code> events.</li>
+</ul>
+<h2 id="view-alert-rule-and-instance-states">View alert rule and instance states</h2>
+<p>To view the details of your alert rules and the status of alert instances:</p>
+<ol>
+<li>
+<p>Click <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Alert rules</strong> to view the list of existing alert rules.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/alerting/view-alert-rule-list-with-actions2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/alerting/view-alert-rule-list-with-actions2.png"data-srcset="/media/docs/alerting/view-alert-rule-list-with-actions2.png?w=320 320w, /media/docs/alerting/view-alert-rule-list-with-actions2.png?w=550 550w, /media/docs/alerting/view-alert-rule-list-with-actions2.png?w=750 750w, /media/docs/alerting/view-alert-rule-list-with-actions2.png?w=900 900w, /media/docs/alerting/view-alert-rule-list-with-actions2.png?w=1040 1040w, /media/docs/alerting/view-alert-rule-list-with-actions2.png?w=1240 1240w, /media/docs/alerting/view-alert-rule-list-with-actions2.png?w=1920 1920w"
+             data-sizes="auto"alt="View alert rule state and alert rule health in Grafana Alerting"width="1368"height="754"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/view-alert-rule-list-with-actions2.png"
+               alt="View alert rule state and alert rule health in Grafana Alerting"width="1368"height="754"/>
+           </noscript></div></a></figure>
+<p>Each alert rule shows its state, summary, and available actions such as <strong>Pause evaluation</strong>, <strong>Silence notifications</strong>, <strong>Export</strong>, <strong>Delete</strong>, and more.</p>
+</li>
+<li>
+<p>Click on an alert rule to view additional details and its resulting alert instances.</p>
+</li>
+</ol>
+<h3 id="view-from-the-alert-rule-details-page">View from the alert rule details page</h3>
+<p>To view more alert rule details, complete the following steps.</p>
+<ol>
+<li>
+<p>Click <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Alert rules</strong>.</p>
+</li>
+<li>
+<p>Click to expand an alert rule.</p>
+</li>
+<li>
+<p>Click the alert name to go to the alert details view.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/alerting/alert-rule-view-page-with-breadcrumb.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/alerting/alert-rule-view-page-with-breadcrumb.png"data-srcset="/media/docs/alerting/alert-rule-view-page-with-breadcrumb.png?w=320 320w, /media/docs/alerting/alert-rule-view-page-with-breadcrumb.png?w=550 550w, /media/docs/alerting/alert-rule-view-page-with-breadcrumb.png?w=750 750w, /media/docs/alerting/alert-rule-view-page-with-breadcrumb.png?w=900 900w, /media/docs/alerting/alert-rule-view-page-with-breadcrumb.png?w=1040 1040w, /media/docs/alerting/alert-rule-view-page-with-breadcrumb.png?w=1240 1240w, /media/docs/alerting/alert-rule-view-page-with-breadcrumb.png?w=1920 1920w"
+             data-sizes="auto"alt="Alert rule view page in Grafana Alerting"width="1210"height="376"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/alert-rule-view-page-with-breadcrumb.png"
+               alt="Alert rule view page in Grafana Alerting"width="1210"height="376"/>
+           </noscript></div></a></figure>
+<p>The namespace and group are shown in the breadcrumb navigation. They are interactive and can be used to filter rules by namespace or group.</p>
+<p>The rest of the alert detail content is split up into tabs:</p>
+<p><strong>Query and conditions</strong></p>
+<p>View the details of the query that is used for the alert rule, including the expressions and intermediate values for each step of the expression pipeline. A graph view is included for range queries and data sources that return time series-like data frames.</p>
+<p><strong>Instances</strong></p>
+<p>Explore each alert instance, its status, labels and various other metadata for multi-dimensional alert rules.</p>
+<p>Use <strong>Search by label</strong> to enter search criteria using label selectors. For example, <code>environment=production,region=~US|EU,severity!=warning</code>.</p>
+<p><strong>History</strong></p>
+<p>Explore the recorded history for an alert rule. You can also filter by alert state.</p>
+<p><strong>Details</strong></p>
+<p>Debug or audit using the alert rule metadata and view the alert rule annotations.</p>
+</li>
+</ol>
+<h2 id="view-alert-state-on-panels">View alert state on panels</h2>
+<p>When an 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/link-alert-rules-to-panels/">alert rule is linked to a time series panel</a>, the time series panel displays the alert state and alert events.</p>
+<p>A heart icon near the panel title shows the current alert state:</p>
+<ul>
+<li>A broken red heart when the alert is in <code>Alerting</code> state.</li>
+<li>A green heart when the alert is in <code>Normal</code> state.</li>
+</ul>
+<p>Colored annotations indicate changes in alert state, such as pending, alerting, and resolving.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/panel-displays-alert-state.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/panel-displays-alert-state.png"data-srcset="/media/docs/alerting/panel-displays-alert-state.png?w=320 320w, /media/docs/alerting/panel-displays-alert-state.png?w=550 550w, /media/docs/alerting/panel-displays-alert-state.png?w=750 750w, /media/docs/alerting/panel-displays-alert-state.png?w=900 900w, /media/docs/alerting/panel-displays-alert-state.png?w=1040 1040w, /media/docs/alerting/panel-displays-alert-state.png?w=1240 1240w, /media/docs/alerting/panel-displays-alert-state.png?w=1920 1920w"
+          data-sizes="auto"alt="A panel with a firing alert and annotations that display the pending and alerting state changes."width="1674"height="700"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/panel-displays-alert-state.png"
+            alt="A panel with a firing alert and annotations that display the pending and alerting state changes."width="1674"height="700"/>
+        </noscript></div></a></figure>
+<p>Additionally, Grafana provides an 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/alert-list/">alert list panel</a> that you can add to a dashboard to display a list of alerts and their states.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 850px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/alert-list-panel/alert-list-panel.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/alert-list-panel/alert-list-panel.png"data-srcset="/static/img/docs/alert-list-panel/alert-list-panel.png?w=320 320w, /static/img/docs/alert-list-panel/alert-list-panel.png?w=550 550w, /static/img/docs/alert-list-panel/alert-list-panel.png?w=750 750w, /static/img/docs/alert-list-panel/alert-list-panel.png?w=900 900w, /static/img/docs/alert-list-panel/alert-list-panel.png?w=1040 1040w, /static/img/docs/alert-list-panel/alert-list-panel.png?w=1240 1240w, /static/img/docs/alert-list-panel/alert-list-panel.png?w=1920 1920w"
+          data-sizes="auto"alt="Two alert list panels displaying distinct lists of alerts."width="2773"height="683"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alert-list-panel/alert-list-panel.png"
+            alt="Two alert list panels displaying distinct lists of alerts."width="2773"height="683"/>
+        </noscript></div></a></figure>
+<p>You can configure the alert list panel with various visualization options and filters to control how alerts are displayed. For more details, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/alert-list/">Alert list documentation</a>.</p>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/000000074/" target="_blank" rel="noopener noreferrer">this demo dashboard with alert list panels and linked alert rules</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/000000074/">Try it</a>
+    </div>
+  </div>
+</div>
+

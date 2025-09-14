@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!-- vale GoogleWe = NO -->
+<!-- vale We = NO -->
+<h1 id="breaking-changes-in-grafana-v110">Breaking changes in Grafana v11.0</h1>
+<p>Following are breaking changes that you should be aware of when upgrading to Grafana v11.0.</p>
+<p>For our purposes, a breaking change is any change that requires users or operators to do something. This includes:</p>
+<ul>
+<li>Changes in one part of the system that could cause other components to fail</li>
+<li>Deprecations or removal of a feature</li>
+<li>Changes to an API that could break automation</li>
+<li>Changes that affect some plugins or functions of Grafana</li>
+<li>Migrations that can’t be rolled back</li>
+</ul>
+<p>For each change, the provided information:</p>
+<ul>
+<li>Helps you determine if you’re affected</li>
+<li>Describes the change or relevant background information</li>
+<li>Guides you in how to mitigate for the change or migrate</li>
+<li>Provides more learning resources</li>
+</ul>
+<p>For release highlights and deprecations, refer to our 
+    <a href="/docs/grafana/latest/whatsnew/whats-new-in-v11-0/">v11.0 What’s new</a>. For the specific steps we recommend when you upgrade to v11.0, check out our 
+    <a href="/docs/grafana/latest/upgrade-guide/upgrade-v11.0/">Upgrade guide</a>.</p>
+<!--
+## Feature
+
+You must use relative references when linking to docs within the Grafana repo. Please do not use absolute URLs. For more information about relrefs, refer to [Links and references](/docs/writers-toolkit/writing-guide/references/).-->
+<!-- Last copied from Google Doc March 26th 8:45pm -->
+<h2 id="users-and-operators">Users and Operators</h2>
+<h3 id="angularjs-support-is-turned-off-by-default">AngularJS support is turned off by default</h3>
+<h4 id="description">Description</h4>
+<p>In Grafana v11, support for the deprecated AngularJS framework is turned off by default for all self-managed (on-premise) and Cloud instances of Grafana. This prevents any data source or panel visualization which relies on AngularJS from being loaded, and therefore has the potential to significantly disrupt your dashboards. Support will be fully removed in the next major release of Grafana.</p>
+<h4 id="migrationmitigation">Migration/mitigation</h4>
+<p>To avoid disruption, ensure all plugins are up to date and migrate from any remaining AngularJS plugins to a React-based alternative. If a plugin relies on AngularJS, a warning icon and message will be displayed in the 
+    <a href="/docs/grafana/latest/administration/plugin-management/#plugin-catalog">plugins catalog</a> in Grafana and any dashboard panel where it&rsquo;s used. Additionally, a warning banner will appear in any impacted dashboards. A list of all impacted dashboards can also be generated using the <a href="https://github.com/grafana/detect-angular-dashboards" target="_blank" rel="noopener noreferrer"><code>detect-angular-dashboards</code></a> tool.</p>
+<p>Our 
+    <a href="/docs/grafana/latest/developers/angular_deprecation/angular-plugins/">documentation</a> lists all known public plugins and provides migration advice when possible.</p>
+<p>For self-managed users of Grafana and existing Grafana Cloud instances, you can temporarily re-enable support through the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#angular_support_enabled">configuration parameter</a>, <code>angular_support_enabled=false</code>. However, AngularJS-based plugins will not receive any further updates and we strongly recommend migration as soon as possible. This configuration parameter will also be removed in the next major release after Grafana v11.</p>
+<p>New Grafana Cloud users will be unable to request that support be added to their instance.</p>
+<h4 id="learn-more">Learn more</h4>
+<p>Refer to this <a href="/blog/2024/03/11/removal-of-angularjs-support-in-grafana-what-you-need-to-know/">blog post</a> for more information.</p>
+<h3 id="grafana-enterprise-anonymous-devices-are-billed-as-users">Grafana Enterprise: Anonymous devices are billed as users</h3>
+<h4 id="description-1">Description</h4>
+<p>Effective starting in Grafana v11, anonymous users are counted and charged as users in Grafana Enterprise. When you upgrade to v11, anonymous users will be automatically counted as active users against your Grafana Enterprise license.</p>
+<h4 id="migrationmitigation-1">Migration/mitigation</h4>
+<p>Turn off anonymous access, and consider using public dashboards to allow view-only access to publicly-accessible dashboards.</p>
+<h4 id="learn-more-1">Learn more</h4>
+<p>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/grafana/#anonymous-authentication">Anonymous access documentation</a></p>
+<h3 id="legacy-alerting-is-entirely-removed">Legacy alerting is entirely removed</h3>
+<p>Legacy alerting has reached its end-of-life. In Grafana v11 you can no longer enable legacy alerting, and Grafana will fail to start if the settings are not updated to run the new Grafana Alerting. This also means that starting in Grafana v11, it is no longer possible to migrate from legacy alerting to our new alerting. Grafana v10.4.x is the last version that offers migration, so make sure to migrate to the new Grafana Alerting system <em>before</em> upgrading to Grafana v11. Learn more about Grafana Alerting and the advantages of the new system in the <a href="/docs/grafana/v10.4/alerting/set-up/migrating-alerts/legacy-alerting-deprecation/">legacy alerting deprecation documentation</a>. Learn more about migration in the <a href="/docs/grafana/v10.4/alerting/set-up/migrating-alerts/">upgrade alerting documentation</a>.</p>
+<p>For more details on the code removal, review the following PRs:</p>
+<ul>
+<li><a href="https://github.com/grafana/grafana/pull/83651" target="_blank" rel="noopener noreferrer">https://github.com/grafana/grafana/pull/83651</a></li>
+<li><a href="https://github.com/grafana/grafana/issues/81268" target="_blank" rel="noopener noreferrer">https://github.com/grafana/grafana/issues/81268</a></li>
+</ul>
+<h3 id="deprecated-endpoints-and-fields-in-reporting-removed">Deprecated endpoints and fields in Reporting removed</h3>
+<h4 id="description-2">Description</h4>
+<p>In Grafana v11, support for deprecated endpoints and fields in <strong>Reporting</strong> related to the old scheduling format, email, and dashboard is fully removed. This prevents any calls to deprecated endpoints and passing in values to deprecated fields. This feature only affects Cloud and Enterprise customers who use the API to generate reports.</p>
+<h4 id="migrationmitigation-2">Migration/mitigation</h4>
+<p>Ensure deprecated endpoints are updated to new corresponding endpoints and deprecated fields are removed and replaced with new corresponding fields.</p>
+<h4 id="learn-more-2">Learn more</h4>
+<p>The 
+    <a href="/docs/grafana/latest/developers/http_api/reporting/">Reporting API documentation</a> lists all supported endpoints and fields.</p>
+<h3 id="change-custom-branding-public-dashboard-footer-behavior">Change custom branding public dashboard footer behavior</h3>
+<h4 id="description-3">Description</h4>
+<p>In Grafana v11, custom branding public dashboard footer behavior is changed to default to the Grafana logo if no footer logo or footer text is set. There is no option to hide the public dashboard footer anymore. This feature only affects Cloud Advanced and Enterprise customers.</p>
+<h4 id="migrationmitigation-3">Migration/mitigation</h4>
+<p>Ensure you have a public dashboard footer logo or footer text set if you don&rsquo;t want to display the default Grafana footer.</p>
+<h4 id="learn-more-3">Learn more</h4>
+<p>
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/configure-custom-branding/#custom-branding-for-shared-dashboards">Configure custom branding documentation</a> for public dashboards</p>
+<h3 id="subfolders-cause-very-rare-issues-with-folders-that-have-forward-slashes-in-their-names">Subfolders cause very rare issues with folders that have forward slashes in their names</h3>
+<h4 id="description-and-migrationmitigation">Description and migration/mitigation</h4>
+<p>The upgrade to enable subfolders can cause some issues with alerts in certain cases. If you&rsquo;ve previously set up a folder that uses a forward slash in its name, you have an alert rule in that folder, and the notification policy is set to match that folder&rsquo;s name, notifications will be sent to the default receiver instead of the configured receiver.</p>
+<p>In these cases, we recommend that you take these steps before the upgrade to enable subfolders:</p>
+<ul>
+<li>Create a copy of the affected routes and rewrite the matchers for the new copy. For example, if the original matcher was <code>grafana_folder=MyFolder/sub-folder</code>, then the new route matcher will be <code>grafana_folder=MyFolder\/sub-folder</code>.</li>
+<li>After enabling subfolders, you can delete the old routes.</li>
+</ul>
+<p>Please note that if you use file provisioning, you can upgrade and update the routes at the same time.</p>
+<h4 id="learn-more-4">Learn more</h4>
+<p>
+    <a href="/docs/grafana/latest/whatsnew/whats-new-in-v11-0/#subfolders">Subfolders announcement</a></p>
+<p><a href="https://github.com/grafana/grafana/pull/79793" target="_blank" rel="noopener noreferrer">Provisioning: Provision dashboards into subfolders PR</a></p>
+<h3 id="the-input-data-source-is-removed">The Input data source is removed</h3>
+<p>The direct input data source plugin has been removed in Grafana v11. It has been in alpha for four years and is superseded by 
+    <a href="/docs/grafana/latest/datasources/testdata/">TestData</a>, which ships with Grafana. This is a small deprecation.</p>
+<p>Review <a href="https://github.com/grafana/grafana/pull/83163" target="_blank" rel="noopener noreferrer">this PR</a> for details.</p>
+<h3 id="data-sources-query-filtering-changes">Data sources: Query filtering changes</h3>
+<p>The <strong>Disable query</strong> button in the query editor row has caused a lot of confusion among data source developers and end-users. Until now, it has been up to data source developers to filter out any hidden queries before or after they’re executed. Starting from Grafana v11, the tooltip of this button is changed from <strong>Disable query</strong> to <strong>Hide response/Show response</strong>. Responses that are associated with hidden queries will be removed by Grafana before they’re passed to the panel.</p>
+<p>Users of data source plugins that didn&rsquo;t previously remove hidden queries (before or after they were executed) will see a change of behavior as, previously, clicking the <strong>Disable query</strong> button had no impact on the query result. Starting from Grafana v11, responses associated with hidden queries are longer returned to the panel.</p>
+<p>We’re also moving the call to the <code>datasource.filterQuery</code> method to the query runner. This means that frontend-only data sources (or any data source that doesn&rsquo;t extend <code>DataSourceWithBackend</code> class) can implement this method. This streamlines data source plugin behavior, ensuring filtering works in the same way for all kinds of data source plugins.</p>
+<h4 id="migrationmitigation-4">Migration/mitigation</h4>
+<p>If data is missing in panels, make sure the query editor <strong>Hide response</strong> button is not clicked.</p>
+<p>For data sources that extend <code>DataSourceWithBackend</code>, the filterQuery method is now called before the data source query method. If the <code>filterQuery</code> method assumes that some kind of query migration happens before this method is called, you now need to do the migration inside this method too.</p>
+<h4 id="learn-more-5">Learn more</h4>
+<p><a href="https://github.com/grafana/grafana/pull/84656" target="_blank" rel="noopener noreferrer">GitHub PR</a></p>
+<h3 id="chore-query-oauth-info-from-a-new-instance">Chore: Query oauth info from a new instance</h3>
+<p>We&rsquo;ve added a validation between the response of the ID token HD parameter and the list of allowed domains as an extra layer of security. In the event that the HD parameter doesn&rsquo;t match the list of allowed domains, we&rsquo;re denying access to Grafana.</p>
+<p>If you set Google OAuth configuration using <code>api_url,</code> you might be using the legacy implementation of OAuth, which doesn&rsquo;t have the HD parameter describing the organization from which the approved token comes. This could break your login flow.</p>
+<p>You can turn off this feature through the configuration toggle <code>validate_hd </code>. Anyone using the legacy Google OAuth configuration should turn off this validation if the ID Token response doesn&rsquo;t have the HD parameter.</p>
+<p><a href="https://github.com/grafana/grafana/pull/83229" target="_blank" rel="noopener noreferrer">GitHub PR</a></p>
+<h3 id="changes-to-how-the-panel-view-url-is-generated-for-repeated-panels">Changes to how the panel view URL is generated for repeated panels</h3>
+<h4 id="description-4">Description</h4>
+<p>With the introduction of the Scenes library to dashboards, the URL that’s generated when viewing an individual repeated panel has changed. We’ve changed how these panels are referenced and what used to be <code>&amp;viewPanel=panel-5</code> is now <code>&amp;viewPanel=panel-3-clone1</code>.</p>
+<p>This means that the previous URLs won’t work anymore and instead you&rsquo;ll be redirected to the dashboard view and you&rsquo;ll get a <em>Panel not found</em> error. From this point on, the dashboard will continue to work as expected.</p>
+<h4 id="migrationmitigation-5">Migration/mitigation</h4>
+<p>Reopen the panel in view mode and you&rsquo;ll get the new URL.</p>
+<h2 id="plugin-developers">Plugin developers</h2>
+<h3 id="react-router-is-deprecated">React Router is deprecated</h3>
+<h4 id="description-5">Description</h4>
+<p>In Grafana v11 we&rsquo;re marking react-router v5 as deprecated. App plugins should start migrating to use react-router v6.</p>
+<h4 id="migrationmitigation-6">Migration/mitigation</h4>
+<p>For a complete guide, please follow our <a href="/developers/plugin-tools/migration-guides/update-from-grafana-versions/migrate-9_x-to-10_x#update-to-react-router-v6">migration docs on the developer portal</a>.</p>
+<h4 id="learn-more-6">Learn more</h4>
+<ul>
+<li>Grafana v9.x to v10.x <a href="/developers/plugin-tools/migration-guides/update-from-grafana-versions/migrate-9_x-to-10_x#update-to-react-router-v6">migration guide</a></li>
+<li>Official react-router v5 to v6 <a href="https://reactrouter.com/en/main/upgrading/v5" target="_blank" rel="noopener noreferrer">migration guide</a></li>
+<li>Grafana community forum <a href="https://community.grafana.com/t/migrating-app-plugins-to-use-react-router-v6/115410" target="_blank" rel="noopener noreferrer">topic</a></li>
+</ul>
+<h3 id="the-grafanae2e-testing-tool-is-deprecated">The grafana/e2e testing tool is deprecated</h3>
+<h4 id="description-6">Description</h4>
+<p>The Cypress based grafana/e2e end-to-end testing tool is now deprecated.</p>
+<h4 id="migrationmitigation-7">Migration/mitigation</h4>
+<p>We recommend all plugin authors to migrate their end-to-end tests to use the new Playwright-based <a href="https://www.npmjs.com/package/@grafana/plugin-e2e?activeTab=readme" target="_blank" rel="noopener noreferrer">grafana/plugin-e2e</a> package instead. Find details on how to migrate from grafana/e2e to grafana/plugin-e2e in the <a href="/developers/plugin-tools/e2e-test-a-plugin/migrate-from-grafana-e2e">migration guide</a>.</p>
+<h3 id="chore-taint-arrayvector-with-never-to-further-discourage">Chore: Taint ArrayVector with <code>never</code> to further discourage</h3>
+<p><a href="https://github.com/grafana/grafana/pull/83681" target="_blank" rel="noopener noreferrer">GitHub PR</a></p>
+<p>The Vector interface that was deprecated in Grafana v10 is further deprecated. Using it now generates build-time Typescript errors, but it remains working at runtime. If you&rsquo;re still using ArrayVector in your code, you should remove it immediately and replace it with plain arrays. Plugins that are compiled against older versions and depend on calling get/set will continue to work because the Array prototype still has a modified prototype. This will be removed in the future.</p>
+<h3 id="chore-remove-react-17-peer-deps">Chore: Remove React 17 peer deps</h3>
+<p><a href="https://github.com/grafana/grafana/pull/83524" target="_blank" rel="noopener noreferrer">GitHub PR</a></p>
+<p>We&rsquo;ve removed React 17 as a peer dependency from our packages. Anyone using the new versions of these packages should ensure they&rsquo;ve upgraded to React 18 following <a href="https://react.dev/blog/2022/03/08/react-18-upgrade-guide" target="_blank" rel="noopener noreferrer">the upgrade steps</a>.</p>
+<h3 id="chore-remove-systemjs-from-grafanaruntime">Chore: Remove SystemJS from Grafana/Runtime</h3>
+<p><a href="https://github.com/grafana/grafana/pull/84561" target="_blank" rel="noopener noreferrer">GitHub PR</a></p>
+<p>SystemJS is no longer exported from <code>@grafana/runtime</code>. Plugin developers should instead rely on importing modules/packages using standard TS import syntax and npm/yarn for package installation.</p>

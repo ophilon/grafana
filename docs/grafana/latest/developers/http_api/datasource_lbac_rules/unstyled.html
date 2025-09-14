@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<h1 id="data-source-lbac-rules-api">Data Source LBAC rules API</h1>
+<p>LBAC (Label-Based Access Control) rules can be set for teams.</p>
+<h2 id="get-lbac-rules-for-a-data-source">Get LBAC rules for a data source</h2>
+<p><code>GET /api/datasources/uid/:uid/lbac/teams</code></p>
+<p>Gets all existing LBAC rules for the data source with the given <code>uid</code>.</p>
+<p><strong>Required permissions</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>datasources:read</td>
+          <td>datasources:<em><br>datasources:uid:</em><br>datasources:uid:my_datasource (single data source)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>GET /api/datasources/uid/my_datasource/lbac/teams HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 131
+
+{
+  &#34;rules&#34;: [
+    {
+      &#34;teamUId&#34;: &#34;fdnd1pf4m9sxvc&#34;,
+      &#34;rules&#34;: [
+        &#34;{ service_name=\&#34;bigquery-sync-mysql\&#34; }&#34;
+      ]
+    },
+    {
+      &#34;teamUid&#34;: &#34;dfed1p2m9sxvfc&#34;,
+      &#34;rules&#34;: [
+        &#34;{ service_name=\&#34;api\&#34; }&#34;
+      ]
+    }
+  ]
+}</pre>
+<h2 id="update-lbac-rules-for-a-data-source">Update LBAC rules for a data source</h2>
+<p><code>PUT /api/datasources/uid/:uid/lbac/teams</code></p>
+<p>Updates LBAC rules for teams associated with the data source with the given <code>uid</code>. Here you submit a list of teams and the rules for each team.
+Deleting a team from the list will remove the team&rsquo;s LBAC rules. You have to submit all teams and their rules to be updated, to remove a team&rsquo;s rules, you have to submit the current list of rules without the team.</p>
+<p><strong>Required permissions</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>datasources:write</td>
+          <td>datasources:<em><br>datasources:uid:</em><br>datasources:uid:my_datasource (single data source)</td>
+      </tr>
+      <tr>
+          <td>datasources.permissions:write</td>
+          <td>datasources:<em><br>datasources:uid:</em><br>datasources:uid:my_datasource (single data source)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples-1">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>PUT /api/datasources/uid/my_datasource/lbac/teams
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;rules&#34;: [
+    {
+      &#34;teamUId&#34;: &#34;fdnd1pf4m9sxvc&#34;,
+      &#34;rules&#34;: [
+        &#34;{ service_name=\&#34;bigquery-sync-mysql\&#34; }&#34;
+      ]
+    },
+    {
+      &#34;teamUid&#34;: &#34;dfed1p2m9sxvfc&#34;,
+      &#34;rules&#34;: [
+        &#34;{ service_name=\&#34;api\&#34; }&#34;
+      ]
+    }
+  ]
+}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 35
+
+{
+  &#34;id&#34;: 1,
+  &#34;message&#34;: &#34;Data source LBAC rules updated&#34;,
+  &#34;name&#34;: &#34;loki&#34;,
+  &#34;rules&#34;: [
+    {
+      &#34;teamUId&#34;: &#34;fdnd1pf4m9sxvc&#34;,
+      &#34;rules&#34;: [
+        &#34;{ service_name=\&#34;bigquery-sync-mysql\&#34; }&#34;
+      ]
+    },
+    {
+      &#34;teamUid&#34;: &#34;dfed1p2m9sxvfc&#34;,
+      &#34;rules&#34;: [
+        &#34;{ service_name=\&#34;api\&#34; }&#34;
+      ]
+    }
+  ],
+  &#34;uid&#34;: &#34;ee1nm1t7spog0e&#34;,
+}</pre>

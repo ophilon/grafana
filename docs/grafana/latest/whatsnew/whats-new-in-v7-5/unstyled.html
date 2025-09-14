@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v75">What&rsquo;s new in Grafana v7.5</h1>
+<p>This topic includes the release notes for Grafana v7.5. For all details, read the full <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a>.</p>
+<h2 id="grafana-oss-features">Grafana OSS features</h2>
+<p>These features are included in the Grafana open source edition.</p>
+<h3 id="pie-chart-panel-visualization-beta">Pie chart panel visualization (beta)</h3>
+<p>Grafana 7.5 adds a beta version of the next-generation pie chart panel.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/pie-chart-panel/pie-chart-panel-7-5.png"
+  alt="Pie chart panel" width="967"
+     height="430"/></p>
+<p>For more information, refer to <a href="../../panels-visualizations/visualizations/pie-chart/">Pie chart panel</a>.</p>
+<h3 id="alerting-for-loki">Alerting for Loki</h3>
+<p>Grafana 7.5 comes with alerting support for Loki. With LogQL you can wrap a log query with the functions that allow for creating metrics out of the logs, such as &ldquo;rate()&rdquo;. Metric queries can then be used to calculate things such as the rate of error messages. <a href="https://www.youtube.com/watch?v=H9z2V0Ib1q0" target="_blank" rel="noopener noreferrer">When combined with log parsers</a>, they can be used to calculate metrics from a value within the log line, such latency or request size.</p>
+<p>With alerting support for Loki, you can now create alerts on Loki metrics queries.</p>
+<p><a href="../../alerting/">Alerting</a> was updated as a result of this change.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/alerting/alerting-for-loki-7-5.png"
+  alt="Loki alerting" width="512"
+     height="292"/></p>
+<h3 id="loki-label-browser">Loki label browser</h3>
+<p>A new Loki logs browser lets you construct the queries step by step: you choose labels that you like to consider, such as &ldquo;job&rdquo;, then you select the values that you like, such as &ldquo;my-app1&rdquo;. Note that you can select values from more than one label, and that they get facetted. This means only possible label combinations are selectable. When you&rsquo;re done, you can run the query either as a logs or a metrics query (a metrics query returns the log volume in a chart).</p>
+<h3 id="changed-default-http-method-for-new-prometheus-data-sources">Changed default HTTP method for new Prometheus data sources</h3>
+<p>For new Prometheus data sources, we have changed the default HTTP method to POST. POST allows for much larger query bodies than using the GET method. This is necessary when sending queries from graphs with a lot of targets, for example, many hosts in a dashboard variable. The POST method also makes the Query Inspector data easier to read since the query is in plain text whereas the GET query is URL encoded.</p>
+<blockquote>
+<p><strong>Note:</strong> This is not going to affect provisioned data sources or already created data sources.</p></blockquote>
+<p><a href="../../datasources/prometheus/">Prometheus data source</a> was updated as a result of this change.</p>
+<h3 id="word-highlighting-for-elasticsearch">Word highlighting for Elasticsearch</h3>
+<p>When searching for text in Elasticsearch logs, matching words in the log line returned by the query are now highlighted.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/elasticsearch/elastic-word-highlighting-7-5.png"
+  alt="Elastic logs highlighting" width="512"
+     height="290"/></p>
+<h3 id="better-format-definition-for-trace-data">Better format definition for trace data</h3>
+<p>In Grafana 7.5, we changed how data for the trace view is sent from the data source. The required data frame has a clear format, which is more aligned with how data is generally represented in Grafana. This makes it easier for third-party developers to implement data sources leveraging the trace view.</p>
+<p>For more information, refer to <a href="../../explore/trace-integration/#data-api">trace data API docs</a>.</p>
+<h3 id="paste-in-ssl-certs-for-postgres-data-source">Paste in SSL certs for Postgres data source</h3>
+<p>Previously, when users wanted to configure the Postgres data source to connect with SSL certification, they needed to put the certification on the server, and configure the data source with file path.</p>
+<p>Instead of the file path, users can now paste the SSL certification content in the UI. This allows them to configure the certification even when they do not have access to the server.</p>
+<blockquote>
+<p><strong>Note:</strong> It remains as limitation for the Grafana Cloud, as users may not have access to the server configuration.</p></blockquote>
+<p><a href="../../datasources/postgres/">Postgres data source</a> and <a href="../../administration/provisioning/">Provisioning</a> were updated as a result of this change.</p>
+<h3 id="deprecation-notice-for-some-azure-monitor-queries">Deprecation notice for some Azure Monitor queries</h3>
+<p>In the upcoming Grafana 8.0 release, Application Insights and Insights Analytics query types within the Azure Monitor data source will be deprecated and be made read-only in favor of querying Application Insights from Metrics and Logs.</p>
+<p>Grafana 7.5 includes a deprecation notice for these queries, and some documentation to help users prepare for the upcoming changes.</p>
+<p>For more information, refer to <a href="../../datasources/azure-monitor/#application-insights-and-insights-analytics--removed-">Deprecating Application Insights and Insights Analytics</a>.</p>
+<h3 id="cloudwatch-data-source-enhancements">Cloudwatch data source enhancements</h3>
+<ul>
+<li>
+<p>Support for region eu-south-1 has been added to the CloudWatch data source. New metrics have also been added to the namespaces AWS/Timestream, AWS/RDS (RDS Proxy metrics), AWS/NetworkFirewall, AWS/GroundStation, and AWS/DDoSProtection. Many thanks to <a href="https://github.com/relvira" target="_blank" rel="noopener noreferrer">relvira</a>, <a href="https://github.com/ilyastoli" target="_blank" rel="noopener noreferrer">ilyastoli</a>, and <a href="https://github.com/rubycut" target="_blank" rel="noopener noreferrer">rubycut</a> for contributing!</p>
+</li>
+<li>
+<p>Added a page limit to the List Metrics API call to improve speed and reduce memory consumption. You can change this limit by entering a higher value in <a href="../../setup-grafana/configure-grafana/#list-metrics-page-limit">list_metrics_page_limit</a> in the Grafana configuration file.</p>
+</li>
+<li>
+<p>You can now enable or disable authentication providers and assume a role other than default by changing the <a href="../../setup-grafana/configure-grafana/#allowed_auth_providers">allowed_auth_providers</a> and <a href="../../setup-grafana/configure-grafana/#assume_role_enabled">assume_role_enabled</a> options in the Grafana configuration file. By default, the allowed authentication providers are <em>AWS SDK Default</em>, <em>Access and secret key</em>, and <em>Credentials File</em>, and role is <em>Assume role (ARN)</em>.</p>
+</li>
+<li>
+<p>You can now specify a custom endpoint in the CloudWatch data source configuration page. This field is optional, and if it is left empty, then the default endpoint for CloudWatch is used. By specifying a regional endpoint, you can reduce request latency.</p>
+<p><a href="../../datasources/aws-cloudwatch/">AWS Cloudwatch data source</a> was updated as a result of this change.</p>
+</li>
+</ul>
+<h3 id="increased-api-limit-for-cloudmonitoring-services">Increased API limit for CloudMonitoring Services</h3>
+<p>In previous versions, when querying metrics for Service Level Objectives (SLOs) in the CloudMonitoring data source, only the first 100 services were listed in the <strong>Service</strong> field list. To overcome this issue, the API limit for listing services has been increased to 1000.</p>
+<h3 id="tempo-as-a-backend-data-source">Tempo as a backend data source</h3>
+<p>We have converted Tempo to a backend data source and dropped support for tempo-query&rsquo;s (Jaeger) response. To configure it, you can now point to the port that is set in the Tempo configuration file.</p>
+<pre>server:
+  http_listen_port: 3101</pre>
+<p><a href="../../datasources/azure-monitor/">Azure Monitor data source</a> was updated as a result of this change.</p>
+<h2 id="enterprise-features">Enterprise features</h2>
+<p>These features are included in the Grafana Enterprise edition.</p>
+<h3 id="query-caching">Query caching</h3>
+<p>When caching is enabled, Grafana temporarily stores the results of data source queries. When you or another user submit the same query again, the results return from the cache instead of from the data source (such as Splunk or ServiceNow).</p>
+<p>Query caching advantages:</p>
+<ul>
+<li>Faster dashboard load times, especially for popular dashboards.</li>
+<li>Reduced API costs.</li>
+<li>Reduced likelihood that APIs will rate-limit or throttle requests.</li>
+</ul>
+<p>Caching currently works for all backend data sources. You can enable the cache globally or per data source, and you can configure the cache duration per data source. The cache is currently in-memory.</p>
+<p>For more information, refer to <a href="../../administration/data-source-management/#query-and-resource-caching">Query caching</a>.</p>
+<h3 id="use-template-variable-in-reports">Use template variable in reports</h3>
+<p>If you have created dashboards with template variables, then you can choose which values are selected when rendering a report. This makes it easier to tailor reports to their audience or generate multiple reports from the same dashboard.</p>
+<p>Enable this feature in configuration settings using the <code>templateVariables</code> flag.</p>
+<p>For more information, refer to <a href="../../dashboards/share-dashboards-panels/#choose-template-variables">Reporting</a>.</p>
+<h3 id="active-user-limits">Active user limits</h3>
+<p>If a Grafana instance has exceeded its licensed number of active users, then non-active users who try to sign in to Grafana will be prevented from doing so. Active users are users who have logged in to Grafana in the past 30 days. The total number of users registered in Grafana does not affect this rule. This enforcement is applied separately for Viewers and for Editor/Admins, so if you reach your active Viewer limit, new Editor/Admins will still be able to sign in. This rule also includes a 10% buffer, meaning that you need to exceed your limit by 10% before users are prevented from signing in.</p>
+<p>Here is an example:</p>
+<p>A Grafana Enterprise instance includes 100 Viewers and 50 Editor/Admins. Over the course of the last 30 days, 110 Viewers and 20 Editor/Admins have signed in to Grafana.</p>
+<p>All of the Viewers who have signed in over the past 30 days will retain the ability to sign in.</p>
+<p>When a previously-inactive Viewer (someone who has not signed in over the past 30 days) tries to sign in, they will see a message and be prevented from signing in until the number of active users dips back below 110. New Editor/Admins are not affected by this; they can continue to sign in until the number of active Editors/Admins reaches 55.</p>
+<p>If you try to sign in to a fourth device or browser, then you will be prevented from doing so; the limit of concurrent sessions is three.</p>
+<p>If you sign in to a fourth device or browser, then you will be signed out of the session that is least current.
+Concurrent session limits
+Each Grafana Enterprise user will be limited to three concurrent user sessions. When a user opens a fourth session, then the longest-inactive session will be automatically signed out.</p>
+<p>A new session is created when you sign in to Grafana from a different device or a different browser. Multiple windows and tabs in the same browser are all part of the same session, so having many Grafana tabs open will not cause any issues.</p>
+<p>For more information on Grafana Enterprise licensing and restrictions, refer to <a href="../../administration/enterprise-licensing/#license-restrictions">License restrictions</a>.</p>
+<h2 id="breaking-changes">Breaking changes</h2>
+<p>There are no known breaking changes in this release.</p>
+<h2 id="updated-configuration">Updated configuration</h2>
+<pre>[server]
+read_timeout = 0</pre>
+<p>Sets the maximum time using a duration format (5s/5m/5ms) before timing out read of an incoming request and closing idle connections.
+<code>0</code> means there is no timeout for reading the request.</p>

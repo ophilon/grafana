@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<h1 id="configure-security-hardening">Configure security hardening</h1>
+<p>Security hardening enables you to apply additional security, which can help stop certain vulnerabilities from being exploited by a malicious attacker.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>These settings are available in the <a href="../../configure-grafana/#configuration-file-location">grafana.ini configuration file</a>. To apply changes to the configuration file, restart the Grafana server.</p></blockquote></div>
+
+<h2 id="additional-security-for-cookies">Additional security for cookies</h2>
+<p>If Grafana uses HTTPS, you can further secure the cookie that the system uses to authenticate access to the web UI. By applying additional security to the cookie, you might mitigate certain attacks that result from an attacker obtaining the cookie value.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana must use HTTPS for the following configurations to work properly.</p></blockquote></div>
+
+<h3 id="add-a-secure-attribute-to-cookies">Add a secure attribute to cookies</h3>
+<p>To provide mitigation against some MITM attacks, add the <code>Secure</code> attribute to the cookie that is used to authenticate users. This attribute forces users only to send the cookie over a valid HTTPS secure connection.</p>
+<p>Example:</p>
+<pre>[security]
+# Set to true if you host Grafana behind HTTPS. The default value is false.
+cookie_secure = true</pre>
+<h3 id="add-a-samesite-attribute-to-cookies">Add a SameSite attribute to cookies</h3>
+<p>To mitigate almost all CSRF-attacks, set the <em>cookie_samesite</em> option to <code>strict</code>. This setting prevents clients from sending the cookie in requests that are made cross-site, but only from the site that creates the cookie.</p>
+<p>Example:</p>
+<pre>[security]
+# set cookie SameSite attribute. defaults to `lax`. can be set to &#34;lax&#34;, &#34;strict&#34;, &#34;none&#34; and &#34;disabled&#34;
+cookie_samesite = strict</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>By setting the SameSite attribute to &ldquo;strict,&rdquo; only the user clicks within a Grafana instance work. The default option, &ldquo;lax,&rdquo; does not produce this behavior.</p></blockquote></div>
+
+<h3 id="add-a-prefix-to-cookie-names">Add a prefix to cookie names</h3>
+<p>You can further secure the cookie authentication by adding a <a href="https://googlechrome.github.io/samples/cookie-prefixes/" target="_blank" rel="noopener noreferrer">Cookie Prefix</a>. Cookies without a special prefix can be overwritten in a man-in-the-middle attack, even if the site uses HTTPS. A cookie prefix forces clients only to accept the cookie if certain criteria are met.
+Add a prefix to the current cookie name with either <code>__Secure-</code> or <code>__Host-</code> where the latter provides additional protection by only allowing the cookie to be created from the host that sent the Set-Cookie header.</p>
+<p>Example:</p>
+<pre>[auth]
+# Login cookie name
+login_cookie_name = __Host-grafana_session</pre>
+<h2 id="security-headers">Security headers</h2>
+<p>Grafana includes a few additional headers that you can configure to help mitigate against certain attacks, such as XSS.</p>
+<h3 id="add-a-content-security-policy">Add a Content Security Policy</h3>
+<p>A content security policy (CSP) is an HTTP response header that controls how the web browser handles content, such as allowing inline scripts to execute or loading images from certain domains. The default CSP template is already configured to provide sufficient protection against some attacks. This makes it more difficult for attackers to execute arbitrary JavaScript if such a vulnerability is present.</p>
+<p>Example:</p>
+<pre>[security]
+# Enable adding the Content-Security-Policy header to your requests.
+# CSP enables you to control the resources the user agent can load and helps prevent XSS attacks.
+content_security_policy = true
+
+# Set the Content Security Policy template that is used when the Content-Security-Policy header is added to your requests.
+# $NONCE in the template includes a random nonce.
+# $ROOT_PATH is server.root_url without the protocol.
+content_security_policy_template = &#34;&#34;&#34;script-src &#39;self&#39; &#39;unsafe-eval&#39; &#39;unsafe-inline&#39; &#39;strict-dynamic&#39; $NONCE;object-src &#39;none&#39;;font-src &#39;self&#39;;style-src &#39;self&#39; &#39;unsafe-inline&#39; blob:;img-src * data:;base-uri &#39;self&#39;;connect-src &#39;self&#39; grafana.com ws://$ROOT_PATH wss://$ROOT_PATH;manifest-src &#39;self&#39;;media-src &#39;none&#39;;form-action &#39;self&#39;;&#34;&#34;&#34;</pre>
+<h3 id="enable-trusted-types">Enable trusted types</h3>
+<p><strong>Currently in development. <a href="https://github.com/w3c/trusted-types/blob/main/explainer.md" target="_blank" rel="noopener noreferrer">Trusted types</a> is an experimental Javascript API with <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types#browser_compatibility" target="_blank" rel="noopener noreferrer">limited browser support</a>.</strong></p>
+<p>Trusted types reduce the risk of DOM XSS by enforcing developers to sanitize strings that are used in injection sinks, such as setting <code>innerHTML</code> on an element. Furthermore, when enabling trusted types, these injection sinks need to go through a policy that will sanitize, or leave the string intact and return it as &ldquo;safe&rdquo;. This provides some protection from client side injection vulnerabilities in third party libraries, such as jQuery, Angular and even third party plugins.</p>
+<p>To enable trusted types in enforce mode, where injection sinks are automatically sanitized:</p>
+<ul>
+<li>Enable <code>content_security_policy</code> in the configuration.</li>
+<li>Add <code>require-trusted-types-for 'script'</code> to the <code>content_security_policy_template</code> in the configuration.</li>
+</ul>
+<p>To enable trusted types in report mode, where inputs that have not been sanitized with trusted types will be logged to the console:</p>
+<ul>
+<li>Enable <code>content_security_policy_report_only</code> in the configuration.</li>
+<li>Add <code>require-trusted-types-for 'script'</code> to the <code>content_security_policy_report_only_template</code> in the configuration.</li>
+</ul>
+<p>As this is a feature currently in development, things may break. If they do, or if you have any other feedback, feel free to <a href="https://github.com/grafana/grafana/issues/new/choose" target="_blank" rel="noopener noreferrer">open an issue</a>.</p>
+<h2 id="additional-security-hardening">Additional security hardening</h2>
+<p>The Grafana server has several built-in security features that you can opt-in to enhance security. This section describes additional techniques you can use to harden security.</p>
+<h3 id="hide-the-version-number">Hide the version number</h3>
+<p>If set to <code>true</code>, the Grafana server hides the running version number for unauthenticated users. Version numbers might reveal if you are running an outdated and vulnerable version of Grafana.</p>
+<p>Example:</p>
+<pre>[auth.anonymous]
+# mask the Grafana version number for unauthenticated users
+hide_version = true</pre>
+<h3 id="enable-auth-for-metrics">Enable auth for metrics</h3>
+<p>By default, metrics from Grafana itself can be accessed without authentication. This can lead to information leakage.</p>
+<p>Example:</p>
+<pre>[metrics]
+# If both are set, basic auth will be required for the metrics endpoints
+basic_auth_username =
+basic_auth_password =</pre>
+<h3 id="enforce-domain-verification">Enforce domain verification</h3>
+<p>If set to <code>true</code>, the Grafana server redirects requests that have a Host-header value that is mismatched to the actual domain. This might help to mitigate some DNS rebinding attacks.</p>
+<p>Example:</p>
+<pre>[server]
+# Redirect to correct domain if host header does not match domain
+# Prevents DNS rebinding attacks
+enforce_domain = true</pre>

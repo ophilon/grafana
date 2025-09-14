@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<h1 id="folderdashboard-search-api">Folder/Dashboard Search API</h1>
+<h2 id="search-folders-and-dashboards">Search folders and dashboards</h2>
+<p><code>GET /api/search/</code></p>
+<blockquote>
+<p>Note: When using <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">Role-based access control</a>, search results will contain only dashboards and folders which you have access to.</p></blockquote>
+<p>Query parameters:</p>
+<ul>
+<li><strong>query</strong> – Search Query</li>
+<li><strong>tag</strong> – List of tags to search for</li>
+<li><strong>type</strong> – Type to search for, <code>dash-folder</code> or <code>dash-db</code></li>
+<li><strong>dashboardIds</strong> – List of dashboard id&rsquo;s to search for</li>
+<li><strong>dashboardUID</strong> - List of dashboard uid&rsquo;s to search for, It is deprecated since Grafana v9.1, please use dashboardUIDs instead</li>
+<li><strong>dashboardUIDs</strong> – List of dashboard uid&rsquo;s to search for</li>
+<li><strong>folderUIDs</strong> – List of folder UIDs to search in</li>
+<li><strong>starred</strong> – Flag indicating if only starred Dashboards should be returned</li>
+<li><strong>limit</strong> – Limit the number of returned results (max is 5000; default is 1000)</li>
+<li><strong>page</strong> – Use this parameter to access hits beyond limit. Numbering starts at 1. limit param acts as page size.</li>
+</ul>
+<p><strong>Example request for retrieving folders and dashboards at the root level</strong>:</p>
+<pre>GET /api/search?query=&amp;starred=false HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response for retrieving folders and dashboards at the root level</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;: 163,
+    &#34;uid&#34;: &#34;000000163&#34;,
+    &#34;orgId&#34;: 1,
+    &#34;title&#34;: &#34;Folder&#34;,
+    &#34;url&#34;: &#34;/dashboards/f/000000163/folder&#34;,
+    &#34;type&#34;: &#34;dash-folder&#34;,
+    &#34;tags&#34;: [],
+    &#34;isStarred&#34;: false,
+    &#34;uri&#34;:&#34;db/folder&#34; // deprecated in Grafana v5.0
+  },
+  {
+    &#34;id&#34;:1,
+    &#34;uid&#34;: &#34;cIBgcSjkk&#34;,
+    &#34;orgId&#34;: 1,
+    &#34;title&#34;:&#34;Production Overview&#34;,
+    &#34;url&#34;: &#34;/d/cIBgcSjkk/production-overview&#34;,
+    &#34;type&#34;:&#34;dash-db&#34;,
+    &#34;tags&#34;:[prod],
+    &#34;isStarred&#34;:true,
+    &#34;uri&#34;:&#34;db/production-overview&#34; // deprecated in Grafana v5.0
+  }
+]</pre>
+<p><strong>Example request searching for dashboards</strong>:</p>
+<pre>GET /api/search?query=Production%20Overview&amp;starred=true&amp;tag=prod HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response searching for dashboards</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;:1,
+    &#34;uid&#34;: &#34;cIBgcSjkk&#34;,
+    &#34;orgId&#34;: 1,
+    &#34;title&#34;:&#34;Production Overview&#34;,
+    &#34;url&#34;: &#34;/d/cIBgcSjkk/production-overview&#34;,
+    &#34;type&#34;:&#34;dash-db&#34;,
+    &#34;tags&#34;:[prod],
+    &#34;isStarred&#34;:true,
+    &#34;folderId&#34;: 2,
+    &#34;folderUid&#34;: &#34;000000163&#34;,
+    &#34;folderTitle&#34;: &#34;Folder&#34;,
+    &#34;folderUrl&#34;: &#34;/dashboards/f/000000163/folder&#34;,
+    &#34;uri&#34;:&#34;db/production-overview&#34; // deprecated in Grafana v5.0
+  }
+]</pre>

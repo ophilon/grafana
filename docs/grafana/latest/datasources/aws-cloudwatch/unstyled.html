@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<h1 id="amazon-cloudwatch-data-source">Amazon CloudWatch data source</h1>
+<p>Grafana ships with built-in support for Amazon CloudWatch.
+This topic describes queries, templates, variables, and other configuration specific to the CloudWatch data source.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.
+Only users with the organization administrator role can add data sources.
+Administrators can also <a href="#provision-the-data-source">provision the data source</a> with Grafana&rsquo;s provisioning system, and should <a href="#control-pricing">control pricing</a> and <a href="#manage-service-quotas">manage service quotas</a> accordingly.</p>
+<p>Once you&rsquo;ve added the data source, you can <a href="#configure-the-data-source">configure it</a> so that your Grafana instance&rsquo;s users can create queries in its <a href="query-editor/">query editor</a> when they 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build dashboards</a> and use 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To troubleshoot issues while setting up the CloudWatch data source, check the <code>/var/log/grafana/grafana.log</code> file.</p></blockquote></div>
+
+<h2 id="configure-the-data-source">Configure the data source</h2>
+<ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>CloudWatch</code> in the search bar.</p>
+</li>
+<li>
+<p>Click <strong>CloudWatch</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+</ol>
+<h3 id="configure-aws-authentication">Configure AWS authentication</h3>
+<p>A Grafana plugin&rsquo;s requests to AWS are made on behalf of an AWS Identity and Access Management (IAM) role or IAM user.
+The IAM user or IAM role must have the associated policies to perform certain API actions.</p>
+<p>For authentication options and configuration details, refer to <a href="aws-authentication/">AWS authentication</a>.</p>
+<h4 id="iam-policy-examples">IAM policy examples</h4>
+<p>To read CloudWatch metrics and EC2 tags, instances, regions, and alarms, you must grant Grafana permissions via IAM.
+You can attach these permissions to the IAM role or IAM user you configured in <a href="aws-authentication/">AWS authentication</a>.</p>
+<h5 id="metrics-only-permissions">Metrics-only permissions</h5>
+<pre>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Sid&#34;: &#34;AllowReadingMetricsFromCloudWatch&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [
+        &#34;cloudwatch:DescribeAlarmsForMetric&#34;,
+        &#34;cloudwatch:DescribeAlarmHistory&#34;,
+        &#34;cloudwatch:DescribeAlarms&#34;,
+        &#34;cloudwatch:ListMetrics&#34;,
+        &#34;cloudwatch:GetMetricData&#34;,
+        &#34;cloudwatch:GetInsightRuleReport&#34;
+      ],
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingTagsInstancesRegionsFromEC2&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [&#34;ec2:DescribeTags&#34;, &#34;ec2:DescribeInstances&#34;, &#34;ec2:DescribeRegions&#34;],
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingResourcesForTags&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;tag:GetResources&#34;,
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingResourceMetricsFromPerformanceInsights&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;pi:GetResourceMetrics&#34;,
+      &#34;Resource&#34;: &#34;*&#34;
+    }
+  ]
+}</pre>
+<h5 id="logs-only-permissions">Logs-only permissions</h5>
+<pre>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Sid&#34;: &#34;AllowReadingLogsFromCloudWatch&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [
+        &#34;logs:DescribeLogGroups&#34;,
+        &#34;logs:GetLogGroupFields&#34;,
+        &#34;logs:StartQuery&#34;,
+        &#34;logs:StopQuery&#34;,
+        &#34;logs:GetQueryResults&#34;,
+        &#34;logs:GetLogEvents&#34;
+      ],
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingTagsInstancesRegionsFromEC2&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [&#34;ec2:DescribeTags&#34;, &#34;ec2:DescribeInstances&#34;, &#34;ec2:DescribeRegions&#34;],
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingResourcesForTags&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;tag:GetResources&#34;,
+      &#34;Resource&#34;: &#34;*&#34;
+    }
+  ]
+}</pre>
+<h5 id="metrics-and-logs-permissions">Metrics and logs permissions</h5>
+<pre>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Sid&#34;: &#34;AllowReadingMetricsFromCloudWatch&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [
+        &#34;cloudwatch:DescribeAlarmsForMetric&#34;,
+        &#34;cloudwatch:DescribeAlarmHistory&#34;,
+        &#34;cloudwatch:DescribeAlarms&#34;,
+        &#34;cloudwatch:ListMetrics&#34;,
+        &#34;cloudwatch:GetMetricData&#34;,
+        &#34;cloudwatch:GetInsightRuleReport&#34;
+      ],
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingResourceMetricsFromPerformanceInsights&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;pi:GetResourceMetrics&#34;,
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingLogsFromCloudWatch&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [
+        &#34;logs:DescribeLogGroups&#34;,
+        &#34;logs:GetLogGroupFields&#34;,
+        &#34;logs:StartQuery&#34;,
+        &#34;logs:StopQuery&#34;,
+        &#34;logs:GetQueryResults&#34;,
+        &#34;logs:GetLogEvents&#34;
+      ],
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingTagsInstancesRegionsFromEC2&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [&#34;ec2:DescribeTags&#34;, &#34;ec2:DescribeInstances&#34;, &#34;ec2:DescribeRegions&#34;],
+      &#34;Resource&#34;: &#34;*&#34;
+    },
+    {
+      &#34;Sid&#34;: &#34;AllowReadingResourcesForTags&#34;,
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;tag:GetResources&#34;,
+      &#34;Resource&#34;: &#34;*&#34;
+    }
+  ]
+}</pre>
+<h5 id="cross-account-observability-permissions">Cross-account observability permissions</h5>
+<pre>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Action&#34;: [&#34;oam:ListSinks&#34;, &#34;oam:ListAttachedLinks&#34;],
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Resource&#34;: &#34;*&#34;
+    }
+  ]
+}</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Cross-account observability lets you to retrieve metrics and logs across different accounts in a single region but you can&rsquo;t query EC2 Instance Attributes across accounts because those come from the EC2 API and not the CloudWatch API.</p></blockquote></div>
+
+<h3 id="configure-cloudwatch-settings">Configure CloudWatch settings</h3>
+<h4 id="namespaces-of-custom-metrics">Namespaces of Custom Metrics</h4>
+<p>Grafana can&rsquo;t load custom namespaces through the CloudWatch <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html" target="_blank" rel="noopener noreferrer">GetMetricData API</a>.</p>
+<p>To make custom metrics appear in the data source&rsquo;s query editor fields, specify the names of the namespaces containing the custom metrics in the data source configuration&rsquo;s <em>Namespaces of Custom Metrics</em> field.
+The field accepts multiple namespaces separated by commas.</p>
+<h4 id="timeout">Timeout</h4>
+<p>Configure the timeout specifically for CloudWatch Logs queries.</p>
+<p>Log queries don&rsquo;t keep a single request open, and instead periodically poll for results.
+Therefore, they don&rsquo;t recognize the standard Grafana query timeout.
+Because of limits on concurrently running queries in CloudWatch, they can also take longer to finish.</p>
+<h4 id="x-ray-trace-links">X-Ray trace links</h4>
+<p>To automatically add links in your logs when the log contains the <code>@xrayTraceId</code> field, link an X-Ray data source in the &ldquo;X-Ray trace link&rdquo; section of the data source configuration.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png"data-srcset="/static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png?w=320 320w, /static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png?w=550 550w, /static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png?w=750 750w, /static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png?w=900 900w, /static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png?w=1040 1040w, /static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png?w=1240 1240w, /static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace link configuration"width="1336"height="256"title="Trace link configuration"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/xray-trace-link-configuration-8-2.png"
+            alt="Trace link configuration"width="1336"height="256"title="Trace link configuration"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace link configuration</figcaption></a></figure>
+<p>The data source select contains only existing data source instances of type X-Ray.
+To use this feature, you must already have an X-Ray data source configured.
+For details, see the <a href="/grafana/plugins/grafana-x-ray-datasource/">X-Ray data source docs</a>.</p>
+<p>To view the X-Ray link, select the log row in either the Explore view or dashboard 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/logs/">Logs panel</a> to view the log details section.</p>
+<p>To log the <code>@xrayTraceId</code>, see the <a href="https://docs.amazonaws.cn/en_us/xray/latest/devguide/xray-services.html" target="_blank" rel="noopener noreferrer">AWS X-Ray documentation</a>.</p>
+<p>To provide the field to Grafana, your log queries must also contain the <code>@xrayTraceId</code> field, for example by using the query <code>fields @message, @xrayTraceId</code>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/xray-link-log-details-8-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/xray-link-log-details-8-2.png"data-srcset="/static/img/docs/cloudwatch/xray-link-log-details-8-2.png?w=320 320w, /static/img/docs/cloudwatch/xray-link-log-details-8-2.png?w=550 550w, /static/img/docs/cloudwatch/xray-link-log-details-8-2.png?w=750 750w, /static/img/docs/cloudwatch/xray-link-log-details-8-2.png?w=900 900w, /static/img/docs/cloudwatch/xray-link-log-details-8-2.png?w=1040 1040w, /static/img/docs/cloudwatch/xray-link-log-details-8-2.png?w=1240 1240w, /static/img/docs/cloudwatch/xray-link-log-details-8-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace link in log details"width="1562"height="532"title="Trace link in log details"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/xray-link-log-details-8-2.png"
+            alt="Trace link in log details"width="1562"height="532"title="Trace link in log details"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace link in log details</figcaption></a></figure>
+<h3 id="configure-the-data-source-with-grafanaini">Configure the data source with grafana.ini</h3>
+<p>The Grafana 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#aws">configuration file</a> includes an <code>AWS</code> section where you can configure data source options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Configuration option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>allowed_auth_providers</code></td>
+          <td>Specifies which authentication providers are allowed for the CloudWatch data source. The following providers are enabled by default in open-source Grafana: <code>default</code> (AWS SDK default), keys (Access and secret key), credentials (Credentials file), ec2_IAM_role (EC2 IAM role).</td>
+      </tr>
+      <tr>
+          <td><code>assume_role_enabled</code></td>
+          <td>Allows you to disable <code>assume role (ARN)</code> in the CloudWatch data source. The assume role (ARN) is enabled by default in open-source Grafana.</td>
+      </tr>
+      <tr>
+          <td><code>list_metrics_page_limit</code></td>
+          <td>Sets the limit of List Metrics API pages. When a custom namespace is specified in the query editor, the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html" target="_blank" rel="noopener noreferrer">List Metrics API</a> populates the <em>Metrics</em> field and <em>Dimension</em> fields. The API is paginated and returns up to 500 results per page, and the data source also limits the number of pages to 500 by default. This setting customizes that limit.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="provision-the-data-source">Provision the data source</h3>
+<p>You can define and configure the data source in YAML files as part of Grafana&rsquo;s provisioning system.
+For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+<h4 id="provisioning-examples">Provisioning examples</h4>
+<h5 id="using-aws-sdk-default">Using AWS SDK (default)</h5>
+<pre>apiVersion: 1
+datasources:
+  - name: CloudWatch
+    type: cloudwatch
+    jsonData:
+      authType: default
+      defaultRegion: eu-west-2</pre>
+<h5 id="using-credentials-profile-name-non-default">Using credentials&rsquo; profile name (non-default)</h5>
+<pre>apiVersion: 1
+
+datasources:
+  - name: CloudWatch
+    type: cloudwatch
+    jsonData:
+      authType: credentials
+      defaultRegion: eu-west-2
+      customMetricsNamespaces: &#39;CWAgent,CustomNameSpace&#39;
+      profile: secondary</pre>
+<h5 id="using-accesskey-and-secretkey">Using accessKey and secretKey</h5>
+<pre>apiVersion: 1
+
+datasources:
+  - name: CloudWatch
+    type: cloudwatch
+    jsonData:
+      authType: keys
+      defaultRegion: eu-west-2
+    secureJsonData:
+      accessKey: &#39;&lt;your access key&gt;&#39;
+      secretKey: &#39;&lt;your secret key&gt;&#39;</pre>
+<h5 id="using-aws-sdk-default-and-arn-of-iam-role-to-assume">Using AWS SDK Default and ARN of IAM Role to Assume</h5>
+<pre>apiVersion: 1
+datasources:
+  - name: CloudWatch
+    type: cloudwatch
+    jsonData:
+      authType: default
+      assumeRoleArn: arn:aws:iam::123456789012:root
+      defaultRegion: eu-west-2</pre>
+<h2 id="query-the-data-source">Query the data source</h2>
+<p>The CloudWatch data source can query data from both CloudWatch metrics and CloudWatch Logs APIs, each with its own specialized query editor.</p>
+<p>For details, see the <a href="query-editor/">query editor documentation</a>.</p>
+<h2 id="query-caching">Query caching</h2>
+<p>When you enable 
+    <a href="/docs/grafana/latest/administration/data-source-management/#query-and-resource-caching">query and resource caching</a>, Grafana temporarily stores the results of data source queries and resource requests. Query caching is available in CloudWatch Metrics in Grafana Cloud and Grafana Enterprise. It is not available in CloudWatch Logs Insights due to how query results are polled from AWS.</p>
+<h2 id="use-template-variables">Use template variables</h2>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For details, see the <a href="template-variables/">template variables documentation</a>.</p>
+<h2 id="import-pre-configured-dashboards">Import pre-configured dashboards</h2>
+<p>The CloudWatch data source ships with curated and pre-configured dashboards for five of the most popular AWS services:</p>
+<ul>
+<li><strong>Amazon Elastic Compute Cloud:</strong> <code>Amazon EC2</code></li>
+<li><strong>Amazon Elastic Block Store:</strong> <code>Amazon EBS</code></li>
+<li><strong>AWS Lambda:</strong> <code>AWS Lambda</code></li>
+<li><strong>Amazon CloudWatch Logs:</strong> <code>Amazon CloudWatch Logs</code></li>
+<li><strong>Amazon Relational Database Service:</strong> <code>Amazon RDS</code></li>
+</ul>
+<p><strong>To import curated dashboards:</strong></p>
+<ol>
+<li>
+<p>Navigate to the data source&rsquo;s <a href="#configure-the-data-source">configuration page</a>.</p>
+</li>
+<li>
+<p>Select the <strong>Dashboards</strong> tab.</p>
+<p>This displays the curated selection of importable dashboards.</p>
+</li>
+<li>
+<p>Select <strong>Import</strong> for the dashboard to import.</p>
+</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1020px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v65/cloudwatch-dashboard-import.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v65/cloudwatch-dashboard-import.png"data-srcset="/static/img/docs/v65/cloudwatch-dashboard-import.png?w=320 320w, /static/img/docs/v65/cloudwatch-dashboard-import.png?w=550 550w, /static/img/docs/v65/cloudwatch-dashboard-import.png?w=750 750w, /static/img/docs/v65/cloudwatch-dashboard-import.png?w=900 900w, /static/img/docs/v65/cloudwatch-dashboard-import.png?w=1040 1040w, /static/img/docs/v65/cloudwatch-dashboard-import.png?w=1240 1240w, /static/img/docs/v65/cloudwatch-dashboard-import.png?w=1920 1920w"
+          data-sizes="auto"alt="CloudWatch dashboard import"width="1020"height="470"title="CloudWatch dashboard import"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v65/cloudwatch-dashboard-import.png"
+            alt="CloudWatch dashboard import"width="1020"height="470"title="CloudWatch dashboard import"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">CloudWatch dashboard import</figcaption></a></figure>
+<p><strong>To customize an imported dashboard:</strong></p>
+<p>To customize one of these dashboards, we recommend that you save it under a different name.
+If you don&rsquo;t, upgrading Grafana can overwrite the customized dashboard with the new version.</p>
+<h2 id="create-queries-for-alerting">Create queries for alerting</h2>
+<p>Alerting requires queries that return numeric data, which CloudWatch Logs support.
+For example, you can enable alerts through the use of the <code>stats</code> command.</p>
+<p>This is also a valid query for alerting on messages that include the text &ldquo;Exception&rdquo;:</p>
+<pre>filter @message like /Exception/
+    | stats count(*) as exceptionCount by bin(1h)
+    | sort exceptionCount desc</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you receive an error like <code>input data must be a wide series but got ...</code> when trying to alert on a query, make sure that your query returns valid numeric data that can be output to a Time series panel.</p></blockquote></div>
+
+<p>For more information on Grafana alerts, refer to 
+    <a href="/docs/grafana/latest/alerting/">Alerting</a>.</p>
+<h2 id="control-pricing">Control pricing</h2>
+<p>The Amazon CloudWatch data source for Grafana uses <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_ListMetrics.html" target="_blank" rel="noopener noreferrer"><code>ListMetrics</code></a> and <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html" target="_blank" rel="noopener noreferrer"><code>GetMetricData</code></a> CloudWatch API calls to list and retrieve metrics.
+Pricing for CloudWatch Logs is based on the amount of data ingested, archived, and analyzed via CloudWatch Logs Insights queries.
+Each time you select a dimension in the query editor, Grafana issues a <code>ListMetrics</code> API request.
+Each time you change queries in the query editor, Grafana issues a new request to the <code>GetMetricData</code> API.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana replaced all <code>GetMetricStatistics</code> API requests with calls to GetMetricData to provide better support for CloudWatch metric math, and enables the automatic generation of search expressions when using wildcards or disabling the <code>Match Exact</code> option.
+The <code>GetMetricStatistics</code> API qualified for the CloudWatch API free tier, but <code>GetMetricData</code> calls don&rsquo;t.</p></blockquote></div>
+
+<p>For more information, refer to the <a href="https://aws.amazon.com/cloudwatch/pricing/" target="_blank" rel="noopener noreferrer">CloudWatch pricing page</a>.</p>
+<h2 id="manage-service-quotas">Manage service quotas</h2>
+<p>AWS defines quotas, or limits, for resources, actions, and items in your AWS account.
+Depending on the number of queries in your dashboard and the number of users accessing the dashboard, you might reach the usage limits for various CloudWatch and CloudWatch Logs resources.
+Quotas are defined per account and per region.</p>
+<p>If you use multiple regions or configured more than one CloudWatch data source to query against multiple accounts, you must request a quota increase for each account and region in which you reach the limit.</p>
+<p>To request a quota increase, visit the <a href="https://console.aws.amazon.com/servicequotas/home?r#!/services/monitoring/quotas/L-5E141212" target="_blank" rel="noopener noreferrer">AWS Service Quotas console</a>.
+For more information, refer to the AWS documentation for <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener noreferrer">Service Quotas</a> and <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_limits.html" target="_blank" rel="noopener noreferrer">CloudWatch limits</a>.</p>
+<h2 id="cross-account-observability">Cross-account observability</h2>
+<p>The CloudWatch plugin enables you to monitor and troubleshoot applications across multiple regional accounts. Using cross-account observability, you can seamlessly search, visualize and analyze metrics and logs without worrying about account boundaries.</p>
+<p>To use this feature, configure in the <a href="https://aws.amazon.com/blogs/aws/new-amazon-cloudwatch-cross-account-observability/" target="_blank" rel="noopener noreferrer">AWS console under CloudWatch Settings</a>, a monitoring and source account, and then add the necessary IAM permissions as described above.</p>
+<h2 id="cloudwatch-logs-data-protection">CloudWatch Logs data protection</h2>
+<p>CloudWatch Logs can safeguard data by using log group data protection policies. If you have data protection enabled for a log group, then any sensitive data that matches the data identifiers you&rsquo;ve selected will be masked. In order to view masked data you will need to have the <code>logs:Unmask</code> IAM permission enabled. See the AWS documentation on how to <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html" target="_blank" rel="noopener noreferrer">help protect sensitive log data with masking</a> to learn more about this.</p>

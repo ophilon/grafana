@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<h1 id="configure-team-sync">Configure Team Sync</h1>
+<p>Team sync lets you set up synchronization between your auth providers teams and teams in Grafana. This enables LDAP, OAuth, or SAML users who are members of certain teams or groups to automatically be added or removed as members of certain teams in Grafana.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud Advanced</a>.</p></blockquote></div>
+
+<p>Grafana keeps track of all synchronized users in teams, and you can see which users have been synchronized in the team members list, see <code>LDAP</code> label in screenshot.
+This mechanism allows Grafana to remove an existing synchronized user from a team when its group membership changes. This mechanism also enables you to manually add a user as member of a team, and it will not be removed when the user signs in. This gives you flexibility to combine LDAP group memberships and Grafana team memberships.</p>
+<blockquote>
+<p>Currently the synchronization only happens when a user logs in, unless LDAP is used with the active background synchronization.</p></blockquote>
+<div class="clearfix"></div>
+<h2 id="supported-providers">Supported providers</h2>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/auth-proxy/#team-sync">Auth Proxy</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/azuread/#team-sync">Azure AD</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/generic-oauth/#configure-team-synchronization">Generic OAuth integration</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/github/#configure-team-synchronization">GitHub OAuth</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/gitlab/#configure-team-synchronization">GitLab OAuth</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/google/#configure-team-synchronization">Google OAuth</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/enhanced-ldap/">LDAP</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/okta/#configure-team-synchronization">Okta</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/">SAML</a></li>
+</ul>
+<h2 id="synchronize-a-grafana-team-with-an-external-group">Synchronize a Grafana team with an external group</h2>
+<p>If you have already grouped some users into a team, then you can synchronize that team with an external group.</p>
+<ol>
+<li>
+<p>In Grafana, navigate to <strong>Administration &gt; Users and access &gt; Teams</strong>.</p>
+</li>
+<li>
+<p>Select a team.</p>
+</li>
+<li>
+<p>Go to the External group sync tab, and click <strong>Add group</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/enterprise/team_add_external_group.png"
+  alt="External group sync" width="966"
+     height="347"/></p>
+</li>
+<li>
+<p>Insert the value of the group you want to sync with. This becomes the Grafana <code>GroupID</code>.
+Examples:</p>
+<ul>
+<li>For LDAP, this is the LDAP distinguished name (DN) of LDAP group you want to synchronize with the team.</li>
+<li>For Auth Proxy, this is the value we receive as part of the custom <code>Groups</code> header.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Add group</strong> to save.</p>
+</li>
+</ol>
+<blockquote>
+<p>Group matching is case insensitive.</p></blockquote>
+<h2 id="ldap-specific-wildcard-matching">LDAP specific: wildcard matching</h2>
+<p>When using LDAP, you can use a wildcard (*) in the common name attribute (CN)
+to match any group in the corresponding Organizational Unit (OU).</p>
+<p>Ex: <code>cn=*,ou=groups,dc=grafana,dc=org</code> can be matched by <code>cn=users,ou=groups,dc=grafana,dc=org</code></p>

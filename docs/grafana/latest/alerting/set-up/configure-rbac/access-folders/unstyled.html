@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<h2 id="manage-access-using-folders-or-data-sources">Manage access using folders or data sources</h2>
+<p>You can extend the access provided by a role to alert rules and rule-specific silences by assigning permissions to individual folders or data sources.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Data source query permissions are required to create an alert rule or modify an alert rule&rsquo;s query using that data source.</p></blockquote></div>
+
+<p>This allows different users, teams, or service accounts to have customized access to modify or silence alert rules in specific folders or using specific data sources.</p>
+<p>Details on the additional access provided by folder permissions are below.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Folder permission</th>
+          <th>Additional Access</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>View</td>
+          <td>Read access to all general silences. Read access to alert rules and their rule-specific silences <em>only</em> in the given folder and subfolders.</td>
+      </tr>
+      <tr>
+          <td>Edit</td>
+          <td>View access and write access to alert rules and their rule-specific silences <em>only</em> in the given folder and subfolders.</td>
+      </tr>
+      <tr>
+          <td>Admin</td>
+          <td>Same additional access as Edit.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Some example combinations:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Role</th>
+          <th>Folder permission</th>
+          <th>Access</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>No Basic Role</td>
+          <td>-</td>
+          <td>None. No access to alert rules or rule-specific silences in the folder.</td>
+      </tr>
+      <tr>
+          <td>No Basic Role</td>
+          <td>View</td>
+          <td>Read access to all general silences. Read access to alert rules and their rule-specific silences <em>only</em> in the given folder and subfolders.</td>
+      </tr>
+      <tr>
+          <td>No Basic Role</td>
+          <td>Edit</td>
+          <td>Above access and write access to alert rules (given necessary data source query permissions) and their rule-specific silences <em>only</em> in the given folder and subfolders.</td>
+      </tr>
+      <tr>
+          <td>Viewer</td>
+          <td>-</td>
+          <td>Read access to alert rules and silences in all folders.</td>
+      </tr>
+      <tr>
+          <td>Viewer</td>
+          <td>Edit</td>
+          <td>Read access to alert rules and silences in all folders. Write access to alert rules and their rule-specific silences <em>only</em> in the given folder and subfolders.</td>
+      </tr>
+      <tr>
+          <td>Editor</td>
+          <td>View</td>
+          <td>Read and write access to alert rules and silences in all folders. Access can only be extended.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can&rsquo;t use folders to customize access to notification resources.</p></blockquote></div>
+
+<h2 id="folder-permissions">Folder permissions</h2>
+<p>To manage folder permissions, complete the following steps.</p>
+<ol>
+<li>In the left-side menu, click <strong>Dashboards</strong>.</li>
+<li>Choose the folder you want to add permissions for.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>It doesn’t matter which tab you’re on (Dashboards, Panels, or Alert rules); the folder permission you set applies to all.</p></blockquote></div>
+
+<ol start="2">
+<li>Click <strong>Manage permissions</strong> from the Folder actions menu.</li>
+<li>Update or add permissions as required.</li>
+</ol>
+<h2 id="data-source-permissions">Data source permissions</h2>
+<p>By default, users with the basic roles Admin, Editor, and Viewer roles have query access to data sources for Grafana Alerting.</p>
+<p>If you used fixed roles or custom roles, you need to update data source permissions to create rules or update rule queries.</p>
+<p>Alternatively, an administrator can assign the role <strong>Datasource Reader</strong>, which grants the user access to all data sources.</p>
+<p>To manage data source permissions, complete the following steps.</p>
+<ol>
+<li>In the left-side menu, click <strong>Connections</strong> &gt; <strong>Data sources</strong>.</li>
+<li>Click the data source you want to change the permissions for.</li>
+<li>Click the <strong>Permissions</strong> tab.</li>
+<li>In the <strong>Permission column</strong>, update the permission, or remove it by clicking <strong>X</strong>.</li>
+</ol>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<h1 id="correlation">Correlation</h1>
+<p>Each correlation is configured with the following options:</p>
+<dl>
+<dt><strong>Label</strong></dt>
+<dd>Link label, shown in the visualization</dd>
+<dt><strong>Description</strong></dt>
+<dd>Optional description</dd>
+<dt><strong>Source data source</strong></dt>
+<dd>The source of results that have links displayed</dd>
+<dt><strong>Results field</strong></dt>
+<dd>Defines where the link is shown in a visualization</dd>
+<dt><strong>Target query</strong></dt>
+<dd>The target query run when a link is clicked</dd>
+<dt><strong>Transformations</strong></dt>
+<dd>Optional manipulations to the source data included passed to the target query</dd>
+</dl>
+<p>Learn how to create correlations using the <a href="../create-a-new-correlation/#create-a-correlation-in-administration-page">Administration page</a> or with <a href="../create-a-new-correlation/#create-a-correlation-with-provisioning">provisioning</a>.</p>
+<h2 id="source-data-source-and-result-field">Source data source and result field</h2>
+<p>Links are shown in Explore visualizations for the results from the correlation’s source data source.
+A link is assigned to one of the fields from the result provided in the correlation configuration (the results field).
+Each visualization displays fields with links in a different way (<a href="../use-correlations-in-visualizations/#correlations-in-logs-panel">Correlations in Logs Panel</a> and see <a href="../use-correlations-in-visualizations/#correlations-in-table">Correlations in Table</a>).</p>
+<h2 id="target-query">Target query</h2>
+<p>The target query is run when a link is clicked in the visualization. You can use the query editor of the selected target data source to specify the target query. Source data results can be accessed inside the target query with variables.</p>
+<h3 id="correlation-variables">Correlation Variables</h3>
+<p>You can use variables inside the target query to access the source data related to the query.
+Correlations use <a href="../../../dashboards/variables/variable-syntax/">Grafana variable syntax</a>.
+Variables are filled with values from the source results when the link is clicked. There are two types of variables you can use:</p>
+<ul>
+<li><a href="../../../panels-visualizations/configure-data-links/#field-variables">field variables</a> (allows to access field values and labels)</li>
+<li>correlation variables (allows to access field values and transformations)</li>
+</ul>
+<p>Example: If source results contain a field called “employee”, the value of the field can be accessed with:</p>
+<ul>
+<li>A field variable ${__data.fields.employee}</li>
+<li>A correlation variable that maps the field value above to ${employee}</li>
+</ul>
+<p>In addition to mapping field values to shorter variable names, more correlation variables can be created by applying transformations to existing fields</p>
+<p>For more details, please see the example in <a href="../use-variables-and-transformations/">Use variables and transformations in a correlation</a>.</p>
+<p>Correlation creates a data link only if all variables have values in the selected data row. <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#global-variables">Global variables</a> are exception to this rule and are not required to be filled in from the returned data. These variables are interpolated automatically by data sources.</p>
+<h3 id="correlation-transformations">Correlation Transformations</h3>
+<p>Correlations provide a way to extract more variables out of field values. The output of transformations is a set of new variables that can be accessed as any other variable.</p>
+<p>There are two types of transformations: logfmt and regular expression.</p>
+<p>Each transformation uses a selected field value as the input. The output of a transformation is a set of new variables based on the type and options of the transformation.</p>
+<p>For more details, please see the example in <a href="../use-variables-and-transformations/">Use variables and transformations in a correlation</a> for more details.</p>
+<h3 id="logfmt-transformation">Logfmt transformation</h3>
+<p>The logfmt transformation deconstructs a field value containing text formatted with <a href="https://brandur.org/logfmt" target="_blank" rel="noopener noreferrer">logfmt key/value pairs</a>. Each pair becomes a variable with the key being the name of the variable.</p>
+<p>The logfmt transformation only requires specifying the input field name if you would like the transformation to apply to a different field than the results field.
+Example output variables for field = “host=srv001 endpoint=/test app=foo”:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">name</th>
+          <th style="text-align: left">value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">host</td>
+          <td style="text-align: left">srv001</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">endpoint</td>
+          <td style="text-align: left">/test</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">app</td>
+          <td style="text-align: left">foo</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="regular-expression-transformation">Regular expression transformation</h3>
+<p>The regular expression transformation deconstructs a field value based on the provided regular expression.</p>
+<p>Regular expression transformation options:</p>
+<dl>
+<dt><strong>field</strong></dt>
+<dd>Input field name</dd>
+<dt><strong>expression</strong></dt>
+<dd>Regular expression. Named capture groups are mapped to variables matching the group name. If non-named matching groups are used a variable is created out of the first match. The value overrides the variable matching the input field or a new variable is created if mapValue is provided (check the example below)</dd>
+<dt><strong>mapValue</strong></dt>
+<dd>Used with simple regex groups without named matching groups. By default, the first match overrides the variable with the name of the field that is used as the input. To change that default behavior you can specify the mapValue property. The provided name is used to create a new variable. This can be useful if your target query requires both the exact value and a part of the value extracted with the transformation.</dd>
+</dl>
+<p>Example: Assuming the selected field name is “employee” and the field value is “John Doe”.</p>
+<p>Various output variables based on expression and mapValue options:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">expression</th>
+          <th style="text-align: left">mapValue</th>
+          <th style="text-align: left">output variables</th>
+          <th style="text-align: left">comment</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">/\w+ (\w+)/</td>
+          <td style="text-align: left">-</td>
+          <td style="text-align: left">employee=Doe</td>
+          <td style="text-align: left">No mapValue provided. The first matching is mapped to the existing field name variable (employee)</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">/(\w+) (\w+)/</td>
+          <td style="text-align: left">name</td>
+          <td style="text-align: left">name=John</td>
+          <td style="text-align: left">The first matching is mapped to a new variable called “name”</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">/(?\w+) (?\w+)/</td>
+          <td style="text-align: left">-</td>
+          <td style="text-align: left">firstName=John, lastName=Doe</td>
+          <td style="text-align: left">When named groups are used they are the names of the output variables and mapValue is ignored.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">/(?\w+) (?\w+)/</td>
+          <td style="text-align: left">name</td>
+          <td style="text-align: left">firstName=John, lastName=Doe</td>
+          <td style="text-align: left">Same as above</td>
+      </tr>
+  </tbody>
+</table>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<h1 id="troubleshoot-dashboards">Troubleshoot dashboards</h1>
+<p>Use the following strategies to help you troubleshoot common dashboard problems.</p>
+<h2 id="dashboard-is-slow">Dashboard is slow</h2>
+<ul>
+<li>Are you trying to render dozens (or hundreds or thousands) of time series on a graph? This can cause the browser to lag. Try using functions like <code>highestMax</code> (in Graphite) to reduce the number of returned series.</li>
+<li>Sometimes series names can be very large. This causes larger response sizes. Try using <code>alias</code> to reduce the size of the returned series names.</li>
+<li>Are you querying many time series or a long time range? Both of these conditions can cause Grafana or your data source to pull in a lot of data, which may slow the dashboard down. Try reducing one or both of these.</li>
+<li>There could be high load on your network infrastructure. If the slowness isn&rsquo;t consistent, this may be the problem.</li>
+</ul>
+<h2 id="dashboard-refresh-rate-issues">Dashboard refresh rate issues</h2>
+<p>By default, Grafana queries your data source every 30 seconds. However, setting a low refresh rate on your dashboards puts unnecessary stress on the backend. In many cases, querying this frequently isn&rsquo;t necessary because the data source isn&rsquo;t sending data often enough for there to be changes every 30 seconds.</p>
+<p>We recommend the following:</p>
+<ul>
+<li>Only enable auto-refreshing on dashboards, panels, or variables if necessary. Users can refresh their browser manually.</li>
+<li>If you require auto-refreshing, then set the refresh rate to a longer time period that makes sense, such as once a minute, every 10 minutes, or every hour.</li>
+<li>Check the time range of your dashboard. If your dashboard has a longer time range, such as a week, then you really don&rsquo;t need automated refreshing and you should disable it.</li>
+</ul>
+<h2 id="handling-or-rendering-null-data-is-wrong-or-confusing">Handling or rendering null data is wrong or confusing</h2>
+<p>Some applications publish data intermittently; for example, they only post a metric when an event occurs. By default, Grafana graphs connect lines between the data points, but this can be deceptive.</p>
+<p>The graph in the following image has:</p>
+<ul>
+<li>Points and 3-point radius enabled to highlight where data points are actually present.</li>
+<li><strong>Connect null values</strong> set to <strong>Always</strong>.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/troubleshooting/grafana_null_connected.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/troubleshooting/grafana_null_connected.png"data-srcset="/static/img/docs/troubleshooting/grafana_null_connected.png?w=320 320w, /static/img/docs/troubleshooting/grafana_null_connected.png?w=550 550w, /static/img/docs/troubleshooting/grafana_null_connected.png?w=750 750w, /static/img/docs/troubleshooting/grafana_null_connected.png?w=900 900w, /static/img/docs/troubleshooting/grafana_null_connected.png?w=1040 1040w, /static/img/docs/troubleshooting/grafana_null_connected.png?w=1240 1240w, /static/img/docs/troubleshooting/grafana_null_connected.png?w=1920 1920w"
+          data-sizes="auto"alt="Graph with null values connected"width="1095"height="443"/>
+        <noscript>
+          <img
+            src="/static/img/docs/troubleshooting/grafana_null_connected.png"
+            alt="Graph with null values connected"width="1095"height="443"/>
+        </noscript></div></a></figure>
+<p>The graph in this next image shows bars instead of lines and has the <strong>No value</strong> option under <strong>Standard options</strong> set to <strong>0</strong>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/troubleshooting/grafana_null_zero.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/troubleshooting/grafana_null_zero.png"data-srcset="/static/img/docs/troubleshooting/grafana_null_zero.png?w=320 320w, /static/img/docs/troubleshooting/grafana_null_zero.png?w=550 550w, /static/img/docs/troubleshooting/grafana_null_zero.png?w=750 750w, /static/img/docs/troubleshooting/grafana_null_zero.png?w=900 900w, /static/img/docs/troubleshooting/grafana_null_zero.png?w=1040 1040w, /static/img/docs/troubleshooting/grafana_null_zero.png?w=1240 1240w, /static/img/docs/troubleshooting/grafana_null_zero.png?w=1920 1920w"
+          data-sizes="auto"alt="Graph with null values not connected"width="1102"height="442"/>
+        <noscript>
+          <img
+            src="/static/img/docs/troubleshooting/grafana_null_zero.png"
+            alt="Graph with null values not connected"width="1102"height="442"/>
+        </noscript></div></a></figure>
+<p>As you can see, there&rsquo;s a significant difference in the visualizations.</p>

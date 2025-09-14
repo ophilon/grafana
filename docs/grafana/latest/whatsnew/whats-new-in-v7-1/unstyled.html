@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v71">What&rsquo;s new in Grafana v7.1</h1>
+<p>This topic includes the release notes for the Grafana v7.1. For all details, read the full <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a>.</p>
+<p>The main highlights are:</p>
+<ul>
+<li><a href="#influx-data-source"><strong>Flux and InfluxDB 2.x support in the Influx Datasource</strong></a></li>
+<li><a href="#query-history-search"><strong>Query history search</strong></a></li>
+<li><a href="#explore-modes-unified"><strong>Unification of Explore modes</strong></a></li>
+<li><a href="#internal-links-for-elasticsearch"><strong>Elasticsearch- link to another data source from Explore</strong></a></li>
+<li><a href="#transformations"><strong>Merge on time transform for the new table panel</strong></a></li>
+<li><a href="#stat-panel-text-mode"><strong>Stat panel text mode</strong></a></li>
+<li><a href="#time-range-picker-update"><strong>Time range picker update</strong></a></li>
+<li><a href="#provisioning-of-apps"><strong>Provisioning of apps</strong></a></li>
+<li><a href="#azure-monitor-data-source"><strong>Azure Monitor Datasource</strong></a></li>
+<li><a href="#deep-linking-for-google-cloud-monitoring-formerly-named-google-stackdriver-data-source"><strong>Deep linking for Google Cloud Monitoring (formerly named Google Stackdriver) datasource</strong></a></li>
+<li><a href="#grafana-enterprise-features"><strong>Grafana Enterprise features</strong></a>
+<ul>
+<li><a href="#support-for-hashicorp-vault"><strong>Secret management with HashiCorp Vault</strong></a></li>
+<li><a href="#support-for-monthly-schedules-in-reports"><strong>Monthly schedules in reports</strong></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="influx-data-source">Influx data source</h2>
+<p>Support for Flux and Influx v2 has been added. The InfluxData blog post, <a href="https://www.influxdata.com/blog/how-grafana-dashboard-influxdb-flux-influxql/" target="_blank" rel="noopener noreferrer">How to Build Grafana Dashboards with InfluxDB, Flux and InfluxQL</a> explains the changes in depth.</p>
+<h2 id="query-history-search">Query history search</h2>
+<p>In Grafana v 7.1 we are introducing search functionality in Query history. You can search across queries and your comments. It is especially useful in combination with a time filter and data source filter. Read more about <a href="../../explore/#query-history">Query history here</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v71/query_history_search.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v71/query_history_search.gif"alt="Query history search"width="800"height="454"title="Query history search"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v71/query_history_search.gif"
+            alt="Query history search"width="800"height="454"title="Query history search"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Query history search</figcaption></a></figure>
+<h2 id="explore-modes-unified">Explore modes unified</h2>
+<p>Grafana 7.1 includes a major change to Explore: it removes the query mode selector.</p>
+<p>Many data sources tell Grafana whether a response contains time series data or logs data. Using this information, Explore chooses which visualization to use for that data. This means that you don&rsquo;t need to switch back and forth between Logs and Metrics modes depending on the type of query that you want to make.</p>
+<h2 id="internal-links-for-elasticsearch">Internal links for Elasticsearch</h2>
+<p>The new internal linking feature for Elasticsearch allows you to link to other data sources from your logs. You can now create links in Elastic configuration that point to another data source (similar to an existing feature in Loki). An example would be using a traceID field from your logs to be able to link to traces in a tracing data source like Jaeger.</p>
+<h2 id="transformations">Transformations</h2>
+<p>We have added a new <strong>Merge on time</strong> transform that can combine many time series or table results. Unlike the join transform, this combines the result into one table even when the time values do not align / match.</p>
+<p>The new table panel introduced in 7.0 was missing a few features that the old table panel had. This feature, along with ad hoc filtering, means that the new table panel has achieved feature parity with the old table panel.</p>
+<h2 id="ad-hoc-filtering-in-the-new-table-panel">Ad hoc filtering in the new table panel</h2>
+<p><a href="../../dashboards/variables/add-template-variables/#add-ad-hoc-filters">Ad hoc filtering</a>, a way to automatically add filters to queries without having to define template variables is now supported in the new Table panel.</p>
+<h2 id="stat-panel-text-mode">Stat panel text mode</h2>
+<p>The <a href="../../panels-visualizations/visualizations/stat/#text-mode">stat panel</a> has a new <strong>Text mode</strong> option to control what text to show.</p>
+<p>By default, the Stat panel displays:</p>
+<ul>
+<li>Just the value for a single series or field.</li>
+<li>Both the value and name for multiple series or fields.</li>
+</ul>
+<p>You can use the Text mode option to control what text the panel renders. If the value is not important, only name and color is, then change the <code>Text mode</code> to <strong>Name</strong>. The value will still be used to determine color and is displayed in a tooltip.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v71/stat-panel-text-modes.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v71/stat-panel-text-modes.png"data-srcset="/static/img/docs/v71/stat-panel-text-modes.png?w=320 320w, /static/img/docs/v71/stat-panel-text-modes.png?w=550 550w, /static/img/docs/v71/stat-panel-text-modes.png?w=750 750w, /static/img/docs/v71/stat-panel-text-modes.png?w=900 900w, /static/img/docs/v71/stat-panel-text-modes.png?w=1040 1040w, /static/img/docs/v71/stat-panel-text-modes.png?w=1240 1240w, /static/img/docs/v71/stat-panel-text-modes.png?w=1920 1920w"
+          data-sizes="auto"alt="Stat panel"width="1716"height="762"title="Stat panel"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v71/stat-panel-text-modes.png"
+            alt="Stat panel"width="1716"height="762"title="Stat panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Stat panel</figcaption></a></figure>
+<h2 id="provisioning-of-apps">Provisioning of apps</h2>
+<p>Grafana v7.1 adds support for provisioning of app plugins. This allows app plugins to be configured and enabled/disabled using configuration files. For more information about provisioning of app, refer to <a href="../../administration/provisioning/#plugins">provisioning plugin</a>.</p>
+<h2 id="azure-monitor-data-source">Azure Monitor data source</h2>
+<p>Support for multiple dimensions has been added to all services in the Azure Monitor datasource. This means you can now group by more than one dimension with time series queries. With the Kusto based services, Log Analytics and Application Insights Analytics, you can also select multiple metrics as well as multiple dimensions.</p>
+<p>Additionally, the Raw Edit mode for Application Insights Analytics has been replaced with a new service in the drop-down for the data source and is called Insights Analytics. The new query editor behaves in the same way as Log Analytics.</p>
+<h2 id="deep-linking-for-google-cloud-monitoring-formerly-named-google-stackdriver-data-source">Deep linking for Google Cloud Monitoring (formerly named Google Stackdriver) data source</h2>
+<p>A new feature in Grafana 7.1 is <a href="../../datasources/google-cloud-monitoring/#deep-linking-from-grafana-panels-to-the-metrics-explorer-in-google-cloud-console">deep linking from Grafana panels to the Metrics Explorer in Google Cloud Console</a>. Click on a time series in the panel to see a context menu with a link to View in Metrics explorer in Google Cloud Console. Clicking that link opens the Metrics explorer in the Monitoring Google Cloud Console and runs the query from the Grafana panel there.</p>
+<h2 id="time-range-picker-update">Time range picker update</h2>
+<p>With 7.1 we are updating the dashboard&rsquo;s time range picker to allow time zone selection. You no longer need to go to dashboard settings to change the dashboard&rsquo;s time zone.</p>
+<p>The time zone picker itself also got UX improvements. Now you can search for the timezone using country or city name, time zone abbreviations, or UTC offsets.</p>
+<h2 id="grafana-enterprise-features">Grafana Enterprise features</h2>
+<p>General features are included in the Grafana Enterprise edition software.</p>
+<h3 id="support-for-hashicorp-vault">Support for HashiCorp Vault</h3>
+<p>You can now use HashiCorp Vault to get secrets for configuration and provisioning of Grafana Enterprise. For more information about HashiCorp Vault, refer to <a href="../../setup-grafana/configure-security/configure-database-encryption/integrate-with-hashicorp-vault/">vault</a>.</p>
+<h3 id="support-for-monthly-schedules-in-reports">Support for monthly schedules in reports</h3>
+<p>With Grafana Enterprise 7.1, you can generate reports on a <a href="../../dashboards/share-dashboards-panels/#scheduling">monthly schedule</a>.</p>
+<h2 id="changelog">Changelog</h2>
+<p>Check out <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a> for a complete list of new features, changes, and bug fixes.</p>

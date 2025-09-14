@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<h1 id="correlations-editor-in-explore">Correlations Editor in Explore</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The Explore editor is available in 10.1 and later versions. In the editor, transformations is available in Grafana 10.3 and later versions.</p></blockquote></div>
+
+<p>Correlations allow users to build a link between any two data sources. For more information about correlations in general, please see the 
+    <a href="/docs/grafana/latest/administration/correlations/">correlations</a> topic in the administration page.</p>
+<h2 id="create-a-correlation">Create a correlation</h2>
+<ol>
+<li>In Grafana, navigate to the Explore page.</li>
+<li>Select a data source that you would like to be 
+    <a href="/docs/grafana/latest/administration/correlations/correlation-configuration/#source-data-source-and-result-field">the source data source</a> for a new correlation.</li>
+<li>Run a query producing data in 
+    <a href="/docs/grafana/latest/administration/correlations/#correlations">a supported visualization</a>.</li>
+<li>Click <strong>+ Add</strong> in the top toolbar and select <strong>Add correlation</strong> (you can also select <strong>Correlations Editor</strong> from the 
+    <a href="/docs/grafana/latest/search/#command-palette">Command Palette</a>).</li>
+<li>Explore is now in Correlations Editor mode indicated by a blue border and top bar. You can exit Correlations Editor by clicking <strong>Exit</strong> in the top bar.</li>
+<li>You can now create the following new correlations for the visualization with links that are attached to the data that you can use to build a new query:
+<ul>
+<li>Logs: links are displayed next to field values inside log details for each log row</li>
+<li>Table: every table cell is a link</li>
+</ul>
+</li>
+<li>Click on a link to add a new correlation.
+Links are associated with a field that is used as a 
+    <a href="/docs/grafana/latest/administration/correlations/correlation-configuration/">result field of a correlation</a>.</li>
+<li>In the split view that opens, use the right pane to set up 
+    <a href="/docs/grafana/latest/administration/correlations/correlation-configuration/#target-query">the target query source of the correlation</a>.</li>
+<li>Build a target query using 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">variables syntax</a> with variables from the list provided at the top of the pane. The list contains sample values from the selected data row.</li>
+<li>Provide a label and description (optional).
+A label will be used as the name of the link inside the visualization and can contain variables.</li>
+<li>Provide transformations (optional; see below for details).</li>
+<li>Click <strong>Save</strong> in the top toolbar to save the correlation and exit Correlations Editor mode.
+The link used to create the correlation is replaced with a data link in each row. When the link is clicked, the query you defined will run in another pane, with the variables replaced dynamically with the values from the selected row.</li>
+</ol>
+<h2 id="transformations">Transformations</h2>
+<p>Transformations allow you to extract values that exist in a field with other data. For example, using a transformation, you can extract one portion of a log line to use in a correlation. For more details on transformations in correlations, see 
+    <a href="/docs/grafana/latest/explore/correlations-editor-in-explore/#transformations">Correlations</a>.</p>
+<p>After clicking one of the generated links in the editor mode, you can add transformations by clicking <strong>Add transformation</strong> in the Transformations dropdown menu.</p>
+<p>You can use a transformation in your correlation with the following steps:</p>
+<ol>
+<li>Select a field to apply the transformation to.
+Select the portion of the field that you want to use for the transformation. For example, a log line.
+Once selected, the value of this field will be used to assist you in building the transformation.</li>
+<li>Select the type of the transformation.
+See 
+    <a href="/docs/grafana/latest/explore/correlations-editor-in-explore/#transformations">correlations</a> for the options and relevant settings.</li>
+<li>Based on your selection, you might see one or more variables populate, or you might need to provide more specifications in options that are displayed.</li>
+<li>Select <strong>Add transformation to correlation</strong> to add the specified variables to the list of available variables.</li>
+</ol>
+<h3 id="notes-for-regular-expressions">Notes for regular expressions</h3>
+<p>For regular expressions in this dialog box, the <code>mapValue</code> referred to in other documentation is called <code>Variable Name</code> here. Grafana highlights any text that matches the expression in the field value. Use regular expression capture groups to select what portion of the match should be extracted. When a valid regular expression is provided, the variable and the value of that variable appear below the <code>Variable Name</code> field.</p>
+<h2 id="correlations-examples">Correlations examples</h2>
+<p>The following examples show how to create correlations using the Correlations Editor in Explore. If you&rsquo;d like to follow these examples, make sure to set up a 
+    <a href="/docs/grafana/latest/datasources/testdata/#testdata-data-source">test data source</a>.</p>
+<h3 id="create-a-text-to-graph-correlation">Create a text to graph correlation</h3>
+<p>This example shows how to create a correlation using Correlations Editor in Explore.</p>
+<p>Correlations allow you to use results of one query to run a new query in any data source. In this example, you will run a query that renders tabular data. The data will be used to run a different query that yields a graph result.</p>
+<p>To follow this example, make sure you have set up 
+    <a href="/docs/grafana/latest/datasources/testdata/#testdata-data-source">a test data source</a>.</p>
+<ol>
+<li>
+<p>In Grafana, navigate to <strong>Explore</strong>.</p>
+</li>
+<li>
+<p>Select the <strong>test data source</strong> from the dropdown menu at the top left of the page.</p>
+</li>
+<li>
+<p>Click <strong>+ Add</strong> in the dropdown menu to the right and select <strong>Add correlation</strong>.</p>
+</li>
+<li>
+<p>Explore is now in Correlations Editor mode, indicated by a blue border.</p>
+</li>
+<li>
+<p>Select the following scenario from the scenario dropdown menu: <strong>CSV File</strong>.</p>
+</li>
+<li>
+<p>Select the file, <strong>population_by_state.csv</strong>.
+Each cell is a link that you can click on to begin creating a new correlation.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png"data-srcset="/static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png?w=320 320w, /static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png?w=550 550w, /static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png?w=750 750w, /static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png?w=900 900w, /static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png?w=1040 1040w, /static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png?w=1240 1240w, /static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png?w=1920 1920w"
+             data-sizes="auto"alt="Selecting the source of a correlation"width="3070"height="1566"title="Selecting the source of a correlation"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/screenshot-correlations-editor-source-10.2.png"
+               alt="Selecting the source of a correlation"width="3070"height="1566"title="Selecting the source of a correlation"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Selecting the source of a correlation</figcaption></a></figure>
+</li>
+<li>
+<p>Click on any cell in the <code>State</code> column to create a new correlation that attaches a data link to that entry. For example, select &ldquo;California&rdquo;.</p>
+</li>
+<li>
+<p>In the split view, select the same data source you selected in the left pane.
+The helper above the query editor contains all available variables you can use the target query. Variables contain all data fields (table columns) from the selected row.</p>
+</li>
+<li>
+<p>In the <strong>Scenario</strong> menu, select <strong>CSV Metric Values</strong>.
+The <code>String Input</code> field in the Query editor provides variables with population values for each year: <code>${1980},${2000},${2020}</code>. This will generate a graph using variable values.</p>
+</li>
+<li>
+<p>In the Query Editor <strong>Alias</strong> field, enter &ldquo;${State}&rdquo;.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png"data-srcset="/static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png?w=320 320w, /static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png?w=550 550w, /static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png?w=750 750w, /static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png?w=900 900w, /static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png?w=1040 1040w, /static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png?w=1240 1240w, /static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png?w=1920 1920w"
+             data-sizes="auto"alt="Setting up the target of a correlation"width="1510"height="1316"title="Setting up the target of a correlation"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/screenshot-correlations-editor-target-10.2.png"
+               alt="Setting up the target of a correlation"width="1510"height="1316"title="Setting up the target of a correlation"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Setting up the target of a correlation</figcaption></a></figure>
+<p>Run a query to see that it produces a graph using sample values from the variables.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> to save the correlation and exit the Correlations Editor.</p>
+<p>After the correlation is saved, Explore will rerun the query in the left pane. By clicking a state name, the query on the right is rerun with values from the row being inserted into the CSV, thus changing the graph. The query is rerun with updated values every time you click on a state name.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/screenshot-correlations-example-link-10.2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/screenshot-correlations-example-link-10.2.png"data-srcset="/static/img/docs/correlations/screenshot-correlations-example-link-10.2.png?w=320 320w, /static/img/docs/correlations/screenshot-correlations-example-link-10.2.png?w=550 550w, /static/img/docs/correlations/screenshot-correlations-example-link-10.2.png?w=750 750w, /static/img/docs/correlations/screenshot-correlations-example-link-10.2.png?w=900 900w, /static/img/docs/correlations/screenshot-correlations-example-link-10.2.png?w=1040 1040w, /static/img/docs/correlations/screenshot-correlations-example-link-10.2.png?w=1240 1240w, /static/img/docs/correlations/screenshot-correlations-example-link-10.2.png?w=1920 1920w"
+             data-sizes="auto"alt="Result of clicking on a data link"width="3066"height="1576"title="Result of clicking on a data link"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/screenshot-correlations-example-link-10.2.png"
+               alt="Result of clicking on a data link"width="3066"height="1576"title="Result of clicking on a data link"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Result of clicking on a data link</figcaption></a></figure>
+</li>
+</ol>
+<p>You can apply the same steps to any data source. Correlations allow you to create links in visualizations to run dynamic queries based on selected data. In this example we used data returned by a query to build a new query generating different visualization using the same data source. However, you can create correlations between any data sources to create custom exploration flows.</p>
+<h3 id="create-a-logs-to-table-correlation">Create a logs to table correlation</h3>
+<p>In this example, you will create a correlation to demonstrate how to use transformations to extract values from the log line and another field.</p>
+<p>To follow this example, make sure you have set up 
+    <a href="/docs/grafana/latest/datasources/testdata/#testdata-data-source">a test data source</a>.</p>
+<ol>
+<li>
+<p>In Grafana, navigate to <strong>Explore</strong>.</p>
+</li>
+<li>
+<p>Select the <strong>test data source</strong> from the dropdown menu at the top left of the page.</p>
+</li>
+<li>
+<p>Click <strong>+ Add</strong> in the dropdown menu to the right and select <strong>Add correlation</strong>.</p>
+</li>
+<li>
+<p>Explore is now in Correlations Editor mode, indicated by a blue border.</p>
+</li>
+<li>
+<p>In the <strong>Scenario</strong> menu, select <strong>Logs</strong>.</p>
+</li>
+<li>
+<p>Expand a log line to see the correlation links. Select <code>Correlate with hostname</code>.</p>
+</li>
+<li>
+<p>Explore opens in split view. Select the same data source you selected in the left pane.
+The helper above the query editor contains all available variables you can use the target query.</p>
+</li>
+<li>
+<p>Expand the transformations section, and click <strong>Add transformation</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Field</strong> dropdown menu, select <strong>message</strong>.
+The log line shows up as example data.</p>
+</li>
+<li>
+<p>Under <strong>Type</strong>, select <strong>Logfmt</strong>.
+This populates the list of variables.</p>
+</li>
+<li>
+<p>Click <strong>Add transformation to correlation</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Add transformation</strong> again and under <strong>Field</strong>, select <strong>hostname</strong>.</p>
+</li>
+<li>
+<p>Under <strong>Type</strong>, select <strong>Regular expression</strong>.</p>
+</li>
+<li>
+<p>Under <strong>Expression</strong>, enter the following:
+<code>-([0-9]\*)</code>
+This selects any numbers to the right of the dash.</p>
+</li>
+<li>
+<p>Under <strong>Variable Name</strong>, enter the following:
+hostNumber
+This populates the list of variables.</p>
+</li>
+<li>
+<p>Click <strong>Add transformation to correlation</strong> to add it to the other variables.</p>
+</li>
+<li>
+<p>In the data source editor, open the <strong>Scenario</strong> dropdown menu and select <strong>CSV Content</strong>.</p>
+</li>
+<li>
+<p>In the text box below, provide the following and save the correlation:</p>
+<pre>time,msg,hostNumber,status
+${time},${msg},${hostNumber},${status}</pre>
+<p>This closes the split view and reruns the left query. Expand any log line to see the correlation button. Clicking the correlation button opens the split view with the <code>time</code> (a field), <code>msg</code> (extracted with <code>logfmt</code> from the log line), host number (extracted with <code>regex</code> from the <code>hostname</code>) and the <code>status</code> (extracted with <code>logfmt</code> from the log line).</p>
+</li>
+</ol>

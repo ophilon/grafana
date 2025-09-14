@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<h1 id="configure-scim-with-azure-ad">Configure SCIM with Azure AD</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and to customers on select Grafana Cloud plans. For pricing information, visit <a href="/pricing/">pricing</a> or contact our sales team.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p><strong>Public Preview:</strong> SCIM provisioning is currently in Public Preview. While functional, the feature is actively being refined and may undergo changes. We recommend thorough testing in non-production environments before deploying to production systems.</p></blockquote></div>
+
+<p>This guide explains how to configure SCIM provisioning with Azure AD to automate user and team management in Grafana.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature is behind the <code>enableSCIM</code> feature toggle.
+You can enable feature toggles through configuration file or environment variables.</p>
+<p>For more information, refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#feature_toggles">feature toggles documentation</a>.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p><strong>Important SAML and SCIM Configuration:</strong>
+When using SAML for authentication alongside SCIM provisioning with Azure AD, it is crucial to correctly align user identifiers.
+For detailed information on why this is critical for security and how to configure it, refer to the main <a href="../">SCIM provisioning documentation</a>.</p>
+<p>Refer to the <a href="../../configure-authentication/saml/configure-saml-with-azuread/">SAML authentication with Azure AD documentation</a> for specific instructions on how to configure SAML claims and Grafana SAML settings for your Azure AD SCIM setup.</p></blockquote></div>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before configuring SCIM with Azure AD, ensure you have:</p>
+<ul>
+<li>Grafana Enterprise or a paid Grafana Cloud account with SCIM provisioning enabled.</li>
+<li>Admin access to both Grafana and Azure AD</li>
+<li>SCIM feature enabled in Grafana</li>
+</ul>
+<h2 id="configure-scim-in-grafana">Configure SCIM in Grafana</h2>
+<p>To enable SCIM provisioning in Grafana, create a service account and generate a service account token that will be used to authenticate SCIM requests from Azure AD.</p>
+<h3 id="create-a-service-account">Create a service account</h3>
+<ol>
+<li>Navigate to <strong>Administration &gt; Users and access &gt; Service accounts</strong></li>
+<li>Click <strong>Add service account</strong></li>
+<li>Create a new service account with Admin role</li>
+<li>Create a new token for the newly created service account and save it securely
+<ul>
+<li>This token will be used in the Azure AD configuration</li>
+</ul>
+</li>
+</ol>
+<h2 id="configure-scim-in-azure-ad">Configure SCIM in Azure AD</h2>
+<p>Configure the enterprise application in Azure AD to enable automated user and team synchronization with Grafana. This involves creating a new application and setting up both authentication and provisioning.</p>
+<h3 id="create-the-enterprise-application">Create the enterprise application</h3>
+<ol>
+<li>Open Azure Portal Entra ID (Azure AD)</li>
+<li>Click <strong>+ Add</strong> dropdown</li>
+<li>Click <strong>Add Enterprise Application</strong></li>
+<li>Click <strong>+ Create Your Own Application</strong></li>
+<li>Name the application and select <strong>non-gallery</strong></li>
+</ol>
+<h3 id="configure-provisioning">Configure provisioning</h3>
+<ol>
+<li>In the application overview, select <strong>Provisioning</strong></li>
+<li>Click <strong>+ New Configuration</strong></li>
+<li>Configure the following settings:</li>
+</ol>
+<ul>
+<li><strong>Tenant URL:</strong>
+<ul>
+<li>For Grafana Cloud instances:
+<pre>https://{stack-name}.grafana.net/apis/scim.grafana.app/v0alpha1/namespaces/stacks-{stack-id}</pre>
+Replace <code>{stack-name}</code> and <code>{stack-id}</code> with your Grafana Cloud stack name and ID.</li>
+<li>For self-hosted instances:
+<pre>https://{your-grafana-domain}/apis/scim.grafana.app/v0alpha1/namespaces/default</pre>
+Replace <code>{your-grafana-domain}</code> with your Grafana instance&rsquo;s domain (e.g., <code>grafana.yourcompany.com</code>).</li>
+</ul>
+</li>
+<li><strong>Secret Token:</strong> Enter the service account token from Grafana</li>
+</ul>
+<ol start="4">
+<li>Click <strong>Test connection</strong> to verify the configuration</li>
+<li>Click <strong>Create</strong> to save the settings</li>
+</ol>
+<h3 id="configure-attribute-mappings">Configure attribute mappings</h3>
+<p>After setting the Tenant URL and Secret Token, navigate to the <strong>Mappings</strong> section within the same <strong>Provisioning</strong> settings in your Azure AD enterprise application and then click <strong>Provision Microsoft Entra ID Users</strong>. This is where you will define how Azure AD attributes correspond to the SCIM attributes for Grafana, including the mandatory <code>externalId</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><ul>
+<li>Only work email addresses are supported. Azure AD must be configured to use <code>emails[type eq &quot;work&quot;].value</code> for email mapping.</li>
+<li>The <code>externalId</code> attribute in Grafana is mandatory. Azure AD uses this to uniquely identify users and groups. You must map an attribute from Azure AD to the <code>externalId</code> attribute in Grafana. This Azure AD attribute must be <strong>a stable and a unique identifier for each individual user</strong> (for example, the <code>objectId</code> attribute in Azure AD is commonly used for this purpose).</li>
+</ul></blockquote></div>
+
+<p>Configure the following required attributes:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Azure AD Attribute</th>
+          <th>Grafana Attribute</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>userPrincipalName</code></td>
+          <td><code>userName</code></td>
+      </tr>
+      <tr>
+          <td><code>mail</code></td>
+          <td><code>emails[type eq &quot;work&quot;].value</code></td>
+      </tr>
+      <tr>
+          <td><code>displayName</code></td>
+          <td><code>displayName</code></td>
+      </tr>
+      <tr>
+          <td><code>objectId</code></td>
+          <td><code>externalId</code></td>
+      </tr>
+      <tr>
+          <td><code>Switch([IsSoftDeleted], , &quot;False&quot;, &quot;True&quot;, &quot;True&quot;, &quot;False&quot;)</code></td>
+          <td><code>active</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="enable-provisioning">Enable provisioning</h3>
+<p>Click <strong>Start provisioning</strong> from the top action bar in the <strong>Overview</strong> page from your Azure AD enterprise application.</p>
+<h3 id="configure-group-provisioning">Configure group provisioning</h3>
+<p>To enable group synchronization:</p>
+<ol>
+<li>Navigate to the <strong>Groups</strong> tab in provisioning</li>
+<li>Enable <strong>Group provisioning</strong></li>
+<li>Select the groups to synchronize with Grafana</li>
+<li>Save the changes</li>
+</ol>
+<h2 id="test-the-integration">Test the integration</h2>
+<p>After completing the configuration:</p>
+<ol>
+<li>Test the SCIM connector in Azure AD</li>
+<li>Assign a test user to the application</li>
+<li>Verify the user is provisioned in Grafana</li>
+<li>Test group synchronization if configured</li>
+</ol>

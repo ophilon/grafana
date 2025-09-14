@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<h1 id="configure-ldap-authentication-using-the-grafana-user-interface">Configure LDAP authentication using the Grafana user interface</h1>
+<p>This page explains how to configure LDAP authentication in Grafana using the Grafana user interface. For more detailed information about configuring LDAP authentication using the configuration file, refer to <a href="../ldap/">LDAP authentication</a>.</p>
+<p>Benefits of using the Grafana user interface to configure LDAP authentication include:</p>
+<ul>
+<li>No need to edit the configuration file manually.</li>
+<li>Quickly test the connection to the LDAP server.</li>
+<li>No need to restart Grafana after making changes.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Any configuration changes made through the Grafana user interface (UI) will take precedence over settings specified in the Grafana configuration file or through environment variables. If you modify any configuration settings in the UI, they will override any corresponding settings set via environment variables or defined in the configuration file.</p></blockquote></div>
+
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To follow these instructions, you need:</p>
+<ul>
+<li>Knowledge of LDAP authentication and how it works.</li>
+<li>A Grafana instance v11.3.0 or later.</li>
+<li>Permissions <code>settings:read</code> and <code>settings:write</code> with <code>settings:auth.ldap:*</code> scope.</li>
+<li>The <code>ssoSettingsLDAP</code> feature toggle enabled.</li>
+</ul>
+<h2 id="steps-to-configure-ldap-authentication">Steps to configure LDAP authentication</h2>
+<p>Sign in to Grafana and navigate to <strong>Administration &gt; Authentication &gt; LDAP</strong>.</p>
+<h3 id="1-complete-mandatory-fields">1. Complete mandatory fields</h3>
+<p>The mandatory fields have an asterisk (<strong>*</strong>) next to them. Complete the following fields:</p>
+<ol>
+<li><strong>Server host</strong>: Host name or IP address of the LDAP server.</li>
+<li><strong>Search filter</strong>: The LDAP search filter finds entries within the directory.</li>
+<li><strong>Search base DNS</strong>: List of base DNs to search through.</li>
+</ol>
+<h3 id="2-complete-optional-fields">2. Complete optional fields</h3>
+<p>Complete the optional fields as needed:</p>
+<ol>
+<li><strong>Bind DN</strong>: Distinguished name (DN) of the user to bind to.</li>
+<li><strong>Bind password</strong>: Password for the server.</li>
+</ol>
+<h3 id="3-advanced-settings">3. Advanced settings</h3>
+<p>Click the <strong>Edit</strong> button in the <strong>Advanced settings</strong> section to configure the following settings:</p>
+<h4 id="1-miscellaneous-settings">1. Miscellaneous settings</h4>
+<p>Complementary settings for LDAP authentication.</p>
+<ol>
+<li><strong>Allow sign-up</strong>: Allows new users to register upon logging in.</li>
+<li><strong>Port</strong>: Port number of the LDAP server. The default is 389.</li>
+<li><strong>Timeout</strong>: Time in seconds to wait for a response from the LDAP server.</li>
+</ol>
+<h4 id="2-attributes">2. Attributes</h4>
+<p>Attributes used to map LDAP user assertion to Grafana user attributes.</p>
+<ol>
+<li><strong>Name</strong>: Name of the assertion attribute to map to the Grafana user name.</li>
+<li><strong>Surname</strong>: Name of the assertion attribute to map to the Grafana user surname.</li>
+<li><strong>Username</strong>: Name of the assertion attribute to map to the Grafana user username.</li>
+<li><strong>Member Of</strong>: Name of the assertion attribute to map to the Grafana user membership.</li>
+<li><strong>Email</strong>: Name of the assertion attribute to map to the Grafana user email.</li>
+</ol>
+<h4 id="3-group-mapping">3. Group mapping</h4>
+<p>Map LDAP groups to Grafana roles.</p>
+<ol>
+<li>
+<p><strong>Skip organization role sync</strong>: This option avoids syncing organization roles. It is useful when you want to manage roles manually.</p>
+</li>
+<li>
+<p><strong>Group search filter</strong>: The LDAP search filter finds groups within the directory.</p>
+</li>
+<li>
+<p><strong>Group search base DNS</strong>: List of base DNS to specify the matching groups&rsquo; locations.</p>
+</li>
+<li>
+<p><strong>Group name attribute</strong>: Identifies users within group entries.</p>
+</li>
+<li>
+<p><strong>Manage group mappings</strong>:</p>
+<p>When managing group mappings, the following fields are available. To add a new group mapping, click the <strong>Add group mapping</strong> button.</p>
+<ol>
+<li><strong>Add a group DN mapping</strong>: The name of the key used to extract the ID token.</li>
+<li><strong>Add an organization role mapping</strong>: Select the Basic Role mapped to this group.</li>
+<li><strong>Add the organization ID membership mapping</strong>: Map the group to an organization ID.</li>
+<li><strong>Define Grafana Admin membership</strong>: Enable Grafana Admin privileges to the group.</li>
+</ol>
+</li>
+</ol>
+<h4 id="4-extra-security-settings">4. Extra security settings</h4>
+<p>Additional security settings options for LDAP authentication.</p>
+<ol>
+<li><strong>Enable SSL</strong>: This option will enable SSL to connect to the LDAP server.</li>
+<li><strong>Start TLS</strong>: Use StartTLS to secure the connection to the LDAP server.</li>
+<li><strong>Min TLS version</strong>: Choose the minimum TLS version to use. TLS1.2 or TLS1.3</li>
+<li><strong>TLS ciphers</strong>: List the ciphers to use for the connection. For a complete list of ciphers, refer to the <a href="https://go.dev/src/crypto/tls/cipher_suites.go" target="_blank" rel="noopener noreferrer">Cipher Go library</a>.</li>
+<li><strong>Encryption key and certificate provision specification</strong>:
+This section allows you to specify the key and certificate for the LDAP server. You can provide the key and certificate in two ways: <strong>base-64</strong> encoded or <strong>path to files</strong>.
+<ol>
+<li><strong>Base-64 encoded certificate</strong>:
+All values used in this section must be base-64 encoded.
+<ol>
+<li><strong>Root CA certificate content</strong>: List of root CA certificates.</li>
+<li><strong>Client certificate content</strong>: Client certificate content.</li>
+<li><strong>Client key content</strong>: Client key content.</li>
+</ol>
+</li>
+<li><strong>Path to files</strong>:
+Path in the file system to the key and certificate files
+<ol>
+<li><strong>Root CA certificate path</strong>: Path to the root CA certificate.</li>
+<li><strong>Client certificate path</strong>: Path to the client certificate.</li>
+<li><strong>Client key path</strong>: Path to the client key.</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="4-persisting-the-configuration">4. Persisting the configuration</h3>
+<p>Once you have configured the LDAP settings, click <strong>Save</strong> to persist the configuration.</p>
+<p>If you want to delete all the changes made through the UI and revert to the configuration file settings, click the three dots menu icon and click <strong>Reset to default values</strong>.</p>

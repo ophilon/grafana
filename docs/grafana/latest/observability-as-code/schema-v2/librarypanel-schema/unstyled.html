@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<h1 id="librarypanelkind"><code>LibraryPanelKind</code></h1>
+<p>A library panel is a reusable panel that you can use in any dashboard.
+When you make a change to a library panel, that change propagates to all instances of where the panel is used.
+Library panels streamline reuse of panels across multiple dashboards.</p>
+<p>Following is the default library panel element JSON:</p>
+<pre>      &#34;kind&#34;: &#34;LibraryPanel&#34;,
+      &#34;spec&#34;: {
+        &#34;id&#34;: 0,
+        &#34;libraryPanel&#34;: {
+          name: &#34;&#34;,
+          uid: &#34;&#34;,
+        }
+        &#34;title&#34;: &#34;&#34;
+      }</pre>
+<p>The <code>LibraryPanelKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;LibraryPanel&rdquo;</li>
+<li>spec: <a href="#librarypanelkindspec">LibraryPanelKindSpec</a>
+<ul>
+<li>libraryPanel: <a href="#librarypanelref">LibraryPanelRef</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="librarypanelkindspec"><code>LibraryPanelKindSpec</code></h2>
+<p>The following table explains the usage of the library panel element JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>id</td>
+          <td>Panel ID for the library panel in the dashboard.</td>
+      </tr>
+      <tr>
+          <td>libraryPanel</td>
+          <td><a href="#librarypanelref"><code>LibraryPanelRef</code></a></td>
+      </tr>
+      <tr>
+          <td>title</td>
+          <td>Title for the library panel in the dashboard.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="librarypanelref"><code>LibraryPanelRef</code></h3>
+<p>The following table explains the usage of the library panel reference JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>Library panel name</td>
+      </tr>
+      <tr>
+          <td>uid</td>
+          <td>Library panel uid</td>
+      </tr>
+  </tbody>
+</table>

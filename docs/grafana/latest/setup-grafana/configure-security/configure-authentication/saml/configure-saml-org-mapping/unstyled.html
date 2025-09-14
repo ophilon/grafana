@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<h1 id="configure-organization-mapping-for-saml">Configure organization mapping for SAML</h1>
+<p>Organization mapping allows you to assign users to particular organization in Grafana depending on attribute value obtained from identity provider.</p>
+<ol>
+<li>In configuration file, set 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/enterprise-configuration/#assertion_attribute_org"><code>assertion_attribute_org</code></a> to the attribute name you store organization info in. This attribute can be an array if you want a user to be in multiple organizations.</li>
+<li>Set 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/enterprise-configuration/#org_mapping"><code>org_mapping</code></a> option to the comma-separated list of <code>Organization:OrgId</code> pairs to map organization from IdP to Grafana organization specified by ID. If you want users to have different roles in multiple organizations, you can set this option to a comma-separated list of <code>Organization:OrgId:Role</code> mappings.</li>
+</ol>
+<p>For example, use following configuration to assign users from <code>Engineering</code> organization to the Grafana organization with ID <code>2</code> as Editor and users from <code>Sales</code> - to the org with ID <code>3</code> as Admin, based on <code>Org</code> assertion attribute value:</p>
+<pre>[auth.saml]
+assertion_attribute_org = Org
+org_mapping = Engineering:2:Editor, Sales:3:Admin</pre>
+<p>Starting from Grafana version 11.5, you can use the organization name instead of the organization ID in the <code>org_mapping</code> option. Ensure that the organization name you configure matches exactly with the organization name in Grafana, as it is case-sensitive. If the organization name is not found in Grafana, the mapping will be ignored. If the external organization or the organization name contains spaces, use the JSON syntax for the <code>org_mapping</code> option:</p>
+<pre>org_mapping = [&#34;Org 1:2:Editor&#34;, &#34;ExternalOrg:ACME Corp.:Admin&#34;]</pre>
+<p>If one of the mappings contains a <code>:</code>, use the JSON syntax and escape the <code>:</code> with a backslash:</p>
+<pre># Assign users from &#34;External:Admin&#34; to the organization with name &#34;ACME Corp&#34; as Admin
+org_mapping = [&#34;External\:Admin:ACME Corp:Admin&#34;]</pre>
+<p>For example, to assign users from <code>Engineering</code> organization to the Grafana organization with name <code>ACME Corp</code> as Editor and users from <code>Sales</code> - to the org with id <code>3</code> as Admin, based on <code>Org</code> assertion attribute value:</p>
+<pre>[auth.saml]
+assertion_attribute_org = Org
+org_mapping = [&#34;Engineering:ACME Corp:Editor&#34;, &#34;Sales:3:Admin&#34;]</pre>
+<p>You can specify multiple organizations both for the IdP and Grafana:</p>
+<ul>
+<li><code>org_mapping = Engineering:2, Sales:2</code> to map users from <code>Engineering</code> and <code>Sales</code> to <code>2</code> in Grafana.</li>
+<li><code>org_mapping = Engineering:2, Engineering:3</code> to assign <code>Engineering</code> to both <code>2</code> and <code>3</code> in Grafana.</li>
+</ul>
+<p>You can use <code>*</code> as the SAML Organization if you want all your users to be in some Grafana organizations with a default role:</p>
+<ul>
+<li><code>org_mapping = *:2:Editor</code> to map all users to the organization which ID is <code>2</code> in Grafana as Editors.</li>
+</ul>
+<p>You can use <code>*</code> as the Grafana organization in the mapping if you want all users from a given SAML Organization to be added to all existing Grafana organizations.</p>
+<ul>
+<li><code>org_mapping = Engineering:*</code> to map users from <code>Engineering</code> to all existing Grafana organizations.</li>
+<li><code>org_mapping = Administration:*:Admin</code> to map users from <code>Administration</code> to all existing Grafana organizations as Admins.</li>
+</ul>

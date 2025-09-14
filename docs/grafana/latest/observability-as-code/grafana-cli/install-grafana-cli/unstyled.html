@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<h1 id="install-grafana-cli">Install Grafana CLI</h1>
+<p>You can install the project using one of the following supported methods:</p>
+<h2 id="1-download-a-pre-built-binary">1. Download a pre-built binary</h2>
+<p>Download the latest binary for your platform from the <a href="https://github.com/grafana/grafanactl/releases" target="_blank" rel="noopener noreferrer">Releases page</a>.</p>
+<p>Prebuilt binaries are available for a variety of operating systems and architectures. Visit the latest release page, and scroll down to the Assets section.</p>
+<p>To install the binary, follow the instructions below:</p>
+<ol>
+<li>Download the archive for the desired operating system and architecture</li>
+<li>Extract the archive</li>
+<li>Move the executable to the desired directory</li>
+<li>Ensure this directory is included in the PATH environment variable</li>
+<li>Verify that you have execute permission on the file</li>
+</ol>
+<h2 id="2-build-from-source">2. Build from source</h2>
+<p>To build <code>grafanactl</code> from source you must:</p>
+<ul>
+<li>Have <code>git</code> installed</li>
+<li>Have <code>go</code> v1.24 (or greater) installed</li>
+</ul>
+<pre>go install github.com/grafana/grafanactl/cmd/grafanactl@latest</pre>

@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<h1 id="new-dashboard-apis">New Dashboard APIs</h1>
+<blockquote>
+<p>If you are running Grafana Enterprise, for some endpoints you&rsquo;ll need to have specific permissions. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a> for more information.</p></blockquote>
+<blockquote>
+<p>To view more about the new API structure, refer to 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</p></blockquote>
+<h2 id="create-dashboard">Create Dashboard</h2>
+<p><code>POST /apis/dashboard.grafana.app/v1beta1/namespaces/:namespace/dashboards</code></p>
+<p>Creates a new dashboard.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:create</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+      <tr>
+          <td><code>dashboards:write</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Create Request</strong>:</p>
+<pre>POST /apis/dashboard.grafana.app/v1beta1/namespaces/default/dashboards HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;gdxccn&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;fef30w4jaxla8b&#34;
+    },
+  },
+  &#34;spec&#34;: {
+    &#34;annotations&#34;: {
+    &#34;list&#34;: [
+      {
+        &#34;datasource&#34;: {
+          &#34;type&#34;: &#34;datasource&#34;,
+          &#34;uid&#34;: &#34;grafana&#34;
+        },
+        &#34;enable&#34;: true,
+        &#34;hide&#34;: false,
+        &#34;iconColor&#34;: &#34;red&#34;,
+        &#34;name&#34;: &#34;Example annotation&#34;,
+        &#34;target&#34;: {
+          &#34;limit&#34;: 100,
+          &#34;matchAny&#34;: false,
+          &#34;tags&#34;: [],
+          &#34;type&#34;: &#34;dashboard&#34;
+        }
+      }]
+    },
+    &#34;editable&#34;: true,
+    &#34;fiscalYearStartMonth&#34;: 0,
+    &#34;graphTooltip&#34;: 0,
+    &#34;links&#34;: [
+      {
+        &#34;asDropdown&#34;: false,
+        &#34;icon&#34;: &#34;external link&#34;,
+        &#34;includeVars&#34;: false,
+        &#34;keepTime&#34;: false,
+        &#34;tags&#34;: [],
+        &#34;targetBlank&#34;: false,
+        &#34;title&#34;: &#34;Example Link&#34;,
+        &#34;tooltip&#34;: &#34;&#34;,
+        &#34;type&#34;: &#34;dashboards&#34;,
+        &#34;url&#34;: &#34;&#34;
+      }
+    ],
+    &#34;panels&#34;: [
+      {
+        &#34;datasource&#34;: {
+          &#34;type&#34;: &#34;datasource&#34;,
+          &#34;uid&#34;: &#34;grafana&#34;
+        },
+        &#34;description&#34;: &#34;With a description&#34;,
+        &#34;fieldConfig&#34;: {
+          &#34;defaults&#34;: {
+            &#34;color&#34;: {
+              &#34;mode&#34;: &#34;palette-classic&#34;
+            },
+            &#34;custom&#34;: {
+              &#34;axisBorderShow&#34;: false,
+              &#34;axisCenteredZero&#34;: false,
+              &#34;axisColorMode&#34;: &#34;text&#34;,
+              &#34;axisLabel&#34;: &#34;&#34;,
+              &#34;axisPlacement&#34;: &#34;auto&#34;,
+              &#34;barAlignment&#34;: 0,
+              &#34;barWidthFactor&#34;: 0.6,
+              &#34;drawStyle&#34;: &#34;line&#34;,
+              &#34;fillOpacity&#34;: 0,
+              &#34;gradientMode&#34;: &#34;none&#34;,
+              &#34;hideFrom&#34;: {
+                &#34;legend&#34;: false,
+                &#34;tooltip&#34;: false,
+                &#34;viz&#34;: false
+              },
+              &#34;insertNulls&#34;: false,
+              &#34;lineInterpolation&#34;: &#34;linear&#34;,
+              &#34;lineWidth&#34;: 1,
+              &#34;pointSize&#34;: 5,
+              &#34;scaleDistribution&#34;: {
+                &#34;type&#34;: &#34;linear&#34;
+              },
+              &#34;showPoints&#34;: &#34;auto&#34;,
+              &#34;spanNulls&#34;: false,
+              &#34;stacking&#34;: {
+                &#34;group&#34;: &#34;A&#34;,
+                &#34;mode&#34;: &#34;none&#34;
+              },
+              &#34;thresholdsStyle&#34;: {
+                &#34;mode&#34;: &#34;off&#34;
+              }
+            },
+            &#34;mappings&#34;: [],
+            &#34;thresholds&#34;: {
+              &#34;mode&#34;: &#34;absolute&#34;,
+              &#34;steps&#34;: [
+                {
+                  &#34;color&#34;: &#34;green&#34;
+                },
+                {
+                  &#34;color&#34;: &#34;red&#34;,
+                  &#34;value&#34;: 80
+                }
+              ]
+            }
+          },
+          &#34;overrides&#34;: []
+        },
+        &#34;gridPos&#34;: {
+          &#34;h&#34;: 8,
+          &#34;w&#34;: 12,
+          &#34;x&#34;: 0,
+          &#34;y&#34;: 0
+        },
+        &#34;id&#34;: 1,
+        &#34;options&#34;: {
+          &#34;legend&#34;: {
+            &#34;calcs&#34;: [],
+            &#34;displayMode&#34;: &#34;list&#34;,
+            &#34;placement&#34;: &#34;bottom&#34;,
+            &#34;showLegend&#34;: true
+          },
+          &#34;tooltip&#34;: {
+            &#34;hideZeros&#34;: false,
+            &#34;mode&#34;: &#34;single&#34;,
+            &#34;sort&#34;: &#34;none&#34;
+          }
+        },
+        &#34;pluginVersion&#34;: &#34;12.0.0&#34;,
+        &#34;targets&#34;: [
+          {
+            &#34;datasource&#34;: {
+              &#34;type&#34;: &#34;datasource&#34;,
+              &#34;uid&#34;: &#34;grafana&#34;
+            },
+            &#34;refId&#34;: &#34;A&#34;
+          }
+        ],
+        &#34;title&#34;: &#34;Example panel&#34;,
+        &#34;type&#34;: &#34;timeseries&#34;
+      }
+    ],
+    &#34;preload&#34;: false,
+    &#34;schemaVersion&#34;: 41,
+    &#34;tags&#34;: [&#34;example&#34;],
+    &#34;templating&#34;: {
+      &#34;list&#34;: [
+        {
+          &#34;current&#34;: {
+            &#34;text&#34;: &#34;&#34;,
+            &#34;value&#34;: &#34;&#34;
+          },
+          &#34;definition&#34;: &#34;&#34;,
+          &#34;description&#34;: &#34;example description&#34;,
+          &#34;label&#34;: &#34;ExampleLabel&#34;,
+          &#34;name&#34;: &#34;ExampleVariable&#34;,
+          &#34;options&#34;: [],
+          &#34;query&#34;: &#34;&#34;,
+          &#34;refresh&#34;: 1,
+          &#34;regex&#34;: &#34;cluster&#34;,
+          &#34;type&#34;: &#34;query&#34;
+        }
+      ]
+    },
+    &#34;time&#34;: {
+      &#34;from&#34;: &#34;now-6h&#34;,
+      &#34;to&#34;: &#34;now&#34;
+    },
+    &#34;timepicker&#34;: {},
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;title&#34;: &#34;Example Dashboard&#34;,
+    &#34;version&#34;: 0
+  }
+}</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>metadata.name</strong> – The Grafana <a href="#identifier-id-vs-unique-identifier-uid">unique identifier</a>. If you do not want to provide this, set metadata.generateName instead to the prefix you would like for the randomly generated uid (cannot be an empty string).</li>
+<li><strong>metadata.annotations.grafana.app/folder</strong> - Optional field, the unique identifier of the folder under which the dashboard should be created.</li>
+<li><strong>spec</strong> – The dashboard json.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 485
+
+{
+  &#34;kind&#34;: &#34;Dashboard&#34;,
+  &#34;apiVersion&#34;: &#34;dashboard.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;gdxccn&#34;,
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;Cc7fA5ffHY94NnHZyMxXvFlpFtOmkK3qkBcVZPKSPXcX&#34;,
+    &#34;resourceVersion&#34;: &#34;1&#34;,
+    &#34;generation&#34;: 1,
+    &#34;creationTimestamp&#34;: &#34;2025-04-24T20:35:29Z&#34;,
+    &#34;labels&#34;: {
+      &#34;grafana.app/deprecatedInternalID&#34;: &#34;11&#34;
+    },
+    &#34;annotations&#34;: {
+      &#34;grafana.app/createdBy&#34;: &#34;service-account:dejwtrofg77y8d&#34;,
+      &#34;grafana.app/folder&#34;: &#34;fef30w4jaxla8b&#34;
+    },
+    &#34;managedFields&#34;: [
+      {
+        &#34;manager&#34;: &#34;curl&#34;,
+        &#34;operation&#34;: &#34;Update&#34;,
+        &#34;apiVersion&#34;: &#34;dashboard.grafana.app/v0alpha1&#34;,
+        &#34;time&#34;: &#34;2025-04-24T20:35:29Z&#34;,
+        &#34;fieldsType&#34;: &#34;FieldsV1&#34;,
+        &#34;fieldsV1&#34;: {
+          &#34;f:spec&#34;: {
+            &#34;f:annotations&#34;: {
+              &#34;.&#34;: {},
+              &#34;f:list&#34;: {}
+            },
+            &#34;f:editable&#34;: {},
+            &#34;f:fiscalYearStartMonth&#34;: {},
+            &#34;f:graphTooltip&#34;: {},
+            &#34;f:links&#34;: {},
+            &#34;f:panels&#34;: {},
+            &#34;f:preload&#34;: {},
+            &#34;f:schemaVersion&#34;: {},
+            &#34;f:tags&#34;: {},
+            &#34;f:templating&#34;: {
+              &#34;.&#34;: {},
+              &#34;f:list&#34;: {}
+            },
+            &#34;f:time&#34;: {
+              &#34;.&#34;: {},
+              &#34;f:from&#34;: {},
+              &#34;f:to&#34;: {}
+            },
+            &#34;f:timepicker&#34;: {},
+            &#34;f:timezone&#34;: {},
+            &#34;f:title&#34;: {},
+            &#34;f:version&#34;: {}
+          }
+        }
+      }
+    ]
+  },
+  &#34;spec&#34;: {
+    &#34;annotations&#34;: {
+      &#34;list&#34;: [
+        {
+          &#34;datasource&#34;: {
+            &#34;type&#34;: &#34;datasource&#34;,
+            &#34;uid&#34;: &#34;grafana&#34;
+          },
+          &#34;enable&#34;: true,
+          &#34;hide&#34;: false,
+          &#34;iconColor&#34;: &#34;red&#34;,
+          &#34;name&#34;: &#34;Example annotation&#34;,
+          &#34;target&#34;: {
+            &#34;limit&#34;: 100,
+            &#34;matchAny&#34;: false,
+            &#34;tags&#34;: [],
+            &#34;type&#34;: &#34;dashboard&#34;
+          }
+        }
+      ]
+    },
+    &#34;editable&#34;: true,
+    &#34;fiscalYearStartMonth&#34;: 0,
+    &#34;graphTooltip&#34;: 0,
+    &#34;links&#34;: [
+      {
+        &#34;asDropdown&#34;: false,
+        &#34;icon&#34;: &#34;external link&#34;,
+        &#34;includeVars&#34;: false,
+        &#34;keepTime&#34;: false,
+        &#34;tags&#34;: [],
+        &#34;targetBlank&#34;: false,
+        &#34;title&#34;: &#34;Example Link&#34;,
+        &#34;tooltip&#34;: &#34;&#34;,
+        &#34;type&#34;: &#34;dashboards&#34;,
+        &#34;url&#34;: &#34;&#34;
+      }
+    ],
+    &#34;panels&#34;: [
+      {
+        &#34;datasource&#34;: {
+          &#34;type&#34;: &#34;datasource&#34;,
+          &#34;uid&#34;: &#34;grafana&#34;
+        },
+        &#34;description&#34;: &#34;With a description&#34;,
+        &#34;fieldConfig&#34;: {
+          &#34;defaults&#34;: {
+            &#34;color&#34;: {
+              &#34;mode&#34;: &#34;palette-classic&#34;
+            },
+            &#34;custom&#34;: {
+              &#34;axisBorderShow&#34;: false,
+              &#34;axisCenteredZero&#34;: false,
+              &#34;axisColorMode&#34;: &#34;text&#34;,
+              &#34;axisLabel&#34;: &#34;&#34;,
+              &#34;axisPlacement&#34;: &#34;auto&#34;,
+              &#34;barAlignment&#34;: 0,
+              &#34;barWidthFactor&#34;: 0.6,
+              &#34;drawStyle&#34;: &#34;line&#34;,
+              &#34;fillOpacity&#34;: 0,
+              &#34;gradientMode&#34;: &#34;none&#34;,
+              &#34;hideFrom&#34;: {
+                &#34;legend&#34;: false,
+                &#34;tooltip&#34;: false,
+                &#34;viz&#34;: false
+              },
+              &#34;insertNulls&#34;: false,
+              &#34;lineInterpolation&#34;: &#34;linear&#34;,
+              &#34;lineWidth&#34;: 1,
+              &#34;pointSize&#34;: 5,
+              &#34;scaleDistribution&#34;: {
+                &#34;type&#34;: &#34;linear&#34;
+              },
+              &#34;showPoints&#34;: &#34;auto&#34;,
+              &#34;spanNulls&#34;: false,
+              &#34;stacking&#34;: {
+                &#34;group&#34;: &#34;A&#34;,
+                &#34;mode&#34;: &#34;none&#34;
+              },
+              &#34;thresholdsStyle&#34;: {
+                &#34;mode&#34;: &#34;off&#34;
+              }
+            },
+            &#34;mappings&#34;: [],
+            &#34;thresholds&#34;: {
+              &#34;mode&#34;: &#34;absolute&#34;,
+              &#34;steps&#34;: [
+                {
+                  &#34;color&#34;: &#34;green&#34;
+                },
+                {
+                  &#34;color&#34;: &#34;red&#34;,
+                  &#34;value&#34;: 80
+                }
+              ]
+            }
+          },
+          &#34;overrides&#34;: []
+        },
+        &#34;gridPos&#34;: {
+          &#34;h&#34;: 8,
+          &#34;w&#34;: 12,
+          &#34;x&#34;: 0,
+          &#34;y&#34;: 0
+        },
+        &#34;id&#34;: 1,
+        &#34;options&#34;: {
+          &#34;legend&#34;: {
+            &#34;calcs&#34;: [],
+            &#34;displayMode&#34;: &#34;list&#34;,
+            &#34;placement&#34;: &#34;bottom&#34;,
+            &#34;showLegend&#34;: true
+          },
+          &#34;tooltip&#34;: {
+            &#34;hideZeros&#34;: false,
+            &#34;mode&#34;: &#34;single&#34;,
+            &#34;sort&#34;: &#34;none&#34;
+          }
+        },
+        &#34;pluginVersion&#34;: &#34;12.0.0&#34;,
+        &#34;targets&#34;: [
+          {
+            &#34;datasource&#34;: {
+              &#34;type&#34;: &#34;datasource&#34;,
+              &#34;uid&#34;: &#34;grafana&#34;
+            },
+            &#34;refId&#34;: &#34;A&#34;
+          }
+        ],
+        &#34;title&#34;: &#34;Example panel&#34;,
+        &#34;type&#34;: &#34;timeseries&#34;
+      }
+    ],
+    &#34;preload&#34;: false,
+    &#34;schemaVersion&#34;: 41,
+    &#34;tags&#34;: [
+      &#34;example&#34;
+    ],
+    &#34;templating&#34;: {
+      &#34;list&#34;: [
+        {
+          &#34;current&#34;: {
+            &#34;text&#34;: &#34;&#34;,
+            &#34;value&#34;: &#34;&#34;
+          },
+          &#34;definition&#34;: &#34;&#34;,
+          &#34;description&#34;: &#34;example description&#34;,
+          &#34;label&#34;: &#34;ExampleLabel&#34;,
+          &#34;name&#34;: &#34;ExampleVariable&#34;,
+          &#34;options&#34;: [],
+          &#34;query&#34;: &#34;&#34;,
+          &#34;refresh&#34;: 1,
+          &#34;regex&#34;: &#34;cluster&#34;,
+          &#34;type&#34;: &#34;query&#34;
+        }
+      ]
+    },
+    &#34;time&#34;: {
+      &#34;from&#34;: &#34;now-6h&#34;,
+      &#34;to&#34;: &#34;now&#34;
+    },
+    &#34;timepicker&#34;: {},
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;title&#34;: &#34;Example Dashboard&#34;
+  },
+  &#34;status&#34;: {}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>201</strong> – Created</li>
+<li><strong>400</strong> – Errors (invalid json, missing or invalid fields, etc)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>409</strong> – Conflict (dashboard with the same uid already exists)</li>
+</ul>
+<h2 id="update-dashboard">Update Dashboard</h2>
+<p><code>PUT /apis/dashboard.grafana.app/v1beta1/namespaces/:namespace/dashboards/:uid</code></p>
+<p>Updates an existing dashboard via the dashboard uid.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+<li>uid: the unique identifier of the dashboard to update. this will be the <em>name</em> in the dashboard response</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:write</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Update Request</strong>:</p>
+<pre>POST /apis/dashboard.grafana.app/v1beta1/namespaces/default/dashboards/gdxccn HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;gdxccn&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;fef30w4jaxla8b&#34;,
+      &#34;grafana.app/message&#34;: &#34;commit message&#34;
+    },
+  },
+  &#34;spec&#34;: {
+    &#34;title&#34;: &#34;New dashboard - updated&#34;,
+    &#34;schemaVersion&#34;: 41,
+    ...
+  }
+}</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>metadata.name</strong> – The <a href="#identifier-id-vs-unique-identifier-uid">unique identifier</a>.</li>
+<li><strong>metadata.annotations.grafana.app/folder</strong> - Optional field, the unique identifier of the folder under which the dashboard should be created.</li>
+<li><strong>metadata.annotations.grafana.app/message</strong> - Optional field, to set a commit message for the version history.</li>
+<li><strong>spec</strong> – The dashboard json.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 485
+
+{
+  &#34;kind&#34;: &#34;Dashboard&#34;,
+  &#34;apiVersion&#34;: &#34;dashboard.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;gdxccn&#34;,
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;Cc7fA5ffHY94NnHZyMxXvFlpFtOmkK3qkBcVZPKSPXcX&#34;,
+    &#34;resourceVersion&#34;: &#34;2&#34;,
+    &#34;generation&#34;: 2,
+    &#34;creationTimestamp&#34;: &#34;2025-03-06T19:57:18Z&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/folder&#34;: &#34;fef30w4jaxla8b&#34;,
+      &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedTimestamp&#34;: &#34;2025-03-07T02:58:36Z&#34;
+    }
+  },
+  &#34;spec&#34;: {
+    &#34;schemaVersion&#34;: 41,
+    &#34;title&#34;: &#34;New dashboard - updated&#34;,
+    ...
+  }
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Errors (invalid json, missing or invalid fields, etc)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>409</strong> – Conflict (dashboard with the same version already exists)</li>
+</ul>
+<h2 id="get-dashboard">Get Dashboard</h2>
+<p><code>GET /apis/dashboard.grafana.app/v1beta1/namespaces/:namespace/dashboards/:uid</code></p>
+<p>Gets a dashboard via the dashboard uid.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+<li>uid: the unique identifier of the dashboard to update. this will be the <em>name</em> in the dashboard response</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:read</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Get Request</strong>:</p>
+<pre>GET /apis/dashboard.grafana.app/v1beta1/namespaces/default/dashboards/gdxccn HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 485
+
+{
+  &#34;kind&#34;: &#34;Dashboard&#34;,
+  &#34;apiVersion&#34;: &#34;dashboard.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;gdxccn&#34;,
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;Cc7fA5ffHY94NnHZyMxXvFlpFtOmkK3qkBcVZPKSPXcX&#34;,
+    &#34;resourceVersion&#34;: &#34;2&#34;,
+    &#34;generation&#34;: 2,
+    &#34;creationTimestamp&#34;: &#34;2025-03-06T19:57:18Z&#34;,
+    &#34;annotations&#34;: {
+      &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+      &#34;grafana.app/updatedTimestamp&#34;: &#34;2025-03-07T02:58:36Z&#34;
+    }
+  },
+  &#34;spec&#34;: {
+    &#34;schemaVersion&#34;: 41,
+    &#34;title&#34;: &#34;New dashboard - updated&#34;,
+    ...
+  }
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>404</strong> – Not Found</li>
+</ul>
+<h2 id="list-dashboards">List Dashboards</h2>
+<p><code>GET /apis/dashboard.grafana.app/v1beta1/namespaces/:namespace/dashboards</code></p>
+<p>Lists all dashboards in the given organization. You can control the maximum number of dashboards returned through the <code>limit</code> query parameter. You can then use the <code>continue</code> token returned to fetch the next page of dashboards.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:read</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Get Request</strong>:</p>
+<pre>GET /apis/dashboard.grafana.app/v1beta1/namespaces/default/dashboards?limit=1 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 644
+
+{
+  &#34;kind&#34;: &#34;DashboardList&#34;,
+  &#34;apiVersion&#34;: &#34;dashboard.grafana.app/v1alpha1&#34;,
+  &#34;metadata&#34;: {
+    &#34;resourceVersion&#34;: &#34;1741315830000&#34;,
+    &#34;continue&#34;: &#34;org:1/start:1158/folder:&#34;
+  },
+  &#34;items&#34;: [
+    {
+      &#34;kind&#34;: &#34;Dashboard&#34;,
+      &#34;apiVersion&#34;: &#34;dashboard.grafana.app/v1alpha1&#34;,
+      &#34;metadata&#34;: {
+        &#34;name&#34;: &#34;gpqcmf&#34;,
+        &#34;namespace&#34;: &#34;default&#34;,
+        &#34;uid&#34;: &#34;VQyL7pNTpfGPNlPM6HRJSePrBg5dXmxr4iPQL7txLtwX&#34;,
+        &#34;resourceVersion&#34;: &#34;1&#34;,
+        &#34;generation&#34;: 1,
+        &#34;creationTimestamp&#34;: &#34;2025-03-06T19:50:30Z&#34;,
+        &#34;annotations&#34;: {
+          &#34;grafana.app/createdBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+          &#34;grafana.app/updatedBy&#34;: &#34;service-account:cef2t2rfm73lsb&#34;,
+          &#34;grafana.app/updatedTimestamp&#34;: &#34;2025-03-06T19:50:30Z&#34;
+        }
+      },
+      &#34;spec&#34;: {
+        &#34;schemaVersion&#34;: 41,
+        &#34;title&#34;: &#34;New dashboard&#34;,
+        &#34;uid&#34;: &#34;gpqcmf&#34;,
+        &#34;version&#34;: 1,
+        ...
+      }
+    }
+  ]
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+</ul>
+<h2 id="delete-dashboard">Delete Dashboard</h2>
+<p><code>DELETE /apis/dashboard.grafana.app/v1beta1/namespaces/:namespace/dashboards/:uid</code></p>
+<p>Deletes a dashboard via the dashboard uid.</p>
+<ul>
+<li>namespace: to read more about the namespace to use, see the 
+    <a href="/docs/grafana/latest/developers/http_api/apis/">API overview</a>.</li>
+<li>uid: the unique identifier of the dashboard to update. this will be the <em>name</em> in the dashboard response</li>
+</ul>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:delete</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Delete Request</strong>:</p>
+<pre>DELETE /apis/dashboard.grafana.app/v1beta1/namespaces/default/dashboards/gdxccn HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 78
+
+{
+  &#34;kind&#34;: &#34;Status&#34;,
+  &#34;apiVersion&#34;: &#34;v1&#34;,
+  &#34;metadata&#34;: {},
+  &#34;status&#34;: &#34;Success&#34;,
+  &#34;details&#34;: {
+    &#34;name&#34;: &#34;gdxccn&#34;,
+    &#34;group&#34;: &#34;dashboard.grafana.app&#34;,
+    &#34;kind&#34;: &#34;dashboards&#34;,
+    &#34;uid&#34;: &#34;Cc7fA5ffHY94NnHZyMxXvFlpFtOmkK3qkBcVZPKSPXcX&#34;
+  }
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>404</strong> – Not found</li>
+</ul>
+<h2 id="gets-the-home-dashboard">Gets the home dashboard</h2>
+<p><code>GET /api/dashboards/home</code></p>
+<p>Will return the home dashboard.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/dashboards/home HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;dashboard&#34;: {
+    &#34;editable&#34;:false,
+    &#34;nav&#34;:[
+      {
+        &#34;enable&#34;:false,
+        &#34;type&#34;:&#34;timepicker&#34;
+      }
+    ],
+    &#34;style&#34;:&#34;dark&#34;,
+    &#34;tags&#34;:[],
+    &#34;templating&#34;:{
+      &#34;list&#34;:[
+      ]
+    },
+    &#34;time&#34;:{
+    },
+    &#34;timezone&#34;:&#34;browser&#34;,
+    &#34;title&#34;:&#34;Home&#34;,
+    &#34;version&#34;:5
+  },
+  &#34;meta&#34;:	{
+    &#34;isHome&#34;:true,
+    &#34;canSave&#34;:false,
+    &#34;canEdit&#34;:false,
+    &#34;canStar&#34;:false,
+    &#34;url&#34;:&#34;&#34;,
+    &#34;expires&#34;:&#34;0001-01-01T00:00:00Z&#34;,
+    &#34;created&#34;:&#34;0001-01-01T00:00:00Z&#34;
+  }
+}</pre>
+<h2 id="tags-for-dashboard">Tags for Dashboard</h2>
+<p><code>GET /api/dashboards/tags</code></p>
+<p>Get all tags of dashboards</p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/dashboards/tags HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;term&#34;:&#34;tag1&#34;,
+    &#34;count&#34;:1
+  },
+  {
+    &#34;term&#34;:&#34;tag2&#34;,
+    &#34;count&#34;:4
+  }
+]</pre>
+<h2 id="dashboard-search">Dashboard Search</h2>
+<p>See <a href="../folder_dashboard_search/">Folder/Dashboard Search API</a>.</p>
+<h2 id="apis">APIs</h2>
+<h3 id="unique-identifier-uid-vs-identifier-id">Unique identifier (uid) vs identifier (id)</h3>
+<p>The unique identifier (uid) of a dashboard can be used to uniquely identify a dashboard within a given org.
+It&rsquo;s automatically generated if not provided when creating a dashboard. The uid allows having consistent URLs for accessing
+dashboards and when syncing dashboards between multiple Grafana installs, see <a href="/docs/grafana/latest/administration/provisioning/#dashboards">dashboard provisioning</a>
+for more information. This means that changing the title of a dashboard will not break any bookmarked links to that dashboard.</p>
+<p>The uid can have a maximum length of 40 characters.</p>
+<p>The identifier (id) of a dashboard is deprecated in favor of the unique identifier (uid).</p>
+<h3 id="create--update-dashboard">Create / Update dashboard</h3>
+<p><code>POST /api/dashboards/db</code></p>
+<p>Creates a new dashboard or updates an existing dashboard. When updating existing dashboards, if you do not define the <code>folderId</code> or the <code>folderUid</code> property, then the dashboard(s) are moved to the root level. (You need to define only one property, not both).</p>
+<blockquote>
+<p><strong>Note:</strong> This endpoint is not intended for creating folders, use <code>POST /api/folders</code> for that.</p></blockquote>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:create</code></td>
+          <td><ul><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+      <tr>
+          <td><code>dashboards:write</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Request for new dashboard</strong>:</p>
+<pre>POST /api/dashboards/db HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;dashboard&#34;: {
+    &#34;id&#34;: null,
+    &#34;uid&#34;: null,
+    &#34;title&#34;: &#34;Production Overview&#34;,
+    &#34;tags&#34;: [ &#34;templated&#34; ],
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;schemaVersion&#34;: 16,
+    &#34;refresh&#34;: &#34;25s&#34;
+  },
+  &#34;folderUid&#34;: &#34;l3KqBxCMz&#34;,
+  &#34;message&#34;: &#34;Made changes to xyz&#34;,
+  &#34;overwrite&#34;: false
+}</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>dashboard</strong> – The complete dashboard model.</li>
+<li><strong>dashboard.id</strong> – id = null to create a new dashboard.</li>
+<li><strong>dashboard.uid</strong> – Optional unique identifier when creating a dashboard. uid = null will generate a new uid.</li>
+<li><strong>dashboard.refresh</strong> - Set the dashboard refresh interval. If this is lower than <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#min_refresh_interval">the minimum refresh interval</a>, then Grafana will ignore it and will enforce the minimum refresh interval.</li>
+<li><strong>folderId</strong> – The id of the folder to save the dashboard in.</li>
+<li><strong>folderUid</strong> – The UID of the folder to save the dashboard in. Overrides the <code>folderId</code>.</li>
+<li><strong>overwrite</strong> – Set to true if you want to overwrite an existing dashboard with a given dashboard UID.</li>
+<li><strong>message</strong> - Set a commit message for the version history.</li>
+</ul>
+<p><strong>Example Request for updating a dashboard</strong>:</p>
+<pre>POST /api/dashboards/db HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;dashboard&#34;: {
+    &#34;id&#34;: 1,
+    &#34;title&#34;: &#34;Production Overview Updated&#34;,
+    &#34;tags&#34;: [ &#34;templated&#34; ],
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;schemaVersion&#34;: 16,
+    &#34;version&#34;: 1,
+    &#34;refresh&#34;: &#34;25s&#34;
+  },
+  &#34;folderUid&#34;: &#34;l3KqBxCMz&#34;,
+  &#34;message&#34;: &#34;Made changes to xyz&#34;,
+  &#34;overwrite&#34;: false
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 78
+
+{
+    &#34;id&#34;: 1,
+    &#34;uid&#34;: &#34;e883f11b-77c0-4ee3-9a70-3ba223d66e56&#34;,
+    &#34;url&#34;: &#34;/d/e883f11b-77c0-4ee3-9a70-3ba223d66e56/production-overview-updated&#34;,
+    &#34;status&#34;: &#34;success&#34;,
+    &#34;version&#34;: 2
+    &#34;slug&#34;: &#34;production-overview-updated&#34;,
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Created</li>
+<li><strong>400</strong> – Errors (invalid json, missing or invalid fields, etc)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>412</strong> – Precondition failed</li>
+</ul>
+<p>The <strong>412</strong> status code is used for explaining that you cannot create the dashboard and why.
+There can be different reasons for this:</p>
+<ul>
+<li>The dashboard has been changed by someone else, <code>status=version-mismatch</code></li>
+<li>A dashboard with the same uid already exists, <code>status=name-exists</code></li>
+<li>The dashboard belongs to plugin <code>&lt;plugin title&gt;</code>, <code>status=plugin-dashboard</code></li>
+</ul>
+<p>The response body will have the following properties:</p>
+<pre>HTTP/1.1 412 Precondition Failed
+Content-Type: application/json; charset=UTF-8
+Content-Length: 97
+
+{
+  &#34;message&#34;: &#34;The dashboard has been changed by someone else&#34;,
+  &#34;status&#34;: &#34;version-mismatch&#34;
+}</pre>
+<h3 id="get-dashboard-by-uid">Get dashboard by uid</h3>
+<p><code>GET /api/dashboards/uid/:uid</code></p>
+<p>Will return the dashboard given the dashboard unique identifier (uid). Information about the unique identifier of a folder containing the requested dashboard might be found in the metadata.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:read</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/dashboards/uid/cIBgcSjkk HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;dashboard&#34;: {
+    &#34;id&#34;: 1,
+    &#34;uid&#34;: &#34;cIBgcSjkk&#34;,
+    &#34;title&#34;: &#34;Production Overview&#34;,
+    &#34;tags&#34;: [ &#34;templated&#34; ],
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;schemaVersion&#34;: 16,
+    &#34;version&#34;: 0
+  },
+  &#34;meta&#34;: {
+    &#34;isStarred&#34;: false,
+    &#34;url&#34;: &#34;/d/cIBgcSjkk/production-overview&#34;,
+    &#34;folderId&#34;: 2,
+    &#34;folderUid&#34;: &#34;l3KqBxCMz&#34;,
+    &#34;slug&#34;: &#34;production-overview&#34; //deprecated in Grafana v5.0
+  }
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Found</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>404</strong> – Not found</li>
+</ul>
+<h3 id="delete-dashboard-by-uid">Delete dashboard by uid</h3>
+<p><code>DELETE /api/dashboards/uid/:uid</code></p>
+<p>Will delete the dashboard given the specified unique identifier (uid).</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#dashboard-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>dashboards:delete</code></td>
+          <td><ul><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Request</strong>:</p>
+<pre>DELETE /api/dashboards/uid/cIBgcSjkk HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;title&#34;: &#34;Production Overview&#34;,
+  &#34;message&#34;: &#34;Dashboard Production Overview deleted&#34;,
+  &#34;id&#34;: 2
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> – Deleted</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Access denied</li>
+<li><strong>404</strong> – Not found</li>
+</ul>

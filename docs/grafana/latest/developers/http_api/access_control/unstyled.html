@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<h1 id="rbac-api">RBAC API</h1>
+<blockquote>
+<p>Role-based access control API is only available in Grafana Cloud or Grafana Enterprise. Read more about <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a>.</p></blockquote>
+<p>The API can be used to create, update, delete, get, and list roles.</p>
+<p>To check which basic or fixed roles have the required permissions, refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-fixed-basic-role-definitions/">RBAC role definitions</a>.</p>
+<h2 id="get-status">Get status</h2>
+<p><code>GET /api/access-control/status</code></p>
+<p>Returns an indicator to check if role-based access control is enabled or not.</p>
+<h4 id="required-permissions">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>status:accesscontrol</td>
+          <td>services:accesscontrol</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request">Example request</h4>
+<pre>GET /api/access-control/status
+Accept: application/json
+Content-Type: application/json</pre>
+<h4 id="example-response">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+  &#34;enabled&#34;: true
+}</pre>
+<h4 id="status-codes">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Returned a flag indicating if the role-based access control is enabled or no.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Not found, an indication that role-based access control is not available at all.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="create-and-manage-custom-roles">Create and manage custom roles</h2>
+<h3 id="get-all-roles">Get all roles</h3>
+<p><code>GET /api/access-control/roles</code></p>
+<p>Gets all existing roles. The response contains all global and organization local roles, for the organization which user is signed in.</p>
+<p>Query Parameters:</p>
+<ul>
+<li><code>includeHidden</code>: Optional. Set to <code>true</code> to include roles that are <code>hidden</code>.</li>
+</ul>
+<h4 id="required-permissions-1">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roles:read</td>
+          <td>roles:*</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-1">Example request</h4>
+<pre>GET /api/access-control/roles
+Accept: application/json
+Content-Type: application/json</pre>
+<h4 id="example-response-1">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+[
+    {
+        &#34;version&#34;: 3,
+        &#34;uid&#34;: &#34;XvHQJq57z&#34;,
+        &#34;name&#34;: &#34;fixed:reports:reader&#34;,
+        &#34;displayName&#34;: &#34;Report reader&#34;,
+        &#34;description&#34;: &#34;Read all reports and shared report settings.&#34;,
+        &#34;group&#34;: &#34;Reports&#34;,
+        &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+        &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+        &#34;global&#34;: false
+    },
+    {
+        &#34;version&#34;: 5,
+        &#34;uid&#34;: &#34;vi9mlLjGz&#34;,
+        &#34;name&#34;: &#34;fixed:datasources.permissions:writer&#34;,
+        &#34;description: &#34;Create, read or delete data source permissions.&#34;,
+        &#34;global&#34;: true,
+        &#34;updated&#34;: &#34;2021-05-13T22:41:49+02:00&#34;,
+        &#34;created&#34;: &#34;2021-05-13T16:24:26+02:00&#34;
+    }
+]</pre>
+<h4 id="status-codes-1">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Global and organization local roles are returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="get-a-role">Get a role</h3>
+<p><code>GET /api/access-control/roles/:uid</code></p>
+<p>Get a role for the given UID.</p>
+<h4 id="required-permissions-2">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roles:read</td>
+          <td>roles:*</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-2">Example request</h4>
+<pre>GET /api/access-control/roles/PYnDO3rMk
+Accept: application/json
+Content-Type: application/json</pre>
+<h4 id="example-response-2">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;version&#34;: 4,
+    &#34;uid&#34;: &#34;6dNwJq57z&#34;,
+    &#34;name&#34;: &#34;fixed:reports:writer&#34;,
+    &#34;displayName&#34;: &#34;Report writer&#34;,
+    &#34;description&#34;: &#34;Create, read, update, or delete all reports and shared report settings.&#34;,
+    &#34;group&#34;: &#34;Reports&#34;,
+    &#34;permissions&#34;: [
+        {
+            &#34;action&#34;: &#34;reports:delete&#34;,
+            &#34;scope&#34;: &#34;reports:*&#34;,
+            &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+            &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;
+        },
+        {
+            &#34;action&#34;: &#34;reports:read&#34;,
+            &#34;scope&#34;: &#34;reports:*&#34;,
+            &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+            &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;
+        },
+        {
+            &#34;action&#34;: &#34;reports:send&#34;,
+            &#34;scope&#34;: &#34;reports:*&#34;,
+            &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+            &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;
+        },
+        {
+            &#34;action&#34;: &#34;reports:create&#34;,
+            &#34;scope&#34;: &#34;&#34;,
+            &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+            &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;
+        },
+        {
+            &#34;action&#34;: &#34;reports:write&#34;,
+            &#34;scope&#34;: &#34;reports:*&#34;,
+            &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+            &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;
+        },
+        {
+            &#34;action&#34;: &#34;reports.settings:read&#34;,
+            &#34;scope&#34;: &#34;&#34;,
+            &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+            &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;
+        },
+        {
+            &#34;action&#34;: &#34;reports.settings:write&#34;,
+            &#34;scope&#34;: &#34;&#34;,
+            &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+            &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;
+        }
+    ],
+    &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+    &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+    &#34;global&#34;: false
+}</pre>
+<h4 id="status-codes-2">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="create-a-new-custom-role">Create a new custom role</h3>
+<p><code>POST /api/access-control/roles</code></p>
+<p>Creates a new custom role and maps given permissions to that role. Note that roles with the same prefix as <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/#fixed-roles">Fixed roles</a> can&rsquo;t be created.</p>
+<h4 id="required-permissions-3">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only create custom roles with the same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to create a custom role which allows to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roles:write</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-3">Example request</h4>
+<pre>POST /api/access-control/roles
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;version&#34;: 1,
+    &#34;uid&#34;: &#34;jZrmlLCGka&#34;,
+    &#34;name&#34;: &#34;custom:delete:roles&#34;,
+    &#34;displayName&#34;: &#34;custom delete roles&#34;,
+    &#34;description&#34;: &#34;My custom role which gives users permissions to delete roles&#34;,
+    &#34;group&#34;:&#34;My Group&#34;,
+    &#34;displayName&#34;: &#34;My Custom Role&#34;,
+    &#34;global&#34;: false,
+    &#34;permissions&#34;: [
+        {
+            &#34;action&#34;: &#34;roles:delete&#34;,
+            &#34;scope&#34;: &#34;permissions:type:delegate&#34;
+        }
+    ]
+}</pre>
+<h4 id="json-body-schema">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Date Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>uid</td>
+          <td>string</td>
+          <td>No</td>
+          <td>UID of the role. If not present, the UID will be automatically created for you and returned in response. Refer to the <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/#custom-roles">Custom roles</a> for more information.</td>
+      </tr>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the role is global or not. If set to <code>false</code>, the default org ID of the authenticated user will be used from the request.</td>
+      </tr>
+      <tr>
+          <td>version</td>
+          <td>number</td>
+          <td>No</td>
+          <td>Version of the role. If not present, version 0 will be assigned to the role and returned in the response. Refer to the <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/#custom-roles">Custom roles</a> for more information.</td>
+      </tr>
+      <tr>
+          <td>name</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Name of the role. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/#custom-roles">Custom roles</a> for more information.</td>
+      </tr>
+      <tr>
+          <td>description</td>
+          <td>string</td>
+          <td>No</td>
+          <td>Description of the role.</td>
+      </tr>
+      <tr>
+          <td>displayName</td>
+          <td>string</td>
+          <td>No</td>
+          <td>Display name of the role, visible in the UI.</td>
+      </tr>
+      <tr>
+          <td>group</td>
+          <td>string</td>
+          <td>No</td>
+          <td>The group name the role belongs to.</td>
+      </tr>
+      <tr>
+          <td>hidden</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>Specify whether the role is hidden or not. If set to <code>true</code>, then the role does not show in the role picker. It will not be listed by API endpoints unless explicitly specified.</td>
+      </tr>
+      <tr>
+          <td>permissions</td>
+          <td>Permission</td>
+          <td>No</td>
+          <td>If not present, the role will be created without any permissions.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Permission</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>action</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Custom role actions and scopes</a> for full list of available actions.</td>
+      </tr>
+      <tr>
+          <td>scope</td>
+          <td>string</td>
+          <td>No</td>
+          <td>If not present, no scope will be mapped to the permission. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Custom role actions and scopes</a> for full list of available scopes.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-3">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;version&#34;: 2,
+    &#34;uid&#34;: &#34;jZrmlLCGka&#34;,
+    &#34;name&#34;: &#34;custom:delete:create:roles&#34;,
+    &#34;displayName&#34;: &#34;custom delete create roles&#34;,
+    &#34;description&#34;: &#34;My custom role which gives users permissions to delete and create roles&#34;,
+    &#34;group&#34;:&#34;My Group&#34;,
+    &#34;displayName&#34;: &#34;My Custom Role&#34;,
+    &#34;global&#34;: false,
+    &#34;permissions&#34;: [
+        {
+            &#34;action&#34;: &#34;roles:delete&#34;,
+            &#34;scope&#34;: &#34;permissions:type:delegate&#34;,
+            &#34;updated&#34;: &#34;2021-05-13T23:19:46+02:00&#34;,
+            &#34;created&#34;: &#34;2021-05-13T23:19:46+02:00&#34;
+        }
+    ],
+    &#34;updated&#34;: &#34;2021-05-13T23:20:51.416518+02:00&#34;,
+    &#34;created&#34;: &#34;2021-05-13T23:19:46+02:00&#34;
+}</pre>
+<h4 id="create-role-validation-errors">Create role validation errors</h4>
+<p>Permission validation only occurs when permission validation is enabled (<code>rbac.permission_validation_enabled = true</code>).</p>
+<blockquote>
+<p>It has been enabled by default since Grafana 10.2.</p></blockquote>
+<h5 id="invalid-action">Invalid action</h5>
+<p>The following example shows a request with an invalid action. The action <code>serviceaccounts.permissions:reader</code> is not a valid action. The valid action should be <code>serviceaccounts.permissions:read</code>.</p>
+<pre>POST /api/access-control/roles HTTP/1.1
+Content-Type: application/json
+{
+	&#34;Name&#34;: &#34;Read Service Account with id 6&#34;,
+	&#34;Permissions&#34;: [
+			{
+			&#34;action&#34;: &#34;serviceaccounts.permissions:reader&#34;,
+			&#34;scope&#34;: &#34;serviceaccounts:uid:6&#34;
+		}
+	]
+}</pre>
+<pre>HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+	&#34;extra&#34;: {
+		&#34;validationError&#34;: &#34;the provided action was not found in the list of valid actions: serviceaccounts.permissions:reader&#34;
+	},
+	&#34;message&#34;: &#34;Permission contains an invalid action&#34;,
+	&#34;messageId&#34;: &#34;accesscontrol.permission-invalid-action&#34;,
+	&#34;statusCode&#34;: 400,
+	&#34;traceID&#34;: &#34;&#34;
+}</pre>
+<h5 id="invalid-scope">Invalid scope</h5>
+<p>The following example shows a request with an invalid scope. The scope <code>serviceaccounts:serviceaccount6</code> is not a valid scope for the action <code>serviceaccounts.permissions:read</code>. The valid scopes for this action are <code>*</code>, <code>serviceaccounts:*</code> and <code>serviceaccounts:id:*</code>.</p>
+<pre>POST /api/access-control/roles HTTP/1.1
+Content-Type: application/json
+{
+	&#34;Name&#34;: &#34;Read Service Account with id 6&#34;,
+	&#34;Permissions&#34;: [
+			{
+			&#34;action&#34;: &#34;serviceaccounts.permissions:read&#34;,
+			&#34;scope&#34;: &#34;serviceaccounts:serviceaccount6&#34;
+		}
+	]
+}</pre>
+<pre>HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+	&#34;extra&#34;: {
+		&#34;validationError&#34;: &#34;unknown scope: serviceaccounts:serviceaccount6 for action: serviceaccounts.permissions:read provided, expected prefixes are [* serviceaccounts:* serviceaccounts:id:*]&#34;
+	},
+	&#34;message&#34;: &#34;Invalid scope&#34;,
+	&#34;messageId&#34;: &#34;accesscontrol.permission-invalid-scope&#34;,
+	&#34;statusCode&#34;: 400,
+	&#34;traceID&#34;: &#34;&#34;
+}</pre>
+<h4 id="status-codes-3">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is updated.</td>
+      </tr>
+      <tr>
+          <td>400</td>
+          <td>Bad request (invalid json, missing content-type, missing or invalid fields, etc.).</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied (one of the specified permissions is not assigned to the requester)</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="update-a-role">Update a role</h3>
+<p><code>PUT /api/access-control/roles/:uid</code></p>
+<p>Update the role with the given UID, and its permissions. The operation is idempotent and all permissions of the role will be replaced based on the request content. You need to increment the version of the role with each update, otherwise the request will fail.</p>
+<p>You can update <code>custom</code> roles and <code>basic</code> roles permissions. However <code>fixed</code> roles cannot be updated.</p>
+<h4 id="required-permissions-4">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only update custom roles with the same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to update a custom role which allows to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roles:write</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-4">Example request</h4>
+<pre>PUT /api/access-control/roles/jZrmlLCGka
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;version&#34;: 3,
+    &#34;name&#34;: &#34;custom:delete:write:roles&#34;,
+    &#34;displayName&#34;: &#34;custom delete write roles&#34;,
+    &#34;description&#34;: &#34;My custom role which gives users permissions to delete and write roles&#34;,
+    &#34;group&#34;:&#34;My Group&#34;,
+    &#34;displayName&#34;: &#34;My Custom Role&#34;,
+    &#34;global&#34;: false,
+    &#34;permissions&#34;: [
+        {
+            &#34;action&#34;: &#34;roles:delete&#34;,
+            &#34;scope&#34;: &#34;permissions:type:delegate&#34;
+        },
+        {
+            &#34;action&#34;: &#34;roles:write&#34;,
+            &#34;scope&#34;: &#34;permissions:type:delegate&#34;
+        }
+    ]
+}</pre>
+<h4 id="json-body-schema-1">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>version</td>
+          <td>number</td>
+          <td>Yes</td>
+          <td>Version of the role. Must be incremented for update to work.</td>
+      </tr>
+      <tr>
+          <td>name</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Name of the role.</td>
+      </tr>
+      <tr>
+          <td>description</td>
+          <td>string</td>
+          <td>No</td>
+          <td>Description of the role.</td>
+      </tr>
+      <tr>
+          <td>displayName</td>
+          <td>string</td>
+          <td>No</td>
+          <td>Display name of the role, visible in the UI.</td>
+      </tr>
+      <tr>
+          <td>group</td>
+          <td>string</td>
+          <td>No</td>
+          <td>The group name the role belongs to.</td>
+      </tr>
+      <tr>
+          <td>hidden</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>Specify whether the role is hidden or not. If set to <code>true</code>, then the role does not show in the role picker. It will not be listed by API endpoints unless explicitly specified.</td>
+      </tr>
+      <tr>
+          <td>permissions</td>
+          <td>List of Permissions</td>
+          <td>No</td>
+          <td>The full list of permissions for the role after the update.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Permission</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>action</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Custom role actions and scopes</a> for full list of available actions.</td>
+      </tr>
+      <tr>
+          <td>scope</td>
+          <td>string</td>
+          <td>No</td>
+          <td>If not present, no scope will be mapped to the permission. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Custom role actions and scopes</a> for full list of available scopes.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-4">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;version&#34;:3,
+    &#34;uid&#34;:&#34;jZrmlLCGka&#34;,
+    &#34;name&#34;:&#34;custom:delete:write:roles&#34;,
+    &#34;displayName&#34;:&#34;custom delete write roles&#34;,
+    &#34;description&#34;:&#34;My custom role which gives users permissions to delete and write roles&#34;,
+    &#34;group&#34;:&#34;My Group&#34;,
+    &#34;displayName&#34;: &#34;My Custom Role&#34;,
+    &#34;permissions&#34;:[
+        {
+            &#34;action&#34;:&#34;roles:delete&#34;,
+            &#34;scope&#34;:&#34;permissions:type:delegate&#34;,
+            &#34;updated&#34;:&#34;2021-08-06T18:27:40+02:00&#34;,
+            &#34;created&#34;:&#34;2021-08-06T18:27:40+02:00&#34;
+        },
+        {
+            &#34;action&#34;:&#34;roles:write&#34;,
+            &#34;scope&#34;:&#34;permissions:type:delegate&#34;,
+            &#34;updated&#34;:&#34;2021-08-06T18:27:41+02:00&#34;,
+            &#34;created&#34;:&#34;2021-08-06T18:27:41+02:00&#34;
+        }
+    ],
+    &#34;updated&#34;:&#34;2021-08-06T18:27:41+02:00&#34;,
+    &#34;created&#34;:&#34;2021-08-06T18:27:40+02:00&#34;,
+    &#34;global&#34;:false
+}</pre>
+<h4 id="update-role-validation-errors">Update role validation errors</h4>
+<p>Permission validation only occurs when permission validation is enabled (<code>rbac.permission_validation_enabled = true</code>).</p>
+<blockquote>
+<p>It has been enabled by default since Grafana 10.2.</p></blockquote>
+<p>For more information, refer to <a href="#create-role-validation-errors">Create role validation errors</a>.</p>
+<h4 id="status-codes-4">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is updated.</td>
+      </tr>
+      <tr>
+          <td>400</td>
+          <td>Bad request (invalid json, missing content-type, missing or invalid fields, etc.).</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied (one of the specified permissions is not assigned to the requester)</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Role was not found to update.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="delete-a-custom-role">Delete a custom role</h3>
+<p><code>DELETE /api/access-control/roles/:uid?force=false</code></p>
+<p>Delete a role with the given UID, and it&rsquo;s permissions. If the role is assigned, the deletion operation will fail, unless the <code>force</code> query param is set to <code>true</code>, and in that case all assignments will also be deleted.</p>
+<h4 id="required-permissions-5">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only delete a custom role with the same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to delete a custom role which allows to do that.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roles:delete</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-5">Example request</h4>
+<pre>DELETE /api/access-control/roles/jZrmlLCGka?force=true&amp;global=false
+Accept: application/json</pre>
+<h4 id="query-parameters">Query parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Param</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>force</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>When set to <code>true</code>, the role will be deleted with all its assignments.</td>
+      </tr>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the role is global or not. If set to false, the default org ID of the authenticated user will be used from the request. Refer to the <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">About RBAC</a> for more information.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-5">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Role deleted&#34;
+}</pre>
+<h4 id="status-codes-5">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is deleted.</td>
+      </tr>
+      <tr>
+          <td>400</td>
+          <td>Bad request (invalid json, missing content-type, missing or invalid fields, etc.).</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="create-and-remove-user-role-assignments">Create and remove user role assignments</h2>
+<h3 id="list-roles-assigned-to-a-user">List roles assigned to a user</h3>
+<p><code>GET /api/access-control/users/:userId/roles</code></p>
+<p>Lists the roles that have been directly assigned to a given user. The list does not include basic roles (Viewer, Editor, Admin or Grafana Admin), and it does not include roles that have been inherited from a team.</p>
+<p>Query Parameters:</p>
+<ul>
+<li><code>includeHidden</code>: Optional. Set to <code>true</code> to include roles that are <code>hidden</code>.</li>
+<li><code>includeMapped</code>: Optional. Set to <code>true</code> to include roles that have been mapped through the group attribute sync feature.</li>
+</ul>
+<h4 id="required-permissions-6">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:read</td>
+          <td>users:id:<code>&lt;user ID&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-6">Example request</h4>
+<pre>GET /api/access-control/users/1/roles
+Accept: application/json</pre>
+<h4 id="example-response-6">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+[
+    {
+        &#34;version&#34;: 4,
+        &#34;uid&#34;: &#34;6dNwJq57z&#34;,
+        &#34;name&#34;: &#34;fixed:reports:writer&#34;,
+        &#34;displayName&#34;: &#34;Report writer&#34;,
+        &#34;description&#34;: &#34;Create, read, update, or delete all reports and shared report settings.&#34;,
+        &#34;group&#34;: &#34;Reports&#34;,
+        &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+        &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+        &#34;global&#34;: false
+    }
+]</pre>
+<h4 id="status-codes-6">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Set of assigned roles is returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="list-your-permissions">List your permissions</h3>
+<p><code>GET /api/access-control/user/permissions</code></p>
+<p>Lists the permissions granted to the signed in user.</p>
+<h4 id="required-permissions-7">Required permissions</h4>
+<p>No permission is required.</p>
+<h4 id="query-parameters-1">Query parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Param</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reloadcache</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag to reload the permission cache.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-7">Example request</h4>
+<pre>GET /api/access-control/user/permissions
+Accept: application/json</pre>
+<h4 id="example-response-7">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+  &#34;dashboards:read&#34;: [&#34;dashboards:uid:70KrY6IVz&#34;],
+  &#34;dashboards:write&#34;: [&#34;dashboards:uid:70KrY6IVz&#34;],
+  &#34;datasources.id:read&#34;: [&#34;datasources:*&#34;],
+  &#34;datasources:read&#34;: [&#34;datasources:*&#34;],
+  &#34;datasources:explore&#34;: [&#34;&#34;],
+  &#34;datasources:query&#34;: [&#34;datasources:uid:grafana&#34;],
+  &#34;datasources:read&#34;: [&#34;datasources:uid:grafana&#34;],
+  &#34;orgs:read&#34;: [&#34;&#34;]
+}</pre>
+<h4 id="status-codes-7">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Set of assigned permissions is returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="list-permissions-assigned-to-a-user">List permissions assigned to a user</h3>
+<p><code>GET /api/access-control/users/:userId/permissions</code></p>
+<p>Lists the permissions granted to a given user.</p>
+<h4 id="required-permissions-8">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.permissions:read</td>
+          <td>users:id:<code>&lt;user ID&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-8">Example request</h4>
+<pre>GET /api/access-control/users/1/permissions
+Accept: application/json</pre>
+<h4 id="example-response-8">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+[
+    {
+        &#34;action&#34;: &#34;ldap.status:read&#34;,
+        &#34;scope&#34;: &#34;&#34;
+    },
+    {
+        &#34;action&#34;: &#34;ldap.user:read&#34;,
+        &#34;scope&#34;: &#34;&#34;
+    }
+]</pre>
+<h4 id="status-codes-8">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Set of assigned permissions is returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="add-a-user-role-assignment">Add a user role assignment</h3>
+<p><code>POST /api/access-control/users/:userId/roles</code></p>
+<p>Assign a role to a specific user.</p>
+<p>For bulk updates consider
+<a href="#set-user-role-assignments">Set user role assignments</a>.</p>
+<h4 id="required-permissions-9">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only assign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to assign a role which will allow to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:add</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-9">Example request</h4>
+<pre>POST /api/access-control/users/1/roles
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;global&#34;: false,
+    &#34;roleUid&#34;: &#34;XvHQJq57z&#34;
+}</pre>
+<h4 id="json-body-schema-2">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roleUid</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>UID of the role.</td>
+      </tr>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the assignment is global or not. If set to <code>false</code>, the default org ID of the authenticated user will be used from the request to create organization local assignment.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-9">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Role added to the user.&#34;
+}</pre>
+<h4 id="status-codes-9">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is assigned to a user.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Role not found.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="remove-a-user-role-assignment">Remove a user role assignment</h2>
+<p><code>DELETE /api/access-control/users/:userId/roles/:roleUID</code></p>
+<p>Revoke a role from a user.</p>
+<p>For bulk updates consider
+<a href="#set-user-role-assignments">Set user role assignments</a>.</p>
+<h4 id="required-permissions-10">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only unassign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to unassign a role which will allow to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:remove</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="query-parameters-2">Query parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Param</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the assignment is global or not. If set to <code>false</code>, the default org ID of the authenticated user will be used from the request to remove assignment.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-10">Example request</h4>
+<pre>DELETE /api/access-control/users/1/roles/AFUXBHKnk
+Accept: application/json</pre>
+<h4 id="example-response-10">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Role removed from user.&#34;
+}</pre>
+<h4 id="status-codes-10">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is unassigned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="set-user-role-assignments">Set user role assignments</h3>
+<p><code>PUT /api/access-control/users/:userId/roles</code></p>
+<p>Update the user&rsquo;s role assignments to match the provided set of UIDs.
+This will remove any assigned roles that aren&rsquo;t in the request and add
+roles that are in the set but are not already assigned to the user.</p>
+<p>If you want to add or remove a single role, consider using
+<a href="#add-a-user-role-assignment">Add a user role assignment</a> or
+<a href="#remove-a-user-role-assignment">Remove a user role assignment</a>
+instead.</p>
+<h4 id="required-permissions-11">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only assign or unassign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to assign or unassign a role which will allow to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:add</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+      <tr>
+          <td>users.roles:remove</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-11">Example request</h4>
+<pre>PUT /api/access-control/users/1/roles
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;global&#34;: false,
+    &#34;roleUids&#34;: [
+        &#34;ZiHQJq5nk&#34;,
+        &#34;GzNQ1357k&#34;
+    ]
+}</pre>
+<h4 id="json-body-schema-3">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Date Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the assignment is global or not. If set to <code>false</code>, the default org ID of the authenticated user will be used from the request.</td>
+      </tr>
+      <tr>
+          <td>roleUids</td>
+          <td>list</td>
+          <td>Yes</td>
+          <td>List of role UIDs.</td>
+      </tr>
+      <tr>
+          <td>includeHidden</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>Specify whether the hidden role assignments should be updated.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-11">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;User roles have been updated.&#34;
+}</pre>
+<h4 id="status-codes-11">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Roles have been assigned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Role not found.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="create-and-remove-service-account-role-assignments">Create and remove service account role assignments</h2>
+<h3 id="list-roles-assigned-to-a-service-account">List roles assigned to a service account</h3>
+<p><code>GET /api/access-control/users/:serviceAccountId/roles</code></p>
+<p>Lists the roles that have been directly assigned to a given service account. The list does not include basic roles (Viewer, Editor, Admin or Grafana Admin).</p>
+<p>Query Parameters:</p>
+<ul>
+<li><code>includeHidden</code>: Optional. Set to <code>true</code> to include roles that are <code>hidden</code>.</li>
+</ul>
+<h4 id="required-permissions-12">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:read</td>
+          <td>users:id:<code>&lt;service account ID&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-12">Example request</h4>
+<pre>GET /api/access-control/users/1/roles
+Accept: application/json</pre>
+<h4 id="example-response-12">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+[
+    {
+        &#34;version&#34;: 4,
+        &#34;uid&#34;: &#34;6dNwJq57z&#34;,
+        &#34;name&#34;: &#34;fixed:reports:writer&#34;,
+        &#34;displayName&#34;: &#34;Report writer&#34;,
+        &#34;description&#34;: &#34;Create, read, update, or delete all reports and shared report settings.&#34;,
+        &#34;group&#34;: &#34;Reports&#34;,
+        &#34;updated&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+        &#34;created&#34;: &#34;2021-11-19T10:48:00+01:00&#34;,
+        &#34;global&#34;: false
+    }
+]</pre>
+<h4 id="status-codes-12">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Set of assigned roles is returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="list-permissions-assigned-to-a-service-account">List permissions assigned to a service account</h3>
+<p><code>GET /api/access-control/users/:serviceAccountId/permissions</code></p>
+<p>Lists the permissions that a given service account has.</p>
+<h4 id="required-permissions-13">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.permissions:read</td>
+          <td>users:id:<code>&lt;service account ID&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-13">Example request</h4>
+<pre>GET /api/access-control/users/1/permissions
+Accept: application/json</pre>
+<h4 id="example-response-13">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+[
+    {
+        &#34;action&#34;: &#34;ldap.status:read&#34;,
+        &#34;scope&#34;: &#34;&#34;
+    },
+    {
+        &#34;action&#34;: &#34;ldap.user:read&#34;,
+        &#34;scope&#34;: &#34;&#34;
+    }
+]</pre>
+<h4 id="status-codes-13">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Set of assigned permissions is returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="add-a-service-account-role-assignment">Add a service account role assignment</h3>
+<p><code>POST /api/access-control/users/:serviceAccountId/roles</code></p>
+<p>Assign a role to a specific service account.</p>
+<p>For bulk updates consider
+<a href="#set-service-account-role-assignments">Set service account role assignments</a>.</p>
+<h4 id="required-permissions-14">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only assign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to assign a role which will allow to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:add</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-14">Example request</h4>
+<pre>POST /api/access-control/users/1/roles
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;global&#34;: false,
+    &#34;roleUid&#34;: &#34;XvHQJq57z&#34;
+}</pre>
+<h4 id="json-body-schema-4">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roleUid</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>UID of the role.</td>
+      </tr>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the assignment is global or not. If set to <code>false</code>, the default org ID of the authenticated user will be used from the request to create organization local assignment.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-14">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Role added to the user.&#34;
+}</pre>
+<h4 id="status-codes-14">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is assigned to a user.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Role not found.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="remove-a-service-account-role-assignment">Remove a service account role assignment</h2>
+<p><code>DELETE /api/access-control/users/:serviceAccountId/roles/:roleUID</code></p>
+<p>Revoke a role from a service account.</p>
+<p>For bulk updates consider
+<a href="#set-service-account-role-assignments">Set service account role assignments</a>.</p>
+<h4 id="required-permissions-15">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only unassign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to unassign a role which will allow to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:remove</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="query-parameters-3">Query parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Param</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the assignment is global or not. If set to <code>false</code>, the default org ID of the authenticated user will be used from the request to remove assignment.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-15">Example request</h4>
+<pre>DELETE /api/access-control/users/1/roles/AFUXBHKnk
+Accept: application/json</pre>
+<h4 id="example-response-15">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Role removed from user.&#34;
+}</pre>
+<h4 id="status-codes-15">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is unassigned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="set-service-account-role-assignments">Set service account role assignments</h3>
+<p><code>PUT /api/access-control/users/:serviceAccountId/roles</code></p>
+<p>Update the service accounts&rsquo;s role assignments to match the provided set of UIDs.
+This will remove any assigned roles that aren&rsquo;t in the request and add
+roles that are in the set but are not already assigned to the service account.</p>
+<p>If you want to add or remove a single role, consider using
+<a href="#add-a-service-account-role-assignment">Add a service account role assignment</a> or
+<a href="#remove-a-service-account-role-assignment">Remove a service account role assignment</a>
+instead.</p>
+<h4 id="required-permissions-16">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only assign or unassign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to assign or unassign a role which will allow to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users.roles:add</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+      <tr>
+          <td>users.roles:remove</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-16">Example request</h4>
+<pre>PUT /api/access-control/users/1/roles
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;global&#34;: false,
+    &#34;roleUids&#34;: [
+        &#34;ZiHQJq5nk&#34;,
+        &#34;GzNQ1357k&#34;
+    ]
+}</pre>
+<h4 id="json-body-schema-5">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Date Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>global</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>A flag indicating if the assignment is global or not. If set to <code>false</code>, the default org ID of the authenticated user will be used from the request.</td>
+      </tr>
+      <tr>
+          <td>roleUids</td>
+          <td>list</td>
+          <td>Yes</td>
+          <td>List of role UIDs.</td>
+      </tr>
+      <tr>
+          <td>includeHidden</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>Specify whether the hidden role assignments should be updated.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-16">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;User roles have been updated.&#34;
+}</pre>
+<h4 id="status-codes-16">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Roles have been assigned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Role not found.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="create-and-remove-team-role-assignments">Create and remove team role assignments</h2>
+<h3 id="list-roles-assigned-to-a-team">List roles assigned to a team</h3>
+<p><code>GET /api/access-control/teams/:teamId/roles</code></p>
+<p>Lists the roles that have been directly assigned to a given team.</p>
+<p>Query Parameters:</p>
+<ul>
+<li><code>includeHidden</code>: Optional. Set to <code>true</code> to include roles that are <code>hidden</code>.</li>
+</ul>
+<h4 id="required-permissions-17">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>teams.roles:read</td>
+          <td>teams:id:<code>&lt;team ID&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-17">Example request</h4>
+<pre>GET /api/access-control/teams/1/roles
+Accept: application/json</pre>
+<h4 id="example-response-17">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+[
+    {
+        &#34;version&#34;: 4,
+        &#34;uid&#34;: &#34;j08ZBi-nk&#34;,
+        &#34;name&#34;: &#34;fixed:licensing:reader&#34;,
+        &#34;displayName&#34;: &#34;Licensing reader&#34;,
+        &#34;description&#34;: &#34;Read licensing information and licensing reports.&#34;,
+        &#34;group&#34;: &#34;Licenses&#34;,
+        &#34;updated&#34;: &#34;2022-02-03T14:19:50+01:00&#34;,
+        &#34;created&#34;: &#34;0001-01-01T00:00:00Z&#34;,
+        &#34;global&#34;: false
+    }
+]</pre>
+<h4 id="status-codes-17">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Set of assigned roles is returned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="add-a-team-role-assignment">Add a team role assignment</h3>
+<p><code>POST /api/access-control/teams/:teamId/roles</code></p>
+<p>Assign a role to a specific team.</p>
+<p>For bulk updates consider <a href="#set-team-role-assignments">Set team role assignments</a>.</p>
+<h4 id="required-permissions-18">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only assign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have the permissions required to create users, they won&rsquo;t be able to assign a role that contains these permissions. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>teams.roles:add</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-18">Example request</h4>
+<pre>POST /api/access-control/teams/1/roles
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;roleUid&#34;: &#34;XvHQJq57z&#34;
+}</pre>
+<h4 id="json-body-schema-6">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roleUid</td>
+          <td>string</td>
+          <td>Yes</td>
+          <td>UID of the role.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-18">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Role added to the team.&#34;
+}</pre>
+<h4 id="status-codes-18">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is assigned to a team.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Role not found.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="remove-a-team-role-assignment">Remove a team role assignment</h2>
+<p><code>DELETE /api/access-control/teams/:teams/roles/:roleUID</code></p>
+<p>Revoke a role from a team.</p>
+<p>For bulk updates consider <a href="#set-team-role-assignments">Set team role assignments</a>.</p>
+<h4 id="required-permissions-19">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only unassign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have the permissions required to create users, they won&rsquo;t be able to assign a role that contains these permissions. This is done to prevent escalation of privileges.```</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>teams.roles:remove</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-19">Example request</h4>
+<pre>DELETE /api/access-control/teams/1/roles/AFUXBHKnk
+Accept: application/json</pre>
+<h4 id="example-response-19">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Role removed from team.&#34;
+}</pre>
+<h4 id="status-codes-19">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Role is unassigned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="set-team-role-assignments">Set team role assignments</h3>
+<p><code>PUT /api/access-control/teams/:teamId/roles</code></p>
+<p>Update the team&rsquo;s role assignments to match the provided set of UIDs.
+This will remove any assigned roles that aren&rsquo;t in the request and add
+roles that are in the set but are not already assigned to the user.</p>
+<p>If you want to add or remove a single role, consider using
+<a href="#add-a-team-role-assignment">Add a team role assignment</a> or
+<a href="#remove-a-team-role-assignment">Remove a team role assignment</a>
+instead.</p>
+<h4 id="required-permissions-20">Required permissions</h4>
+<p><code>permissions:type:delegate</code> scope ensures that users can only assign or unassign roles which have same, or a subset of permissions which the user has.
+For example, if a user does not have required permissions for creating users, they won&rsquo;t be able to assign or unassign a role to a team which will allow to do that. This is done to prevent escalation of privileges.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>teams.roles:add</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+      <tr>
+          <td>teams.roles:remove</td>
+          <td>permissions:type:delegate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-20">Example request</h4>
+<pre>PUT /api/access-control/teams/1/roles
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;roleUids&#34;: [
+        &#34;ZiHQJq5nk&#34;,
+        &#34;GzNQ1357k&#34;
+    ]
+}</pre>
+<h4 id="json-body-schema-7">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Date Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roleUids</td>
+          <td>list</td>
+          <td>Yes</td>
+          <td>List of role UIDs.</td>
+      </tr>
+      <tr>
+          <td>includeHidden</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>Specify whether the hidden role assignments should be updated.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-20">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Team roles have been updated.&#34;
+}</pre>
+<h4 id="status-codes-20">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Roles have been assigned.</td>
+      </tr>
+      <tr>
+          <td>403</td>
+          <td>Access denied.</td>
+      </tr>
+      <tr>
+          <td>404</td>
+          <td>Role not found.</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Unexpected error. Refer to body and/or server logs for more details.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="reset-basic-roles-to-their-default">Reset basic roles to their default</h2>
+<p><code>POST /api/access-control/roles/hard-reset</code></p>
+<p><code>permissions:type:escalate</code> scope enables users to reset basic roles permissions.
+This could result in basic roles having permissions exceedind those of callers.</p>
+<p>Reset basic roles permissions to their default.</p>
+<h4 id="required-permissions-21">Required permissions</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>roles:write</td>
+          <td>permissions:type:escalate</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-request-21">Example request</h4>
+<pre>POST /api/access-control/roles/hard-reset
+Accept: application/json
+Content-Type: application/json
+
+{
+    &#34;BasicRoles&#34;: true
+}</pre>
+<h4 id="json-body-schema-8">JSON body schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field Name</th>
+          <th>Data Type</th>
+          <th>Required</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>BasicRoles</td>
+          <td>boolean</td>
+          <td>No</td>
+          <td>Option to reset basic roles permissions.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="example-response-21">Example response</h4>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+
+{
+    &#34;message&#34;: &#34;Reset performed&#34;
+}</pre>
+<h4 id="status-codes-21">Status codes</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>200</td>
+          <td>Reset performed</td>
+      </tr>
+      <tr>
+          <td>500</td>
+          <td>Failed to reset basic roles</td>
+      </tr>
+  </tbody>
+</table>

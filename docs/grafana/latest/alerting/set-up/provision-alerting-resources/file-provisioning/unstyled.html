@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<h1 id="use-configuration-files-to-provision-alerting-resources">Use configuration files to provision alerting resources</h1>
+<p>Manage your alerting resources using configuration files that can be version controlled. When Grafana starts, it provisions the resources defined in your configuration files. 
+    <a href="/docs/grafana/latest/administration/provisioning/">Provisioning</a> can create, update, or delete existing resources in your Grafana instance.</p>
+<p>This guide outlines the steps and references to provision alerting resources using YAML files. For a practical demo, you can clone and try <a href="https://github.com/grafana/provisioning-alerting-examples/tree/main/config-files" target="_blank" rel="noopener noreferrer">this example using Grafana OSS and Docker Compose</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><ul>
+<li>
+<p>
+    <a href="/docs/grafana/latest/administration/provisioning/">Provisioning Grafana</a> with configuration files is not available in Grafana Cloud.</p>
+</li>
+<li>
+<p>You cannot edit provisioned resources from files in Grafana. You can only change the resource properties by changing the provisioning file and restarting Grafana or carrying out a hot reload. This prevents changes being made to the resource that would be overwritten if a file is provisioned again or a hot reload is carried out.</p>
+</li>
+<li>
+<p>Provisioning using configuration files takes place during the initial set up of your Grafana system, but you can re-run it at any time using the 
+    <a href="/docs/grafana/latest/developers/http_api/admin/#reload-provisioning-configurations">Grafana Admin API</a>.</p>
+</li>
+<li>
+<p>Importing an existing alerting resource results in a conflict. First, when present, remove the resources you plan to import.</p>
+</li>
+</ul></blockquote></div>
+
+<p>Details on how to set up the files and which fields are required for each object are listed below depending on which resource you are provisioning.</p>
+<h2 id="import-alert-rules">Import alert rules</h2>
+<p>Create or delete alert rules using provisioning files in your Grafana instance(s).</p>
+<ol>
+<li>
+<p>Find the alert rule group in Grafana.</p>
+</li>
+<li>
+<p>
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/export-alerting-resources/#export-alert-rules">Export</a> and download a provisioning file for your alert rules.</p>
+</li>
+<li>
+<p>Copy the contents into a YAML or JSON configuration file and add it to the <code>provisioning/alerting</code> directory of the Grafana instance you want to import the alerting resources to.</p>
+<p>Example configuration files can be found below.</p>
+</li>
+<li>
+<p>Restart your Grafana instance (or reload the provisioned files using the Admin API).</p>
+</li>
+</ol>
+<p>Here is an example of a configuration file for creating alert rules.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of rule groups to import or update
+groups:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; name of the rule group
+    name: my_rule_group
+    # &lt;string, required&gt; name of the folder the rule group will be stored in
+    folder: my_first_folder
+    # &lt;duration, required&gt; interval that the rule group should evaluated at
+    interval: 60s
+    # &lt;list, required&gt; list of rules that are part of the rule group
+    rules:
+      # &lt;string, required&gt; unique identifier for the rule. Should not exceed 40 symbols. Only letters, numbers, - (hyphen), and _ (underscore) allowed.
+      - uid: my_id_1
+        # &lt;string, required&gt; title of the rule that will be displayed in the UI
+        title: my_first_rule
+        # &lt;string, required&gt; which query should be used for the condition
+        condition: A
+        # &lt;list, required&gt; list of query objects that should be executed on each
+        #                  evaluation - should be obtained through the API
+        data:
+          - refId: A
+            datasourceUid: &#39;__expr__&#39;
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 3
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params:
+                      - A
+                  reducer:
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: &#39;__expr__&#39;
+              expression: 1==0
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+              type: math
+        # &lt;string&gt; UID of a dashboard that the alert rule should be linked to
+        dashboardUid: my_dashboard
+        # &lt;int&gt; ID of the panel that the alert rule should be linked to
+        panelId: 123
+        # &lt;string&gt; the state the alert rule will have when no data is returned
+        #          possible values: &#34;NoData&#34;, &#34;Alerting&#34;, &#34;OK&#34;, default = NoData
+        noDataState: Alerting
+        # &lt;string&gt; the state the alert rule will have when the query execution
+        #          failed - possible values: &#34;Error&#34;, &#34;Alerting&#34;, &#34;OK&#34;
+        #          default = Alerting
+        execErrState: Alerting
+        # &lt;duration, required&gt; for how long should the alert fire before alerting
+        for: 60s
+        # &lt;map&lt;string, string&gt;&gt; a map of strings to pass around any data
+        annotations:
+          some_key: some_value
+        # &lt;map&lt;string, string&gt; a map of strings that can be used to filter and
+        #                      route alerts
+        labels:
+          team: sre_team_1</pre>
+<p>Here is an example of a configuration file for deleting alert rules.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of alert rule UIDs that should be deleted
+deleteRules:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; unique identifier for the rule
+    uid: my_id_1</pre>
+<h2 id="import-contact-points">Import contact points</h2>
+<p>Create or delete contact points using provisioning files in your Grafana instance(s).</p>
+<ol>
+<li>
+<p>Find the contact point in Grafana.</p>
+</li>
+<li>
+<p>
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/export-alerting-resources/#export-contact-points">Export</a> and download a provisioning file for your contact point.</p>
+</li>
+<li>
+<p>Copy the contents into a YAML or JSON configuration file and add it to the <code>provisioning/alerting</code> directory of the Grafana instance you want to import the alerting resources to.</p>
+<p>Example configuration files can be found below.</p>
+</li>
+<li>
+<p>Restart your Grafana instance (or reload the provisioned files using the Admin API).</p>
+</li>
+</ol>
+<p>Here is an example of a configuration file for creating contact points.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of contact points to import or update
+contactPoints:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; name of the contact point
+    name: cp_1
+    receivers:
+      # &lt;string, required&gt; unique identifier for the receiver. Should not exceed 40 symbols. Only letters, numbers, - (hyphen), and _ (underscore) allowed.
+      - uid: first_uid
+        # &lt;string, required&gt; type of the receiver
+        type: prometheus-alertmanager
+        # &lt;bool, optional&gt; Disable the additional [Incident Resolved] follow-up alert, default = false
+        disableResolveMessage: false
+        # &lt;object, required&gt; settings for the specific receiver type
+        settings:
+          url: http://test:9000</pre>
+<p>Here is an example of a configuration file for deleting contact points.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of receivers that should be deleted
+deleteContactPoints:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; unique identifier for the receiver
+    uid: first_uid</pre>
+<h3 id="settings">Settings</h3>
+<p>Here are some examples of settings you can use for the different
+contact point integrations.</p>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Alertmanager</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="alertmanager">Alertmanager</h4>
+<pre>type: prometheus-alertmanager
+settings:
+  # &lt;string, required&gt;
+  url: http://localhost:9093
+  # &lt;string&gt;
+  basicAuthUser: abc
+  # &lt;string&gt;
+  basicAuthPassword: abc123</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>DingDing</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="dingding">DingDing</h4>
+<pre>type: dingding
+settings:
+  # &lt;string, required&gt;
+  url: https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxxx
+  # &lt;string&gt; options: link, actionCard
+  msgType: link
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Discord</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="discord">Discord</h4>
+<pre>type: discord
+settings:
+  # &lt;string, required&gt;
+  url: https://discord/webhook
+  # &lt;string&gt;
+  avatar_url: https://my_avatar
+  # &lt;bool&gt;
+  use_discord_username: false
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>E-Mail</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="e-mail">E-Mail</h4>
+<pre>type: email
+settings:
+  # &lt;string, required&gt;
+  addresses: me@example.com;you@example.com
+  # &lt;bool&gt;
+  singleEmail: false
+  # &lt;string&gt;
+  message: my optional message to include
+  # &lt;string&gt;
+  subject: |
+    {{ template &#34;default.title&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Google Chat</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="google-chat">Google Chat</h4>
+<pre>type: googlechat
+settings:
+  # &lt;string, required&gt;
+  url: https://google/webhook
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Kafka</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="kafka">Kafka</h4>
+<pre>type: kafka
+settings:
+  # &lt;string, required&gt;
+  kafkaRestProxy: http://localhost:8082
+  # &lt;string, required&gt;
+  kafkaTopic: topic1</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>LINE</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="line">LINE</h4>
+<pre>type: line
+settings:
+  # &lt;string, required&gt;
+  token: xxx</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>MQTT</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="mqtt">MQTT</h4>
+<pre>type: mqtt
+settings:
+  # &lt;string, required&gt;
+  brokerUrl: tcp://127.0.0.1:1883
+  # &lt;string&gt;
+  clientId: grafana
+  # &lt;string, required&gt;
+  topic: grafana/alerts
+  # &lt;string&gt;
+  messageFormat: json
+  # &lt;string&gt;
+  username: grafana
+  # &lt;string&gt;
+  password: password1
+  # &lt;string&gt;
+  qos: 0
+  # &lt;bool&gt;
+  retain: false
+  # &lt;map&gt;
+  tlsConfig:
+    # &lt;bool&gt;
+    insecureSkipVerify: false
+    # &lt;string&gt;
+    clientCertificate: certificate in PEM format
+    # &lt;string&gt;
+    clientKey: key in PEM format
+    # &lt;string&gt;
+    caCertificate: CA certificate in PEM format</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Microsoft Teams</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="microsoft-teams">Microsoft Teams</h4>
+<pre>type: teams
+settings:
+  # &lt;string, required&gt;
+  url: https://ms_teams_url
+  # &lt;string&gt;
+  title: |
+    {{ template &#34;default.title&#34; . }}
+  # &lt;string&gt;
+  sectiontitle: &#39;&#39;
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>OpsGenie</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="opsgenie">OpsGenie</h4>
+<pre>type: opsgenie
+settings:
+  # &lt;string, required&gt;
+  apiKey: xxx
+  # &lt;string, required&gt;
+  apiUrl: https://api.opsgenie.com/v2/alerts
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.title&#34; . }}
+  # &lt;string&gt;
+  description: some descriptive description
+  # &lt;bool&gt;
+  autoClose: false
+  # &lt;bool&gt;
+  overridePriority: false
+  # &lt;string&gt; options: tags, details, both
+  sendTagsAs: both</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>PagerDuty</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="pagerduty">PagerDuty</h4>
+<pre>type: pagerduty
+settings:
+  # &lt;string, required&gt; the 32-character Events API key https://support.pagerduty.com/docs/api-access-keys#events-api-keys
+  integrationKey: XXX
+  # &lt;string&gt; options: critical, error, warning, info
+  severity: critical
+  # &lt;string&gt;
+  class: ping failure
+  # &lt;string&gt;
+  component: Grafana
+  # &lt;string&gt;
+  group: app-stack
+  # &lt;string&gt;
+  summary: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Pushover</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="pushover">Pushover</h4>
+<pre>type: pushover
+settings:
+  # &lt;string, required&gt;
+  apiToken: XXX
+  # &lt;string, required&gt;
+  userKey: user1,user2
+  # &lt;string&gt;
+  device: device1,device2
+  # &lt;string&gt; options (high to low): 2,1,0,-1,-2
+  priority: &#39;2&#39;
+  # &lt;string&gt;
+  retry: &#39;30&#39;
+  # &lt;string&gt;
+  expire: &#39;120&#39;
+  # &lt;string&gt; the number of seconds before a message expires and is deleted automatically. Examples: 10s, 5m30s, 8h.
+  ttl:
+  # &lt;string&gt;
+  sound: siren
+  # &lt;string&gt;
+  okSound: magic
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Slack</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="slack">Slack</h4>
+<pre>type: slack
+settings:
+  # &lt;string, required&gt;
+  recipient: alerting-dev
+  # &lt;string, required&gt;
+  token: xxx
+  # &lt;string&gt;
+  username: grafana_bot
+  # &lt;string&gt;
+  icon_emoji: heart
+  # &lt;string&gt;
+  icon_url: https://icon_url
+  # &lt;string&gt;
+  mentionUsers: user_1,user_2
+  # &lt;string&gt;
+  mentionGroups: group_1,group_2
+  # &lt;string&gt; options: here, channel
+  mentionChannel: here
+  # &lt;string&gt; Optionally provide a Slack incoming webhook URL for sending messages, in this case the token isn&#39;t necessary
+  url: https://some_webhook_url
+  # &lt;string&gt;
+  endpointUrl: https://custom_url/api/chat.postMessage
+  # &lt;string&gt;
+  color: {{ if eq .Status &#34;firing&#34; }}#D63232{{ else }}#36a64f{{ end }}
+  # &lt;string&gt;
+  title: |
+    {{ template &#34;slack.default.title&#34; . }}
+  text: |
+    {{ template &#34;slack.default.text&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Sensu Go</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="sensu-go">Sensu Go</h4>
+<pre>type: sensugo
+settings:
+  # &lt;string, required&gt;
+  url: http://sensu-api.local:8080
+  # &lt;string, required&gt;
+  apikey: xxx
+  # &lt;string&gt;
+  entity: default
+  # &lt;string&gt;
+  check: default
+  # &lt;string&gt;
+  handler: some_handler
+  # &lt;string&gt;
+  namespace: default
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Telegram</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="telegram">Telegram</h4>
+<pre>type: telegram
+settings:
+  # &lt;string, required&gt;
+  bottoken: xxx
+  # &lt;string, required&gt;
+  chatid: some_chat_id
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Threema Gateway</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="threema-gateway">Threema Gateway</h4>
+<pre>type: threema
+settings:
+  # &lt;string, required&gt;
+  api_secret: xxx
+  # &lt;string, required&gt;
+  gateway_id: A5K94S9
+  # &lt;string, required&gt;
+  recipient_id: A9R4KL4S</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>VictorOps</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="victorops">VictorOps</h4>
+<pre>type: victorops
+settings:
+  # &lt;string, required&gt;
+  url: XXX
+  # &lt;string&gt; options: CRITICAL, WARNING
+  messageType: CRITICAL</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Webhook</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="webhook">Webhook</h4>
+<pre>type: webhook
+settings:
+  # &lt;string, required&gt;
+  url: https://endpoint_url
+  # &lt;string&gt; options: POST, PUT
+  httpMethod: POST
+  # &lt;string&gt;
+  username: abc
+  # &lt;string&gt;
+  password: abc123
+  # &lt;string&gt;
+  authorization_scheme: Bearer
+  # &lt;string&gt;
+  authorization_credentials: abc123
+  # &lt;string&gt;
+  maxAlerts: &#39;10&#39;
+  # &lt;map&gt;
+  tlsConfig:
+    # &lt;bool&gt;
+    insecureSkipVerify: false
+    # &lt;string&gt;
+    clientCertificate: certificate in PEM format
+    # &lt;string&gt;
+    clientKey: key in PEM format
+    # &lt;string&gt;
+    caCertificate: CA certificate in PEM format
+  hmacConfig:
+    #&lt;string&gt;
+    secret: secret-key
+    #&lt;string&gt;
+    header: X-Grafana-Alerting-Signature
+    #&lt;string&gt;
+    timestampHeader: X-Grafana-Alerting-Signature-Timestamp</pre>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>WeCom</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="wecom">WeCom</h4>
+<pre>type: wecom
+settings:
+  # &lt;string, required&gt;
+  url: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx
+  # &lt;string&gt;
+  message: |
+    {{ template &#34;default.message&#34; . }}
+  # &lt;string&gt;
+  title: |
+    {{ template &#34;default.title&#34; . }}</pre>
+
+    </div>
+  </div>
+</div>
+
+<h2 id="import-notification-template-groups">Import notification template groups</h2>
+<p>Create or delete notification template groups using provisioning files in your Grafana instance(s).</p>
+<ol>
+<li>
+<p>Find the notification template group in Grafana.</p>
+</li>
+<li>
+<p>
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/export-alerting-resources/#export-notification-template-groups">Export</a> a template group by copying the template content and name.</p>
+</li>
+<li>
+<p>Copy the contents into a YAML or JSON configuration file and add it to the <code>provisioning/alerting</code> directory of the Grafana instance you want to import the alerting resources to.</p>
+<p>Example configuration files can be found below.</p>
+</li>
+<li>
+<p>Restart your Grafana instance (or reload the provisioned files using the Admin API).</p>
+</li>
+</ol>
+<p>Here is an example of a configuration file for creating notification template groups.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of templates to import or update
+templates:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; name of the template group, must be unique
+    name: my_first_template
+    # &lt;string, required&gt; content of the template group
+    template: |
+      {{ define &#34;my_first_template&#34; }}
+        Custom notification message
+      {{ end }}</pre>
+<p>Here is an example of a configuration file for deleting notification template groups.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of alert rule UIDs that should be deleted
+deleteTemplates:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; name of the template group, must be unique
+    name: my_first_template</pre>
+<h2 id="import-notification-policies">Import notification policies</h2>
+<p>Create or reset the notification policy tree using provisioning files in your Grafana instance(s).</p>
+<p>In Grafana, the entire notification policy tree is considered a single, large resource. Add new specific policies as sub-policies under the root policy. Since specific policies may depend on each other, you cannot provision subsets of the policy tree; the entire tree must be defined in a single place.</p>
+
+
+<div data-shared="alerts/warning-provisioning-tree.md">
+            
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>Since the policy tree is a single resource, provisioning it will overwrite all policies in the notification policy tree. However, it does not affect internal policies created when alert rules directly select a contact point.</p></blockquote></div>
+
+</div>
+
+        
+<ol>
+<li>
+<p>Find the notification policy tree in Grafana.</p>
+</li>
+<li>
+<p>
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/export-alerting-resources/#export-the-notification-policy-tree">Export</a> and download a provisioning file for your notification policy tree.</p>
+</li>
+<li>
+<p>Copy the contents into a YAML or JSON configuration file and add it to the <code>provisioning/alerting</code> directory of the Grafana instance you want to import the alerting resources to.</p>
+<p>Example configuration files can be found below.</p>
+</li>
+<li>
+<p>Restart your Grafana instance (or reload the provisioned files using the Admin API).</p>
+</li>
+</ol>
+<p>Here is an example of a configuration file for creating notification policies.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of notification policies
+policies:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string&gt; name of the contact point that should be used for this route
+    receiver: grafana-default-email
+    # &lt;list&gt; The labels by which incoming alerts are grouped together. For example,
+    #        multiple alerts coming in for cluster=A and alertname=LatencyHigh would
+    #        be batched into a single group.
+    #
+    #        To aggregate by all possible labels use the special value &#39;...&#39; as
+    #        the sole label name, for example:
+    #        group_by: [&#39;...&#39;]
+    #        This effectively disables aggregation entirely, passing through all
+    #        alerts as-is. This is unlikely to be what you want, unless you have
+    #        a very low alert volume or your upstream notification system performs
+    #        its own grouping.
+    group_by: [&#39;...&#39;]
+    # &lt;list&gt; a list of prometheus-like matchers that an alert rule has to fulfill to match the node (allowed chars
+    #        [a-zA-Z_:])
+    matchers:
+      - alertname = Watchdog
+      - service_id_X = serviceX
+      - severity =~ &#34;warning|critical&#34;
+    # &lt;list&gt; a list of grafana-like matchers that an alert rule has to fulfill to match the node
+    object_matchers:
+      - [&#39;alertname&#39;, &#39;=&#39;, &#39;CPUUsage&#39;]
+      - [&#39;service_id-X&#39;, &#39;=&#39;, &#39;serviceX&#39;]
+      - [&#39;severity&#39;, &#39;=~&#39;, &#39;warning|critical&#39;]
+    # &lt;list&gt; Times when the route should be muted. These must match the name of a
+    #        mute time interval.
+    #        Additionally, the root node cannot have any mute times.
+    #        When a route is muted it will not send any notifications, but
+    #        otherwise acts normally (including ending the route-matching process
+    #        if the `continue` option is not set)
+    mute_time_intervals:
+      - abc
+    # &lt;duration&gt; How long to initially wait to send a notification for a group
+    #            of alerts. Allows to collect more initial alerts for the same group.
+    #            (Usually ~0s to few minutes), default = 30s
+    group_wait: 30s
+    # &lt;duration&gt; How long to wait before sending a notification about new alerts that
+    #            are added to a group of alerts for which an initial notification has
+    #            already been sent. (Usually ~5m or more), default = 5m
+    group_interval: 5m
+    # &lt;duration&gt;  How long to wait before sending a notification again if it has already
+    #             been sent successfully for an alert. (Usually ~3h or more), default = 4h
+    repeat_interval: 4h
+    # &lt;list&gt; Zero or more child policies. The schema is the same as the root policy.
+    # routes:
+    #   # Another recursively nested policy...
+    #   - receiver: another-receiver
+    #     matchers:
+    #       - ...
+    #     ...</pre>
+<p>Here is an example of a configuration file for resetting the policy tree back to its default value:</p>
+<pre># config file version
+apiVersion: 1
+
+# List of orgIds that should be reset to the default policy
+resetPolicies:
+  - 1</pre>
+<h2 id="import-mute-timings">Import mute timings</h2>
+<p>Create or delete mute timings via provisioning files using provisioning files in your Grafana instance(s).</p>
+<ol>
+<li>
+<p>Find the mute timing in Grafana.</p>
+</li>
+<li>
+<p>
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/export-alerting-resources/#export-mute-timings">Export</a> and download a provisioning file for your mute timing.</p>
+</li>
+<li>
+<p>Copy the contents into a YAML or JSON configuration file and add it to the <code>provisioning/alerting</code> directory of the Grafana instance you want to import the alerting resources to.</p>
+<p>Example configuration files can be found below.</p>
+</li>
+<li>
+<p>Restart your Grafana instance (or reload the provisioned files using the Admin API).</p>
+</li>
+</ol>
+<p>Here is an example of a configuration file for creating mute timings.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of mute time intervals to import or update
+muteTimes:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; name of the mute time interval, must be unique
+    name: mti_1
+    # &lt;list&gt; time intervals that should trigger the muting
+    #        refer to https://prometheus.io/docs/alerting/latest/configuration/#time_interval-0
+    time_intervals:
+      - times:
+          - start_time: &#39;06:00&#39;
+            end_time: &#39;23:59&#39;
+        location: &#39;UTC&#39;
+        weekdays: [&#39;monday:wednesday&#39;, &#39;saturday&#39;, &#39;sunday&#39;]
+        months: [&#39;1:3&#39;, &#39;may:august&#39;, &#39;december&#39;]
+        years: [&#39;2020:2022&#39;, &#39;2030&#39;]
+        days_of_month: [&#39;1:5&#39;, &#39;-3:-1&#39;]</pre>
+<p>Here is an example of a configuration file for deleting mute timings.</p>
+<pre># config file version
+apiVersion: 1
+
+# List of mute time intervals that should be deleted
+deleteMuteTimes:
+  # &lt;int&gt; organization ID, default = 1
+  - orgId: 1
+    # &lt;string, required&gt; name of the mute time interval, must be unique
+    name: mti_1</pre>
+<h2 id="template-variable-interpolation">Template variable interpolation</h2>
+<p>Provisioning interpolates environment variables using the <code>$variable</code> syntax.</p>
+<pre>contactPoints:
+  - orgId: 1
+    name: My Contact Email Point
+    receivers:
+      - uid: 1
+        type: email
+        settings:
+          addresses: $EMAIL</pre>
+<p>In this example, provisioning replaces <code>$EMAIL</code> with the value of the <code>EMAIL</code> environment variable or an empty string if it is not present. For more information, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#using-environment-variables">Using environment variables in the Provision documentation</a>.</p>
+<p>In alerting resources, most properties support template variable interpolation, with a few exceptions:</p>
+<ul>
+<li>Alert rule annotations: <code>groups[].rules[].annotations</code></li>
+<li>Alert rule time range: <code>groups[].rules[].relativeTimeRange</code></li>
+<li>Alert rule query model: <code>groups[].rules[].data.model</code></li>
+<li>Mute timings name: <code>muteTimes[].name</code></li>
+<li>Mute timings time intervals: <code>muteTimes[].time_intervals[]</code></li>
+<li>Notification template group name: <code>templates[].name</code></li>
+<li>Notification template group content: <code>templates[].template</code></li>
+</ul>
+<p>Note for properties that support interpolation, you may unexpectedly substitute template variables when not intended. To avoid this, you can escape the <code>$variable</code> with <code>$$variable</code>.</p>
+<p>For example, when provisioning a <code>subject</code> property in a <code>contactPoints.receivers.settings</code> object that is meant to use the <code>$labels</code> variable.</p>
+<ol>
+<li><code>subject: '{{ $labels }}'</code> will interpolate, incorrectly defining the subject as <code>subject: '{{ }}'</code>.</li>
+<li><code>subject: '{{ $$labels }}'</code> will not interpolate, correctly defining the subject as <code>subject: '{{ $labels }}'</code>.</li>
+</ol>
+<h2 id="more-examples">More examples</h2>
+<p>For more examples on the concept of this guide:</p>
+<ul>
+<li>Try provisioning alerting resources in Grafana OSS with YAML files through a demo project using <a href="https://github.com/grafana/provisioning-alerting-examples/tree/main/config-files" target="_blank" rel="noopener noreferrer">Docker Compose</a> or <a href="https://github.com/grafana/provisioning-alerting-examples/tree/main/kubernetes" target="_blank" rel="noopener noreferrer">Kubernetes deployments</a>.</li>
+<li>Review the distinct options about how Grafana provisions resources in the 
+    <a href="/docs/grafana/latest/administration/provisioning/">Provision Grafana documentation</a>.</li>
+<li>For Helm support, review the examples provisioning alerting resources in the <a href="https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md" target="_blank" rel="noopener noreferrer">Grafana Helm Chart documentation</a>.</li>
+</ul>

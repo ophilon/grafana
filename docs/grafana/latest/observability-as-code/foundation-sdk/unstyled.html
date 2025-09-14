@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<h1 id="get-started-with-the-grafana-foundation-sdk">Get started with the Grafana Foundation SDK</h1>
+<p>The <a href="https://github.com/grafana/grafana-foundation-sdk" target="_blank" rel="noopener noreferrer">Grafana Foundation SDK</a> is a set of tools, types, and libraries that let you define Grafana dashboards and resources using strongly typed code. By writing your dashboards as code, you can:</p>
+<ul>
+<li><strong>Leverage strong typing:</strong> Catch errors at compile time, ensuring more reliable configurations.</li>
+<li><strong>Enhance version control:</strong> Track changes seamlessly using standard version control systems like Git.</li>
+<li><strong>Automate deployments:</strong> Integrate dashboard provisioning into your CI/CD pipelines for consistent and repeatable setups.</li>
+</ul>
+<p>The SDK supports multiple programming languages, including Go, TypeScript, Python, PHP, and Java, so you can choose the one that best fits your development environment.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=_OKQoABmg0Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Ensure you have the following prerequisites:</p>
+<ul>
+<li><strong>Programming environment:</strong> Set up for your chosen language. For example: Go, Node.js for TypeScript, or Python 3.x for Python.</li>
+<li><strong>Grafana instance:</strong> A running Grafana instance compatible with the SDK version you’re using (refer to the <a href="https://github.com/grafana/grafana-foundation-sdk#navigating-the-sdk" target="_blank" rel="noopener noreferrer">compatibility matrix</a>).</li>
+<li><strong>Package manager:</strong> Appropriate for your language, for example, <code>npm</code> or <code>yarn</code> for TypeScript or <code>pip</code> for Python.</li>
+</ul>
+<p>To get started, clone the <a href="https://github.com/grafana/intro-to-foundation-sdk" target="_blank" rel="noopener noreferrer">intro-to-foundation-sdk repository</a> to access examples and a <code>docker-compose</code> stack.</p>
+<h2 id="install-the-grafana-foundation-sdk">Install the Grafana Foundation SDK</h2>
+<p>Select the <code>go</code> or <code>typescript</code> tab to view instructions to install the SDK.
+For other languages, refer to the Grafana Foundation SDK documentation for installation instructions.
+
+
+
+  
+
+  
+
+
+
+  <div class="code" x-data="app_code([&#34;go&#34;,&#34;typescript&#34;])" x-init="init()" data-codetoggle="true">
+    <div class="toggle-toolbar">
+      <div><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'go' }" @click="$store.code.language = 'go'"><span>Go</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'typescript' }" @click="$store.code.language = 'typescript'"><span>typescript</span></button></div>
+      <span class="code-clipboard" x-ref="tooltip">
+        <button @click="copy()">
+          <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+          <span>Copy</span>
+        </button>
+      </span>
+    <div class="toggle-toolbar__border"></div>
+    </div>
+    <div>
+    <pre>go get github.com/grafana/grafana-foundation-sdk/go@next+cog-v0.0.x</pre>
+<pre>npm install @grafana/grafana-foundation-sdk</pre>
+
+    </div>
+  </div>
+
+</p>
+<h2 id="grafana-foundation-sdk-overview">Grafana Foundation SDK Overview</h2>
+<p>Here&rsquo;s a quick overview of how the Grafana Foundation SDK works:</p>
+<ul>
+<li><strong>Builder pattern:</strong> The SDK uses a chainable builder pattern to let you define dashboards fluently. You start with a <code>DashboardBuilder</code>, then add panels, queries, and other components step by step.</li>
+<li><strong>Strong typing:</strong> Everything in the SDK is strongly typed. This gives you autocompletion in your IDE, catches mistakes early, and helps ensure you&rsquo;re always using valid configuration values.</li>
+<li><strong>Structured options:</strong> When a configuration get complex (like data reduction or display settings), the SDK uses typed option builders to keep things readable and predictable.</li>
+</ul>
+<p>You&rsquo;ll see these concepts in action in the next example. These concepts are explained in more detail afterwards.</p>
+<h2 id="create-a-dashboard">Create a dashboard</h2>
+<p>The following example demonstrates how you can create a simple dashboard:</p>
+
+
+
+  
+
+  
+
+
+
+  <div class="code" x-data="app_code([&#34;go&#34;,&#34;typescript&#34;])" x-init="init()" data-codetoggle="true">
+    <div class="toggle-toolbar">
+      <div><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'go' }" @click="$store.code.language = 'go'"><span>Go</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'typescript' }" @click="$store.code.language = 'typescript'"><span>typescript</span></button></div>
+      <span class="code-clipboard" x-ref="tooltip">
+        <button @click="copy()">
+          <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+          <span>Copy</span>
+        </button>
+      </span>
+    <div class="toggle-toolbar__border"></div>
+    </div>
+    <div>
+    <pre>package main
+
+// Import the appropriate Grafana Foundation SDK packages
+import (
+  &#34;encoding/json&#34;
+  &#34;log&#34;
+
+  &#34;github.com/grafana/grafana-foundation-sdk/go/cog&#34;
+  &#34;github.com/grafana/grafana-foundation-sdk/go/common&#34;
+  &#34;github.com/grafana/grafana-foundation-sdk/go/dashboard&#34;
+  &#34;github.com/grafana/grafana-foundation-sdk/go/stat&#34;
+  &#34;github.com/grafana/grafana-foundation-sdk/go/testdata&#34;
+  &#34;github.com/grafana/grafana-foundation-sdk/go/timeseries&#34;
+)
+
+func main() {
+  // Define a data source reference for our testdata data source
+  testdataRef := dashboard.DataSourceRef{
+    Type: cog.ToPtr(&#34;grafana-testdata-datasource&#34;),
+    Uid:  cog.ToPtr(&#34;testdata&#34;),
+  }
+
+  // Define our dashboard as strongly typed code
+  builder := dashboard.NewDashboardBuilder(&#34;My Dashboard&#34;).
+    WithPanel(
+      stat.NewPanelBuilder().
+        Title(&#34;Version&#34;).
+        Datasource(testdataRef).
+        ReduceOptions(common.NewReduceDataOptionsBuilder().
+          Calcs([]string{&#34;lastNotNull&#34;}).
+          Fields(&#34;/.*/&#34;)).
+        WithTarget(
+          testdata.NewDataqueryBuilder().
+            ScenarioId(&#34;csv_content&#34;).
+            CsvContent(&#34;version\nv1.2.3&#34;),
+        ),
+    ).
+    WithPanel(
+      timeseries.NewPanelBuilder().
+        Title(&#34;Random Time Series&#34;).
+        Datasource(testdataRef).
+        WithTarget(
+          testdata.NewDataqueryBuilder().
+            ScenarioId(&#34;random_walk&#34;),
+        ),
+    )
+
+  // Build the dashboard - errors in configuration will be thrown here
+  dashboard, err := builder.Build()
+  if err != nil {
+    log.Fatalf(&#34;failed to build dashboard: %v&#34;, err)
+  }
+
+  // Output the generated dashboard as JSON
+  dashboardJson, err := json.MarshalIndent(dashboard, &#34;&#34;, &#34;  &#34;)
+  if err != nil {
+    log.Fatalf(&#34;failed to marshal dashboard: %v&#34;, err)
+  }
+
+  log.Printf(&#34;Dashboard JSON:\n%s&#34;, dashboardJson)
+}</pre>
+<pre>// Import the appropriate Grafana Foundation SDK packages
+import * as common from &#39;@grafana/grafana-foundation-sdk/common&#39;;
+import * as dashboard from &#39;@grafana/grafana-foundation-sdk/dashboard&#39;;
+import * as stat from &#39;@grafana/grafana-foundation-sdk/stat&#39;;
+import * as testdata from &#39;@grafana/grafana-foundation-sdk/testdata&#39;;
+import * as timeseries from &#39;@grafana/grafana-foundation-sdk/timeseries&#39;;
+
+// Define a data source reference for our testdata data source
+const testDataRef: dashboard.DataSourceRef = {
+  type: &#39;grafana-testdata-datasource&#39;,
+  uid: &#39;testdata&#39;,
+};
+
+// Define our dashboard as strongly typed code
+const builder = new dashboard.DashboardBuilder(&#39;My Dashboard&#39;)
+  .withPanel(
+    new stat.PanelBuilder()
+      .title(&#39;Version&#39;)
+      .reduceOptions(new common.ReduceDataOptionsBuilder().calcs([&#39;lastNotNull&#39;]).fields(&#39;/.*/&#39;))
+      .datasource(testdataRef)
+      .withTarget(new testdata.DataqueryBuilder().scenarioId(&#39;csv_content&#39;).csvContent(&#39;version\nv1.2.3&#39;))
+  )
+  .withPanel(
+    new timeseries.PanelBuilder()
+      .title(&#39;Random Time Series&#39;)
+      .datasource(testdataRef)
+      .withTarget(new testdata.DataqueryBuilder().scenarioId(&#39;random_walk&#39;))
+  );
+
+// Build the dashboard - errors in configuration will be thrown here
+const dashboard = builder.build();
+
+// Output the generated dashboard as JSON
+console.log(JSON.stringify(dashboard, null, 2));</pre>
+
+    </div>
+  </div>
+
+
+<p>This code defines a dashboard titled “My Dashboard” with a two panels:</p>
+<ul>
+<li>a simple stat panel displaying a version number, and</li>
+<li>a time series panel displaying randomized data from the <code>testdata</code> data source <code>random_walk</code> scenario.</li>
+</ul>
+<h2 id="export-and-use-the-json">Export and use the JSON</h2>
+<p>After you&rsquo;ve defined your dashboard as code, build the final dashboard representation using the dashboard builder (typically using the <code>build()</code> function depending on language choice) and output the result as a JSON.</p>
+<p>With the JSON payload, you can:</p>
+<ul>
+<li><strong>Manually import:</strong> Paste into Grafana’s dashboard import feature.</li>
+<li><strong>Automate:</strong> Use <a href="../../developers/http_api/">Grafana’s API</a> or the <a href="../grafana-cli/">Grafana CLI</a> to programmatically upload the dashboard JSON.</li>
+</ul>
+<h2 id="concepts">Concepts</h2>
+<p>Now that you&rsquo;ve seen how to define a basic dashboard using code, let&rsquo;s take a moment to explain how it all works behind the scenes. The Grafana Foundation SDK is built around a few core concepts that make your dashboards structured, reusable, and strongly typed.</p>
+<h3 id="builders">Builders</h3>
+<p>The SDK follows a builder pattern, which lets you compose dashboards step-by-step using chained method calls.
+Almost every piece of the dashboard, including dashboards, panels, rows, queries, and variables, has its own <code>Builder</code> class.</p>
+<p>Here are a few you&rsquo;ve already seen:</p>
+<ul>
+<li><code>DashboardBuilder</code> - Starts the dashboard definition and sets global configuration settings like title, UID, refresh interval, time range, etc.</li>
+<li><code>PanelBuilder</code> - Creates individual visualizations like time series panels, stat panels, or log panels.</li>
+<li><code>DataqueryBuilder</code> - Defines how a panel fetches data, for example, from Prometheus or the <code>testdata</code> plugin.</li>
+</ul>
+<p>Builders are chainable, so you can fluently compose dashboards in a readable, structured way:</p>
+
+
+
+  
+
+  
+
+
+
+  <div class="code" x-data="app_code([&#34;go&#34;,&#34;typescript&#34;])" x-init="init()" data-codetoggle="true">
+    <div class="toggle-toolbar">
+      <div><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'go' }" @click="$store.code.language = 'go'"><span>Go</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'typescript' }" @click="$store.code.language = 'typescript'"><span>typescript</span></button></div>
+      <span class="code-clipboard" x-ref="tooltip">
+        <button @click="copy()">
+          <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+          <span>Copy</span>
+        </button>
+      </span>
+    <div class="toggle-toolbar__border"></div>
+    </div>
+    <div>
+    <pre>stat.NewPanelBuilder().
+  Title(&#34;Version&#34;).
+  Datasource(testdataRef).
+  ReduceOptions(common.NewReduceDataOptionsBuilder().
+    Calcs([]string{&#34;lastNotNull&#34;}).
+    Fields(&#34;/.*/&#34;)).
+  WithTarget(
+    testdata.NewDataqueryBuilder().
+      ScenarioId(&#34;csv_content&#34;).
+      CsvContent(&#34;version\nv1.2.3&#34;),
+  )</pre>
+<pre>new stat.PanelBuilder()
+  .title(&#39;Version&#39;)
+  .reduceOptions(new common.ReduceDataOptionsBuilder().calcs([&#39;lastNotNull&#39;]).fields(&#39;/.*/&#39;))
+  .datasource(testdataRef)
+  .withTarget(new testdata.DataqueryBuilder().scenarioId(&#39;csv_content&#39;).csvContent(&#39;version\nv1.2.3&#39;));</pre>
+
+    </div>
+  </div>
+
+
+<h3 id="types">Types</h3>
+<p>The Grafana Foundation SDK uses strong types under the hood to help catch mistakes before you deploy a broken dashboard.</p>
+<p>For example:</p>
+<ul>
+<li>When setting a unit, you&rsquo;ll get autocomplete suggestions for valid Grafana units like <code>&quot;percent&quot;</code> or <code>&quot;bps&quot;</code>.</li>
+<li>When defining a time range, you&rsquo;ll be guided to provide the correct structure, like <code>from</code> and <code>to</code> values.</li>
+<li>When referencing data sources, you&rsquo;ll use a structured <code>DataSourceRef</code> object with defined <code>type</code> and <code>uid</code> fields.</li>
+</ul>
+<p>This helps you:</p>
+<ul>
+<li>Avoid typos or unsupported configuration values</li>
+<li>Get full autocomplete and inline documentation in your IDE</li>
+<li>Write dashboards that are less error-prone and easier to maintain</li>
+</ul>
+<p>Strong typing also makes it easier to build reusable patterns and components with confidence, especially in large codebases or teams.</p>
+<h3 id="options">Options</h3>
+<p>Most builder methods accept simple values like strings or numbers, but others expect more structured option objects. These are used for things like:</p>
+<ul>
+<li><code>ReduceDataOptions</code> - How to reduce time series data into single values (e.g. last, avg).</li>
+<li><code>VizLegendOptions</code> - Configure how the legend of a panel is displayed.</li>
+<li><code>CanvasElementOptions</code> - Define how the the various components of a Canvas panel should be displayed.</li>
+</ul>
+<p>Example using options:</p>
+
+
+
+  
+
+  
+
+
+
+  <div class="code" x-data="app_code([&#34;go&#34;,&#34;typescript&#34;])" x-init="init()" data-codetoggle="true">
+    <div class="toggle-toolbar">
+      <div><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'go' }" @click="$store.code.language = 'go'"><span>Go</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'typescript' }" @click="$store.code.language = 'typescript'"><span>typescript</span></button></div>
+      <span class="code-clipboard" x-ref="tooltip">
+        <button @click="copy()">
+          <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+          <span>Copy</span>
+        </button>
+      </span>
+    <div class="toggle-toolbar__border"></div>
+    </div>
+    <div>
+    <pre>stat.NewPanelBuilder().
+  ReduceOptions(common.NewReduceDataOptionsBuilder().
+    Calcs([]string{&#34;lastNotNull&#34;}).
+    Fields(&#34;/.*/&#34;))
+  )</pre>
+<pre>new stat.PanelBuilder().reduceOptions(new common.ReduceDataOptionsBuilder().calcs([&#39;lastNotNull&#39;]).fields(&#39;/.*/&#39;));</pre>
+
+    </div>
+  </div>
+
+
+<p>By using option builders, you don&rsquo;t need to manually construct deeply nested configuration objects. Instead, the SDK gives you a typed and guided API that mirrors a dashboards internal structure, making it easier to configure complex options without guesswork or referring back to the JSON schema.</p>
+<h2 id="explore-a-real-world-example">Explore a real-world example</h2>
+<p>If you want to explore further and see a more real-world example of using the Grafana Foundation SDK, watch the following walkthrough:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=ZjWdGVsrCiQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>In this video, we generate a dashboard from code and deploy it using the Grafana API, covering patterns and practices you&rsquo;d use in production environments. It also includes a working example of a web service that emits metrics and logs, and shows how to deploy a dashboard alongside it using Docker Compose.</p>
+<p>You can find the full source code for this example in the <a href="https://github.com/grafana/intro-to-foundation-sdk/tree/main/generate-and-deploy-example" target="_blank" rel="noopener noreferrer">intro-to-foundation-sdk repository</a>.</p>
+<h2 id="summary">Summary</h2>
+<p>The Grafana Foundation SDK is designed to make dashboard creation:</p>
+<ul>
+<li><strong>Composable</strong> through the use of chainable builders</li>
+<li><strong>Safe</strong> with strong typing and clear APIs</li>
+<li><strong>Configurable</strong> using structured options for fine control</li>
+</ul>
+<p>As you build more advanced dashboards, you’ll work with additional builders and types to support richer functionality.
+The SDK supports not just panels and queries, but also variables, thresholds, field overrides, transformations, and more.
+Refer to <a href="https://grafana.github.io/grafana-foundation-sdk/" target="_blank" rel="noopener noreferrer">the full API reference</a> to explore what&rsquo;s possible.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>Now that you understand the basics of using the Grafana Foundation SDK, here are some next steps:</p>
+<ul>
+<li><strong>Explore more features:</strong> Check out the <a href="https://grafana.github.io/grafana-foundation-sdk/" target="_blank" rel="noopener noreferrer">full API reference</a> to learn about advanced dashboard configurations.</li>
+<li><strong>Version control your dashboards:</strong> Store your dashboard code in a Git repository to track changes over time.</li>
+<li><strong>Automate dashboard provisioning with CI/CD:</strong> <a href="./dashboard-automation">Integrate the SDK into your CI/CD pipeline</a> to deploy dashboards automatically.</li>
+</ul>

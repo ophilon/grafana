@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<h1 id="configure-field-overrides">Configure field overrides</h1>
+<p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>For example, you can override the default unit measurement for all fields that include the text &ldquo;bytes&rdquo; by adding an override using the <strong>Fields with name matching regex</strong> matcher and then the <strong>Standard options &gt; Unit</strong> setting to the override rule:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-unit-override-v10.3.png"
+  alt="Field with unit override" width="399"
+     height="223"/></p>
+<p>After you&rsquo;ve set them, your overrides appear in both the <strong>All</strong> and <strong>Overrides</strong> tabs of the panel editor pane:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-all-overrides-tabs-v11.png"
+  alt="All and Overrides tabs of panel editor pane" width="552"
+     height="158"/></p>
+<h2 id="supported-visualizations">Supported visualizations</h2>
+<p>You can configure field overrides for the following visualizations:</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-gauge/">Bar gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Canvas</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/gauge/">Gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/">Geomap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/heatmap/">Heatmap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">Histogram</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/pie-chart/">Pie chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/">Stat</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/xy-chart/">XY chart</a></li>
+</ul>
+
+</div>
+<h2 id="override-rules">Override rules</h2>
+<p>You can choose from five types of override rules, which are described in the following sections.</p>
+<h3 id="fields-with-name">Fields with name</h3>
+<p>Select a field from the list of all available fields. Properties you add to this type of rule are only applied to this single field.</p>
+<h3 id="fields-with-name-matching-regex">Fields with name matching regex</h3>
+<p>Specify fields to override with a regular expression. Properties you add to this type of rule are applied to all fields where the field name matches the regular expression. This override doesn&rsquo;t rename the field; to do this, use the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#rename-by-regex">Rename by regex transformation</a>.</p>
+<h3 id="fields-with-type">Fields with type</h3>
+<p>Select fields by type, such as string, numeric, or time. Properties you add to this type of rule are applied to all fields that match the selected type.</p>
+<h3 id="fields-returned-by-query">Fields returned by query</h3>
+<p>Select all fields returned by a specific query, such as A, B, or C. Properties you add to this type of rule are applied to all fields returned by the selected query.</p>
+<h3 id="fields-with-values">Fields with values</h3>
+<p>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>. Properties you add to this type of rule are applied to all fields returned by the selected condition.</p>
+<h2 id="examples">Examples</h2>
+<p>The following examples demonstrate how you can use override rules to alter the display of fields in visualizations.</p>
+<h3 id="example-1-format-temperature">Example 1: Format temperature</h3>
+<p>The following result set is a data frame that consists of two fields: time and temperature.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">time</th>
+          <th style="text-align: center">temperature</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:04:00</td>
+          <td style="text-align: center">45.0</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:05:00</td>
+          <td style="text-align: center">47.0</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:06:00</td>
+          <td style="text-align: center">48.0</td>
+      </tr>
+  </tbody>
+</table>
+<p>You can apply field options to each field (column) of this structure to alter the way its values are displayed. For example, you can set the following override rule:</p>
+<ul>
+<li>Rule: <strong>Fields with type</strong></li>
+<li>Field: temperature</li>
+<li>Override property: <strong>Standard options &gt; Unit</strong>
+<ul>
+<li>Selection: <strong>Temperature &gt; Celsius</strong></li>
+</ul>
+</li>
+</ul>
+<p>This results in the following table:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">time</th>
+          <th style="text-align: center">temperature</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:04:00</td>
+          <td style="text-align: center">45.0 °C</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:05:00</td>
+          <td style="text-align: center">47.0 °C</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:06:00</td>
+          <td style="text-align: center">48.0 °C</td>
+      </tr>
+  </tbody>
+</table>
+<p>In addition, the decimal place isn&rsquo;t required, so you can remove it by adding another override property that changes the <strong>Standard options &gt; Decimals</strong> setting from <strong>auto</strong> to <code>0</code>. That results in the following table:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">time</th>
+          <th style="text-align: center">temperature</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:04:00</td>
+          <td style="text-align: center">45 °C</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:05:00</td>
+          <td style="text-align: center">47 °C</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">2020-01-02 03:06:00</td>
+          <td style="text-align: center">48 °C</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-2-format-temperature-and-humidity">Example 2: Format temperature and humidity</h3>
+<p>The following result set is a data frame that consists of four fields: time, high temp, low temp, and humidity.</p>
+<table>
+  <thead>
+      <tr>
+          <th>time</th>
+          <th>high temp</th>
+          <th>low temp</th>
+          <th>humidity</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-01-02 03:04:00</td>
+          <td>45.0</td>
+          <td>30.0</td>
+          <td>67</td>
+      </tr>
+      <tr>
+          <td>2020-01-02 03:05:00</td>
+          <td>47.0</td>
+          <td>34.0</td>
+          <td>68</td>
+      </tr>
+      <tr>
+          <td>2020-01-02 03:06:00</td>
+          <td>48.0</td>
+          <td>31.0</td>
+          <td>68</td>
+      </tr>
+  </tbody>
+</table>
+<p>Use the following override rule and properties to add the <strong>Celsius</strong> unit option and remove the decimal place:</p>
+<ul>
+<li>Rule: <strong>Fields with type</strong></li>
+<li>Field: temperature</li>
+<li>Override property: <strong>Standard options &gt; Unit</strong>
+<ul>
+<li>Selection: <strong>Temperature &gt; Celsius</strong></li>
+</ul>
+</li>
+<li>Override property: <strong>Standard options &gt; Decimals</strong>
+-Change setting from <strong>auto</strong> to <code>0</code></li>
+</ul>
+<p>This results in the following table:</p>
+<table>
+  <thead>
+      <tr>
+          <th>time</th>
+          <th>high temp</th>
+          <th>low temp</th>
+          <th>humidity</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-01-02 03:04:00</td>
+          <td>45 °C</td>
+          <td>30 °C</td>
+          <td>67 °C</td>
+      </tr>
+      <tr>
+          <td>2020-01-02 03:05:00</td>
+          <td>47 °C</td>
+          <td>34 °C</td>
+          <td>68 °C</td>
+      </tr>
+      <tr>
+          <td>2020-01-02 03:06:00</td>
+          <td>48 °C</td>
+          <td>31 °C</td>
+          <td>68 °C</td>
+      </tr>
+  </tbody>
+</table>
+<p>The temperature fields are displaying correctly, but the humidity has incorrect units. You can fix this by applying a <strong>Misc &gt; Percent (0-100)</strong> override to the humidity field. This results in the following table:</p>
+<table>
+  <thead>
+      <tr>
+          <th>time</th>
+          <th>high temp</th>
+          <th>low temp</th>
+          <th>humidity</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-01-02 03:04:00</td>
+          <td>45 °C</td>
+          <td>30 °C</td>
+          <td>67%</td>
+      </tr>
+      <tr>
+          <td>2020-01-02 03:05:00</td>
+          <td>47 °C</td>
+          <td>34 °C</td>
+          <td>68%</td>
+      </tr>
+      <tr>
+          <td>2020-01-02 03:06:00</td>
+          <td>48 °C</td>
+          <td>31 °C</td>
+          <td>68%</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="add-a-field-override">Add a field override</h2>
+<p>To add a field override, follow these steps:</p>
+<ol>
+<li>Navigate to the panel to which you want to add the data link.</li>
+<li>Hover over any part of the panel to display the menu icon in the upper-right corner.</li>
+<li>Click the menu icon and select <strong>Edit</strong> to open the panel editor.</li>
+<li>At the bottom of the panel editor pane, click <strong>Add field override</strong>.</li>
+<li>Select the fields to which the override will be applied:
+<ul>
+<li><strong>Fields with name</strong></li>
+<li><strong>Fields with name matching regex</strong></li>
+<li><strong>Fields with type</strong></li>
+<li><strong>Fields returned by query</strong></li>
+<li><strong>Fields with values</strong></li>
+</ul>
+</li>
+<li>Click <strong>Add override property</strong>.</li>
+<li>Select the field option that you want to apply.</li>
+<li>Continue to add overrides to this field by clicking <strong>Add override property</strong>.</li>
+<li>Add as many overrides as you need.</li>
+<li>When you&rsquo;re finished, click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</li>
+</ol>
+<h2 id="edit-a-field-override">Edit a field override</h2>
+<p>To edit a field override, follow these steps:</p>
+<ol>
+<li>Navigate to the panel to which you want to add the data link.</li>
+<li>Hover over any part of the panel to display the menu icon in the upper-right corner.</li>
+<li>Click the menu icon and select <strong>Edit</strong> to open the panel editor.</li>
+<li>In the panel editor pane, click the <strong>Overrides</strong> tab.</li>
+<li>Locate the override you want to change.</li>
+<li>Perform any of the following tasks:
+<ul>
+<li>Edit settings on existing overrides or field selection parameters.</li>
+<li>Delete existing override properties by clicking the <strong>X</strong> next to the property.</li>
+<li>Delete an override entirely by clicking the trash icon at the top-right corner.</li>
+</ul>
+</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</li>
+</ol>
+<p>The changes you make take effect immediately.</p>

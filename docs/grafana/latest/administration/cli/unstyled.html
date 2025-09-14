@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<h1 id="grafana-server-cli">Grafana server CLI</h1>
+<p>Grafana server CLI is a small executable that&rsquo;s bundled with Grafana server.
+You can run it on the same machine Grafana server is running on.
+Grafana server CLI has <code>plugins</code> and <code>admin</code> commands, as well as global options.</p>
+<p>To list all commands and options:</p>
+<pre>grafana cli -h</pre>
+<h2 id="run-grafana-server-cli">Run Grafana server CLI</h2>
+<p>To run Grafana server CLI, add the path to the Grafana binaries in your <code>PATH</code> environment variable.
+Alternately, if your current directory is the <code>bin</code> directory, run <code>./grafana cli</code>.
+Otherwise, you can specify full path to the binary.
+For example, on Linux <code>/usr/share/grafana/bin/grafana</code> and on Windows <code>C:\Program Files\GrafanaLabs\grafana\bin\grafana.exe</code>, and run it with <code>grafana cli</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Some commands, such as installing or removing plugins, require <code>sudo</code> on Linux.
+If you&rsquo;re on Windows, run Windows PowerShell as Administrator.</p></blockquote></div>
+
+<h2 id="grafana-cli-command-syntax">Grafana CLI command syntax</h2>
+<p>The general syntax for commands in Grafana server CLI is:</p>
+<pre>grafana cli [global options] command [command options] [arguments...]</pre>
+<h2 id="global-options">Global options</h2>
+<p>Grafana server CLI allows you to temporarily override certain Grafana default settings. Except for <code>--help</code> and <code>--version</code>, most global options are only used by developers.</p>
+<p>Each global option applies only to the command in which it is used. For example, <code>--pluginsDir value</code> does not permanently change where Grafana saves plugins. It only changes it for command in which you apply the option.</p>
+<h3 id="display-grafana-server-cli-help">Display Grafana server CLI help</h3>
+<p><code>--help</code> or <code>-h</code> displays the help, including default paths and Docker configuration information.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli -h</pre>
+<h3 id="display-grafana-server-cli-version">Display Grafana server CLI version</h3>
+<p><code>--version</code> or <code>-v</code> prints the version of Grafana server CLI currently running.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli -v</pre>
+<h3 id="override-default-plugin-directory">Override default plugin directory</h3>
+<p><code>--pluginsDir value</code> overrides the path to where your local Grafana instance stores plugins. Use this option if you want to install, update, or remove a plugin somewhere other than the default directory (&quot;/var/lib/grafana/plugins&quot;) [$GF_PLUGIN_DIR].</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --pluginsDir &#34;/var/lib/grafana/devplugins&#34; plugins install &lt;plugin-id&gt;</pre>
+<h3 id="override-default-plugin-repo-url">Override default plugin repo URL</h3>
+<p><code>--repo value</code> allows you to download and install or update plugins from a repository other than the default Grafana repo.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --repo &#34;https://example.com/plugins&#34; plugins install &lt;plugin-id&gt;</pre>
+<h3 id="override-default-plugin-zip-url">Override default plugin .zip URL</h3>
+<p><code>--pluginUrl value</code> allows you to download a .zip file containing a plugin from a local URL instead of downloading it from the default Grafana source.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --pluginUrl https://company.com/grafana/plugins/&lt;plugin-id&gt;-&lt;plugin-version&gt;.zip plugins install &lt;plugin-id&gt;</pre>
+<h3 id="override-transport-layer-security">Override Transport Layer Security</h3>
+<p><strong>Warning:</strong> Turning off TLS is a significant security risk. We do not recommend using this option.</p>
+<p><code>--insecure</code> allows you to turn off Transport Layer Security (TLS) verification (insecure). You might want to do this if you are downloading a plugin from a non-default source.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --insecure --pluginUrl https://company.com/grafana/plugins/&lt;plugin-id&gt;-&lt;plugin-version&gt;.zip plugins install &lt;plugin-id&gt;</pre>
+<h3 id="enable-debug-logging">Enable debug logging</h3>
+<p><code>--debug</code> or <code>-d</code> enables debug logging. Debug output is returned and shown in the terminal.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --debug plugins install &lt;plugin-id&gt;</pre>
+<h3 id="override-a-configuration-setting">Override a configuration setting</h3>
+<p><code>--configOverrides</code> is a command line argument that acts like an environmental variable override.</p>
+<p>For example, you can use it to redirect logging to another file (maybe to log plugin installations in Grafana Cloud) or when resetting the admin password and you have non-default values for some important configuration value (like where the database is located).</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --configOverrides cfg:default.paths.log=/dev/null plugins install &lt;plugin-id&gt;</pre>
+<h3 id="override-homepath-value">Override homepath value</h3>
+<p>Sets the path for the Grafana install/home path, defaults to working directory. You do not need to use this if you are in the Grafana installation directory when using the CLI.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --homepath &#34;/usr/share/grafana&#34; admin reset-admin-password &lt;new password&gt;</pre>
+<h3 id="override-config-file">Override config file</h3>
+<p><code>--config value</code> overrides the default location where Grafana expects the configuration file. Refer to <a href="../setup-grafana/configure-grafana/">Configuration</a> for more information about configuring Grafana and default configuration file locations.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli --config &#34;/etc/configuration/&#34; admin reset-admin-password mynewpassword</pre>
+<h2 id="plugins-commands">Plugins commands</h2>
+<p>Grafana CLI allows you to install, upgrade, and manage your Grafana plugins. For more information about installing plugins, refer to <a href="../administration/plugin-management/">plugins page</a>.</p>
+<p>All listed commands apply to the Grafana default repositories and directories. You can override the defaults with <a href="#global-options">Global Options</a>.</p>
+<h3 id="list-available-plugins">List available plugins</h3>
+<pre>grafana cli plugins list-remote</pre>
+<h3 id="install-the-latest-version-of-a-plugin">Install the latest version of a plugin</h3>
+<pre>grafana cli plugins install &lt;plugin-id&gt;</pre>
+<h3 id="install-a-specific-version-of-a-plugin">Install a specific version of a plugin</h3>
+<pre>grafana cli plugins install &lt;plugin-id&gt; &lt;version&gt;</pre>
+<h3 id="list-installed-plugins">List installed plugins</h3>
+<pre>grafana cli plugins ls</pre>
+<h3 id="update-all-installed-plugins">Update all installed plugins</h3>
+<pre>grafana cli plugins update-all</pre>
+<h3 id="update-one-plugin">Update one plugin</h3>
+<pre>grafana cli plugins update &lt;plugin-id&gt;</pre>
+<h3 id="remove-one-plugin">Remove one plugin</h3>
+<pre>grafana cli plugins remove &lt;plugin-id&gt;</pre>
+<h2 id="admin-commands">Admin commands</h2>
+<p>Admin commands are only available in Grafana 4.1 and later.</p>
+<h3 id="show-all-admin-commands">Show all admin commands</h3>
+<pre>grafana cli admin</pre>
+<h3 id="reset-admin-password">Reset admin password</h3>
+<p><code>grafana cli admin reset-admin-password &lt;new password&gt;</code> resets the password for the admin user using the CLI. You might need to do this if you lose the admin password. By default, this command uses the default ID of the admin user, which is 1. If you know the ID of the admin user, you can use the <code>--user-id</code> flag to specify the user ID. If the <code>--user-id</code> flag is not specified and the command cannot find the admin user, it returns the list of current admin users&rsquo; username and ID. From that list you can determine the ID of the admin user and run the command again with the <code>--user-id</code> flag.</p>
+<p>If there are two flags being used to set the homepath and the config file path, then running the command returns this error:</p>
+<blockquote>
+<p>Could not find config defaults, make sure homepath command line parameter is set or working directory is homepath</p></blockquote>
+<p>To correct this, use the <code>--homepath</code> global option to specify the Grafana default homepath for this command:</p>
+<pre>grafana cli --homepath &#34;/usr/share/grafana&#34; admin reset-admin-password &lt;new password&gt;</pre>
+<p>If you have not lost the admin password, we recommend that you change the user password either in the User Preferences or in the <strong>Server Admin &gt; User</strong> tab.</p>
+<p>If you need to set the password in a script, then you can use the <a href="../developers/http_api/user/#change-password">Grafana User API</a>.</p>
+<h4 id="reset-admin-password-1">Reset admin password</h4>
+<p>If you installed Grafana using Homebrew, you can reset the admin password using the following command:</p>
+<pre>/opt/homebrew/opt/grafana/bin/grafana cli --config /opt/homebrew/etc/grafana/grafana.ini --homepath /opt/homebrew/opt/grafana/share/grafana --configOverrides cfg:default.paths.data=/opt/homebrew/var/lib/grafana admin reset-admin-password &lt;new password&gt;</pre>
+<h4 id="reset-admin-password-for-grafana-deployed-with-grafana-operator-and-using-an-external-database">Reset admin password for Grafana deployed with Grafana Operator and using an external database</h4>
+<p>If you deploy Grafana with Grafana Operator and configure Grafana to use an external PostgreSQL or MySQL database, specify both the homepath and configuration file in your command:</p>
+<pre>grafana cli  --homepath /usr/share/grafana --config /etc/grafana/grafana.ini admin reset-admin-password &lt;new password&gt;</pre>
+<p>If you don&rsquo;t do this, the CLI:</p>
+<ul>
+<li>Won&rsquo;t see the database connection information since it&rsquo;s in a directory outside of the Grafana homepath</li>
+<li>Will configure the default SQLite database in <code>/var/lib/grafana</code> and reset that password instead of for your external database</li>
+</ul>
+<h3 id="migrate-data-and-encrypt-passwords">Migrate data and encrypt passwords</h3>
+<p><code>data-migration</code> runs a script that migrates or cleans up data in your database.</p>
+<p><code>encrypt-datasource-passwords</code> migrates passwords from unsecured fields to secure_json_data field. Returns <code>ok</code> unless there is an error. Safe to execute multiple times.</p>
+<p><strong>Example:</strong></p>
+<pre>grafana cli admin data-migration encrypt-datasource-passwords</pre>

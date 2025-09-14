@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+
+  
+    
+      
+    
+  
+<div class="my-1 ">
+  <div class="hero-simple d-flex flex-direction-row flex-direction-column-small column-gap-20 row-gap-10 justify-content-start align-items-center align-items-start-small flex-wrap "><div class="hero-simple__image flex-shrink-0 w-110 h-110 ">
+        <img data-src="/media/docs/grafana-cloud/infrastructure/grafanalogo.svg" alt="Grafana OSS and Enterprise" class="lazyload"width="100"height="100"/>
+      </div><div class="d-flex flex-direction-column flex-1-1 minw-400 minw-xs-unset">
+      <div class="hero-simple__title"><h1
+  
+  id="grafana-oss-and-enterprise"
+  >Grafana OSS and Enterprise</h1></div>
+      
+        <div class="hero-simple__description ">Query, visualize, alert on, and explore your metrics, logs, and traces wherever they are stored.</div>
+      
+    </div>
+  </div>
+</div>
+<hr />
+<h2 id="overview">Overview</h2>
+<p><em>Grafana Open Source Software (OSS)</em> enables you to query, visualize, alert on, and explore your metrics, logs, and traces wherever they&rsquo;re stored. Grafana data source plugins enable you to query data sources including time series databases like Prometheus and CloudWatch, logging tools like Loki and Elasticsearch, NoSQL/SQL databases like Postgres, CI/CD tooling like GitHub, and many more. Grafana OSS provides you with tools to display that data on live dashboards with insightful graphs and visualizations.</p>
+<p><em>Grafana Enterprise</em> is a commercial edition of Grafana that includes exclusive data source plugins and additional features not found in the open source version. You also get 24x7x365 support and training from the core Grafana team.
+To learn more about these features, refer to 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/#enterprise-features-in-grafana-cloud">Enterprise features</a>.</p>
+<h2 id="guidance-and-help">Guidance and help</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="guide" x-data="modal()" x-init="openOnLoad()" data-guide="whichgrafana">
+
+  
+  <div class="promo">
+    <div class="logo">
+      
+        <img class="d-flex lazyload" data-srcset="/media/guides/grafana-grot-guide-logo.png 1x, /media/guides/grafana-grot-guide-logo@2x.png 2x" alt="Grot Guides by Grafana" width="132" height="50">
+      
+    </div>
+    <div class="title">Which Grafana is right for you?</div>
+    <div class="text">Answer a few questions and Grot will help you decide.</div>
+    <button class="btn btn--primary" @click="open_modal('whichgrafana')">Start guide</button>
+  </div>
+
+  
+  <div
+    class="Modal"
+    x-data="modal('whichgrafana')"
+    x-init="init()"
+    x-show="active"
+    x-transition:enter="transition"
+    x-transition:enter-start="opacity-0 transform"
+    x-transition:enter-end="opacity-100 transform"
+    x-transition:leave="transition"
+    x-transition:leave-start="opacity-100 transform"
+    x-transition:leave-end="opacity-0 transform"
+    x-cloak
+  >
+    <div class="modal-position">
+      <div class="modal-container">
+        <div class="modal-content" @click.away="close_modal('whichgrafana')">
+          
+<div class="screens" x-data="app_guide('whichgrafana')" x-init="init()" x-cloak>
+  <div class="header">
+    <div class="actions">
+      <div class="link back">
+        <button class="back" x-show="current.length >= 2 && current_index > 1" @click="back()">
+  <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.09091 11.4205L0.579545 5.90909L6.09091 0.397727L7.26136 1.55682L3.75568 5.0625H12.2727V6.75568H3.75568L7.26136 10.2557L6.09091 11.4205Z" fill="#4DA0FF"/>
+</svg>
+
+<span>Back</span></button>
+      </div>
+      <div class="close">
+        <button @click="close('whichgrafana')">
+          
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="line1" d="M17 0.999999L1 17" stroke="#67677E" stroke-width="2"/>
+<path id="line2" d="M0.999999 0.999999L17 17" stroke="#67677E" stroke-width="2"/>
+</svg>
+
+
+        </button>
+      </div>
+    </div>
+
+    <div ref="default" class="grot" x-show="current[current_index].type !== 'error'">
+      <img :src="header.image.src" :alt="header.image.alt" alt="Loading" width="334" height="127" :width="header.image.width || '334'" :height="header.image.height || '127'">
+    </div>
+    <div ref="error" class="grot" x-show="current[current_index].type === 'error'">
+      <img :src="error.image.src" :alt="error.image.alt" alt="Loading" width="334" height="127" :width="error.image.width || '334'" :height="error.image.height || '127'">
+    </div>
+  </div>
+
+  <div class="content">
+    <template x-if="loading">
+      <div x-ref="loading" class="loading-wrapper">
+        <div class="loading-flashing"></div>
+      </div>
+    </template>
+
+    <template x-if="current && !loading">
+      <div class="screen">
+        <template x-if="current[current_index].title">
+          <div class="title">
+            <div class="text" x-text="current[current_index].title">How do you want to monitor Kubernetes?</div>
+          </div>
+        </template>
+        
+        <template x-if="current[current_index].body">
+          <div class="body-text" :class="current[current_index].type !== 'welcome' ? 'text-left' : 'text-center'" x-html="current[current_index].body">Answer a few questions to get started.</div>
+        </template>
+        
+        <template x-if="current[current_index].options">
+          <div class="options">
+            <template x-for="(option, index) in current[current_index].options" :key="index">
+              <div class="item">
+                <button class="btn btn--primary" @click="action(option.screen_id)" x-text="option.text" :class="current[current_index + 1]?.id === option.screen_id ? 'selected' : ''">Get Started</button>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <template x-if="current[current_index].links">
+          <div class="links">
+            <template x-for="(link, index) in current[current_index].links" :key="index">
+              <a @click="link_action(link.href)" class="link-card" :href="link.href" target="_blank" rel="nofollow noopener">
+                <div class="top">
+                  <template x-if="link.type === 'docs'">
+                    <div class="type type-docs">
+                      <span class="icon">
+                        
+  <svg width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0.833334 14C0.373096 14 -1.63085e-08 13.6269 -3.64262e-08 13.1667L-5.75533e-07 0.833333C-5.95651e-07 0.373096 0.373095 5.79738e-07 0.833333 5.5962e-07L9.9359 1.61735e-07C10.3961 1.41617e-07 10.7692 0.373096 10.7692 0.833333L10.7692 13.1667C10.7692 13.6269 10.3961 14 9.9359 14L0.833334 14Z" fill="#9584EB"/>
+<path d="M2.16016 3.23438H5.39093" stroke="#22222A" stroke-width="0.833333" stroke-linecap="round"/>
+<path d="M2.16016 5.39062H8.6217" stroke="#22222A" stroke-width="0.833333" stroke-linecap="round"/>
+<path d="M2.16016 7.55469H8.6217" stroke="#22222A" stroke-width="0.833333" stroke-linecap="round"/>
+<path d="M5.38672 9.69531H8.61749" stroke="#22222A" stroke-width="0.833333" stroke-linecap="round"/>
+</svg>
+
+
+                      </span>
+                      <span class="text">Docs</span>
+                    </div>
+                  </template>
+                  <template x-if="link.type === 'play'">
+                    <div class="type type-play">
+                      <span class="icon">
+                        
+  <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.9861 6.19183C12.9612 5.96803 12.9362 5.69449 12.8363 5.39609C12.7614 5.09769 12.6365 4.77442 12.4617 4.42629C12.2869 4.07815 12.0621 3.73002 11.7874 3.38188C11.6875 3.25755 11.5626 3.10835 11.4128 2.98401C11.6126 2.18828 11.1631 1.51687 11.1631 1.51687C10.4139 1.46714 9.91441 1.74068 9.73959 1.88988C9.71462 1.88988 9.68965 1.86501 9.6397 1.84014C9.51484 1.79041 9.38997 1.74068 9.24013 1.69094C9.09029 1.64121 8.96543 1.61634 8.81559 1.56661C8.66575 1.54174 8.5159 1.51687 8.39104 1.49201C8.36606 1.49201 8.34109 1.49201 8.31612 1.49201C7.99147 0.447602 7.04248 0 7.04248 0C5.9936 0.671403 5.79381 1.59147 5.79381 1.59147C5.79381 1.59147 5.79381 1.61634 5.79381 1.64121C5.74387 1.66607 5.66894 1.66607 5.619 1.69094C5.54408 1.71581 5.46916 1.74068 5.36926 1.76554C5.29434 1.79041 5.21942 1.81528 5.11953 1.86501C4.96969 1.93961 4.79488 2.01421 4.64504 2.08881C4.4952 2.16341 4.34536 2.26288 4.19552 2.36234C4.17055 2.36234 4.17055 2.33748 4.17055 2.33748C2.69712 1.79041 1.39851 2.46181 1.39851 2.46181C1.27364 4.00355 1.97289 4.99822 2.12273 5.17229C2.09776 5.27176 2.04781 5.37123 2.02284 5.47069C1.92295 5.81883 1.82305 6.19183 1.77311 6.56483C1.77311 6.61456 1.74813 6.6643 1.74813 6.71403C0.399573 7.38544 0 8.75311 0 8.75311C1.1238 10.0462 2.44739 10.1208 2.44739 10.1208C2.6222 10.4192 2.79701 10.6927 3.02177 10.9663C3.12167 11.0657 3.22156 11.1901 3.29648 11.2895C2.89691 12.4583 3.34642 13.4281 3.34642 13.4281C4.59509 13.4778 5.41921 12.881 5.59402 12.7318C5.71889 12.7815 5.84375 12.8064 5.96862 12.8561C6.34322 12.9556 6.7428 13.0053 7.14237 13.0302C7.24226 13.0302 7.34216 13.0302 7.44205 13.0302H7.492H7.51697H7.56692H7.61686C8.21622 13.8757 9.24013 14 9.24013 14C9.98933 13.2291 10.0143 12.4583 10.0143 12.2842C10.0143 12.2593 10.0143 12.2593 10.0143 12.2593V12.2345C10.1641 12.135 10.314 12.0107 10.4638 11.8863C10.7635 11.6128 11.0132 11.3144 11.238 10.9911C11.263 10.9663 11.2879 10.9414 11.2879 10.8917C12.137 10.9414 12.7114 10.3694 12.7114 10.3694C12.5616 9.49911 12.0621 9.07638 11.9622 9.00178C11.9622 9.00178 11.9622 9.00178 11.9373 9.00178C11.9373 8.95204 11.9373 8.90231 11.9373 8.85258C11.9373 8.75311 11.9373 8.65364 11.9373 8.57904V8.45471V8.42984V8.40497C11.9373 8.38011 11.9373 8.38011 11.9373 8.38011V8.33037V8.25577C11.9373 8.23091 11.9373 8.20604 11.9373 8.18117C11.9373 8.15631 11.9373 8.13144 11.9373 8.10657V8.03197V7.95737C11.9123 7.8579 11.9123 7.75844 11.8873 7.68384C11.7874 7.31083 11.6625 6.9627 11.4628 6.63943C11.263 6.31616 11.0382 6.04263 10.7635 5.79396C10.4888 5.54529 10.1891 5.37123 9.86446 5.22202C9.53981 5.07282 9.21515 4.99822 8.86553 4.94849C8.69071 4.92362 8.54087 4.92362 8.36606 4.92362H8.31612H8.29114H8.26617H8.24119H8.19125C8.16628 4.92362 8.1413 4.92362 8.11633 4.92362C8.04141 4.92362 7.94152 4.94849 7.8666 4.94849C7.54194 4.99822 7.21729 5.12256 6.94259 5.29663C6.66788 5.47069 6.41814 5.66963 6.21835 5.89343C6.01857 6.11723 5.86873 6.39076 5.76884 6.6643C5.66894 6.93783 5.619 7.21137 5.59402 7.4849C5.59402 7.5595 5.59402 7.60924 5.59402 7.68384C5.59402 7.7087 5.59402 7.7087 5.59402 7.73357V7.7833C5.59402 7.80817 5.59402 7.8579 5.59402 7.88277C5.619 8.0071 5.64397 8.15631 5.66895 8.28064C5.74387 8.52931 5.86873 8.75311 5.9936 8.95204C6.14344 9.15098 6.31825 9.30018 6.49306 9.42451C6.66788 9.54885 6.86767 9.64831 7.06745 9.69805C7.26724 9.74778 7.44205 9.77265 7.64184 9.77265C7.66681 9.77265 7.69178 9.77265 7.71675 9.77265H7.74173H7.7667C7.79168 9.77265 7.81665 9.77265 7.81665 9.77265C7.81665 9.77265 7.81665 9.77265 7.84162 9.77265H7.8666H7.89157C7.91654 9.77265 7.94151 9.77265 7.96649 9.77265C7.99146 9.77265 8.01644 9.77265 8.04141 9.74778C8.09136 9.74778 8.11633 9.72291 8.16628 9.72291C8.2412 9.69805 8.31612 9.67318 8.39104 9.62345C8.46596 9.59858 8.5159 9.54885 8.59082 9.49911C8.61579 9.49911 8.6158 9.47424 8.64077 9.44938C8.71569 9.39964 8.71569 9.30018 8.66574 9.25044C8.6158 9.20071 8.54087 9.17584 8.49093 9.22558C8.46595 9.22558 8.46596 9.25044 8.44099 9.25044C8.39104 9.27531 8.34109 9.30018 8.26617 9.32504C8.21622 9.34991 8.1413 9.34991 8.09135 9.37478C8.06638 9.37478 8.01644 9.37478 7.99146 9.37478C7.96649 9.37478 7.96649 9.37478 7.94152 9.37478C7.91655 9.37478 7.91654 9.37478 7.89157 9.37478C7.8666 9.37478 7.86659 9.37478 7.84162 9.37478C7.81665 9.37478 7.79168 9.37478 7.79168 9.37478H7.7667H7.74173C7.71676 9.37478 7.71676 9.37478 7.69179 9.37478C7.54195 9.34991 7.41708 9.32504 7.26724 9.25044C7.1174 9.20071 6.99253 9.10124 6.86766 9.00178C6.7428 8.90231 6.64291 8.75311 6.56799 8.62877C6.49307 8.50444 6.41814 8.33037 6.39317 8.15631C6.3682 8.0817 6.3682 7.98224 6.3682 7.90764C6.3682 7.88277 6.3682 7.8579 6.3682 7.83304V7.80817V7.7833C6.3682 7.73357 6.3682 7.68384 6.39317 7.6341C6.46809 7.2611 6.64291 6.91297 6.94259 6.61456C7.01751 6.53996 7.09243 6.49023 7.16735 6.41563C7.24227 6.3659 7.34216 6.31616 7.41708 6.26643C7.51697 6.2167 7.61687 6.19183 7.69179 6.16696C7.79168 6.1421 7.89157 6.11723 7.99146 6.11723C8.04141 6.11723 8.09136 6.11723 8.1413 6.11723C8.16628 6.11723 8.16628 6.11723 8.16628 6.11723H8.21622H8.24119H8.29114C8.39104 6.11723 8.5159 6.1421 8.6158 6.16696C8.84055 6.2167 9.04034 6.2913 9.24013 6.41563C9.6397 6.63943 9.96436 6.98757 10.1891 7.38544C10.289 7.58437 10.3639 7.80817 10.4139 8.03197C10.4139 8.0817 10.4389 8.15631 10.4389 8.20604V8.25577V8.30551C10.4389 8.33037 10.4389 8.33037 10.4389 8.35524C10.4389 8.38011 10.4389 8.38011 10.4389 8.40497V8.45471V8.50444C10.4389 8.52931 10.4389 8.57904 10.4389 8.60391C10.4389 8.67851 10.4388 8.72824 10.4139 8.80284C10.4139 8.85258 10.3889 8.92718 10.3889 8.97691C10.3889 9.02664 10.3639 9.10124 10.339 9.15098C10.314 9.27531 10.264 9.39964 10.2141 9.49911C10.1142 9.72291 9.98933 9.94671 9.83949 10.1705C9.53981 10.5684 9.14024 10.9165 8.66574 11.1155C8.44098 11.2149 8.19125 11.2895 7.94152 11.3393C7.81665 11.3641 7.69179 11.3641 7.56692 11.389H7.54194H7.51697H7.46702H7.41708H7.3921C7.31718 11.389 7.26724 11.389 7.19232 11.389C6.91761 11.3641 6.6429 11.3144 6.39317 11.2398C6.14344 11.1652 5.86873 11.0657 5.64397 10.9414C5.16948 10.6927 4.74493 10.3446 4.39531 9.92185C4.22049 9.72291 4.07065 9.49911 3.97076 9.25044C3.84589 9.00178 3.746 8.75311 3.67108 8.50444C3.59616 8.25577 3.54621 7.98224 3.54621 7.73357V7.68384V7.65897V7.60924V7.46004V7.43517V7.38544V7.36057C3.54621 7.3357 3.54621 7.28597 3.54621 7.2611C3.54621 7.13677 3.57119 6.98757 3.57119 6.86323C3.59616 6.7389 3.62113 6.5897 3.64611 6.46536C3.67108 6.34103 3.69605 6.19183 3.746 6.0675C3.82092 5.81883 3.92081 5.57016 4.02071 5.32149C4.24547 4.84902 4.52017 4.42629 4.8698 4.10302C4.94472 4.02842 5.04461 3.92895 5.14451 3.85435C5.2444 3.77975 5.34429 3.70515 5.44419 3.65542C5.54408 3.58082 5.64397 3.53108 5.74386 3.48135C5.79381 3.45648 5.84376 3.43162 5.8937 3.40675C5.91868 3.40675 5.94365 3.38188 5.96862 3.38188C5.99359 3.38188 6.01857 3.35702 6.04355 3.35702C6.14344 3.30728 6.2683 3.28242 6.3682 3.23268C6.39317 3.23268 6.41815 3.20782 6.44312 3.20782C6.46809 3.20782 6.49306 3.18295 6.51804 3.18295C6.56798 3.15808 6.64291 3.15808 6.69285 3.13321C6.71783 3.13321 6.7428 3.10835 6.79275 3.10835C6.81772 3.10835 6.84269 3.10835 6.89264 3.08348C6.91761 3.08348 6.94258 3.08348 6.99253 3.05861H7.04248H7.09242C7.11739 3.05861 7.14237 3.05861 7.19232 3.03375C7.21729 3.03375 7.26724 3.03375 7.29221 3.00888C7.31719 3.00888 7.36713 3.00888 7.3921 3.00888C7.41708 3.00888 7.44205 3.00888 7.46702 3.00888H7.51697H7.54194H7.56692C7.59189 3.00888 7.64184 3.00888 7.66681 3.00888H7.71675H7.74173C7.7667 3.00888 7.79168 3.00888 7.81665 3.00888C7.94152 3.00888 8.04141 3.00888 8.16628 3.00888C8.39104 3.00888 8.61579 3.03375 8.84055 3.08348C9.2651 3.15808 9.66468 3.30728 10.0393 3.48135C10.4139 3.65542 10.7385 3.87922 11.0132 4.12789C11.0382 4.15275 11.0382 4.15275 11.0632 4.17762C11.0882 4.20249 11.0882 4.20249 11.1131 4.22735C11.1381 4.25222 11.188 4.27709 11.213 4.32682C11.238 4.37655 11.2879 4.37655 11.3129 4.42629C11.3379 4.47602 11.3878 4.50089 11.4128 4.52575C11.5377 4.65009 11.6376 4.77442 11.7375 4.92362C11.9372 5.17229 12.1121 5.44583 12.2369 5.69449C12.2369 5.71936 12.2619 5.71936 12.2619 5.74423C12.2619 5.76909 12.2869 5.76909 12.2869 5.79396C12.3118 5.81883 12.3118 5.84369 12.3368 5.89343C12.3618 5.9183 12.3618 5.94316 12.3868 5.9929C12.4117 6.01776 12.4117 6.04263 12.4367 6.09236C12.4867 6.2167 12.5366 6.31616 12.5616 6.41563C12.6115 6.5897 12.6615 6.7389 12.6865 6.86323C12.7114 6.91297 12.7614 6.9627 12.8113 6.93783C12.8613 6.93783 12.9112 6.8881 12.9112 6.83837C13.0111 6.53996 13.0111 6.3659 12.9861 6.19183Z" fill="#FF671D"/>
+</svg>
+
+
+                      </span>
+                      <span class="text">Grafana Play</span>
+                    </div>
+                  </template>
+                  <template x-if="link.title">
+                    <div class="title" x-text="link.title">
+                      Title
+                    </div>
+                  </template>
+                </div>
+              </a>
+            </template>
+          </div>
+        </template>
+        
+        <template x-if="current[current_index].ctas">
+          <div class="ctas">
+            <template x-for="(cta, index) in current[current_index].ctas" :key="index">
+              <button class="btn btn--primary" @click="action(cta.screen_id)" x-text="cta.text">Get started</button>
+            </template>
+          </div>
+        </template>
+
+        <template x-if="current[current_index].type !== 'welcome' && current.length >= 3">
+          <div class="nav">
+            <div class="link next">
+              <button class="next" x-show="current[current_index].type === 'question' && current_index <= current.length - 2" @click="next()"><span>Next</span>
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6.18182 11.4205L5.01136 10.2614L8.51705 6.75568H0V5.0625H8.51705L5.01136 1.5625L6.18182 0.397727L11.6932 5.90909L6.18182 11.4205Z" fill="#4DA0FF"/>
+</svg>
+
+</button>
+              <button class="start-over" x-show="current[current_index].type === 'result' && current_index == current.length - 1" @click="startOver()">Start over</button>
+            </div>
+          </div>
+        </template>
+
+      </div>
+    </template>
+  </div>
+</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<h2 id="learn">Learn</h2>
+
+<div class="w-100p">
+  <div class="card-content-grid mt-1"><a class="card sm" href="./whatsnew/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">What&#39;s new</div><div class="card-description body-small text-gray-12 fw-400">Browse release highlights, deprecations, and breaking changes in Grafana releases.</div></div>
+</a><a class="card sm" href="./fundamentals/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Introduction</div><div class="card-description body-small text-gray-12 fw-400">Learn about observability topics in general and some of the products included in Grafana.</div></div>
+</a><a class="card sm" href="./setup-grafana/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Set up</div><div class="card-description body-small text-gray-12 fw-400">Get up and running with Grafana.</div></div>
+</a><a class="card sm" href="./datasources/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Data sources</div><div class="card-description body-small text-gray-12 fw-400">Manage data sources and how to configure or query the built-in data sources.</div></div>
+</a><a class="card sm" href="./dashboards/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Dashboards</div><div class="card-description body-small text-gray-12 fw-400">Query, transform, visualize, and understand your data no matter where it&rsquo;s stored.</div></div>
+</a><a class="card sm" href="./panels-visualizations/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Panels and Visualizations</div><div class="card-description body-small text-gray-12 fw-400">Easily collect, correlate, and visualize data to make informed decisions in real-time.</div></div>
+</a><a class="card sm" href="./explore/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Explore</div><div class="card-description body-small text-gray-12 fw-400">Explore your data using a query instead of creating a dashboard.</div></div>
+</a><a class="card sm" href="./alerting/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Alerting</div><div class="card-description body-small text-gray-12 fw-400">Learn about problems in your systems moments after they occur.</div></div>
+</a><a class="card sm" href="./administration/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Administration</div><div class="card-description body-small text-gray-12 fw-400">Perform administrative tasks such as configuring user management and roles and permissions.</div></div>
+</a><a class="card sm" href="./troubleshooting/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Troubleshooting</div><div class="card-description body-small text-gray-12 fw-400">Troubleshoot common Grafana issues.</div></div>
+</a><a class="card sm" href="./upgrade-guide/">
+  <div class="card-content-container p-1 d-flex flex-direction-column align-items-start justify-content-start "><div class="card-title body-default fw-500 lh-2 text-gray-16">Upgrade</div><div class="card-description body-small text-gray-12 fw-400">Upgrade Grafana to stay current with the latest fixes and enhancements.</div></div>
+</a></div>
+</div>

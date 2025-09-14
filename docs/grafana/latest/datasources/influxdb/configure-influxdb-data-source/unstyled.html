@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<h1 id="configure-the-influxdb-data-source">Configure the InfluxDB data source</h1>
+<p>This document provides instructions for configuring the InfluxDB data source and explains the available configuration options.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To configure the InfluxDB data source you must have the <code>Administrator</code> role.</p>
+<p>InfluxData provides three query languages. Some key points to consider:</p>
+<ul>
+<li>Flux is a functional data scripting language for InfluxDB 2.x. Refer to <a href="https://docs.influxdata.com/influxdb/cloud/query-data/get-started/query-influxdb/" target="_blank" rel="noopener noreferrer">Query InfluxDB with Flux</a> for a basic guide on working with Flux.</li>
+<li>InfluxQL is SQL-like query language developed by InfluxData. It doesn&rsquo;t support more advanced functions such as JOINs.</li>
+<li>SQL is only available for InfluxDB v3.x.</li>
+</ul>
+<p>To help choose the best language for your needs, refer to
+a <a href="https://docs.influxdata.com/influxdb/v1.8/flux/flux-vs-influxql/" target="_blank" rel="noopener noreferrer">comparison of Flux vs InfluxQL</a>
+and <a href="https://www.influxdata.com/blog/why-were-building-flux-a-new-data-scripting-and-query-language/" target="_blank" rel="noopener noreferrer">Why InfluxData created Flux</a>.</p>
+<h2 id="add-the-influxdb-data-source">Add the InfluxDB data source</h2>
+<p>Complete the following steps to set up a new InfluxDB data source:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu.</li>
+<li>Click <strong>Add new connection</strong>.</li>
+<li>Type <code>InfluxDB</code> in the search bar.</li>
+<li>Select the <strong>InfluxDB</strong> data source.</li>
+<li>Click <strong>Add new data source</strong> in the upper right.</li>
+</ol>
+<p>You are taken to the <strong>Settings</strong> tab where you will configure the data source.</p>
+<h2 id="configuration-options">Configuration Options</h2>
+<p>The following is a list of configuration options for InfluxDB.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/influxdb/InfluxDB-ConfigV2-Name.png"
+  alt="Name and Default settings for InfluxDB configuration" width="1530"
+     height="120"/></p>
+<p>The first option is to configure the name of your connection.</p>
+<ul>
+<li><strong>Name</strong> - Sets the name you use to refer to the data source in panels and queries. Examples: <code>InfluxDB-InfluxQL</code>, <code>InfluxDB_SQL</code>.</li>
+<li><strong>Default</strong> - Toggle to set as the default data source.</li>
+</ul>
+<h3 id="url-and-authentication">URL and Authentication</h3>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/influxdb/InfluxDB-ConfigV2-URLAuth-Section.png"
+  alt="URL and Authentication for InfluxDB configuration" width="787"
+     height="434"/></p>
+<p>These settings identify the Influx instance and schema the data source is connecting to.</p>
+<ul>
+<li><strong>URL</strong> - The HTTP protocol, IP address, and port of your InfluxDB API. InfluxDB’s default API port is <code>8086</code>.</li>
+<li><strong>Product</strong> - Select the product version of your Influx instance.</li>
+<li><strong>Query language</strong> - Select the query language for your InfluxDB instance. This will determine the connection details needed in <strong>Database Settings</strong>. The three options are:
+<ul>
+<li><strong>Flux</strong> - Flux is a data scripting language developed by InfluxData that allows you to query, analyze, and act on data. Refer to <a href="https://docs.influxdata.com/influxdb/cloud/query-data/get-started/" target="_blank" rel="noopener noreferrer">Get started with Flux</a> for guidance on using Flux.</li>
+<li><strong>InfluxQL</strong> - SQL-like language for querying InfluxDB, with statements such as SELECT, FROM, WHERE, and GROUP BY that are familiar to SQL users.</li>
+<li><strong>SQL</strong> - Native SQL language starting with <strong>InfluxDB v.3.0</strong>. Refer to InfluxData&rsquo;s <a href="https://docs.influxdata.com/influxdb/cloud-serverless/reference/sql/" target="_blank" rel="noopener noreferrer">SQL reference documentation</a> for a list of supported statements, operators, and functions.</li>
+</ul>
+</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p><em>For InfluxQL only.</em> <strong>Database + Retention Policy (DBRP) Mapping</strong> must be configured before data can be queried for the following product versions: <em>Influx OSS 1.x</em>, <em>Influx OSS 2.x</em>, <em>Influx Enterprise 1.x</em>, <em>Influx Cloud (TSM)</em>, <em>Influx Cloud Serverless</em></p>
+<p>Refer to <a href="https://docs.influxdata.com/influxdb/cloud/query-data/influxql/dbrp/" target="_blank" rel="noopener noreferrer">Manage DBRP Mappings</a> for guidance on setting this up via the CLI or API</p></blockquote></div>
+
+<h4 id="advanced-http-settings-optional">Advanced HTTP Settings (Optional)</h4>
+<p>Advanced HTTP Settings are optional settings that can be configured for more control over your data source.</p>
+<ul>
+<li><strong>Allowed cookies</strong> - Defines which cookies are forwarded to the data source. All other cookies are deleted by default.</li>
+<li><strong>Timeout</strong> - Set an HTTP request timeout in seconds.</li>
+</ul>
+<p><strong>Custom HTTP Headers</strong></p>
+<p>Click <strong>+ Add header</strong> to add one or more HTTP headers. HTTP headers pass additional context and metadata about the request/response.</p>
+<ul>
+<li><strong>Header</strong> - Add a custom HTTP header. Select an option from the drop-down. Allows custom headers to be passed based on the needs of your InfluxDB instance.</li>
+<li><strong>Value</strong> - The value for the header.</li>
+</ul>
+<h4 id="auth-and-tslssl-settings-optional">Auth and TSL/SSL Settings (Optional)</h4>
+<p>There are several authentication methods you can choose in the Authentication section.</p>
+<ul>
+<li><strong>No Authentication</strong> - Make the data source available without authentication. Grafana recommends using some type of authentication method.</li>
+<li><strong>Basic auth</strong> - The most common authentication method. Use your Influx instance username and password to authenticate.</li>
+<li><strong>Forward OAuth identity</strong> - Forward the OAuth access token (and also the OIDC ID token if available) of the user querying the data source.</li>
+<li><strong>With credentials</strong> - Toggle to enable credentials such as cookies or auth headers to be sent with cross-site requests.</li>
+</ul>
+<p>TLS/SSL Certificates are encrypted and stored in the Grafana database.</p>
+<ul>
+<li><strong>TLS client auth</strong> - When enabled, add the <code>Server name</code>, <code>Client cert</code> and <code>Client key</code>. The client provides a certificate that the server validates to establish the client’s trusted identity. The client key encrypts the data between client and server.
+<ul>
+<li><strong>Server name</strong> - Name of the server. Example: <code>server1.domain.com</code></li>
+<li><strong>Client cert</strong> - Add the client certificate.</li>
+<li><strong>Client key</strong> - Add the client key.</li>
+</ul>
+</li>
+<li><strong>CA cert</strong> - Authenticate with a CA certificate. When enabled, follow the instructions of your CA (Certificate Authority) to download the certificate file.</li>
+<li><strong>Skip TLS verify</strong> - Toggle to bypass TLS certificate validation.</li>
+</ul>
+<h3 id="database-settings">Database Settings</h3>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/influxdb/InfluxDB-ConfigV2-DBSettings.png"
+  alt="Database Settings for InfluxDB configuration" width="1174"
+     height="387"/></p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Setting the database for this data source <strong>does not deny access to other databases</strong>. The InfluxDB query syntax allows switching the database in the query. For example: <code>SHOW MEASUREMENTS ON _internal</code> or <code>SELECT * FROM &quot;_internal&quot;..&quot;database&quot; LIMIT 10</code></p>
+<p>To support data isolation and security, make sure appropriate permissions are configured in InfluxDB.</p></blockquote></div>
+
+<p>These settings identify the Influx database your data source will connect to. The required information will vary by the query language selected in <strong>URL and Authentication</strong>. Each query language uses a different set of connection details.</p>
+<p>The table below illustrates the details needed for each query language:</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Setting</strong></th>
+          <th><strong>Flux</strong></th>
+          <th><strong>InfluxQL</strong></th>
+          <th><strong>SQL</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Bucket</strong> or <strong>Database</strong></td>
+          <td>✓</td>
+          <td>✓</td>
+          <td>✓</td>
+      </tr>
+      <tr>
+          <td><strong>Organization</strong></td>
+          <td>✓</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><strong>Password</strong> or <strong>Token</strong></td>
+          <td>✓</td>
+          <td>✓</td>
+          <td>✓</td>
+      </tr>
+      <tr>
+          <td><strong>User</strong></td>
+          <td></td>
+          <td>✓</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<ul>
+<li><strong>Bucket</strong> or <strong>Database</strong> - Sets the ID of the bucket to query. Refer to <a href="https://docs.influxdata.com/influxdb/v2.0/organizations/buckets/view-buckets/" target="_blank" rel="noopener noreferrer">View buckets</a> in InfluxData&rsquo;s documentation on how to locate the list of available buckets and their corresponding IDs.</li>
+<li><strong>Organization</strong> - Sets the <a href="https://v2.docs.influxdata.com/v2.0/organizations/" target="_blank" rel="noopener noreferrer">Influx organization</a> used for Flux queries. Also used for the <code>v.organization</code> query macro.</li>
+<li><strong>Password</strong> or <strong>Token</strong> - Specify the token used to query the bucket defined in <strong>Database</strong>. Retrieve this from the <a href="https://docs.influxdata.com/influxdb/v2.0/security/tokens/view-tokens/" target="_blank" rel="noopener noreferrer">Tokens page</a> in the InfluxDB UI.</li>
+<li><strong>User</strong> - Add the username used to sign in to InfluxDB.</li>
+</ul>
+<p><strong>For Flux</strong></p>
+<ul>
+<li><strong>Default bucket</strong> is optional. The <a href="https://v2.docs.influxdata.com/v2.0/organizations/buckets/" target="_blank" rel="noopener noreferrer">Influx bucket</a> used for the <code>v.defaultBucket</code> macro in Flux queries.</li>
+<li>With Influx 2.0 products, use the <a href="https://v2.docs.influxdata.com/v2.0/security/tokens/create-token/" target="_blank" rel="noopener noreferrer">influx authentication token to function</a>. Token must be set as <code>Authorization</code> header with the value <code>Token &lt;generated-token&gt;</code>.</li>
+<li>For Influx 1.8, the token is <code>username:password</code>.</li>
+</ul>
+<h4 id="advanced-database-settings-optional">Advanced Database Settings (Optional)</h4>
+<p>Advanced Database Settings are optional settings that give you more control over the query experience.</p>
+<ul>
+<li><strong>Min time interval</strong> - Sets the minimum time interval for auto group-by. Grafana recommends setting this to match the data write frequency. For example, if your data is written every minute, it’s recommended to set this interval to 1 minute, so that each group contains data from each new write. The default is <code>10s</code>. Refer to <a href="#min-time-interval">Min time interval</a> for format examples.</li>
+<li><strong>Max series</strong> - Sets a limit on the maximum number of series or tables that Grafana processes. Set a lower limit to prevent system overload, or increase it if you have many small time series and need to display more of them. The default is <code>1000</code>.</li>
+</ul>
+<p><strong>For InfluxQL</strong></p>
+<ul>
+<li><strong>HTTP method</strong> - Sets the HTTP method used to query your data source. The POST method allows for larger queries that would return an error using the GET method. The default method is <code>POST</code>.</li>
+<li><strong>Autocomplete range</strong> - Sets a time range limit for the query editor&rsquo;s autocomplete to reduce the execution time of tag filter queries. As a result, any tags not present within the defined time range will be filtered out. For example, setting the value to 12h will include only tag keys/values from the past 12 hours. This feature is recommended for use with very large databases, where significant performance improvements can be observed.</li>
+</ul>
+<p><strong>For SQL</strong></p>
+<ul>
+<li><strong>Insecure Connection</strong> - Toggle to disable gRPC TLS security.</li>
+</ul>
+<h3 id="private-data-source-connect">Private Data Source Connect</h3>
+<p><em>For Grafana Cloud only.</em> Private data source connect (PDC) allows you to establish a private, secured connection between a Grafana Cloud instance, or stack, and data sources secured within a private network. Click the drop-down to locate the URL for PDC. For more information regarding Grafana PDC refer to <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect (PDC)</a>.</p>
+<p>Click <strong>Manage private data source connect</strong> to be taken to your PDC connection page, where you&rsquo;ll find your PDC configuration details.</p>
+<p>After you have added your connection settings, click <strong>Save &amp; test</strong> to test the data source connection.</p>
+<h3 id="min-time-interval">Min time interval</h3>
+<p>The <strong>Min time interval</strong> setting defines a lower limit for the auto group-by time interval.</p>
+<p>This value <strong>must be</strong> formatted as a number followed by a valid time identifier:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Identifier</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>y</code></td>
+          <td>year</td>
+      </tr>
+      <tr>
+          <td><code>M</code></td>
+          <td>month</td>
+      </tr>
+      <tr>
+          <td><code>w</code></td>
+          <td>week</td>
+      </tr>
+      <tr>
+          <td><code>d</code></td>
+          <td>day</td>
+      </tr>
+      <tr>
+          <td><code>h</code></td>
+          <td>hour</td>
+      </tr>
+      <tr>
+          <td><code>m</code></td>
+          <td>minute</td>
+      </tr>
+      <tr>
+          <td><code>s</code></td>
+          <td>second</td>
+      </tr>
+      <tr>
+          <td><code>ms</code></td>
+          <td>millisecond</td>
+      </tr>
+  </tbody>
+</table>
+<p>You can also override this setting in a dashboard panel under its data source options.</p>
+<h2 id="provision-the-influxdb-data-source">Provision the InfluxDB data source</h2>
+<p>You can define and configure the data source in YAML files as part of Grafana&rsquo;s provisioning system.
+For more information about provisioning, and for available configuration options, refer
+to 
+    <a href="/docs/grafana/latest/administration/provisioning/#provision-grafana">Provision Grafana</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>database</code> <a href="https://github.com/grafana/grafana/pull/58647" target="_blank" rel="noopener noreferrer">field is deprecated</a>.
+Grafana recommends using the <code>dbName</code> field in <code>jsonData</code>. There is no need to change existing provisioning settings.</p></blockquote></div>
+
+<h3 id="provisioning-examples">Provisioning examples</h3>
+<p>Provisioning differs based on query language.</p>
+<p><strong>InfluxDB 1.x example:</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: InfluxDB_v1
+    type: influxdb
+    access: proxy
+    user: grafana
+    url: http://localhost:8086
+    jsonData:
+      dbName: site
+      httpMode: GET
+    secureJsonData:
+      password: grafana</pre>
+<p><strong>InfluxDB 2.x for Flux example:</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: InfluxDB_v2_Flux
+    type: influxdb
+    access: proxy
+    url: http://localhost:8086
+    jsonData:
+      version: Flux
+      organization: organization
+      defaultBucket: bucket
+      tlsSkipVerify: true
+    secureJsonData:
+      token: token</pre>
+<p><strong>InfluxDB 2.x for InfluxQL example:</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: InfluxDB_v2_InfluxQL
+    type: influxdb
+    access: proxy
+    url: http://localhost:8086
+    jsonData:
+      dbName: site
+      httpHeaderName1: &#39;Authorization&#39;
+    secureJsonData:
+      httpHeaderValue1: &#39;Token &lt;token&gt;&#39;</pre>
+<p><strong>InfluxDB 3.x for SQL example:</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: InfluxDB_v3_InfluxQL
+    type: influxdb
+    access: proxy
+    url: http://localhost:8086
+    jsonData:
+      version: SQL
+      dbName: site
+      httpMode: POST
+      insecureGrpc: false
+    secureJsonData:
+      token: &#39;&lt;api-token&gt;&#39;</pre>

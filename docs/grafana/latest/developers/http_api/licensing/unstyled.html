@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<h1 id="enterprise-license-api">Enterprise License API</h1>
+<p>Licensing is only available in Grafana Enterprise. Read more about <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a>.</p>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>You can&rsquo;t authenticate to the Licensing HTTP API with service account tokens.
+Service accounts are limited to an organization and an organization role.
+They can&rsquo;t be granted 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#grafana-server-administrators">Grafana server administrator permissions</a>.</p>
+<p>To use these API endpoints you have to use Basic authentication and the Grafana user must have the Grafana server administrator permission.</p>
+<p>The <code>admin</code> user that Grafana is provisioned with by default has permissions to use these API endpoints.</p></blockquote></div>
+
+<blockquote>
+<p>If you are running Grafana Enterprise, for some endpoints you&rsquo;ll need to have specific permissions. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a> for more information.</p></blockquote>
+<h2 id="check-license-availability">Check license availability</h2>
+<blockquote>
+<p><strong>Note:</strong> Available in Grafana Enterprise v7.4+.</p></blockquote>
+<p><code>GET /api/licensing/check</code></p>
+<p>Checks if a valid license is available.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#enterprise-license-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>licensing:read</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>GET /api/licensing/check
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 4
+
+true</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> - OK</li>
+</ul>
+<h2 id="add-license">Add license</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in Grafana Enterprise v7.4+.</p></blockquote></div>
+
+<p><code>POST /api/licensing/token</code></p>
+<p>Applies a license to a Grafana instance.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#enterprise-license-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>licensing:write</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples-1">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>POST /licensing/token
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{&#34;token&#34;:&#34;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aGlzIjoiaXMiLCJub3QiOiJhIiwidmFsaWQiOiJsaWNlbnNlIn0.bxDzxIoJlYMwiEYKYT_l2s42z0Y30tY-6KKoyz9RuLE&#34;}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 357
+
+{
+&#34;status&#34;:0,
+&#34;jti&#34;:&#34;&#34;,
+&#34;iss&#34;:&#34;&#34;,
+&#34;sub&#34;:&#34;&#34;,
+&#34;iat&#34;:0,
+&#34;exp&#34;:0,
+&#34;nbf&#34;:0,
+&#34;lexp&#34;:0,
+&#34;lid&#34;:&#34;&#34;,
+&#34;limit_by&#34;:&#34;&#34;,
+&#34;included_users&#34;:0,
+&#34;lic_exp_warn_days&#34;:0,
+&#34;tok_exp_warn_days&#34;:0,
+&#34;update_days&#34;:0,
+&#34;prod&#34;:null,
+&#34;company&#34;:&#34;&#34;,
+&#34;account&#34;:&#34;&#34;,
+&#34;slug&#34;:&#34;&#34;,
+&#34;usage_billing&#34;:false,
+&#34;max_concurrent_user_sessions&#34;:0,
+&#34;details_url&#34;:&#34;&#34;,
+&#34;trial&#34;:false,
+&#34;trial_exp&#34;:0,
+&#34;anonymousRatio&#34;:0
+}</pre>
+<p>The response is a JSON blob with specific values intentionally not shown. The
+available fields may change at any time without any prior notice. Refer to <a href="#check-license-availability">Check license availability</a> for information on using the API to check the status of your license.</p>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> - OK</li>
+<li><strong>400</strong> - Bad request</li>
+<li><strong>500</strong> - Internal server error (refer to server logs for more details)</li>
+</ul>
+<h2 id="manually-force-license-refresh">Manually force license refresh</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in Grafana Enterprise v7.4+.</p></blockquote></div>
+
+<p><code>POST /api/licensing/token/renew</code></p>
+<p>Manually ask license issuer for a new token.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#enterprise-license-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>licensing:write</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples-2">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/licensing/token/renew
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 357
+
+{
+  &#34;jti&#34;:&#34;2&#34;,
+  &#34;iss&#34;:&#34;&#34;,
+  &#34;sub&#34;:&#34;https://play.grafana.org/&#34;
+  &#34;lid&#34;:&#34;1&#34;,
+  &#34;included_users&#34;:15,
+  &#34;lic_exp_warn_days&#34;:30,
+  &#34;tok_exp_warn_days&#34;:2,
+  &#34;update_days&#34;:1,
+  &#34;prod&#34;:[&#34;grafana-enterprise&#34;],
+  &#34;company&#34;:&#34;Grafana Labs&#34;
+}</pre>
+<p>The response is a JSON blob available for debugging purposes. The
+available fields may change at any time without any prior notice.</p>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> - OK</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>403</strong> - Access denied</li>
+</ul>
+<h2 id="remove-license-from-database">Remove license from database</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in Grafana Enterprise v7.4+.</p></blockquote></div>
+
+<p><code>DELETE /api/licensing/token</code></p>
+<p>Removes the license stored in the Grafana database.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#enterprise-license-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>licensing:delete</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples-3">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>DELETE /api/licensing/token
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{&#34;instance&#34;: &#34;http://play.grafana.org/&#34;}</pre>
+<p>JSON Body schema:</p>
+<ul>
+<li><strong>instance</strong> – Root URL for the instance for which the license should be deleted. Required.</li>
+</ul>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 202 Accepted
+Content-Type: application/json
+Content-Length: 2
+
+{}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>202</strong> - Accepted, license removed or did not exist.</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>403</strong> - Access denied</li>
+<li><strong>422</strong> - Unprocessable entity, incorrect instance name provided.</li>
+</ul>

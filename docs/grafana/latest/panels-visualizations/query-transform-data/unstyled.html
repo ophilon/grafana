@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<h1 id="query-and-transform-data">Query and transform data</h1>
+<p>Grafana supports many types of 
+    <a href="/docs/grafana/latest/datasources/">data sources</a>.
+Data source <em>queries</em> return data that Grafana can <em>transform</em> and visualize.
+Each data source uses its own query language, and data source plugins each implement a query-building user interface called a query editor.</p>
+<h2 id="about-queries">About queries</h2>
+<p>Grafana panels communicate with data sources using queries, which retrieve data for the visualization.
+A query is a question written in the query language used by the data source.</p>
+<p>You can configure query frequency and data collection limits in the panel&rsquo;s data source options.
+Grafana supports up to 26 queries per panel.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You <strong>must</strong> be familiar with a data source&rsquo;s query language.
+For more information, refer to 
+    <a href="/docs/grafana/latest/datasources/">Data sources</a>.</p></blockquote></div>
+
+<h3 id="query-editors">Query editors</h3>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="The InfluxDB query editor"width="2206"height="880"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-queries-tab-v11.6.png"
+            alt="The InfluxDB query editor"width="2206"height="880"/>
+        </noscript></div></a></figure>
+<p>Each data source&rsquo;s query editor provides a customized user interface that helps you write queries that take advantage of its unique capabilities.</p>
+<p>Because of the differences between query languages, each data source query editor looks and functions differently.
+Depending on your data source, the query editor might provide auto-completion features, metric names, variable suggestions, or a visual query-building interface.</p>
+<p>For example, this video demonstrates the visual Prometheus query builder:</p>
+
+
+
+
+
+  
+  
+  
+
+<div
+x-data="{ vimeo_is_up: false, responded: false }"
+x-init="fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/720004179`)
+    .then(response => {
+      responded = true;
+      response && response.status === 200 ? vimeo_is_up = true : vimeo_is_up = false;
+    })
+    .catch(error => {
+      responded = true;
+    })"
+x-cloak>
+  <figure class="p-0 m-0">
+
+    <template x-if="vimeo_is_up">
+      <div class="my-1" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe src="https://player.vimeo.com/video/720004179?transparent=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="vimeo video" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+      </div>
+    </template>
+    <template x-if="responded && !vimeo_is_up">
+      <p class="bg-gray-17 p-1">There&rsquo;s supposed to be a video here, but for some reason there isn&rsquo;t. Either we entered the id wrong (oops!), or Vimeo is down. If it&rsquo;s the latter, we&rsquo;d expect they&rsquo;ll be back up and running soon. In the meantime, <a href="/blog/">check out our blog</a>!</p>
+    </template>
+
+    
+  </figure>
+</div>
+<p>For details on a specific data source&rsquo;s unique query editor features, refer to its documentation:</p>
+<ul>
+<li>For data sources included with Grafana, refer to 
+    <a href="/docs/grafana/latest/datasources/#built-in-core-data-sources">Built-in core data sources</a>, which links to each core data source&rsquo;s documentation.</li>
+<li>For data sources installed as plugins, refer to the documentation for the plugin.
+<ul>
+<li>Data source plugins in Grafana&rsquo;s <a href="/grafana/plugins/">plugin catalog</a> link to or include their documentation in their catalog listings.
+For details about the plugin catalog, refer to 
+    <a href="/docs/grafana/latest/administration/plugin-management/">Plugin management</a>.</li>
+<li>For links to Grafana Enterprise data source plugin documentation, refer to the <a href="/docs/plugins/">Enterprise plugins index</a>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="query-syntax">Query syntax</h3>
+<p>Each data source uses a different query languages to request data.
+For details on a specific data source&rsquo;s unique query language, refer to its documentation.</p>
+<p><strong>PostgreSQL example:</strong></p>
+<pre>SELECT hostname FROM host WHERE region IN($region)</pre>
+<p><strong>PromQL example:</strong></p>
+<pre>query_result(max_over_time(&lt;metric&gt;[${__range_s}s]) != &lt;state&gt;)</pre>
+<h3 id="saved-queries">Saved queries</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Saved queries is currently in <a href="/docs/release-life-cycle/">public preview</a>. Grafana Labs offers limited support, and breaking changes might occur prior to the feature being made generally available.</p>
+<p>This feature is only available on Grafana Enterprise and Grafana Cloud.</p></blockquote></div>
+
+<p>You can save queries that you&rsquo;ve created so they can be reused by you and others in your organization.
+This helps users across your organization create dashboards or find insights in Explore without having to create their own queries or know a query language.
+It also helps you avoid having several users build the same queries for the same data sources multiple times.</p>
+<p>You can see a list of these queries in the <strong>Saved queries</strong> drawer:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 550px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png?w=1920 1920w"
+          data-sizes="auto"alt="List of saved queries and the edit query form"width="1588"height="1640"title="The Saved queries drawer accessed from Dashboards"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-saved-queries-v12.2png.png"
+            alt="List of saved queries and the edit query form"width="1588"height="1640"title="The Saved queries drawer accessed from Dashboards"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">The Saved queries drawer accessed from Dashboards</figcaption></a></figure>
+<p>When you first open the drawer, the list of queries in the <strong>All</strong> tab is filtered by the data source of the panel.
+However, you can clear that filter to display all saved queries.</p>
+<p>The list in the <strong>Favorites</strong> tab is also filtered by data source, by default.
+The <strong>Recent</strong> tab displays the last 20 queries across all data sources from your <strong>Query history</strong> in Explore.
+From this tab, you can save queries for reuse as well.</p>
+<p>In the <strong>Saved queries</strong> drawer, you can:</p>
+<ul>
+<li>Search for queries by data source name, query content, title, or description.</li>
+<li>Sort queries alphabetically or by creation date.</li>
+<li>Filter by data source name, author name, and tags (the tag filter uses the <code>OR</code> operator, while the others use the <code>AND</code> operator).</li>
+<li>Set queries as favorites.</li>
+<li>Duplicate, lock and unlock a query for editing, or delete a saved query.</li>
+<li>Edit a query title, description, tags, or the availability of the query to other users in your organization. By default, saved queries are locked for editing.</li>
+<li>When you access the <strong>Saved queries</strong> drawer from Explore, you can use the <strong>Edit in Explore</strong> option to edit the body of a query.</li>
+</ul>
+<p>Access the duplicate, lock, unlock, and delete query options through the menu in the top-right corner of the query form next to the <strong>Edit</strong> button.</p>
+<p>To access your saved queries, click <strong>+ Add from saved queries</strong> in the query editor:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Add a saved query"width="2324"height="700"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-add-from-saved-2-v12.2.png"
+            alt="Add a saved query"width="2324"height="700"/>
+        </noscript></div></a></figure>
+<p>If you&rsquo;ve already entered a query, you also have the option to replace it with a saved one:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Replace a query with a saved one"width="2304"height="710"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-replace-w-saved-v12.2.png"
+            alt="Replace a query with a saved one"width="2304"height="710"/>
+        </noscript></div></a></figure>
+<h4 id="save-a-query">Save a query</h4>
+<p>To save a query you&rsquo;ve created:</p>
+<ol>
+<li>
+<p>From the query editor, click the <strong>Save query</strong> icon:</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png?w=1920 1920w"
+             data-sizes="auto"alt="Save a query"width="2304"height="710"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/panels-visualizations/screenshot-save-query-v12.2.png"
+               alt="Save a query"width="2304"height="710"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>In the <strong>Saved queries</strong> drawer, enter a title for the query that will make it easy to find later.</p>
+</li>
+<li>
+<p>(Optional) Enter a description and relevant tags.</p>
+</li>
+<li>
+<p>Clear the <strong>Share query with all users</strong> checkbox if you only want the saved query to be available to you.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h4 id="known-limitations">Known limitations</h4>
+<ul>
+<li>No validation is performed when you save a query, so it&rsquo;s possible to save an invalid query. You should confirm the query is working properly before you save it.</li>
+<li>Saved queries are currently accessible from the query editors in Dashboards and Explore.</li>
+<li>You can save a maximum of 1000 queries.</li>
+<li>Users with the Viewer role who have access to Explore can use saved queries, but can&rsquo;t write them.</li>
+<li>If you have multiple queries open in Explore and you edit one of them by way of the <strong>Edit in Explore</strong> function in the <strong>Saved queries</strong> drawer, the edited query replaces your open queries in Explore.</li>
+</ul>
+<h3 id="special-data-sources">Special data sources</h3>
+<p>Grafana also includes three special data sources: <strong>Grafana</strong>, <strong>Mixed</strong>, and <strong>Dashboard</strong>.
+For details, refer to 
+    <a href="/docs/grafana/latest/datasources/">Data sources</a></p>
+<h2 id="navigate-the-query-tab">Navigate the Queries tab</h2>
+<p>A panel&rsquo;s <strong>Queries</strong> tab consists of the following elements:</p>
+<ul>
+<li><strong>Data source selector</strong> - Selects the data source to query.
+For more information about data sources, refer to 
+    <a href="/docs/grafana/latest/datasources/">Data sources</a>.</li>
+<li><strong>Query options</strong> - Sets maximum data retrieval parameters and query execution time intervals.</li>
+<li><strong>Query inspector button</strong> - Opens the query inspector panel, where you can view and optimize your query.</li>
+<li><strong>Query editor list</strong> - The list of queries you&rsquo;ve written. Each query can be expanded or collapsed.</li>
+<li><strong>Expressions</strong> - Uses the expression builder to create alert expressions.
+For more information about expressions, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/expression-queries/">Use expressions to manipulate data</a>.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="The Query tab of the panel editor"width="2112"height="770"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-queries-tab2-v11.6.png"
+            alt="The Query tab of the panel editor"width="2112"height="770"/>
+        </noscript></div></a></figure>
+<h2 id="add-a-query">Add a query</h2>
+<p>A query returns data that Grafana visualizes in dashboard panels.
+When you create a panel, Grafana automatically selects the default data source.</p>
+<p>To add a query, follow these steps:</p>
+<ol>
+<li>
+<p>Hover the cursor over any part of the panel to which you&rsquo;re adding a query to display the menu icon in the top-right corner.</p>
+</li>
+<li>
+<p>Click the menu and select <strong>Edit</strong>.</p>
+</li>
+<li>
+<p>In the panel editor, click the <strong>Queries</strong> tab.</p>
+</li>
+<li>
+<p>Click the <strong>Data source</strong> drop-down menu and select a data source.</p>
+<p>If you&rsquo;re creating a new dashboard, you&rsquo;ll be prompted to select a data source when you add the first panel.</p>
+</li>
+<li>
+<p>Click <strong>Query options</strong> to configure the maximum number of data points you need.</p>
+<p>For more information about query options, refer to <a href="#query-options">Query options</a>.</p>
+</li>
+<li>
+<p>To add a query, do one of the following:</p>
+<ul>
+<li>Write or construct a query in the query language of your data source.</li>
+<li>Click <strong>+ Add from saved queries</strong> to add a previously saved query.</li>
+<li>If you&rsquo;ve already written a query, you can click the <strong>Replace with saved query</strong> icon to use a previously saved query instead.</li>
+</ul>
+</li>
+<li>
+<p>(Optional) To save the query for reuse, click the <strong>Save query</strong> icon.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p><a href="#saved-queries">Saved queries</a> is currently in <a href="/docs/release-life-cycle/">public preview</a>. Grafana Labs offers limited support, and breaking changes might occur prior to the feature being made generally available.</p>
+<p>This feature is only available on Grafana Enterprise and Grafana Cloud.</p></blockquote></div>
+
+</li>
+<li>
+<p>Click <strong>Run queries</strong>.</p>
+</li>
+</ol>
+<p>Grafana queries the data source and visualizes the data.</p>
+<h2 id="manage-queries">Manage queries</h2>
+<p>Grafana organizes queries in collapsible query rows.
+Each query row contains a query editor and is identified with a letter (A, B, C, and so on).</p>
+<p>You can:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Icon</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/queries/query-editor-help-7-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/queries/query-editor-help-7-4.png"data-srcset="/static/img/docs/queries/query-editor-help-7-4.png?w=320 320w, /static/img/docs/queries/query-editor-help-7-4.png?w=550 550w, /static/img/docs/queries/query-editor-help-7-4.png?w=750 750w, /static/img/docs/queries/query-editor-help-7-4.png?w=900 900w, /static/img/docs/queries/query-editor-help-7-4.png?w=1040 1040w, /static/img/docs/queries/query-editor-help-7-4.png?w=1240 1240w, /static/img/docs/queries/query-editor-help-7-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Help icon"width="56"height="58"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/query-editor-help-7-4.png"
+            alt="Help icon"width="56"height="58"/>
+        </noscript></div></a></figure></td>
+          <td>Toggles query editor help. If supported by the data source, click this icon to display information on how to use the query editor or provide quick access to common queries.</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/create-recorded-query-icon.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/create-recorded-query-icon.png"data-srcset="/media/docs/grafana/panels-visualizations/create-recorded-query-icon.png?w=320 320w, /media/docs/grafana/panels-visualizations/create-recorded-query-icon.png?w=550 550w, /media/docs/grafana/panels-visualizations/create-recorded-query-icon.png?w=750 750w, /media/docs/grafana/panels-visualizations/create-recorded-query-icon.png?w=900 900w, /media/docs/grafana/panels-visualizations/create-recorded-query-icon.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/create-recorded-query-icon.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/create-recorded-query-icon.png?w=1920 1920w"
+          data-sizes="auto"alt="Create recorded query icon"width="64"height="64"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/create-recorded-query-icon.png"
+            alt="Create recorded query icon"width="64"height="64"/>
+        </noscript></div></a></figure></td>
+          <td>Create 
+    <a href="/docs/grafana/latest/administration/recorded-queries/">recorded queries</a> so you can see trends over time by taking a snapshot of a data point on a set interval (Enterprise and Cloud only).</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/save-to-query-icon.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/save-to-query-icon.png"data-srcset="/media/docs/grafana/panels-visualizations/save-to-query-icon.png?w=320 320w, /media/docs/grafana/panels-visualizations/save-to-query-icon.png?w=550 550w, /media/docs/grafana/panels-visualizations/save-to-query-icon.png?w=750 750w, /media/docs/grafana/panels-visualizations/save-to-query-icon.png?w=900 900w, /media/docs/grafana/panels-visualizations/save-to-query-icon.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/save-to-query-icon.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/save-to-query-icon.png?w=1920 1920w"
+          data-sizes="auto"alt="Save query icon"width="62"height="62"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/save-to-query-icon.png"
+            alt="Save query icon"width="62"height="62"/>
+        </noscript></div></a></figure></td>
+          <td>Save query. Saves the query so it can be reused. Access saved queries by clicking <strong>+ Add saved query</strong>. For more information, refer to <a href="#saved-queries">Saved queries</a> (Enterprise and Cloud only).</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/queries/duplicate-query-icon-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/queries/duplicate-query-icon-7-0.png"data-srcset="/static/img/docs/queries/duplicate-query-icon-7-0.png?w=320 320w, /static/img/docs/queries/duplicate-query-icon-7-0.png?w=550 550w, /static/img/docs/queries/duplicate-query-icon-7-0.png?w=750 750w, /static/img/docs/queries/duplicate-query-icon-7-0.png?w=900 900w, /static/img/docs/queries/duplicate-query-icon-7-0.png?w=1040 1040w, /static/img/docs/queries/duplicate-query-icon-7-0.png?w=1240 1240w, /static/img/docs/queries/duplicate-query-icon-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Duplicate icon"width="56"height="58"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/duplicate-query-icon-7-0.png"
+            alt="Duplicate icon"width="56"height="58"/>
+        </noscript></div></a></figure></td>
+          <td>Copies a query. Duplicating queries is useful when working with multiple complex queries that are similar and you want to either experiment with different variants or do minor alterations.</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/queries/hide-query-icon-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/queries/hide-query-icon-7-0.png"data-srcset="/static/img/docs/queries/hide-query-icon-7-0.png?w=320 320w, /static/img/docs/queries/hide-query-icon-7-0.png?w=550 550w, /static/img/docs/queries/hide-query-icon-7-0.png?w=750 750w, /static/img/docs/queries/hide-query-icon-7-0.png?w=900 900w, /static/img/docs/queries/hide-query-icon-7-0.png?w=1040 1040w, /static/img/docs/queries/hide-query-icon-7-0.png?w=1240 1240w, /static/img/docs/queries/hide-query-icon-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Hide icon"width="56"height="58"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/hide-query-icon-7-0.png"
+            alt="Hide icon"width="56"height="58"/>
+        </noscript></div></a></figure></td>
+          <td>Hides a query. Grafana does not send hidden queries to the data source.</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/queries/remove-query-icon-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/queries/remove-query-icon-7-0.png"data-srcset="/static/img/docs/queries/remove-query-icon-7-0.png?w=320 320w, /static/img/docs/queries/remove-query-icon-7-0.png?w=550 550w, /static/img/docs/queries/remove-query-icon-7-0.png?w=750 750w, /static/img/docs/queries/remove-query-icon-7-0.png?w=900 900w, /static/img/docs/queries/remove-query-icon-7-0.png?w=1040 1040w, /static/img/docs/queries/remove-query-icon-7-0.png?w=1240 1240w, /static/img/docs/queries/remove-query-icon-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Remove icon"width="56"height="58"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/remove-query-icon-7-0.png"
+            alt="Remove icon"width="56"height="58"/>
+        </noscript></div></a></figure></td>
+          <td>Removes a query. Removing a query permanently deletes it, but sometimes you can recover deleted queries by reverting to previously saved versions of the panel.</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/queries/query-drag-icon-7-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/queries/query-drag-icon-7-2.png"data-srcset="/static/img/docs/queries/query-drag-icon-7-2.png?w=320 320w, /static/img/docs/queries/query-drag-icon-7-2.png?w=550 550w, /static/img/docs/queries/query-drag-icon-7-2.png?w=750 750w, /static/img/docs/queries/query-drag-icon-7-2.png?w=900 900w, /static/img/docs/queries/query-drag-icon-7-2.png?w=1040 1040w, /static/img/docs/queries/query-drag-icon-7-2.png?w=1240 1240w, /static/img/docs/queries/query-drag-icon-7-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Drag icon"width="26"height="29"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/query-drag-icon-7-2.png"
+            alt="Drag icon"width="26"height="29"/>
+        </noscript></div></a></figure></td>
+          <td>Reorders queries. Change the order of queries by clicking and holding the drag icon, then drag queries where desired. The order of results reflects the order of the queries, so you can often adjust your visual results based on query order.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h2 id="query-options">Query options</h2>
+<p>Click <strong>Query options</strong> next to the data source selector to see settings for the selected data source.
+Changes you make here affect only queries made in this panel.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="Data source query options"width="2094"height="558"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-query-options-v11.6.png"
+            alt="Data source query options"width="2094"height="558"/>
+        </noscript></div></a></figure>
+<p>Grafana sets defaults that are shown in dark gray text.
+Changes are displayed in white text.
+To return a field to the default setting, delete the white text from the field.</p>
+<p>Panel data source query options include:</p>
+<ul>
+<li>
+<p><strong>Max data points</strong> - If the data source supports it, this sets the maximum number of data points for each series returned.
+If the query returns more data points than the max data points setting, then the data source reduces the number of points returned by aggregating them together by average, max, or another function.</p>
+<p>You can limit the number of points to improve query performance or smooth the visualized line.
+The default value is the width (or number of pixels) of the graph, because you can only visualize as many data points as the graph panel has room to display.</p>
+<p>With streaming data, Grafana uses the max data points value for the rolling buffer.
+Streaming is a continuous flow of data, and buffering divides the stream into chunks.
+For example, Loki streams data in its live tailing mode.</p>
+</li>
+<li>
+<p><strong>Min interval</strong> - Sets a minimum limit for the automatically calculated interval, which is typically the minimum scrape interval.
+If a data point is saved every 15 seconds, you don&rsquo;t benefit from having an interval lower than that.
+You can also set this to a higher minimum than the scrape interval to retrieve queries that are more coarse-grained and well-functioning.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <strong>Min interval</strong> corresponds to the min step in Prometheus. Changing the Prometheus interval can change the start and end of the query range because Prometheus aligns the range to the interval. Refer to <a href="/docs/grafana/latest/datasources/prometheus/query-editor/#min-step">Min step</a> for more details.</p></blockquote></div>
+
+</li>
+<li>
+<p><strong>Interval</strong> - Sets a time span that you can use when aggregating or grouping data points by time.</p>
+<p>Grafana automatically calculates an appropriate interval that you can use as a variable in templated queries.
+The variable is measured in either seconds (<code>$__interval</code>) or milliseconds (<code>$__interval_ms</code>).</p>
+<p>Intervals are typically used in aggregation functions like sum or average.
+For example, this is a Prometheus query that uses the interval variable: <code>rate(http_requests_total[$__interval])</code>.</p>
+<p>This automatic interval is calculated based on the width of the graph.
+As the user zooms out on a visualization, the interval grows, resulting in a more coarse-grained aggregation.
+Likewise, if the user zooms in, the interval decreases, resulting in a more fine-grained aggregation.</p>
+<p>For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#global-variables">Global variables</a>.</p>
+</li>
+<li>
+<p><strong>Relative time</strong> - Overrides the relative time range for individual panels, which causes them to be different than what is selected in the dashboard time picker in the top-right corner of the dashboard.
+You can use this to show metrics from different time periods or days on the same dashboard.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Panel time overrides have no effect when the dashboard&rsquo;s time range is absolute.</p></blockquote></div>
+
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Relative time field</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Last 5 minutes</td>
+          <td><code>now-5m</code></td>
+      </tr>
+      <tr>
+          <td>The day so far</td>
+          <td><code>now/d</code></td>
+      </tr>
+      <tr>
+          <td>Last 5 days</td>
+          <td><code>now-5d/d</code></td>
+      </tr>
+      <tr>
+          <td>This week so far</td>
+          <td><code>now/w</code></td>
+      </tr>
+      <tr>
+          <td>Last 2 years</td>
+          <td><code>now-2y/y</code></td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ul>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/000000041/" target="_blank" rel="noopener noreferrer">Time range override</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/000000041/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<ul>
+<li>
+<p><strong>Time shift</strong> - Overrides the time range for individual panels by shifting its start and end relative to the time picker.
+For example, you can shift the time range for the panel to be two hours earlier than the dashboard time picker.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Panel time overrides have no effect when the dashboard&rsquo;s time range is absolute.</p></blockquote></div>
+
+<table>
+  <thead>
+      <tr>
+          <th>Example</th>
+          <th>Time shift field</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Last entire week</td>
+          <td><code>1w/w</code></td>
+      </tr>
+      <tr>
+          <td>Two entire weeks ago</td>
+          <td><code>2w/w</code></td>
+      </tr>
+      <tr>
+          <td>Last entire month</td>
+          <td><code>1M/M</code></td>
+      </tr>
+      <tr>
+          <td>This entire year</td>
+          <td><code>1d/y</code></td>
+      </tr>
+      <tr>
+          <td>Last entire year</td>
+          <td><code>1y/y</code></td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p><strong>Cache timeout</strong> - <em>(Visible only if available in the data source)</em> Overrides the default cache timeout if your time series store has a query cache.
+Specify this value as a numeric value in seconds.</p>
+</li>
+</ul>

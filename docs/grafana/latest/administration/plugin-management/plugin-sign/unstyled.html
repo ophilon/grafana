@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<h1 id="plugin-signatures">Plugin signatures</h1>
+<p>Plugin signature verification, also known as <em>signing</em>, is a security measure to make sure plugins haven&rsquo;t been tampered with. Upon loading, Grafana checks to see if a plugin is signed or unsigned when inspecting and verifying its digital signature.</p>
+<p>Learn more at <a href="/legal/plugins/">plugin policies</a>.</p>
+<h2 id="how-does-verifiction-work">How does verifiction work?</h2>
+<p>At startup, Grafana verifies the signatures of every plugin in the plugin directory.</p>
+<p>To see the result of this verification for each plugin, navigate to <strong>Configuration</strong> -&gt; <strong>Plugins</strong>. A signature can have any of the following signature status:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Signature status</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Core</td>
+          <td>Core plugin built into Grafana.</td>
+      </tr>
+      <tr>
+          <td>Invalid signature</td>
+          <td>The plugin has an invalid signature.</td>
+      </tr>
+      <tr>
+          <td>Modified signature</td>
+          <td>The plugin has changed since it was signed. This may indicate malicious intent.</td>
+      </tr>
+      <tr>
+          <td>Unsigned</td>
+          <td>The plugin is not signed.</td>
+      </tr>
+      <tr>
+          <td>Signed</td>
+          <td>The plugin signature was successfully verified.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="what-happens-if-a-plugin-is-not-signed">What happens if a plugin is not signed?</h3>
+<p>If a plugin is unsigned, then Grafana neither loads nor starts it. Grafana also writes an error message to the server log:</p>
+<pre>WARN[05-26|12:00:00] Some plugin scanning errors were found   errors=&#34;plugin &#39;&lt;plugin id&gt;&#39; is unsigned, plugin &#39;&lt;plugin id&gt;&#39; has an invalid signature&#34;</pre>
+<h2 id="plugin-signature-levels">Plugin signature levels</h2>
+<p>All plugins are signed under a <em>signature level</em>. The signature level determines how the plugin can be distributed.</p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Plugin Level</strong></th>
+          <th><strong>Description</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Private</td>
+          <td><p>Private plugins are for use on your own Grafana. They may not be distributed to the Grafana community, and are not published in the Grafana catalog.</p></td>
+      </tr>
+      <tr>
+          <td>Community</td>
+          <td><p>Community plugins have dependent technologies that are open source and not for profit.</p><p>Community plugins are published in the official Grafana catalog, and are available to the Grafana community.</p></td>
+      </tr>
+      <tr>
+          <td>Commercial</td>
+          <td><p>Commercial plugins have dependent technologies that are closed source or commercially backed.</p><p>Commercial plugins are published on the official Grafana catalog, and are available to the Grafana community.</p></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="allow-unsigned-plugins">Allow unsigned plugins</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Unsigned plugins are not supported in Grafana Cloud.</p></blockquote></div>
+
+<p>We strongly recommend that you don&rsquo;t run unsigned plugins in your Grafana instance. However, if you&rsquo;re aware of the risks and you still want to load an unsigned plugin, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#allow_loading_unsigned_plugins">Configuration</a>.</p>
+<p>If you&rsquo;ve allowed loading of an unsigned plugin, then Grafana writes a warning message to the server log:</p>
+<pre>WARN[06-01|16:45:59] Running an unsigned plugin   pluginID=&lt;plugin id&gt;</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you&rsquo;re developing a plugin, then you can enable development mode to allow all unsigned plugins.</p></blockquote></div>
+
+<h2 id="sign-a-plugin-youve-developed">Sign a plugin you&rsquo;ve developed</h2>
+<p>If you are a plugin developer and want to know how to sign your plugin, refer to <a href="/developers/plugin-tools/publish-a-plugin/sign-a-plugin">Sign a plugin</a>.</p>

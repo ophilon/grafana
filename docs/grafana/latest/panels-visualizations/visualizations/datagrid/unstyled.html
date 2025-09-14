@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<h1 id="datagrid">Datagrid</h1>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The datagrid visualization is an <a href="/docs/release-life-cycle/">experimental feature</a>. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. Enable the <code>enableDatagridEditing</code> feature toggle in Grafana to use this feature. Do not enable this feature in production environments.</p></blockquote></div>
+
+
+<p>Datagrids offer you the ability to create, edit, and fine-tune data within Grafana. As such, this panel can act as a data source for other panels
+inside a dashboard.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="The datagrid visualization"width="2016"height="888"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-datagrid-visualization-v12.0.png"
+            alt="The datagrid visualization"width="2016"height="888"/>
+        </noscript></div></a></figure>
+<p>Through it, you can manipulate data queried from any data source, you can start from a blank slate, or you can pull data from a dragged and dropped file.
+You can then use the panel as a simple tabular visualization, or you can modify the data—and even remove it altogether—to create a blank slate.</p>
+<p>Editing the dataset changes the data source to use the inbuilt <code>-- Grafana --</code> data source, thus replacing the old data source settings and related queries, while also copying the current dataset into the dashboard model.</p>
+<p>You can then use the panel as a data source for other panels, by using the inbuilt <code>-- Dashboard --</code> data source to pull the datagrid data.
+This allows for an interactive dashboard experience, where you can modify the data and see the changes reflected in other panels.</p>
+<p>Learn more about the inbuilt <code>-- Grafana --</code> and <code>-- Dashboard --</code> data sources in the 
+    <a href="/docs/grafana/latest/datasources/#special-data-sources">special data sources</a> documentation.</p>
+<h2 id="context-menu">Context menu</h2>
+<p>To provide a more streamlined experience, the datagrid has a context menu that can be accessed by right-clicking on a cell, column header, or row selector. Depending on the state of your datagrid, the context menu offers different options including:</p>
+<ul>
+<li>Delete or clear rows and columns.</li>
+<li>Remove all existing data (rendering your datagrid blank).</li>
+<li>Trigger search functionality, which allows you to find keywords within the dataset.</li>
+</ul>
+<p>Deleting a row or column will remove the data from the datagrid, while clearing a row or column will only remove the data from the cells, leaving the row or column intact.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png"data-srcset="/media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png?w=320 320w, /media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png?w=550 550w, /media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png?w=750 750w, /media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png?w=900 900w, /media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png?w=1040 1040w, /media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png?w=1240 1240w, /media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Datagrid context menu"width="600"height="560"/>
+        <noscript>
+          <img
+            src="/media/docs/datagrid/screenshot-grafana-datagrid-context-menu-2.png"
+            alt="Datagrid context menu"width="600"height="560"/>
+        </noscript></div></a></figure>
+<h3 id="header-menu">Header menu</h3>
+<p>You can also access a header menu by clicking the dropdown icon next to the header title. From here, you can not only delete or clear a column, but also rename it, freeze it, or convert the field type of the column.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Datagrid header menu"width="1186"height="878"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-datagrid-header-menu-v12.0.png"
+            alt="Datagrid header menu"width="1186"height="878"/>
+        </noscript></div></a></figure>
+<h2 id="use-datagrids">Use datagrids</h2>
+<p>Datagrids offer various ways of interacting with your data. You can add, edit, move, clear, and remove rows and columns; use the inbuilt search functionality to find specific data; and convert field types or freeze horizontal scroll on a specific column.</p>
+<h3 id="add-data">Add data</h3>
+<p>You can add data to a datagrid by creating a new column or row.</p>
+<p>To create a new column, follow these steps:</p>
+<ol>
+<li>In an existing panel, click the <strong>+</strong> button in the table header after the last column.</li>
+<li>When prompted, add a name for the new column.</li>
+<li>Click anywhere outside the field or press the Enter key to save the column.</li>
+</ol>
+<p>Now you can add data in each cell.</p>
+<p>To add a new row, click a <strong>+</strong> button after the last row. The button is present in each cell after the last row, and clicking it triggers the creation of a new row while also activating the cell that you clicked.</p>
+<h3 id="edit-data">Edit data</h3>
+<p>To edit data, follow these steps:</p>
+<ol>
+<li>Double-click on the cell that needs to be modified. This will activate the cell and allow you to edit the data.</li>
+<li>After editing the data, click anywhere outside the cell or press the Enter key to finalize the edit.</li>
+</ol>
+<p>To easily clear a cell of data, you can click on a cell to focus it and then press the Delete key.</p>
+<h3 id="move-data">Move data</h3>
+<p>You can move columns and rows as needed.</p>
+<p>To move a column, follow these steps:</p>
+<ol>
+<li>Click and hold the header of the column that needs to be moved.</li>
+<li>Drag the column to the desired location.</li>
+<li>Release the mouse button to finalize the move.</li>
+</ol>
+<p>To move a row, click and hold on the row selector from the number column situated on the far left side of the grid, and drag it to the desired location. Releasing the mouse button finalizes the move.</p>
+<h3 id="select-multiple-cells">Select multiple cells</h3>
+<p>You can select multiple cells by clicking on a single cell and dragging the mouse across others. This selection can be used to copy the data from the selected cells or to delete them using the Delete key.</p>
+<h3 id="deleteclear-multiple-rows-or-columns">Delete/clear multiple rows or columns</h3>
+<p>To delete or clear multiple rows, follow these steps:</p>
+<ol>
+<li>Hover over the number column (to the left of the first column in the grid) to display row checkbox.</li>
+<li>Select the checkboxes for the rows you want to work with.
+To select multiple consecutive rows, press and hold the Shift key while clicking on the first and last row. To select non-consecutive rows, press and hold the Ctrl (or Cmd) key while clicking the desired rows.</li>
+<li>Right-click to access the context menu.</li>
+<li>Select <strong>Delete rows</strong> or <strong>Clear rows</strong>.</li>
+</ol>
+<p>The same rules apply to columns by clicking the column headers.</p>
+<p>To delete all rows, use the select all checkbox at the top left corner of the datagrid. This selects all rows and allows you to delete them using the context menu.</p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="datagrid-options">Datagrid options</h3>
+<p>If there are multiple series, you can choose the dataset the datagrid displays using the <strong>Select series</strong> option.</p>

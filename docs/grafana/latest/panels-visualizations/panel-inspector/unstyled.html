@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<h1 id="the-panel-inspect-view">The panel inspect view</h1>
+<p>The panel inspect view, which you can open via the panel menu, helps you understand and troubleshoot your panels. You can inspect the raw data for any Grafana panel, export that data to a comma-separated values (CSV) file, view query requests, and export panel and data JSON.</p>
+<blockquote>
+<p><strong>Note:</strong> Not all panel types include all tabs. For example, dashboard list panels do not have raw data to inspect, so they do not display the Stats, Data, or Query tabs.</p></blockquote>
+<p>The panel inspector consists of the following options:</p>
+<ol>
+<li>
+<p>The panel inspector displays Inspect: <NameOfPanelBeingInspected> at the top of the pane. Click the arrow in the upper right corner to expand or reduce the pane.</p>
+</li>
+<li>
+<p><strong>Data tab -</strong> Shows the raw data returned by the query with transformations applied. Field options such as overrides and value mappings are not applied by default.</p>
+</li>
+<li>
+<p><strong>Stats tab -</strong> Shows how long your query takes and how much it returns.</p>
+</li>
+<li>
+<p><strong>JSON tab -</strong> Allows you to view and copy the panel JSON, panel data JSON, and data frame structure JSON. This is useful if you are provisioning or administering Grafana.</p>
+</li>
+<li>
+<p><strong>Query tab -</strong> Shows you the requests to the server sent when Grafana queries the data source.</p>
+</li>
+<li>
+<p><strong>Error tab -</strong> Shows the error. Only visible when query returns error.</p>
+</li>
+</ol>
+<h2 id="download-raw-query-results">Download raw query results</h2>
+<p>Grafana generates a CSV file that contains your data, including any transformations to that data. You can choose to view the data before or after the panel applies field options or field option overrides.</p>
+<ol>
+<li>
+<p>Edit the panel that contains the query data you want to download.</p>
+</li>
+<li>
+<p>In the query editor, click <strong>Query Inspector</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Data</strong>.</p>
+<p>If your panel contains multiple queries or queries multiple nodes, then you have additional options.</p>
+<ul>
+<li><strong>Select result</strong>: Choose which result set data you want to view.</li>
+<li><strong>Transform data</strong></li>
+<li><strong>Join by time</strong>: View raw data from all your queries at once, one result set per column. Click a column heading to reorder the data.</li>
+</ul>
+</li>
+<li>
+<p>To see data before the system applies field overrides, click the <strong>Formatted data</strong> toggle.</p>
+</li>
+<li>
+<p>To download a CSV file specifically formatted for Excel, click the <strong>Download for Excel</strong> toggle .</p>
+</li>
+<li>
+<p>Click <strong>Download CSV</strong>.</p>
+</li>
+</ol>
+<h2 id="inspect-query-performance">Inspect query performance</h2>
+<p>The <strong>Stats</strong> tab displays statistics that tell you how long your query takes, how many queries you send, and the number of rows returned. This information can help you troubleshoot your queries, especially if any of the numbers are unexpectedly high or low.</p>
+<ol>
+<li>Edit the panel that contains the query with performance you want to inspect.</li>
+<li>In the query editor, click <strong>Query Inspector</strong>.</li>
+<li>Click <strong>Stats</strong>.</li>
+</ol>
+<p>Statistics are displayed in read-only format.</p>
+<h2 id="inspect-query-request-and-response-data">Inspect query request and response data</h2>
+<p>Inspect query request and response data when you want to troubleshoot a query that returns unexpected results, or fails to return expected results.</p>
+<ol>
+<li>
+<p>Edit the panel that contains the query you want to export.</p>
+</li>
+<li>
+<p>In the query editor, click <strong>Query Inspector</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Refresh</strong>.</p>
+<p>The panel populates with response data.</p>
+</li>
+<li>
+<p>Make adjustments, as necessary and re-run the query.</p>
+</li>
+<li>
+<p>To download the query request and response data, click the <strong>Copy to clipboard</strong> icon and paste the results into another application.</p>
+</li>
+</ol>

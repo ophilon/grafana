@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v83">What&rsquo;s new in Grafana v8.3</h1>
+<p>Grafana 8.3 is an exciting release for Grafana Labs. This release includes the new Candlestick Panel, a new visualization suggestions engine and, for enterprise users, Recorded Queries.</p>
+<p>For Open Source users it also marks the first time Grafana Alerting, formerly unified alerting, is enabled by default for new Grafana installations. Grafana Alerting in 8.3 is the flexible, single pane of glass for all your alerts. Included in this release is expanded provisioning support for notifiers, contact points, and alert rules, alongside auditing and role-based access control for our Enterprise customers.</p>
+<p>We’ve summarized what’s new in the release here, but you might also be interested in the announcement blog post as well. If you’d like all the details you can check out the complete <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a>.</p>
+<h2 id="grafana-oss">Grafana OSS</h2>
+<h3 id="community-contributions">Community Contributions</h3>
+<p>Grafana 8.3 includes many community contributions including the ability to interpolate variables in tags (<a href="https://github.com/grafana/grafana/pull/42318" target="_blank" rel="noopener noreferrer">#42318</a>), fly-out sub-menu support (<a href="https://github.com/grafana/grafana/pull/41647" target="_blank" rel="noopener noreferrer">#41647</a>), the addition of AWS RoboMaker &amp; AWS Global Accelerator metrics to the AWS CloudWatch data source (<a href="https://github.com/grafana/grafana/pull/41450" target="_blank" rel="noopener noreferrer">#41450</a>, <a href="https://github.com/grafana/grafana/pull/41236" target="_blank" rel="noopener noreferrer">#41236</a>), as well as updates to the news panel (<a href="https://github.com/grafana/grafana/pull/41193" target="_blank" rel="noopener noreferrer">#41193</a>), the plugin catalog (<a href="https://github.com/grafana/grafana/pull/40917" target="_blank" rel="noopener noreferrer">#40917</a>), and many more. The Grafana Labs team is deeply grateful for all those who take the time to contribute and participate in the development of Grafana.</p>
+<h3 id="accessibility">Accessibility</h3>
+<p>We’ve continued to make progress on improving Grafana’s accessibility. In Grafana 8.3 we’ve updated the main menu with improved keyboard navigation. We’ve also improved Grafana’s behavior when navigating through elements with the tab key (tab stops) and finished our work to make Grafana’s viewer roles compatible with assistive technologies such as screen readers. You can read our accessibility statement here and reach out to us with accessibility issues using our community Slack or our community forums.</p>
+<h3 id="dashboards-and-visualizations">Dashboards and Visualizations</h3>
+<h4 id="panel-suggestions">Panel Suggestions</h4>
+<p>Grafana will now make suggestions for visualization types based on the current data surfaced by a query or queries in a panel. This makes seeing available, possible interpretations of your data more straightforward and can be a useful jumping-off point when building panels and dashboards with specific goals in mind.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/panels/panel_suggestions_8_3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/panels/panel_suggestions_8_3.png"data-srcset="/static/img/docs/panels/panel_suggestions_8_3.png?w=320 320w, /static/img/docs/panels/panel_suggestions_8_3.png?w=550 550w, /static/img/docs/panels/panel_suggestions_8_3.png?w=750 750w, /static/img/docs/panels/panel_suggestions_8_3.png?w=900 900w, /static/img/docs/panels/panel_suggestions_8_3.png?w=1040 1040w, /static/img/docs/panels/panel_suggestions_8_3.png?w=1240 1240w, /static/img/docs/panels/panel_suggestions_8_3.png?w=1920 1920w"
+          data-sizes="auto"alt="Panel suggestionss"width="1684"height="1256"title="Panel suggestionss"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/panel_suggestions_8_3.png"
+            alt="Panel suggestionss"width="1684"height="1256"title="Panel suggestionss"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Panel suggestionss</figcaption></a></figure>
+<h4 id="candlestick-panel-beta">Candlestick Panel (Beta)</h4>
+<p>Grafana 8.3 includes a new Candlestick panel that is so much more. Beyond candlesticks and open, high, low, close, behaviors, it includes customizable up/down colors, bar color determined by intra-period or inter-period movement of the data, volume histogram with matching colors, and the ability to detach or create a separate volume histogram to allow for more flexible dashboard design. The candlestick panel is based upon our time series panel meaning it also has support for additional data with the same configuration options and styles.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/candlestick-panel/candlestick-panel-8-3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/candlestick-panel/candlestick-panel-8-3.png"data-srcset="/static/img/docs/candlestick-panel/candlestick-panel-8-3.png?w=320 320w, /static/img/docs/candlestick-panel/candlestick-panel-8-3.png?w=550 550w, /static/img/docs/candlestick-panel/candlestick-panel-8-3.png?w=750 750w, /static/img/docs/candlestick-panel/candlestick-panel-8-3.png?w=900 900w, /static/img/docs/candlestick-panel/candlestick-panel-8-3.png?w=1040 1040w, /static/img/docs/candlestick-panel/candlestick-panel-8-3.png?w=1240 1240w, /static/img/docs/candlestick-panel/candlestick-panel-8-3.png?w=1920 1920w"
+          data-sizes="auto"alt="Candlestick panel"width="1367"height="781"title="Candlestick panel"/>
+        <noscript>
+          <img
+            src="/static/img/docs/candlestick-panel/candlestick-panel-8-3.png"
+            alt="Candlestick panel"width="1367"height="781"title="Candlestick panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Candlestick panel</figcaption></a></figure>
+<h4 id="geomap-updates">Geomap updates</h4>
+<p>The Geomap panel has been updated to support multiple data layers. The panel can now be configured with multiple markers, heatmaps &amp; GeoJSON layers. The layers can be individually configured, named, and re-ordered to create rich, multidimensional visualizations. Please see the documentation for details on how you can set up and configure these new configuration options.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/geomap-panel/geomap_8_3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/geomap-panel/geomap_8_3.png"data-srcset="/static/img/docs/geomap-panel/geomap_8_3.png?w=320 320w, /static/img/docs/geomap-panel/geomap_8_3.png?w=550 550w, /static/img/docs/geomap-panel/geomap_8_3.png?w=750 750w, /static/img/docs/geomap-panel/geomap_8_3.png?w=900 900w, /static/img/docs/geomap-panel/geomap_8_3.png?w=1040 1040w, /static/img/docs/geomap-panel/geomap_8_3.png?w=1240 1240w, /static/img/docs/geomap-panel/geomap_8_3.png?w=1920 1920w"
+          data-sizes="auto"alt="Geomap panel updates"width="2024"height="1101"title="Geomap panel updates"/>
+        <noscript>
+          <img
+            src="/static/img/docs/geomap-panel/geomap_8_3.png"
+            alt="Geomap panel updates"width="2024"height="1101"title="Geomap panel updates"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Geomap panel updates</figcaption></a></figure>
+<h3 id="grafana-alerting">Grafana Alerting</h3>
+<p>Grafana Alerting is now the default alerting experience for all new Open Source installations of Grafana 8.3. Grafana Alerting in 8.3 includes the ability to test contact points and notification routing. Grafana 8.3 also adds the ability to configure and use external, Prometheus-style alert managers from within the Grafana Alerting workflow.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/alerting/alerting_8_0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/alerting/alerting_8_0.png"data-srcset="/static/img/docs/alerting/alerting_8_0.png?w=320 320w, /static/img/docs/alerting/alerting_8_0.png?w=550 550w, /static/img/docs/alerting/alerting_8_0.png?w=750 750w, /static/img/docs/alerting/alerting_8_0.png?w=900 900w, /static/img/docs/alerting/alerting_8_0.png?w=1040 1040w, /static/img/docs/alerting/alerting_8_0.png?w=1240 1240w, /static/img/docs/alerting/alerting_8_0.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana Alerting"width="1600"height="937"title="Grafana Alerting"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/alerting_8_0.png"
+            alt="Grafana Alerting"width="1600"height="937"title="Grafana Alerting"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana Alerting</figcaption></a></figure>
+<h3 id="support-for-aws-cloudwatch-metrics-insights">Support for AWS CloudWatch Metrics Insights</h3>
+<p>Grafana and Amazon Managed Grafana now support AWS Metrics Insights – a fast, flexible, SQL-based query engine that enables you to identify trends and patterns across millions of operational metrics in real time.</p>
+<p>You can use Metrics Insights in the AWS CloudWatch plugin. Using this new feature is as simple as selecting the Metric Query type. The Metric Query type has two different modes: a Builder mode and a Code editor mode.</p>
+<p>The example below demonstrates using the new Metrics Insight capability to view the top 5 instances with the highest average CPU Utilization, ordered by maximum, in descending order. The code editor has built-in autocompletion support that gives suggestions throughout the composition of the query.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/cloudwatch-code-editor-autocomplete-8.3.0.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/cloudwatch-code-editor-autocomplete-8.3.0.gif"alt="Grafana Alerting"width="1249"height="692"title="Grafana Alerting"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/cloudwatch-code-editor-autocomplete-8.3.0.gif"
+            alt="Grafana Alerting"width="1249"height="692"title="Grafana Alerting"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana Alerting</figcaption></a></figure>
+<h2 id="grafana-enterprise">Grafana Enterprise</h2>
+<h3 id="recorded-queries">Recorded Queries</h3>
+<p>Recorded queries turn “point in time” data into time series.</p>
+<p>Recorded queries allow you to export the results of certain non-time series queries to the Enterprise backend in order to store data over time and allow customers to construct their own time series.</p>
+<p>This new feature is especially helpful for Enterprise customers using plugins because many new plugins, like ServiceNow and Jira, don’t return time series so customers weren’t able to plot historical data over time. With recorded queries, now they can! For more information</p>
+<h3 id="assign-role-based-permissions-directly-to-users-with-the-new-role-picker-beta">Assign role-based permissions directly to users with the new role picker (beta)</h3>
+<p>Sometimes the Viewer, Editor, and Admin roles just don’t fit what a certain user needs to do in Grafana. Now you can assign role-based roles directly to users, so they can create reports, use Explore mode, create data sources, and perform other specific actions in Grafana. The role picker can be access from the Grafana Admin user management page.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/enterprise_role_picker_8_3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/enterprise_role_picker_8_3.png"data-srcset="/static/img/docs/enterprise/enterprise_role_picker_8_3.png?w=320 320w, /static/img/docs/enterprise/enterprise_role_picker_8_3.png?w=550 550w, /static/img/docs/enterprise/enterprise_role_picker_8_3.png?w=750 750w, /static/img/docs/enterprise/enterprise_role_picker_8_3.png?w=900 900w, /static/img/docs/enterprise/enterprise_role_picker_8_3.png?w=1040 1040w, /static/img/docs/enterprise/enterprise_role_picker_8_3.png?w=1240 1240w, /static/img/docs/enterprise/enterprise_role_picker_8_3.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana Enterprise Role Picker"width="736"height="536"title="Grafana Enterprise Role Picker"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/enterprise_role_picker_8_3.png"
+            alt="Grafana Enterprise Role Picker"width="736"height="536"title="Grafana Enterprise Role Picker"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana Enterprise Role Picker</figcaption></a></figure>
+<h3 id="use-role-based-access-control-for-organizations-and-licensing-beta">Use role-based access control for Organizations and Licensing (beta)</h3>
+<p>We’ve added new permissions to role-based access control to help you specify actions that users can perform. Now you can assign permissions to manage Organizations and License functions in Grafana, in addition to Users, Data Sources, Reports, and other resources. Role-based access control remains in beta and we will continue to add new permissions until all of Grafana’s endpoints are covered. For a complete list of the actions you can permit using role-based access control, see the <a href="/docs/grafana/next/enterprise/access-control/fine-grained-access-control-references/">reference</a>.</p>
+<h3 id="get-your-encryption-key-from-a-key-management-service">Get your encryption key from a Key Management Service</h3>
+<p>Grafana’s database contains secrets, like the credentials used to query data sources, send alert notifications and perform other functions within Grafana. These secrets are encrypted using keys, which are usually stored in Grafana’s configuration file. Now you can get your encryption key from Amazon KMS, Azure Key Vault, or Hashicorp Vault. This allows you to centrally manage your Grafana encryption key and reduce the chances it will leak.</p>
+<p>In order to support this, we’ve upgraded Grafana Enterprise to use envelope encryption, which complements the KMS integration by adding a layer of indirection to the encryption process. Instead of encrypting all secrets with a single key, Grafana uses a set of keys called data encryption keys (DEKs) to encrypt them. These data encryption keys are themselves encrypted with a single key encryption key (KEK). With envelope encryption, you can store a KEK in your KMS, and still quickly encrypt and decrypt data using DEKs stored within the Grafana database.</p>
+<h3 id="pay-the-same-for-all-users-regardless-of-their-permissions">Pay the same for all users, regardless of their permissions</h3>
+<p>Are you tired of managing user permissions because your license only allows a certain number of Viewers and Editors or Admins? So were we. We’ve added support for combined user pricing, where all users cost the same and fall into the same license bucket in Grafana Enterprise. This is a specific license option and must be updated in your contract. To learn more, refer to our <a href="/docs/grafana/latest/enterprise/license/license-restrictions/">licensing docs</a>. To switch to combined user pricing, contact your Grafana Labs account team.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/enterprise_users_8_3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/enterprise_users_8_3.png"data-srcset="/static/img/docs/enterprise/enterprise_users_8_3.png?w=320 320w, /static/img/docs/enterprise/enterprise_users_8_3.png?w=550 550w, /static/img/docs/enterprise/enterprise_users_8_3.png?w=750 750w, /static/img/docs/enterprise/enterprise_users_8_3.png?w=900 900w, /static/img/docs/enterprise/enterprise_users_8_3.png?w=1040 1040w, /static/img/docs/enterprise/enterprise_users_8_3.png?w=1240 1240w, /static/img/docs/enterprise/enterprise_users_8_3.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana Enterprise User Pricing"width="1433"height="469"title="Grafana Enterprise User Pricing"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/enterprise_users_8_3.png"
+            alt="Grafana Enterprise User Pricing"width="1433"height="469"title="Grafana Enterprise User Pricing"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana Enterprise User Pricing</figcaption></a></figure>
+<h3 id="author-dashboards-faster-with-resource-caching">Author dashboards faster with resource caching</h3>
+<p>Your query editor just became faster. <a href="/docs/grafana/latest/enterprise/query-caching/">Query caching</a> improves query performance and sometimes reduces cost, by reducing the number of repetitive queries performed against data sources. Resource caching does the same thing but for resource calls, like retrieving the list of applications in the AppDynamics editor, the list of metrics from Datadog, or the list of values in a template variable dropdown. This makes for a zippier user experience for everyone writing queries in Grafana.</p>
+<h3 id="review-audit-logs-for-more-services-like-alerting">Review audit logs for more services, like alerting</h3>
+<p><a href="/docs/grafana/latest/enterprise/auditing/">Audit logs</a> are a record of the actions users perform in Grafana, which you can investigate in case of a security incident or to understand Grafana usage better. We’ve added audit logs for new actions performed against plugins, data sources, library elements, and Grafana’s new alerting service. This ensures that if a user makes a change anywhere in Grafana Enterprise, you’ll have a record of it. For details, refer to the <a href="/docs/grafana/latest/enterprise/auditing/">Auditing docs</a>.</p>

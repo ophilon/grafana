@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<h1 id="use-images-in-notifications">Use images in notifications</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Cloud users can request this feature by <a href="/profile/org#support">opening a support ticket in the Cloud Portal</a>.</p></blockquote></div>
+
+<p>Images in notifications helps recipients of alert notifications better understand why an alert has fired or resolved by including a screenshot of the panel associated with the alert.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature is not supported in Mimir or Loki, or when Grafana is configured to send alerts to other Alertmanagers such as the Prometheus Alertmanager.</p></blockquote></div>
+
+<p>When an alert is fired or resolved Grafana takes a screenshot of the panel associated with the alert. This is determined via the Dashboard UID and Panel ID annotations of the rule. Grafana cannot take a screenshot for alerts that are not associated with a panel.</p>
+<p>Grafana takes at most two screenshots for each alert: once when the alert fires and again when the alert is resolved. Screenshots are not re-taken over the lifetime of the alert, instead you should open the panel in Grafana to follow the data in real time. In addition, depending on how alerts are grouped in your notification policies, Grafana might send a notification with many screenshots of the same panel. This happens because Grafana does not know how your alerts are grouped at the time a screenshot is taken, and so acts conservatively by taking a screenshot for every alert.</p>
+<p>After a screenshot has been taken Grafana can either upload it to a cloud storage service such as Amazon S3, Azure Blob Storage or Google Cloud Storage; upload the screenshot to it&rsquo;s internal web server; or upload it to the service that is receiving the notification, such as Slack. Which option you should choose depends on how your Grafana is managed and which integrations you use. More information on this can be found in Requirements.</p>
+<p>Refer to the table at the end of this page for a list of contact points and their support for images in notifications.</p>
+<h2 id="requirements">Requirements</h2>
+<ol>
+<li>
+<p>To use images in notifications, Grafana must be set up to use image rendering. You can either install the image rendering plugin or run it as a remote rendering service.</p>
+</li>
+<li>
+<p>When a screenshot is taken, it is saved to the [data][paths] folder, even if Grafana is configured to upload screenshots to a cloud storage service. Grafana must have write-access to this folder otherwise screenshots cannot be saved to disk and an error is logged for each failed screenshot attempt.</p>
+</li>
+<li>
+<p>You should use a cloud storage service unless sending alerts to Discord, email, Pushover, Slack or Telegram. These integrations support either embedding screenshots in the email or attaching screenshots to the notification, while other integrations must link screenshots uploaded to a cloud storage bucket. If a cloud storage service has been configured then integrations that support both link screenshots from the cloud storage bucket instead of embedding or attaching screenshots to the notification.</p>
+</li>
+<li>
+<p>If uploading screenshots to a cloud storage service such as Amazon S3, Azure Blob Storage or Google Cloud Storage; and accessing screenshots in the bucket requires authentication, logging into a VPN or corporate network; then image previews might not work in all instant messaging and communication platforms as some services rewrite URLs to use their CDN. If this happens, we recommend using <a href="#supported-contact-points">integrations which support uploading images</a> or <a href="#configuration">disabling images in notifications</a> altogether.</p>
+</li>
+<li>
+<p>When uploading screenshots to a cloud storage service Grafana uses a random 20 character (30 characters for Azure Blob Storage) filename for each image. This makes URLs hard to guess but not impossible.</p>
+</li>
+<li>
+<p>Grafana does not delete screenshots from cloud storage. We recommend configuring a retention policy with your cloud storage service to delete screenshots older than 1 month.</p>
+</li>
+<li>
+<p>If Grafana is configured to upload screenshots to its internal web server, and accessing Grafana requires logging into a VPN or corporate network; image previews might not work in all instant messaging and communication platforms as some services rewrite URLs to use their CDN. If this happens, we recommend using <a href="#supported-contact-points">integrations which support uploading images</a> or <a href="#configuration">disabling images in notifications</a> altogether.</p>
+</li>
+<li>
+<p>Grafana does not delete screenshots uploaded to its internal web server. To delete screenshots from <code>static_root_path/images/attachments</code> after a certain amount of time, we recommend setting up a CRON job.</p>
+</li>
+<li>
+<p>Note you cannot adjust the number and size of images or their placement in notifications.</p>
+</li>
+</ol>
+<h2 id="configuration">Configuration</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Cloud users can request this feature by <a href="/profile/org#support">opening a support ticket in the Cloud Portal</a>.</p></blockquote></div>
+
+<p>Having installed either the image rendering plugin, or set up Grafana to use a remote rendering service, set <code>capture</code> in <code>[unified_alerting.screenshots]</code> to <code>true</code>:</p>
+<pre><code># Enable screenshots in notifications. You must have either installed the Grafana image rendering
+# plugin, or set up Grafana to use a remote rendering service.
+# For more information on configuration options, refer to [rendering].
+capture = false
+</code></pre>
+<p>If screenshots should be uploaded to cloud storage then <code>upload_external_image_storage</code> should also be set to <code>true</code>:</p>
+<pre><code># Uploads screenshots to the local Grafana server or remote storage such as Azure, S3 and GCS. Please
+# see [external_image_storage] for further configuration options. If this option is false, screenshots
+# are persisted to disk for up to temp_data_lifetime.
+upload_external_image_storage = false
+</code></pre>
+<p>Restart Grafana for the changes to take effect.</p>
+<h2 id="advanced-configuration">Advanced configuration</h2>
+<p>We recommend that <code>max_concurrent_screenshots</code> is less than or equal to <code>concurrent_render_request_limit</code>. The default value for both <code>max_concurrent_screenshots</code> and <code>concurrent_render_request_limit</code> is <code>5</code>:</p>
+<pre><code># The maximum number of screenshots that can be taken at the same time. This option is different from
+# concurrent_render_request_limit as max_concurrent_screenshots sets the number of concurrent screenshots
+# that can be taken at the same time for all firing alerts where as concurrent_render_request_limit sets
+# the total number of concurrent screenshots across all Grafana services.
+max_concurrent_screenshots = 5
+</code></pre>
+<h2 id="supported-contact-points">Supported contact points</h2>
+<p>Grafana supports a wide range of contact points with varied support for images in notifications. The table below shows the list of all contact points supported in Grafana and their support for uploading screenshots to the receiving service and referencing screenshots that have been uploaded to a cloud storage service.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Upload from disk</th>
+          <th>Reference from cloud storage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DingDing</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Discord</td>
+          <td>Yes (Maximum of 10 per notification)</td>
+          <td>Yes (Maximum of 10 per notification)</td>
+      </tr>
+      <tr>
+          <td>Email</td>
+          <td>Yes (Embedded in the email)</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td>Google Chat</td>
+          <td>No</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td>Kafka</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Line</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>MQTT</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Microsoft Teams</td>
+          <td>No</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td>Opsgenie</td>
+          <td>No</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td>PagerDuty</td>
+          <td>No</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td>Prometheus Alertmanager</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Pushover</td>
+          <td>Yes (Maximum of 1 per notification)</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Sensu Go</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Slack</td>
+          <td>Yes (when using Bot tokens, maximum of 5 per notification)</td>
+          <td>Yes (when using webhooks, maximum of 1 per notification)</td>
+      </tr>
+      <tr>
+          <td>Telegram</td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Threema</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>VictorOps</td>
+          <td>No</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Webhook</td>
+          <td>No</td>
+          <td>Yes</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li>This feature is not supported in Mimir or Loki, or when Grafana is configured to send alerts to other Alertmanagers such as the Prometheus Alertmanager.</li>
+<li>This feature is not supported when using custom templates in email notifications.</li>
+<li>A number of contact points support at most one image per notification. In this case, just the first image is either uploaded to the receiving service or referenced from cloud storage per notification.</li>
+<li>When multiple alerts are sent in a single notification a screenshot might be included for each alert. The order the images are shown is random.</li>
+<li>If uploading screenshots to a cloud storage service such as Amazon S3, Azure Blob Storage or Google Cloud Storage; and accessing screenshots in the bucket requires authentication, logging into a VPN or corporate network; image previews might not work in all instant messaging and communication platforms as some services rewrite URLs to use their CDN.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>If Grafana has been set up to send images in notifications, however notifications are still being received without them, follow the troubleshooting steps below:</p>
+<ol>
+<li>Check that images in notifications has been set up as per the instructions.</li>
+<li>Enable debug logging in Grafana and look for logs with the logger <code>ngalert.image</code>.</li>
+<li>If the alert is not associated with a dashboard there are logs for <code>Cannot take screenshot for alert rule as it is not associated with a dashboard</code>.</li>
+<li>If the alert is associated with a dashboard, but no panel in the dashboard, there are logs for <code>Cannot take screenshot for alert rule as it is not associated with a panel</code>.</li>
+<li>If images cannot be taken because of mis-configuration or an issue with image rendering there are logs for <code>Failed to take an image</code> including the Dashboard UID, Panel ID, and the error message.</li>
+<li>Check that the contact point supports images in notifications and whether it supports uploading images to the receiving service or referencing images that have been uploaded to a cloud storage service.</li>
+</ol>
+<h2 id="monitor">Monitor</h2>
+<p>Grafana provides the following metrics to observe the performance and failure rate of images in notifications.
+For example, if a screenshot could not be taken within the expected time (10 seconds) then the counter <code>grafana_screenshot_failures_total</code> is updated.</p>
+<ul>
+<li><code>grafana_alerting_image_cache_hits_total</code></li>
+<li><code>grafana_alerting_image_cache_misses_total</code></li>
+<li><code>grafana_screenshot_duration_seconds</code></li>
+<li><code>grafana_screenshot_failures_total</code></li>
+<li><code>grafana_screenshot_successes_total</code></li>
+<li><code>grafana_screenshot_upload_failures_total</code></li>
+<li><code>grafana_screenshot_upload_successes_total</code></li>
+</ul>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<h1 id="loki-data-source">Loki data source</h1>
+<p>Grafana Loki is a set of components that can be combined into a fully featured logging stack.
+Unlike other logging systems, Loki is built around the idea of only indexing metadata about your logs: labels (just like Prometheus labels). Log data itself is then compressed and stored in chunks in object stores such as S3 or GCS, or even locally on a filesystem.</p>
+<p>The following guides will help you get started with Loki:</p>
+<ul>
+<li><a href="/docs/loki/latest/get-started/">Getting started with Loki</a></li>
+<li><a href="/docs/loki/latest/installation/">Install Loki</a></li>
+<li><a href="/docs/loki/latest/best-practices/#best-practices">Loki best practices</a></li>
+<li><a href="/docs/grafana/latest/datasources/loki/configure-loki-data-source/">Configure the Loki data source</a></li>
+<li><a href="/docs/loki/latest/logql/">LogQL</a></li>
+<li><a href="query-editor/">Loki query editor</a></li>
+</ul>
+<h2 id="supported-loki-versions">Supported Loki versions</h2>
+<p>This data source supports these versions of Loki:</p>
+<ul>
+<li>v2.9+</li>
+</ul>
+<h2 id="adding-a-data-source">Adding a data source</h2>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>
+Only users with the organization administrator role can add data sources.
+Administrators can also <a href="#provision-the-data-source">configure the data source via YAML</a> with Grafana&rsquo;s provisioning system.</p>
+<p>Once you&rsquo;ve added the Loki data source, you can <a href="#configure-the-data-source">configure it</a> so that your Grafana instance&rsquo;s users can create queries in its <a href="query-editor/">query editor</a> when they 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build dashboards</a>, use 
+    <a href="/docs/grafana/latest/explore/">Explore</a>, and <a href="query-editor/#apply-annotations">annotate visualizations</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To troubleshoot configuration and other issues, check the log file located at <code>/var/log/grafana/grafana.log</code> on Unix systems, or in <code>&lt;grafana_install_dir&gt;/data/log</code> on other platforms and manual installations.</p></blockquote></div>
+
+<h2 id="provision-the-data-source">Provision the data source</h2>
+<p>You can define and configure the data source in YAML files as part of Grafana&rsquo;s provisioning system.
+For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+<h3 id="provisioning-examples">Provisioning examples</h3>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://localhost:3100
+    jsonData:
+      timeout: 60
+      maxLines: 1000</pre>
+<p><strong>Using basic authorization and a derived field:</strong></p>
+<p>You must escape the dollar (<code>$</code>) character in YAML values because it can be used to interpolate environment variables:</p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://localhost:3100
+    basicAuth: true
+    basicAuthUser: my_user
+    jsonData:
+      maxLines: 1000
+      derivedFields:
+        # Field with internal link pointing to data source in Grafana.
+        # datasourceUid value can be anything, but it should be unique across all defined data source uids.
+        - datasourceUid: my_jaeger_uid
+          matcherRegex: &#34;traceID=(\\w+)&#34;
+          name: TraceID
+          # url will be interpreted as query for the datasource
+          url: &#39;$${__value.raw}&#39;
+          # optional for URL Label to set a custom display label for the link.
+          urlDisplayLabel: &#39;View Trace&#39;
+
+        # Field with external link.
+        - matcherRegex: &#34;traceID=(\\w+)&#34;
+          name: TraceID
+          url: &#39;http://localhost:16686/trace/$${__value.raw}&#39;
+    secureJsonData:
+      basicAuthPassword: test_password</pre>
+<p><strong>Using a Jaeger data source:</strong></p>
+<p>In this example, the Jaeger data source&rsquo;s <code>uid</code> value should match the Loki data source&rsquo;s <code>datasourceUid</code> value.</p>
+<pre>datasources:
+    - name: Jaeger
+      type: jaeger
+      url: http://jaeger-tracing-query:16686/
+      access: proxy
+      # UID should match the datasourceUid in derivedFields.
+      uid: my_jaeger_uid</pre>
+<h2 id="query-the-data-source">Query the data source</h2>
+<p>The Loki data source&rsquo;s query editor helps you create log and metric queries that use Loki&rsquo;s query language, <a href="/docs/loki/latest/logql/">LogQL</a>.</p>
+<p>For details, refer to the <a href="query-editor/">query editor documentation</a>.</p>
+<h2 id="use-template-variables">Use template variables</h2>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For details, see the <a href="template-variables/">template variables documentation</a>.</p>

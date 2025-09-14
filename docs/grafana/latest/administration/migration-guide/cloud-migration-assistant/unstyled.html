@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<h1 id="grafana-cloud-migration-assistant">Grafana Cloud Migration Assistant</h1>
+<p>The Grafana Cloud Migration Assistant, generally available from Grafana v12.0, automatically migrates resources from your Grafana OSS/Enterprise instance to Grafana Cloud. It provides the following functionality:</p>
+<ul>
+<li>Securely connect your self-managed instance to a Grafana Cloud instance.</li>
+<li>Seamlessly migrate resources such as dashboards, data sources, and folders to your cloud instance in a few easy steps.</li>
+<li>View the migration status of your resources in real-time.</li>
+</ul>
+<p>Some of the benefits of the migration assistant are:</p>
+<dl>
+<dt>Ease of use</dt>
+<dd>Follow the steps provided by the UI to easily migrate all your resources to Grafana Cloud without using Grafana APIs or scripts.</dd>
+<dt>Security</dt>
+<dd>Encrypt and securely migrate your resources to your connected Grafana Cloud instance.</dd>
+<dt>Speed</dt>
+<dd>Migrate all of your resources in minutes and accelerate your transition to Grafana Cloud.</dd>
+</dl>
+<h2 id="supported-resources">Supported resources</h2>
+<p>The following resources are supported by the migration assistant:</p>
+<ul>
+<li>Dashboards</li>
+<li>Folders</li>
+<li>Data sources</li>
+<li>App Plugins</li>
+<li>Panel Plugins</li>
+<li>Library Panels</li>
+<li>Grafana Alerting resources</li>
+</ul>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To use the Grafana migration assistant, you need:</p>
+<ul>
+<li>Grafana v11.2 or above with the <code>onPremToCloudMigrations</code> feature toggle enabled. In Grafana 11.5, this is enabled by default. For more information on how to enable a feature toggle, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/#configure-feature-toggles">Configure feature toggles</a>.</li>
+<li>A <a href="/docs/grafana-cloud/get-started/">Grafana Cloud Stack</a> you intend to migrate your resources to.</li>
+<li><a href="/docs/grafana-cloud/account-management/authentication-and-permissions/cloud-roles/"><code>Admin</code></a> access to the Grafana Cloud Stack. To check your access level, go to <code>/orgs/&lt;YOUR-ORG-NAME&gt;/members</code>.</li>
+<li>
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#grafana-server-administrators">Grafana server administrator</a> access to your existing Grafana OSS/Enterprise instance. To check your access level, go to <code>https://&lt;GRAFANA-ONPREM-URL&gt;/admin/users</code>.</li>
+<li>Internet access from your existing Grafana OSS/Enterprise instance.</li>
+<li>If you are running Grafana in a <a href="/docs/grafana/latest/setup-grafana/set-up-for-high-availability/">highly-available setup</a>, we recommend scaling Grafana down to one replica to avoid a <a href="https://github.com/grafana/grafana/issues/107264" target="_blank" rel="noopener noreferrer">known bug</a>.</li>
+<li>If your network requires external services to be on an allowlist to allow access, add the following IPs and URLs to your allowlist:
+<ul>
+<li><a href="/docs/grafana-cloud/security-and-account-management/allow-list/#hosted-grafana">Hosted Grafana</a></li>
+<li><a href="/docs/grafana-cloud/security-and-account-management/allow-list/#hosted-alerts">Hosted Alerts</a></li>
+<li><a href="https://docs.aws.amazon.com/en_us/vpc/latest/userguide/aws-ip-ranges.html" target="_blank" rel="noopener noreferrer">AWS IP address ranges</a> for the S3 service</li>
+<li><code>*.grafana.net</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="access-the-migration-assistant">Access the migration assistant</h2>
+<p>In Grafana OSS, access to the migration assistant is limited to the server administrator.</p>
+<p>In Grafana Enterprise, the server administrator has access to the migration assistant by default. It is also possible to grant access to other Admins using a role-based access control (RBAC) role that enables other admins on the Grafana instance to view, build snapshots, and upload resources to Grafana Cloud.</p>
+<h3 id="grant-access-in-grafana-enterprise">Grant access in Grafana Enterprise</h3>
+
+
+<div class="admonition admonition-important"><blockquote><p class="title text-uppercase">Important</p><p>You must 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/configure-rbac/">configure RBAC</a> before you can grant other administrators access to the Grafana Migration Assistant.</p></blockquote></div>
+
+<p>To grant other Admins access to the migration assistant in Grafana Enterprise:</p>
+<ol>
+<li>
+<p>Sign in to Grafana as a server administrator.</p>
+</li>
+<li>
+<p>Navigate to <strong>Home</strong> &gt; <strong>Administration</strong> &gt; <strong>Users and access</strong> &gt; <strong>Users</strong> in the Grafana sidebar.</p>
+</li>
+<li>
+<p>Click an Admin.</p>
+</li>
+<li>
+<p>In the <strong>Organizations</strong> section, click <strong>Change role</strong>.</p>
+</li>
+<li>
+<p>Select <strong>Organization resource migrator</strong> from the role selector menu under <strong>Migration Assistant</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana-cloud/account-management/screenshot-grant-migration-assistant-access.png"
+  alt="The Organization resource migrator role in the role picker" width="512"
+     height="298"/></p>
+</li>
+<li>
+<p>Click <strong>Apply</strong>.</p>
+</li>
+</ol>
+<h2 id="use-the-migration-assistant">Use the migration assistant</h2>
+<p>You can use the migration assistant to generate a migration token on your Grafana Cloud instance, use that token to connect your self-managed Grafana instance to your Grafana Cloud instance, build snapshots of your self-managed Grafana instance, and upload these snapshots to Grafana Cloud.</p>
+<h3 id="generate-a-migration-token-on-the-destination-cloud-instance">Generate a migration token on the destination cloud instance:</h3>
+<ol>
+<li>Navigate to <strong>Home</strong> &gt; <strong>Administration</strong> &gt; <strong>General</strong> &gt; <strong>Migrate to Grafana Cloud</strong> in the cloud instance where you intend to migrate your resources.</li>
+<li>Click on the <strong>Generate a migration token</strong> button.</li>
+<li>Make a copy of the migration token by copying to clipboard. The token is required to authenticate your self-managed instance with the Grafana Cloud Stack.</li>
+</ol>
+<h3 id="connect-your-self-managed-grafana-instance-to-the-grafana-cloud-stack">Connect your self-managed Grafana instance to the Grafana Cloud Stack</h3>
+<ol>
+<li>
+<p>On your self-managed Grafana instance, navigate to <strong>Home</strong> &gt; <strong>Administration</strong> &gt; <strong>General</strong> &gt; <strong>Migrate to Grafana Cloud</strong>.</p>
+</li>
+<li>
+<p>Click the <strong>Migrate this instance to Cloud</strong> button.</p>
+</li>
+<li>
+<p>Enter your token in the <strong>Migration token</strong> field and click <strong>Connect to this Stack</strong>.</p>
+</li>
+</ol>
+<h3 id="build-a-snapshot">Build a snapshot</h3>
+<p>After connecting to the cloud stack, this is the empty state of the migration assistant. You need to create a snapshot of the self-managed Grafana instance to upload it to the cloud stack.</p>
+<ol>
+<li>
+<p>From Grafana v12.0, select the checkbox next to each resource you want to migrate to your cloud stack.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Some resources can&rsquo;t be uploaded to your cloud stack alone because they rely on other resources:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Desired resource</th>
+          <th style="text-align: left">Requires</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Dashboards</td>
+          <td style="text-align: left"><ul><li>Library Elements</li> <li>Data Sources</li> <li>Plugins</li> <li>Folders</li></ul></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Library Elements</td>
+          <td style="text-align: left">Folders</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Data Sources</td>
+          <td style="text-align: left">Plugins</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Plugins</td>
+          <td style="text-align: left">Nothing else</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Folders</td>
+          <td style="text-align: left">Nothing else</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">All Alert rule groups</td>
+          <td style="text-align: left">All other resources</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Alert Rules</td>
+          <td style="text-align: left"><ul><li>Dashboards</li> <li>Library Elements</li> <li>Data Sources</li> <li>Plugins</li> <li>Folders</li> <li>Notification Policies</li> <li>Notification Templates</li> <li>Contact Points</li> <li>Mute Timings</li></ul></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Notification Policies</td>
+          <td style="text-align: left"><ul><li>Notification Templates</li> <li>Contact Points</li> <li>Mute Timings</li></ul></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Notification Templates</td>
+          <td style="text-align: left">Nothing else</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Contact Points</td>
+          <td style="text-align: left">Notification Templates</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Mute Timings</td>
+          <td style="text-align: left">Nothing else</td>
+      </tr>
+  </tbody>
+</table></blockquote></div>
+
+<p>In Grafana v11.2 to v11.6, you can&rsquo;t select specific resources to include in the snapshot, such as only dashboards. All supported resources are included by default.</p>
+</li>
+<li>
+<p>Click <strong>Build snapshot</strong></p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/screenshot-grafana-12-select-resources.png"
+  alt="A list of resources selected for migration and the Build snapshot button" width="284"
+     height="457"/></p>
+</li>
+</ol>
+<h3 id="upload-resources-to-the-cloud">Upload resources to the cloud</h3>
+<p>After a snapshot is created, a list of resources appears with resource Type and Status populated with <strong>Not yet uploaded</strong>.</p>
+<ol>
+<li>
+<p>Click on <strong>Upload snapshot</strong> to copy the resources to the Grafana Cloud instance.</p>
+</li>
+<li>
+<p>Use the assistant&rsquo;s real-time progress tracking to monitor the migration. The status changes to &lsquo;Uploaded to cloud&rsquo; for resources successfully copied to the cloud.</p>
+<p>From Grafana v12.0, you can group and sort resources during and after the migration:</p>
+<ul>
+<li>Click <strong>Name</strong> to sort resources alphabetically.</li>
+<li>Click <strong>Type</strong> to group and sort by resource type.</li>
+<li>Click <strong>Status</strong> to group and sort by upload status (pending upload, uploaded successfully, or experienced errors).</li>
+</ul>
+<p>The Snapshot information also updates to inform the user of total resources, errors, and total number of successfully migrated resources.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/screenshot-grafana-12-updated-snapshot-page.png"
+  alt="An updates list of resources with snapshots built after attempting to upload them to Grafana Cloud" width="750"
+     height="368"/></p>
+</li>
+<li>
+<p>Review error details for any issues that need manual resolution.</p>
+</li>
+</ol>
+<h2 id="snapshots-created-by-the-migration-assistant">Snapshots created by the migration assistant</h2>
+<p>The migration assistant currently supports a subset of all resources available in Grafana. Refer to <a href="#supported-resources">Supported Resources</a> for more details.</p>
+<p>When you create a snapshot, the migration assistant makes a copy of all the resources you select and saves them in the snapshot. The snapshot reflects the current state of the resources when the snapshot is built and is stored locally on your instance, ready to be uploaded in the last stage.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In Grafana v11.2 to v11.6, you can&rsquo;t select specific resources to include in the snapshot, such as only dashboards. All supported resources are included by default.</p></blockquote></div>
+
+<p>Resources saved in the snapshot are strictly limited to the resources stored within an organization. This is important to note if there are multiple organizations used in your Grafana instance. If you want to migrate multiple organizations, refer to <a href="#migrate-multiple-organizations">Migrate multiple organizations</a> for more information and guidance.</p>
+<h2 id="resource-migration-details">Resource migration details</h2>
+<p>During a migration, resource UIDs are preserved, allowing you to correlate your local and cloud resources. If you perform the same migration multiple times, resources in your Grafana Cloud stack that were previously migrated are updated. The assistant never modifies your self-managed resources or cloud resources that didn&rsquo;t come from a snapshot.</p>
+<h3 id="dashboards-and-folders">Dashboards and folders</h3>
+<p>Dashboard names and UIDs are preserved along with references to data sources. Folder hierarchy is also preserved, so you can find your dashboards and other resources saved in identical folder locations.</p>
+<h3 id="data-sources">Data sources</h3>
+<p>Your data sources, including credentials, are migrated securely and seamlessly to your Grafana Cloud instance, so you don&rsquo;t need to find and enter all your data source credentials again.</p>
+<h3 id="plugins">Plugins</h3>
+<p>The migration assistant supports any plugins found in the plugins catalog. As long as the plugin is signed or is a core plugin built into Grafana, it can be migrated. Due to security reasons, unsigned plugins are not supported in Grafana Cloud. If you are using any unsigned private plugins, Grafana recommends you seek an alternative plugin from the catalog or work on a strategy to deprecate certain functionality from your self-managed instance.</p>
+<p>Upgrade any plugins you intend to migrate before using the migration assistant as any migrated plugins will be configured on the Grafana Cloud instance as the latest version of that plugin.</p>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>If you want to migrate Enterprise plugins, check what type of plan your Grafana Cloud instance is on and whether or not this plan requires an Enterprise plugin add-on.</p></blockquote></div>
+
+<h3 id="grafana-alerting-resources">Grafana Alerting resources</h3>
+<p>The migration assistant can migrate the majority of Grafana Alerting resources to your Grafana Cloud instance. These include:</p>
+<ul>
+<li>Alert rules</li>
+<li>Notifications</li>
+<li>Contact points</li>
+<li>Mute timings</li>
+<li>Notification policy tree</li>
+<li>Notification templates</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>grafana-default-email</code> contact point that&rsquo;s provisioned with every new Grafana instance doesn&rsquo;t have a UID by default and won&rsquo;t be migrated unless you edit or update and save it. You don&rsquo;t need to change the contact point for a UID to be generated when saved.</p></blockquote></div>
+
+<p>This is sufficient to have your Alerting configuration up and running in Grafana Cloud with minimal effort.</p>
+<h4 id="migration-assistant-limitations-on-grafana-alerting-resources">Migration assistant limitations on Grafana Alerting resources</h4>
+<p>Migration of Silences is not supported by the migration assistant and needs to be configured manually. Alert History is also not available for migration.</p>
+<p>Attempting to migrate a large number of alert rules might result in the following error:</p>
+<pre>Maximum number of alert rule groups reached: Delete some alert rule groups or upgrade your plan and try again.</pre>
+<p>To avoid this, refer to the <a href="/docs/grafana-cloud/alerting-and-irm/alerting/alerting-rules/create-grafana-managed-rule/#alert-rule-limits-in-grafana-cloud">Alert rule limits in Grafana Cloud</a> when migrating alert rules.</p>
+<h4 id="prevent-duplicated-alert-notifications">Prevent duplicated alert notifications</h4>
+<p>Successfully migrating Alerting resources to your Grafana Cloud instance could result in 2 sets of notifications being generated:</p>
+<ol>
+<li>
+<p>From your OSS/Enterprise instance</p>
+</li>
+<li>
+<p>From the newly migrated alerts in your Grafana Cloud instance</p>
+</li>
+</ol>
+<p>To avoid double notifications, a new <code>alert_rules_state</code> configuration option in the <code>custom.ini</code> or <code>grafana.ini</code> file controls how Alert Rules are migrated to the Grafana Cloud instance and is set to <code>paused</code> by default so you can review and test your Alerting resources in your Grafana Cloud instance without duplicate notifications.</p>
+<p>The available options for <code>alert_rule_state</code> are:</p>
+<dl>
+<dt><code>paused</code></dt>
+<dd>Creates all Alert rules in paused state on the Cloud instance. This is helpful to avoid double notifications.</dd>
+<dt><code>unchanged</code></dt>
+<dd>The Alert rules maintain their original state coming from the source instance.</dd>
+</dl>
+<p>When you are ready to start using your alert rules and notifications from your Grafana Cloud instance, run the migration again with <code>alert_rules_state = unchanged</code>.</p>
+<h3 id="resource-permissions">Resource permissions</h3>
+<p>Because the migration assistant does not yet migrate teams or RBAC permissions, your resources are migrated with default permissions. Ensure that you reconfigure permissions in your cloud stack as needed following a migration. For more information, refer to <a href="/docs/grafana-cloud/account-management/authentication-and-permissions/cloud-roles/">Grafana Cloud user roles and permissions</a>.</p>
+<h2 id="migrate-multiple-organizations">Migrate multiple organizations</h2>
+<p>If you are using the 
+    <a href="/docs/grafana/latest/administration/organization-management/#about-organizations">organizations</a> feature on your Grafana Instance and intend to migrate to Grafana Cloud, you need to plan this aspect of the migration carefully.</p>
+<p>The organizations feature is not supported in Grafana Cloud, but folders and RBAC can be used to protect and grant permissions to resources instead. The recommended path is to migrate multiple organizations to a single cloud stack. This is the simplest option and provides the best user experience.</p>
+<p>The migration assistant creates and uploads snapshots based on the resources within a specific organization. There is no option to migrate an entire Grafana instance with multiple organizations at once. You need to run the migration process for each organization you want to migrate.</p>
+<p>The Grafana server administrator is granted access to the migration assistant by default. The server administrator can perform the migration by switching organizations and running the migration assistant each time. The Grafana server administrator can also grant access to the migration assistant to organization administrators who are members using the RBAC <strong>Migration Assistant:Organization resource migrator</strong> role. This allows those organization administrators to run the migration process for their respective organizations.</p>
+<h3 id="access-control-and-managing-resources-in-the-cloud-instance">Access Control and managing resources in the Cloud Instance</h3>
+<p>The main driver for setting up organizations in the first place is resource isolation. In order to achieve this in Grafana Cloud, you can organize resources into folders and set up teams and permissions that correspond to your organizations.</p>
+<p>For more information about configuring teams and permissions, refer to 
+    <a href="/docs/grafana/latest/administration/team-management/configure-grafana-teams/">Configure Grafana Teams</a>.</p>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<h1 id="provisioning-rbac-with-terraform">Provisioning RBAC with Terraform</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>You can create, change or remove <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/role" target="_blank" rel="noopener noreferrer">Custom roles</a> and create or remove <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/role_assignment" target="_blank" rel="noopener noreferrer">basic and custom role assignments</a>, by using <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs" target="_blank" rel="noopener noreferrer">Terraform&rsquo;s Grafana provider</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>
+<p>Ensure you have the grafana/grafana <a href="https://registry.terraform.io/providers/grafana/grafana/" target="_blank" rel="noopener noreferrer">Terraform provider</a> 1.29.0 or higher.</p>
+</li>
+<li>
+<p>Ensure you are using Grafana 9.2 or higher.</p>
+</li>
+</ul>
+<h2 id="create-a-service-account-token-for-provisioning">Create a Service Account Token for provisioning</h2>
+<p>We recommend using service account tokens for provisioning. 
+    <a href="/docs/grafana/latest/administration/service-accounts/">Service accounts</a> support fine grained permissions, which allows you to easily authenticate and use the minimum set of permissions needed to provision your RBAC infrastructure.</p>
+<p>To create a service account token for provisioning, complete the following steps.</p>
+<ol>
+<li>
+    <a href="/docs/grafana/latest/administration/service-accounts/#create-a-service-account-in-grafana">Create a new service account</a> for your CI pipeline.</li>
+<li>
+    <a href="/docs/grafana/latest/administration/service-accounts/#assign-roles-to-a-service-account-in-grafana">Assign permissions to service account</a>:
+<ul>
+<li>You will need roles “Role reader”, &ldquo;Role writer&rdquo; and roles including any permissions that will be provisioned. For example, to create or assign a role that allows creating users, a service account needs permissions to create users.</li>
+<li>Alternatively, you can assign &ldquo;Admin&rdquo; basic role to the service account.</li>
+</ul>
+</li>
+<li>
+    <a href="/docs/grafana/latest/administration/service-accounts/#to-add-a-token-to-a-service-account">Create a new service account token</a> for use in Terraform.</li>
+</ol>
+<p>Alternatively, you can use basic authentication. To view all the supported authentication formats, see <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs#authentication" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<h2 id="configure-the-terraform-provider">Configure the Terraform provider</h2>
+<p>RBAC support is included as part of the <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs" target="_blank" rel="noopener noreferrer">Grafana Terraform provider</a>.</p>
+<p>The following is an example you can use to configure the Terraform provider.</p>
+<pre>terraform {
+    required_providers {
+        grafana = {
+            source = &#34;grafana/grafana&#34;
+            version = &#34;&gt;= 1.29.0&#34;
+        }
+    }
+}
+
+provider &#34;grafana&#34; {
+    url = &lt;YOUR_GRAFANA_URL&gt;
+    auth = &lt;YOUR_GRAFANA_SERVICE_ACCOUNT_TOKEN&gt;
+}</pre>
+<h2 id="provision-basic-roles">Provision basic roles</h2>
+<p>The following example shows how to assign basic roles to users, teams, and service accounts. Basic roles are predefined in Grafana and provide a set of permissions for common use cases.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Basic role</th>
+          <th>UID</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>None</code></td>
+          <td><code>basic_none</code></td>
+      </tr>
+      <tr>
+          <td><code>Viewer</code></td>
+          <td><code>basic_viewer</code></td>
+      </tr>
+      <tr>
+          <td><code>Editor</code></td>
+          <td><code>basic_editor</code></td>
+      </tr>
+      <tr>
+          <td><code>Admin</code></td>
+          <td><code>basic_admin</code></td>
+      </tr>
+      <tr>
+          <td><code>Grafana Admin</code></td>
+          <td><code>basic_grafana_admin</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>You can use any of the basic role UIDs from the table above in your role assignments. For example, to assign the &ldquo;None&rdquo; role, use <code>basic_none</code> as the <code>role_uid</code>.</p>
+<pre>resource &#34;grafana_team&#34; &#34;viewer_team&#34; {
+  name = &#34;terraform_viewer_team&#34;
+}
+
+resource &#34;grafana_user&#34; &#34;editor_user&#34; {
+  email    = &#34;terraform_editor@example.com&#34;
+  login    = &#34;terraform_editor_user&#34;
+  password = &lt;TEST_PASSWORD&gt;
+}
+
+resource &#34;grafana_service_account&#34; &#34;admin_sa&#34; {
+  name = &#34;terraform_admin_sa&#34;
+}
+
+# Assign Viewer role to a team
+resource &#34;grafana_role_assignment&#34; &#34;viewer_role_assignment&#34; {
+  role_uid = &#34;basic_viewer&#34;
+  teams    = [grafana_team.viewer_team.id]
+}
+
+# Assign Editor role to a user
+resource &#34;grafana_role_assignment&#34; &#34;editor_role_assignment&#34; {
+  role_uid = &#34;basic_editor&#34;
+  users    = [grafana_user.editor_user.id]
+}
+
+# Assign Admin role to a service account
+resource &#34;grafana_role_assignment&#34; &#34;admin_role_assignment&#34; {
+  role_uid = &#34;basic_admin&#34;
+  service_accounts = [grafana_service_account.admin_sa.id]
+}</pre>
+<h3 id="provision-basic-role-to-multiple-users">Provision basic role to multiple users</h3>
+<pre>resource &#34;grafana_user&#34; &#34;editor_user_2&#34; {
+  email    = &#34;terraform_editor_2@example.com&#34;
+  login    = &#34;terraform_editor_2_user&#34;
+  password = &lt;TEST_PASSWORD&gt;
+}
+resource &#34;grafana_user&#34; &#34;editor_user_3&#34; {
+  email    = &#34;terraform_editor_3@example.com&#34;
+  login    = &#34;terraform_editor_3_user&#34;
+  password = &lt;TEST_PASSWORD&gt;
+}
+
+# Assign Editor role to multiply users
+resource &#34;grafana_role_assignment&#34; &#34;editor_role_assignment&#34; {
+  role_uid = &#34;basic_editor&#34;
+  users    = [grafana_user.editor_user_2.id, grafana_user.editor_user_3.id]
+}</pre>
+<h2 id="provision-custom-roles">Provision custom roles</h2>
+<p>The following example shows how to provision a custom role with some permissions.</p>
+<ol>
+<li>Copy this code block into a .tf file on your local machine.</li>
+</ol>
+<pre>resource &#34;grafana_role&#34; &#34;my_new_role&#34; {
+  name  = &#34;my_new_role&#34;
+  description = &#34;My test role&#34;
+  version = 1
+  uid = &#34;newroleuid&#34;
+  global = true
+
+  permissions {
+    action = &#34;org.users:add&#34;
+    scope = &#34;users:*&#34;
+  }
+  permissions {
+    action = &#34;org.users:write&#34;
+    scope = &#34;users:*&#34;
+  }
+  permissions {
+    action = &#34;org.users:read&#34;
+    scope = &#34;users:*&#34;
+  }
+  permissions {
+	  action = &#34;teams:create&#34;
+  }
+  permissions {
+	  action = &#34;teams:read&#34;
+	  scope = &#34;teams:*&#34;
+  }
+  permissions {
+	  action = &#34;teams:write&#34;
+	  scope = &#34;teams:*&#34;
+  }
+}</pre>
+<ol start="2">
+<li>Run the command <code>terraform apply</code>.</li>
+<li>Go to Grafana&rsquo;s UI and check that the new role appears in the role picker:
+<img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/enterprise/tf_custom_role.png"
+  alt="Role Picker" width="2820"
+     height="1334"/></li>
+</ol>
+<h2 id="provision-role-assignments">Provision role assignments</h2>
+<p>The following example shows how to provision role assignments.
+In this example a team, user and service account are provisioned, and the custom role from the previous example is assigned to them.</p>
+<ol>
+<li>Extend the configuration file from the <a href="#provision-custom-roles">previous example</a> with the following:</li>
+</ol>
+<pre>resource &#34;grafana_team&#34; &#34;test_team&#34; {
+	name = &#34;terraform_test_team&#34;
+}
+
+resource &#34;grafana_user&#34; &#34;test_user&#34; {
+	email = &#34;terraform_user@test.com&#34;
+	login    = &#34;terraform_test_user&#34;
+	password = &lt;TEST_PASSWORD&gt;
+}
+
+resource &#34;grafana_service_account&#34; &#34;test_sa&#34; {
+  name = &#34;terraform_test_sa&#34;
+  role = &#34;Viewer&#34;
+}
+
+resource &#34;grafana_role_assignment&#34; &#34;my_new_role_assignment&#34; {
+  role_uid = grafana_role.my_new_role.uid
+  users = [grafana_user.test_user.id]
+  teams = [grafana_team.test_team.id]
+  service_accounts = [grafana_service_account.test_sa.id]
+}</pre>
+<ol>
+<li>
+<p>Substitute <code>&lt;TEST_PASSWORD&gt;</code> with a test password for your test user.</p>
+</li>
+<li>
+<p>Run the command <code>terraform apply</code>.</p>
+</li>
+<li>
+<p>Go to Grafana&rsquo;s UI and check that a user, team and service account have been created, and that the role has been assigned to them:
+<img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/enterprise/tf_user_role_assignment.png"
+  alt="User Role Assignment" width="2816"
+     height="1360"/>
+<img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/enterprise/tf_team_role_assignment.png"
+  alt="Team Role Assignment" width="2804"
+     height="1290"/>
+<img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/enterprise/tf_service_account_role_assignment.png"
+  alt="Service Account Role Assignment" width="2798"
+     height="1418"/></p>
+</li>
+</ol>
+<p>Note that instead of using a provisioned role, you can also look up the <code>uid</code> of an already existing fixed or custom role and use that instead.
+You can use the 
+    <a href="/docs/grafana/latest/developers/http_api/access_control/#create-and-manage-custom-roles">API endpoint for listing roles</a> to look up role <code>uid</code>s.
+Similarly, you can look up and use <code>id</code>s of users, teams and service accounts that have not been provisioned to assign roles to them.</p>
+<h2 id="useful-links">Useful Links</h2>
+<p>
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-grafana-provisioning/">RBAC setup with Grafana provisioning</a></p>
+<p><a href="/docs/grafana-cloud/developer-resources/infrastructure-as-code/terraform/">Grafana Cloud Terraform provisioning</a></p>

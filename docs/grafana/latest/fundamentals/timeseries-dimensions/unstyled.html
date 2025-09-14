@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<h1 id="time-series-dimensions">Time series dimensions</h1>
+<p>In 
+    <a href="/docs/grafana/latest/fundamentals/timeseries/#time-series-databases">Introduction to time series</a>, the concept of <em>labels</em>, also called <em>tags</em>, is introduced:</p>
+<blockquote>
+<p>Another feature of a TSDB is the ability to filter measurements using <em>tags</em>. Each data point is labeled with a tag that adds context information, such as where the measurement was taken.</p></blockquote>
+<p>With time series data, the data often contain more than a single series, and is a set of multiple time series. Many Grafana data sources support this type of data.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 850px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/example_graph_multi_dim.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/example_graph_multi_dim.png"data-srcset="/static/img/docs/example_graph_multi_dim.png?w=320 320w, /static/img/docs/example_graph_multi_dim.png?w=550 550w, /static/img/docs/example_graph_multi_dim.png?w=750 750w, /static/img/docs/example_graph_multi_dim.png?w=900 900w, /static/img/docs/example_graph_multi_dim.png?w=1040 1040w, /static/img/docs/example_graph_multi_dim.png?w=1240 1240w, /static/img/docs/example_graph_multi_dim.png?w=1920 1920w"
+          data-sizes="auto"alt="Temperature by location"width="826"height="371"/>
+        <noscript>
+          <img
+            src="/static/img/docs/example_graph_multi_dim.png"
+            alt="Temperature by location"width="826"height="371"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>The common case is issuing a single query for a measurement with one or more additional properties as dimensions. For example, querying a temperature measurement along with a location property. In this case, multiple series are returned back from that single query and each series has unique location as a dimension.</p>
+<p>To identify unique series within a set of time series, Grafana stores dimensions in <em>labels</em>.</p>
+<h2 id="labels">Labels</h2>
+<p>Each time series in Grafana optionally has labels. Labels are a set of key/value pairs for identifying dimensions. Example labels could be <code>{location=us}</code> or <code>{country=us,state=ma,city=boston}</code>. Within a set of time series, the combination of its name and labels identifies each series. For example, <code>temperature {country=us,state=ma,city=boston}</code> could identify the series of temperature values for the city of Boston in the US.</p>
+<p>Different sources of time series data have dimensions stored natively, or common storage patterns that allow the data to be extracted into dimensions.</p>
+<p>Time series databases (TSDBs) usually natively support dimensionality. Prometheus also stores dimensions in <em>labels</em>. In TSDBs such as Graphite or OpenTSDB the term <em>tags</em> is used instead.</p>
+<p>In table databases such SQL, these dimensions are generally the <code>GROUP BY</code> parameters of a query.</p>
+<h2 id="multiple-dimensions-in-table-format">Multiple dimensions in table format</h2>
+<p>In SQL or SQL-like databases that return table responses, additional dimensions are usually represented as columns in the query response table.</p>
+<h3 id="single-dimension">Single dimension</h3>
+<p>For example, consider a query like:</p>
+<pre>SELECT BUCKET(StartTime, 1h), AVG(Temperature) AS Temp, Location FROM T
+  GROUP BY BUCKET(StartTime, 1h), Location
+  ORDER BY time asc</pre>
+<p>This query would return a table with three columns with data types time, number, and string respectively:</p>
+<table>
+  <thead>
+      <tr>
+          <th>StartTime</th>
+          <th>Temp</th>
+          <th>Location</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>09:00</td>
+          <td>24</td>
+          <td>LGA</td>
+      </tr>
+      <tr>
+          <td>09:00</td>
+          <td>20</td>
+          <td>BOS</td>
+      </tr>
+      <tr>
+          <td>10:00</td>
+          <td>26</td>
+          <td>LGA</td>
+      </tr>
+      <tr>
+          <td>10:00</td>
+          <td>22</td>
+          <td>BOS</td>
+      </tr>
+  </tbody>
+</table>
+<p>The table format is a <em>long</em> formatted time series, also called <em>tall</em>. It has repeated time stamps, and repeated values in Location. In this case, we have two time series in the set that would be identified as <code>Temp {Location=LGA}</code> and <code>Temp {Location=BOS}</code>.</p>
+<p>Individual time series from the set are extracted by using the time typed column <code>StartTime</code> as the time index of the time series, the numeric typed column <code>Temp</code> as the series name, and the name and values of the string typed <code>Location</code> column to build the labels, such as Location=LGA.</p>
+<h3 id="multiple-dimensions">Multiple dimensions</h3>
+<p>If the query is updated to select and group by more than just one string column, for example, <code>GROUP BY BUCKET(StartTime, 1h), Location, Sensor</code>, then an additional dimension is added:</p>
+<table>
+  <thead>
+      <tr>
+          <th>StartTime</th>
+          <th>Temp</th>
+          <th>Location</th>
+          <th>Sensor</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>09:00</td>
+          <td>24</td>
+          <td>LGA</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>09:00</td>
+          <td>24.1</td>
+          <td>LGA</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>09:00</td>
+          <td>20</td>
+          <td>BOS</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>09:00</td>
+          <td>20.2</td>
+          <td>BOS</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>10:00</td>
+          <td>26</td>
+          <td>LGA</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>10:00</td>
+          <td>26.1</td>
+          <td>LGA</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>10:00</td>
+          <td>22</td>
+          <td>BOS</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>10:00</td>
+          <td>22.2</td>
+          <td>BOS</td>
+          <td>B</td>
+      </tr>
+  </tbody>
+</table>
+<p>In this case the labels that represent the dimensions will have two keys based on the two string typed columns <code>Location</code> and <code>Sensor</code>. This data results four series: <code>Temp {Location=LGA,Sensor=A}</code>, <code>Temp {Location=LGA,Sensor=B}</code>, <code>Temp {Location=BOS,Sensor=A}</code>, and <code>Temp {Location=BOS,Sensor=B}</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>More than one dimension is currently only supported in the Logs queries within the Azure Monitor service as of version 7.1.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Multiple dimensions are not supported in a way that maps to multiple alerts in Grafana, but rather they are treated as multiple conditions to a single alert.
+For more information, see the documentation on 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/#single-and-multi-dimensional-rule">creating alerts with multiple series</a>.</p></blockquote></div>
+
+<h3 id="multiple-values">Multiple values</h3>
+<p>In the case of SQL-like data sources, more than one numeric column can be selected, with or without additional string columns to be used as dimensions. For example, <code>AVG(Temperature) AS AvgTemp, MAX(Temperature) AS MaxTemp</code>. This, if combined with multiple dimensions, can result in a lot of series. Selecting multiple values is currently only designed to be used with visualization.</p>
+<p>Additional technical information on tabular time series formats and how dimensions are extracted can be found in <a href="/developers/plugin-tools/key-concepts/data-frames#data-frames-as-time-series">the developer documentation on data frames as time series</a>.</p>

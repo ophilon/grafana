@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<h1 id="correlations-api">Correlations API</h1>
+<p>This API can be used to define correlations between data sources.</p>
+<h2 id="create-correlations">Create correlations</h2>
+<p><code>POST /api/datasources/uid/:sourceUID/correlations</code></p>
+<p>Creates a correlation between two data sources - the source data source identified by <code>sourceUID</code> in the path, and the target data source which is specified in the body.</p>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/datasources/uid/uyBf2637k/correlations HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+{
+	&#34;targetUID&#34;: &#34;PDDA8E780A17E7EF1&#34;,
+	&#34;label&#34;: &#34;My Label&#34;,
+	&#34;description&#34;: &#34;Logs to Traces&#34;,
+  &#34;type&#34;: &#34;query&#34;,
+  &#34;config&#34;: {
+    &#34;field&#34;: &#34;message&#34;,
+    &#34;target&#34;: {},
+  }
+}</pre>
+<p>JSON body schema:</p>
+<ul>
+<li><strong>targetUID</strong> – Target data source uid.</li>
+<li><strong>label</strong> – A label for the correlation.</li>
+<li><strong>description</strong> – A description for the correlation.</li>
+</ul>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;message&#34;: &#34;Correlation created&#34;,
+  &#34;result&#34;: {
+    &#34;description&#34;: &#34;Logs to Traces&#34;,
+    &#34;label&#34;: &#34;My Label&#34;,
+    &#34;sourceUID&#34;: &#34;uyBf2637k&#34;,
+    &#34;targetUID&#34;: &#34;PDDA8E780A17E7EF1&#34;,
+    &#34;uid&#34;: &#34;50xhMlg9k&#34;,
+    &#34;type&#34;: &#34;query&#34;,
+    &#34;config&#34;: {
+      &#34;field&#34;: &#34;message&#34;,
+      &#34;target&#34;: {},
+    }
+  }
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> - Errors (invalid JSON, missing or invalid fields)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Forbidden, source data source is read-only</li>
+<li><strong>404</strong> – Not found, either source or target data source could not be found</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="delete-correlations">Delete correlations</h2>
+<p><code>DELETE /api/datasources/uid/:sourceUID/correlations/:correlationUID</code></p>
+<p>Deletes a correlation.</p>
+<p><strong>Example request:</strong></p>
+<pre>DELETE /api/datasources/uid/uyBf2637k/correlations/J6gn7d31L HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;message&#34;: &#34;Correlation deleted&#34;
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Forbidden, data source is read-only</li>
+<li><strong>404</strong> – Correlation not found</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="update-correlations">Update correlations</h2>
+<p><code>PATCH /api/datasources/uid/:sourceUID/correlations/:correlationUID</code></p>
+<p>Updates a correlation.</p>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/datasources/uid/uyBf2637k/correlations/J6gn7d31L HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+{
+	&#34;label&#34;: &#34;My Label&#34;,
+	&#34;description&#34;: &#34;Logs to Traces&#34;,
+}</pre>
+<p>JSON body schema:</p>
+<ul>
+<li><strong>label</strong> – A label for the correlation.</li>
+<li><strong>description</strong> – A description for the correlation.</li>
+</ul>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;message&#34;: &#34;Correlation updated&#34;,
+  &#34;result&#34;: {
+    &#34;description&#34;: &#34;Logs to Traces&#34;,
+    &#34;label&#34;: &#34;My Label&#34;,
+    &#34;sourceUID&#34;: &#34;uyBf2637k&#34;,
+    &#34;targetUID&#34;: &#34;PDDA8E780A17E7EF1&#34;,
+    &#34;uid&#34;: &#34;J6gn7d31L&#34;,
+    &#34;type&#34;: &#34;query&#34;,
+    &#34;config&#34;: {
+			&#34;field&#34;: &#34;message&#34;,
+			&#34;target&#34;: {}
+		}
+  }
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Bad request</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>403</strong> – Forbidden, source data source is read-only</li>
+<li><strong>404</strong> – Not found, either source or target data source could not be found</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="get-single-correlation">Get single correlation</h2>
+<p><code>GET /api/datasources/uid/:sourceUID/correlations/:correlationUID</code></p>
+<p>Gets a single correlation.</p>
+<p><strong>Example request:</strong></p>
+<pre>GET /api/datasources/uid/uyBf2637k/correlations/J6gn7d31L HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;description&#34;: &#34;Logs to Traces&#34;,
+  &#34;label&#34;: &#34;My Label&#34;,
+  &#34;sourceUID&#34;: &#34;uyBf2637k&#34;,
+  &#34;targetUID&#34;: &#34;PDDA8E780A17E7EF1&#34;,
+  &#34;uid&#34;: &#34;J6gn7d31L&#34;,
+  &#34;provisioned&#34;: false,
+  &#34;type&#34;: &#34;query&#34;,
+  &#34;config&#34;: {
+    &#34;field&#34;: &#34;message&#34;,
+    &#34;target&#34;: {},
+  }
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>404</strong> – Not found, either source data source or correlation were not found</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="get-all-correlations-originating-from-a-given-data-source">Get all correlations originating from a given data source</h2>
+<p><code>GET /api/datasources/uid/:sourceUID/correlations</code></p>
+<p>Get all correlations originating from the data source identified by the given <code>sourceUID</code> in the path.</p>
+<p><strong>Example request:</strong></p>
+<pre>GET /api/datasources/uid/uyBf2637k/correlations HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+[
+  {
+    &#34;description&#34;: &#34;Logs to Traces&#34;,
+    &#34;label&#34;: &#34;My Label&#34;,
+    &#34;sourceUID&#34;: &#34;uyBf2637k&#34;,
+    &#34;targetUID&#34;: &#34;PDDA8E780A17E7EF1&#34;,
+    &#34;uid&#34;: &#34;J6gn7d31L&#34;,
+    &#34;provisioned&#34;: false,
+    &#34;type&#34;: &#34;query&#34;,
+    &#34;config&#34;: {
+      &#34;field&#34;: &#34;message&#34;,
+      &#34;target&#34;: {},
+    }
+  },
+  {
+    &#34;description&#34;: &#34;Logs to Metrics&#34;,
+    &#34;label&#34;: &#34;Another Label&#34;,
+    &#34;sourceUID&#34;: &#34;uyBf2637k&#34;,
+    &#34;targetUID&#34;: &#34;P15396BDD62B2BE29&#34;,
+    &#34;uid&#34;: &#34;uWCpURgVk&#34;,
+    &#34;provisioned&#34;: false,
+    &#34;type&#34;: &#34;query&#34;,
+    &#34;config&#34;: {
+      &#34;field&#34;: &#34;message&#34;,
+      &#34;target&#34;: {},
+    }
+  }
+]</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>404</strong> – Not found, either source data source is not found or no correlation exists originating from the given data source</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="get-all-correlations">Get all correlations</h2>
+<p><code>GET /api/datasources/correlations</code></p>
+<p>Get all correlations.</p>
+<p>Query parameters:</p>
+<ul>
+<li><strong>page</strong> - Optional. Specify which page number to return. Use the limit parameter to specify the number of correlations per page. The default is page 1.</li>
+<li><strong>limit</strong> - Optional. Limits the number of returned correlations per page. The default is 100 correlations per page. The maximum limit is 1000 correlations in a page.</li>
+<li><strong>sourceUID</strong> - Optional. Specify a source datasource UID to filter by. This can be repeated to filter by multiple datasources.</li>
+</ul>
+<p><strong>Example request:</strong></p>
+<pre>GET /api/datasources/correlations HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+[
+  {
+    &#34;description&#34;: &#34;Prometheus to Loki&#34;,
+    &#34;label&#34;: &#34;My Label&#34;,
+    &#34;sourceUID&#34;: &#34;uyBf2637k&#34;,
+    &#34;targetUID&#34;: &#34;PDDA8E780A17E7EF1&#34;,
+    &#34;uid&#34;: &#34;J6gn7d31L&#34;,
+    &#34;provisioned&#34;: false,
+    &#34;type&#34;: &#34;query&#34;,
+    &#34;config&#34;: {
+      &#34;field&#34;: &#34;message&#34;,
+      &#34;target&#34;: {},
+    }
+  },
+  {
+    &#34;description&#34;: &#34;Loki to Tempo&#34;,
+    &#34;label&#34;: &#34;Another Label&#34;,
+    &#34;sourceUID&#34;: &#34;PDDA8E780A17E7EF1&#34;,
+    &#34;targetUID&#34;: &#34;P15396BDD62B2BE29&#34;,
+    &#34;uid&#34;: &#34;uWCpURgVk&#34;,
+    &#34;provisioned&#34;: false,
+    &#34;type&#34;: &#34;query&#34;,
+    &#34;config&#34;: {
+      &#34;field&#34;: &#34;message&#34;,
+      &#34;target&#34;: {},
+    }
+  }
+]</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>404</strong> – Not found, no correlation is found</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>

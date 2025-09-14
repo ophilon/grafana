@@ -1,0 +1,39 @@
+<svg width="350" height="200" viewBox="0 0 350 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect opacity="0.3" width="350" height="200" rx="40" fill="#FB5A67"/>
+<rect x="107" y="31.7865" width="137" height="138" fill="#FB5A67"/>
+<rect x="129" y="53.7866" width="93" height="94" fill="#F6C6CB"/>
+<rect x="157.395" y="114.848" width="152.519" height="22.2838" transform="rotate(-45 157.395 114.848)" fill="white"/>
+<rect x="147.975" y="74.0745" width="57.6626" height="22.2838" transform="rotate(45 147.975 74.0745)" fill="white"/>
+<g opacity="0.5">
+<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="350" height="200">
+<rect width="350" height="200" rx="40" fill="#FB5A67"/>
+</mask>
+<g mask="url(#mask0)">
+<g opacity="0.5">
+<path d="M13.8262 146.483H7.01562V202.102H13.8262V146.483Z" fill="#FB5A67"/>
+<path d="M29 104H22V202H29V104Z" fill="#FB5A67"/>
+<path d="M44 129H37V202H44V129Z" fill="#FB5A67"/>
+<path d="M59 108H52V202H59V108Z" fill="#FB5A67"/>
+<path d="M73 94H67V202H73V94Z" fill="#FB5A67"/>
+<path d="M89 134H82V202H89V134Z" fill="#FB5A67"/>
+<path d="M103 146H97V202H103V146Z" fill="#FB5A67"/>
+<path d="M119 188H112V202H119V188Z" fill="#FB5A67"/>
+<path d="M134 177H127V202H134V177Z" fill="#FB5A67"/>
+<path d="M148 183H142V202H148V183Z" fill="#FB5A67"/>
+<path d="M164 194H157V202H164V194Z" fill="#FB5A67"/>
+<path d="M178 177H172V202H178V177Z" fill="#FB5A67"/>
+<path d="M193 180H186V202H193V180Z" fill="#FB5A67"/>
+<path d="M208.492 187.917H201.682V202.106H208.492V187.917Z" fill="#FB5A67"/>
+<path d="M223 175H216V202H223V175Z" fill="#FB5A67"/>
+<path d="M238 178H231V202H238V178Z" fill="#FB5A67"/>
+<path d="M253 152H247V202H253V152Z" fill="#FB5A67"/>
+<path d="M268.088 131.163H261.277V201.539H268.088V131.163Z" fill="#FB5A67"/>
+<path d="M282.844 116.398H276.033V201.53H282.844V116.398Z" fill="#FB5A67"/>
+<path d="M298.166 99.9482H291.355V202.106H298.166V99.9482Z" fill="#FB5A67"/>
+<path d="M312.92 123.215H306.109V202.104H312.92V123.215Z" fill="#FB5A67"/>
+<path d="M328.246 154.43H321.436V201.537H328.246V154.43Z" fill="#FB5A67"/>
+<path d="M342.998 123.215H336.188V202.104H342.998V123.215Z" fill="#FB5A67"/>
+</g>
+</g>
+</g>
+</svg>

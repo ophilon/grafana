@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<h1 id="notification-policies">Notification policies</h1>
+<p>Notification policies provide you with a flexible way of designing how to handle notifications and minimize alert noise.</p>
+<p>Using label matchers, alert instances are <a href="#routing">routed to notification policies</a>. The notification policy can then 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/">group multiple alert instances into a single notification</a> and deliver it to the contact point.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/how-alerting-works.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/how-alerting-works.png"data-srcset="/media/docs/alerting/how-alerting-works.png?w=320 320w, /media/docs/alerting/how-alerting-works.png?w=550 550w, /media/docs/alerting/how-alerting-works.png?w=750 750w, /media/docs/alerting/how-alerting-works.png?w=900 900w, /media/docs/alerting/how-alerting-works.png?w=1040 1040w, /media/docs/alerting/how-alerting-works.png?w=1240 1240w, /media/docs/alerting/how-alerting-works.png?w=1920 1920w"
+          data-sizes="auto"alt="How Alerting works"width="1340"height="506"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/how-alerting-works.png"
+            alt="How Alerting works"width="1340"height="506"/>
+        </noscript></div></a></figure>
+<p>Notification policies are <em>not</em> a list, but rather are structured according to a <a href="https://en.wikipedia.org/wiki/Tree_structure" target="_blank" rel="noopener noreferrer">tree structure</a>:</p>
+<ul>
+<li>The root of the notification policy tree is the <strong>Default notification policy</strong>.</li>
+<li>Each policy can have child policies.</li>
+<li>Each policy can have sibling policies, sharing the same parent and hierarchical level.</li>
+</ul>
+<p>Each policy consists of a set of label matchers (0 or more) that specify which alerts they are or aren&rsquo;t interested in handling. A matching policy refers to a notification policy with label matchers that match the alert instance’s labels.</p>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>How label matching works</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <p>Use 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/">labels</a> and label matchers to link alert rules to 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">notification policies</a> and 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-silence/">silences</a>. This allows for a flexible way to manage your alert instances, specify which policy should handle them, and which alerts to silence.</p>
+<p>A label matchers consists of 3 distinct parts, the <strong>label</strong>, the <strong>value</strong> and the <strong>operator</strong>.</p>
+<ul>
+<li>
+<p>The <strong>Label</strong> field is the name of the label to match. It must exactly match the label name.</p>
+</li>
+<li>
+<p>The <strong>Value</strong> field matches against the corresponding value for the specified <strong>Label</strong> name. How it matches depends on the <strong>Operator</strong> value.</p>
+</li>
+<li>
+<p>The <strong>Operator</strong> field is the operator to match against the label value. The available operators are:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Operator</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>=</code></td>
+          <td>Select labels that are exactly equal to the value.</td>
+      </tr>
+      <tr>
+          <td><code>!=</code></td>
+          <td>Select labels that are not equal to the value.</td>
+      </tr>
+      <tr>
+          <td><code>=~</code></td>
+          <td>Select labels that regex-match the value.</td>
+      </tr>
+      <tr>
+          <td><code>!~</code></td>
+          <td>Select labels that do not regex-match the value.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ul>
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you are using multiple label matchers, they are combined using the AND logical operator. This means that all matchers must match in order to link a rule to a policy.</p></blockquote></div>
+<p><strong>Label matching example</strong></p>
+<p>If you define the following set of labels for your alert:</p>
+<p><code>{ foo=bar, baz=qux, id=12 }</code></p>
+<p>then:</p>
+<ul>
+<li>A label matcher defined as <code>foo=bar</code> matches this alert rule.</li>
+<li>A label matcher defined as <code>foo!=bar</code> does <em>not</em> match this alert rule.</li>
+<li>A label matcher defined as <code>id=~[0-9]+</code> matches this alert rule.</li>
+<li>A label matcher defined as <code>baz!~[0-9]+</code> matches this alert rule.</li>
+<li>Two label matchers defined as <code>foo=bar</code> and <code>id=~[0-9]+</code> match this alert rule.</li>
+</ul>
+<p><strong>Exclude labels</strong></p>
+<p>You can also write label matchers to exclude labels.</p>
+<p>Here is an example that shows how to exclude the label <code>Team</code>. You can choose between any of the values below to exclude labels.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Label</th>
+          <th>Operator</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>team</code></td>
+          <td><code>=</code></td>
+          <td><code>&quot;&quot;</code></td>
+      </tr>
+      <tr>
+          <td><code>team</code></td>
+          <td><code>!~</code></td>
+          <td><code>.+</code></td>
+      </tr>
+      <tr>
+          <td><code>team</code></td>
+          <td><code>=~</code></td>
+          <td><code>^$</code></td>
+      </tr>
+  </tbody>
+</table>
+
+    </div>
+  </div>
+</div>
+
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/notification-routing.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/notification-routing.png"data-srcset="/media/docs/alerting/notification-routing.png?w=320 320w, /media/docs/alerting/notification-routing.png?w=550 550w, /media/docs/alerting/notification-routing.png?w=750 750w, /media/docs/alerting/notification-routing.png?w=900 900w, /media/docs/alerting/notification-routing.png?w=1040 1040w, /media/docs/alerting/notification-routing.png?w=1240 1240w, /media/docs/alerting/notification-routing.png?w=1920 1920w"
+          data-sizes="auto"alt="Example of a notification policy tree"width="1598"height="968"title="Matching alert instances with notification policies"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/notification-routing.png"
+            alt="Example of a notification policy tree"width="1598"height="968"title="Matching alert instances with notification policies"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Matching alert instances with notification policies</figcaption></a></figure>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>For a practical example of routing with notification policies, refer to our <a href="/tutorials/alerting-get-started-pt2/">Getting Started with Alert Instances and Notification Routing tutorial</a>.</p></blockquote></div>
+
+<h2 id="routing">Routing</h2>
+<p>To determine which notification policies handle an alert instance, the system looks for matching policies starting from the top of the tree—beginning with the default notification policy.</p>
+<p>If a matching policy is found, the system continues to evaluate its child policies in the order they are displayed. If a child policy matches the alert, the system then evaluates its child policies recursively until no more matching child policies are found. In this case, only the deepest matching child policy handles the alert instance.</p>
+<p>By default, once a matching policy is found, the system does not continue to look for sibling policies. If you want sibling policies of one matching policy to handle the alert instance as well, then enable <strong>Continue matching siblings</strong> on the particular matching policy.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The default notification policy matches all alert instances. It always handles alert instances if there are no child policies or if none of the child policies match the alert instance&rsquo;s labels—this prevents any alerts from being missed.</p>
+<p>If alerts use multiple labels, these labels must also be present in a notification policy to match and route notifications to a specific contact point.</p></blockquote></div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Routing example</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <p>Here&rsquo;s a breakdown of the previous example:</p>
+<p><strong>Pod stuck in CrashLoop</strong> does not have a <code>severity</code> label, so none of its child policies are matched. It does have a <code>team=operations</code> label, so the first policy is matched.</p>
+<p>The <code>team=security</code> policy is not a match and <strong>Continue matching siblings</strong> was not configured for that policy.</p>
+<p><strong>Disk Usage – 80%</strong> has both a <code>team</code> and <code>severity</code> label, and matches a child policy of the operations team.</p>
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When an alert matches both a parent policy and a child policy (like it does in this case), the routing follows the child policy (<code>severity</code>) as it provides a more specific match.</p></blockquote></div>
+<p><strong>Unauthorized log entry</strong> has a <code>team</code> label but does not match the first policy (<code>team=operations</code>) since the values are not the same, so it will continue searching and match the <code>team=security</code> policy. It does not have any child policies, so the additional <code>severity=high</code> label is ignored.</p>
+
+    </div>
+  </div>
+</div>
+
+<p>This routing and tree structure makes it convenient to organize and handle alerts for dedicated teams, while also narrowing down specific cases within the team by applying additional labels.</p>
+<h2 id="inheritance">Inheritance</h2>
+<p>In addition to child policies being a useful concept for routing alert instances, they also inherit properties from their parent policy. This also applies to child policies of the default notification policy.</p>
+<p>By default, a child policy inherits the following notification properties from its parent:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/contact-points/">Contact point</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/">Grouping options</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/#timing-options">Timing options</a></li>
+</ul>
+<p>Then, each policy can overwrite these properties if needed.</p>
+<p>The inheritance of notification properties, together with the routing process, is an effective method for grouping related notifications and handling specific cases through child policies.</p>
+<p><strong>Inheritance example</strong></p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/notification-inheritance.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/notification-inheritance.png"data-srcset="/media/docs/alerting/notification-inheritance.png?w=320 320w, /media/docs/alerting/notification-inheritance.png?w=550 550w, /media/docs/alerting/notification-inheritance.png?w=750 750w, /media/docs/alerting/notification-inheritance.png?w=900 900w, /media/docs/alerting/notification-inheritance.png?w=1040 1040w, /media/docs/alerting/notification-inheritance.png?w=1240 1240w, /media/docs/alerting/notification-inheritance.png?w=1920 1920w"
+          data-sizes="auto"alt="Simple example inhering notification settings"width="1518"height="828"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/notification-inheritance.png"
+            alt="Simple example inhering notification settings"width="1518"height="828"/>
+        </noscript></div></a></figure>
+<p>This example shows how the notification policy tree from the previous example allows the child policies of the <code>team=operations</code> to inherit its contact point. In this way, you can avoid specifying the same contact point multiple times for each child policy.</p>

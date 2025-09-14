@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<h1 id="how-rules-are-evaluated-within-a-group">How rules are evaluated within a group</h1>
+<p>Each evaluation group contains an <strong>evaluation interval</strong> that determines how frequently the rule is evaluated. For instance, the evaluation may occur every <code>10s</code>, <code>30s</code>, <code>1m</code>, <code>10m</code>, etc.</p>
+<p>Rules in different evaluation groups can be evaluated simultaneously.</p>
+<p>Rules within the same evaluation group can be evaluated simultaneously or sequentially, depending on the rule type:</p>
+<ul>
+<li>
+<p><strong>Grafana-managed</strong> rules within the same group are evaluated concurrently—they are evaluated at different times over the same evaluation interval but display the same evaluation timestamp.</p>
+</li>
+<li>
+<p><strong>Data source-managed</strong> rules within the same group are evaluated sequentially, one after the other—this is useful to ensure that recording rules are evaluated before alert rules.</p>
+</li>
+<li>
+<p><strong>Grafana-managed rules 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/alerting-migration/">imported from data source-managed rules</a></strong> are also evaluated sequentially.</p>
+</li>
+</ul>

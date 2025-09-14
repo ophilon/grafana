@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<h1 id="testdata-data-source">TestData data source</h1>
+<p>Grafana ships with a TestData data source, which creates simulated time series data for any 
+    <a href="/docs/grafana/latest/panels-visualizations/">panel</a>.
+You can use it to build your own fake and random time series data and render it in any panel, which helps you verify dashboard functionality since you can safely and easily share the data.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.
+Only users with the organization administrator role can add data sources.</p>
+<h2 id="configure-the-data-source">Configure the data source</h2>
+<p>To configure basic settings for the data source, complete the following steps:</p>
+<ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>TestData</code> in the search bar.</p>
+</li>
+<li>
+<p>Select <strong>TestData</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed. The data source doesn&rsquo;t provide any settings beyond the most basic options common to all data sources:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Name</strong></td>
+          <td>Sets the name you use to refer to the data source in panels and queries.</td>
+      </tr>
+      <tr>
+          <td><strong>Default</strong></td>
+          <td>Defines whether this data source is pre-selected for new panels.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ol>
+<h2 id="create-mock-data">Create mock data</h2>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1208px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png"data-srcset="/media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png?w=320 320w, /media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png?w=550 550w, /media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png?w=750 750w, /media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png?w=900 900w, /media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png?w=1040 1040w, /media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png?w=1240 1240w, /media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Adding test data"width="1208"height="388"title="Adding test data"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/screenshot-testdata-add-10.0.png"
+            alt="Adding test data"width="1208"height="388"title="Adding test data"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Adding test data</figcaption></a></figure>
+<p>Once you&rsquo;ve added the TestData data source, your Grafana instance&rsquo;s users can use it as a data source in any metric panel.</p>
+<h3 id="choose-a-scenario">Choose a scenario</h3>
+<p>Instead of providing a query editor, the TestData data source helps you select a <strong>Scenario</strong> that generates simulated data for panels.</p>
+<p>You can assign an <strong>Alias</strong> to each scenario, and many have their own options that appear when selected.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1196px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png"data-srcset="/media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png?w=320 320w, /media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png?w=550 550w, /media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png?w=750 750w, /media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png?w=900 900w, /media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png?w=1040 1040w, /media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png?w=1240 1240w, /media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Using CSV Metric Values"width="1196"height="628"title="Using CSV Metric Values"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/screenshot-testdata-csv-example-10.0.png"
+            alt="Using CSV Metric Values"width="1196"height="628"title="Using CSV Metric Values"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Using CSV Metric Values</figcaption></a></figure>
+<p><strong>Available scenarios:</strong></p>
+<ul>
+<li><strong>Annotations</strong></li>
+<li><strong>Conditional Error</strong></li>
+<li><strong>CSV Content</strong></li>
+<li><strong>CSV File</strong></li>
+<li><strong>CSV Metric Values</strong></li>
+<li><strong>Datapoints Outside Range</strong></li>
+<li><strong>Exponential heatmap bucket data</strong></li>
+<li><strong>Flame Graph</strong></li>
+<li><strong>Grafana API</strong></li>
+<li><strong>Grafana Live</strong></li>
+<li><strong>Linear heatmap bucket data</strong></li>
+<li><strong>Load Apache Arrow Data</strong></li>
+<li><strong>Logs</strong></li>
+<li><strong>No Data Points</strong></li>
+<li><strong>Node Graph</strong></li>
+<li><strong>Predictable CSV Wave</strong></li>
+<li><strong>Predictable Pulse</strong></li>
+<li><strong>Random Walk</strong></li>
+<li><strong>Random Walk (with error)</strong></li>
+<li><strong>Random Walk Table</strong></li>
+<li><strong>Raw Frames</strong></li>
+<li><strong>Simulation</strong></li>
+<li><strong>Slow Query</strong></li>
+<li><strong>Streaming Client</strong></li>
+<li><strong>Table Static</strong></li>
+<li><strong>Trace</strong></li>
+<li><strong>USA generated data</strong></li>
+</ul>
+<h2 id="import-a-pre-configured-dashboard">Import a pre-configured dashboard</h2>
+<p>TestData also provides an example dashboard.</p>
+<p><strong>To import the example dashboard:</strong></p>
+<ol>
+<li>Navigate to the data source&rsquo;s <a href="#configure-the-data-source">configuration page</a>.</li>
+<li>Select the <strong>Dashboards</strong> tab.</li>
+<li>Select <strong>Import</strong> for the <strong>Simple Streaming Example</strong> dashboard.</li>
+</ol>
+<p><strong>To customize an imported dashboard:</strong></p>
+<p>To customize the imported dashboard, we recommend that you save it under a different name.
+If you don&rsquo;t, upgrading Grafana can overwrite the customized dashboard with the new version.</p>
+<h2 id="use-test-data-to-report-issues">Use test data to report issues</h2>
+<p>If you report an issue on GitHub involving the use or rendering of time series data, we strongly recommend that you use this data source to replicate the issue.
+That makes it much easier for the developers to replicate and solve your issue.</p>
+<h2 id="use-a-custom-version-of-testdata">Use a custom version of TestData</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature is experimental and requires Grafana version 10.3.0 or later.</p></blockquote></div>
+
+<p>If you want to use a version of TestData different from the one shipped with Grafana, follow these steps:</p>
+<ol>
+<li>
+<p>Set the configuration field <code>as_external</code> for the plugin to <code>true</code>. An example configuration would be:</p>
+<pre>[plugin.grafana-testdata-datasource]
+as_external = true</pre>
+</li>
+<li>
+<p>Restart Grafana.</p>
+</li>
+</ol>
+<p>These settings, if enabled, allow you to to install TestData as an external plugin and manage its lifecycle independently of Grafana.</p>
+<p>With the feature toggle disabled (default) TestData can still be installed as an external plugin, but it has no effect as the bundled, Core version of TestData is already installed and takes precedence.</p>

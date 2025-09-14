@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<h1 id="dashboard-versions">Dashboard Versions</h1>
+<h2 id="get-all-dashboard-versions-by-dashboard-uid">Get all dashboard versions by dashboard UID</h2>
+<p>Query parameters:</p>
+<ul>
+<li><strong>limit</strong> - Maximum number of results to return</li>
+<li><strong>start</strong> - Version to start from when returning queries</li>
+</ul>
+<p><code>GET /api/dashboards/uid/:uid/versions</code></p>
+<p>Gets all existing dashboard versions for the dashboard with the given <code>uid</code>.</p>
+<p><strong>Example request for getting all dashboard versions</strong>:</p>
+<pre>GET /api/dashboards/uid/QA7wKklGz/versions?limit=2?start=0 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 428
+
+{
+  &#34;continueToken&#34;: &#34;&#34;,
+  &#34;versions&#34;: [
+    {
+      &#34;id&#34;: 2,
+      &#34;dashboardId&#34;: 1,
+      &#34;uid&#34;: &#34;QA7wKklGz&#34;,
+      &#34;parentVersion&#34;: 1,
+      &#34;restoredFrom&#34;: 0,
+      &#34;version&#34;: 2,
+      &#34;created&#34;: &#34;2017-06-08T17:24:33-04:00&#34;,
+      &#34;createdBy&#34;: &#34;admin&#34;,
+      &#34;message&#34;: &#34;Updated panel title&#34;
+    },
+    {
+      &#34;id&#34;: 1,
+      &#34;dashboardId&#34;: 1,
+      &#34;uid&#34;: &#34;QA7wKklGz&#34;,
+      &#34;parentVersion&#34;: 0,
+      &#34;restoredFrom&#34;: 0,
+      &#34;version&#34;: 1,
+      &#34;created&#34;: &#34;2017-06-08T17:23:33-04:00&#34;,
+      &#34;createdBy&#34;: &#34;admin&#34;,
+      &#34;message&#34;: &#34;Initial save&#34;
+    }
+  ]
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> - Ok</li>
+<li><strong>400</strong> - Errors</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>404</strong> - Dashboard version not found</li>
+</ul>
+<h2 id="get-dashboard-version-by-dashboard-uid">Get dashboard version by dashboard UID</h2>
+<p><code>GET /api/dashboards/uid/:uid/versions/:version</code></p>
+<p>Get the dashboard version with the given version, for the dashboard with the given UID.</p>
+<p><strong>Example request for getting a dashboard version</strong>:</p>
+<pre>GET /api/dashboards/uid/QA7wKklGz/versions/1 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 1300
+
+{
+  &#34;id&#34;: 1,
+  &#34;dashboardId&#34;: 1,
+  &#34;uid&#34;: &#34;QA7wKklGz&#34;,
+  &#34;parentVersion&#34;: 0,
+  &#34;restoredFrom&#34;: 0,
+  &#34;version&#34;: 1,
+  &#34;created&#34;: &#34;2017-04-26T17:18:38-04:00&#34;,
+  &#34;message&#34;: &#34;Initial save&#34;,
+  &#34;data&#34;: {
+    &#34;annotations&#34;: {
+      &#34;list&#34;: [
+
+      ]
+    },
+    &#34;editable&#34;: true,
+    &#34;gnetId&#34;: null,
+    &#34;graphTooltip&#34;: 0,
+    &#34;id&#34;: 1,
+    &#34;links&#34;: [
+
+    ],
+    &#34;rows&#34;: [
+      {
+        &#34;collapse&#34;: false,
+        &#34;height&#34;: &#34;250px&#34;,
+        &#34;panels&#34;: [
+
+        ],
+        &#34;repeat&#34;: null,
+        &#34;repeatIteration&#34;: null,
+        &#34;repeatRowId&#34;: null,
+        &#34;showTitle&#34;: false,
+        &#34;title&#34;: &#34;Dashboard Row&#34;,
+        &#34;titleSize&#34;: &#34;h6&#34;
+      }
+    ],
+    &#34;schemaVersion&#34;: 14,
+      &#34;tags&#34;: [
+
+    ],
+    &#34;templating&#34;: {
+      &#34;list&#34;: [
+
+      ]
+    },
+    &#34;time&#34;: {
+      &#34;from&#34;: &#34;now-6h&#34;,
+      &#34;to&#34;: &#34;now&#34;
+    },
+    &#34;timepicker&#34;: {},
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;title&#34;: &#34;test&#34;,
+    &#34;version&#34;: 1
+  },
+  &#34;createdBy&#34;: &#34;admin&#34;
+}</pre>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> - Ok</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>404</strong> - Dashboard version not found</li>
+</ul>
+<h2 id="restore-dashboard-by-dashboard-uid">Restore dashboard by dashboard UID</h2>
+<p><code>POST /api/dashboards/uid/:uid/restore</code></p>
+<p>Restores a dashboard to a given dashboard version using <code>uid</code>.</p>
+<p><strong>Example request for restoring a dashboard version</strong>:</p>
+<pre>POST /api/dashboards/uid/QA7wKklGz/restore
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;version&#34;: 1
+}</pre>
+<p>JSON body schema:</p>
+<ul>
+<li><strong>version</strong> - The dashboard version to restore to</li>
+</ul>
+<p><strong>Example response</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 67
+
+{
+  &#34;id&#34;: 70,
+  &#34;slug&#34;: &#34;my-dashboard&#34;,
+  &#34;status&#34;: &#34;success&#34;,
+  &#34;uid&#34;: &#34;QA7wKklGz&#34;,
+  &#34;url&#34;: &#34;/d/QA7wKklGz/my-dashboard&#34;,
+  &#34;version&#34;: 3
+}</pre>
+<p>JSON response body schema:</p>
+<ul>
+<li><strong>slug</strong> - the URL friendly slug of the dashboard&rsquo;s title</li>
+<li><strong>status</strong> - whether the restoration was successful or not</li>
+<li><strong>version</strong> - the new dashboard version, following the restoration</li>
+</ul>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> - OK</li>
+<li><strong>400</strong> - Bad request (specified version has the same content as the current dashboard)</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>404</strong> - Not found (dashboard not found or dashboard version not found)</li>
+<li><strong>500</strong> - Internal server error (indicates issue retrieving dashboard tags from database)</li>
+</ul>
+<p><strong>Example error response</strong></p>
+<pre>HTTP/1.1 404 Not Found
+Content-Type: application/json; charset=UTF-8
+Content-Length: 46
+
+{
+  &#34;message&#34;: &#34;Dashboard version not found&#34;
+}</pre>
+<p>JSON response body schema:</p>
+<ul>
+<li><strong>message</strong> - Message explaining the reason for the request failure.</li>
+</ul>
+<h2 id="compare-dashboard-versions">Compare dashboard versions</h2>
+<p><code>POST /api/dashboards/calculate-diff</code></p>
+<p>Compares two dashboard versions by calculating the JSON diff of them.</p>
+<p><strong>Example request</strong>:</p>
+<pre>POST /api/dashboards/calculate-diff HTTP/1.1
+Accept: text/html
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;base&#34;: {
+    &#34;dashboardId&#34;: 1,
+    &#34;version&#34;: 1
+  },
+  &#34;new&#34;: {
+    &#34;dashboardId&#34;: 1,
+    &#34;version&#34;: 2
+  },
+  &#34;diffType&#34;: &#34;json&#34;
+}</pre>
+<p>JSON body schema:</p>
+<ul>
+<li><strong>base</strong> - an object representing the base dashboard version</li>
+<li><strong>new</strong> - an object representing the new dashboard version</li>
+<li><strong>diffType</strong> - the type of diff to return. Can be &ldquo;json&rdquo; or &ldquo;basic&rdquo;.</li>
+</ul>
+<p><strong>Example response (JSON diff)</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+
+&lt;p id=&#34;l1&#34; class=&#34;diff-line diff-json-same&#34;&gt;
+  &lt;!-- Diff omitted --&gt;
+&lt;/p&gt;</pre>
+<p>The response is a textual representation of the diff, with the dashboard values being in JSON, similar to the diffs seen on sites like GitHub or GitLab.</p>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> - Ok</li>
+<li><strong>400</strong> - Bad request (invalid JSON sent)</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>404</strong> - Not found</li>
+</ul>
+<p><strong>Example response (basic diff)</strong>:</p>
+<pre>HTTP/1.1 200 OK
+Content-Type: text/html; charset=UTF-8
+
+&lt;div class=&#34;diff-group&#34;&gt;
+  &lt;!-- Diff omitted --&gt;
+&lt;/div&gt;</pre>
+<p>The response here is a summary of the changes, derived from the diff between the two JSON objects.</p>
+<p>Status Codes:</p>
+<ul>
+<li><strong>200</strong> - OK</li>
+<li><strong>400</strong> - Bad request (invalid JSON sent)</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>404</strong> - Not found</li>
+</ul>

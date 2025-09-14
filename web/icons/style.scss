@@ -1,0 +1,210 @@
+@import "variables";
+
+@font-face {
+  font-family: '#{$icomoon-font-family}';
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?e6sm6e');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?e6sm6e#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?e6sm6e') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?e6sm6e') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?e6sm6e##{$icomoon-font-family}') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: '#{$icomoon-font-family}' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-university {
+  &:before {
+    content: $icon-university;     
+    color: #fb755a;
+  }
+}
+.icon-book {
+  &:before {
+    content: $icon-book;     
+    color: #fb9d5a;
+  }
+}
+.icon-quote {
+  &:before {
+    content: $icon-quote;     
+    color: #fb9d5a;
+  }
+}
+.icon-browser {
+  &:before {
+    content: $icon-browser;     
+    color: #fb9d5a;
+  }
+}
+.icon-power {
+  &:before {
+    content: $icon-power;     
+    color: #fb9d5a;
+  }
+}
+.icon-article {
+  &:before {
+    content: $icon-article;     
+    color: #fb9d5a;
+  }
+}
+.icon-calendar {
+  &:before {
+    content: $icon-calendar;     
+    color: #fb9d5a;
+  }
+}
+.icon-dashboard {
+  &:before {
+    content: $icon-dashboard;     
+    color: #fb9d5a;
+  }
+}
+.icon-post {
+  &:before {
+    content: $icon-post;     
+    color: #fb9d5a;
+  }
+}
+.icon-grafana-swirl {
+  &:before {
+    content: $icon-grafana-swirl;     
+    color: #fb755a;
+  }
+}
+.icon-external {
+  &:before {
+    content: $icon-external;     
+    color: #4279cd;
+  }
+}
+.icon-webinars-videos {
+  &:before {
+    content: $icon-webinars-videos;     
+    color: #7b8087;
+  }
+}
+.icon-add-item {
+  &:before {
+    content: $icon-add-item;     
+    color: #e14a63;
+  }
+}
+.icon-bar-chart {
+  &:before {
+    content: $icon-bar-chart;     
+    color: #a352cc;
+  }
+}
+.icon-paragraph {
+  &:before {
+    content: $icon-paragraph;     
+    color: #ff780a;
+  }
+}
+.icon-books {
+  &:before {
+    content: $icon-books;     
+    color: #e14a63;
+  }
+}
+.icon-code-brackets {
+  &:before {
+    content: $icon-code-brackets;     
+    color: #36b263;
+  }
+}
+.icon-community {
+  &:before {
+    content: $icon-community;     
+    color: #a352cc;
+  }
+}
+.icon-cortex-lite {
+  &:before {
+    content: $icon-cortex-lite;     
+    color: #ee7800;
+  }
+}
+.icon-git-branch {
+  &:before {
+    content: $icon-git-branch;     
+    color: #4279cd;
+  }
+}
+.icon-grafana-lite {
+  &:before {
+    content: $icon-grafana-lite;     
+    color: #ee7800;
+  }
+}
+.icon-graphite-lite {
+  &:before {
+    content: $icon-graphite-lite;     
+    color: #ee7800;
+  }
+}
+.icon-list {
+  &:before {
+    content: $icon-list;     
+    color: #ff780a;
+  }
+}
+.icon-loki {
+  &:before {
+    content: $icon-loki;     
+    color: #ee7800;
+  }
+}
+.icon-metrictank {
+  &:before {
+    content: $icon-metrictank;     
+    color: #ee7800;
+  }
+}
+.icon-presentation {
+  &:before {
+    content: $icon-presentation;     
+    color: #efba00;
+  }
+}
+.icon-prometheus-lite {
+  &:before {
+    content: $icon-prometheus-lite;     
+    color: #ee7800;
+  }
+}
+.icon-speakerbox-check {
+  &:before {
+    content: $icon-speakerbox-check;     
+    color: #4279cd;
+  }
+}
+.icon-tanka-lite {
+  &:before {
+    content: $icon-tanka-lite;     
+    color: #ee7800;
+  }
+}
+.icon-arrow {
+  &:before {
+    content: $icon-arrow;     
+    color: #1a53b7;
+  }
+}
+

@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+      <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="shortcut icon" href="/static/assets/img/fav32.png" type="image/x-icon">
+<meta name="application-name" content="Grafana Labs" />
+<meta name="Copyright" content="Grafana Labs" />
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@grafana">
+<meta name="twitter:url" content="https://twitter.com/grafana" />
+<meta name='zd-site-verification' content='khfhpajsuhgh7m48qdm8f9' />
+    
+
+    
+
+    
+      <meta name="robots" content="noindex" />
+    
+
+
+    <meta property="og:site_name" content="Grafana Labs" />
+    <meta property="og:type" content="website" />
+
+    
+    
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+  
+
+
+<title>
+  
+   |  Grafana Labs
+
+
+
+</title>
+
+<meta name="twitter:title" content="
+   |  Grafana Labs
+
+
+" /> 
+<meta property="og:title" content="
+   |  Grafana Labs
+
+
+" />
+
+
+
+    
+    
+      
+      
+        
+      
+
+      
+
+    
+
+    
+    
+
+
+
+
+  
+  
+  
+  
+
+
+<meta name="twitter:image" content="/meta-generator/.jpg" />
+<meta property="og:image" content="/meta-generator/.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+    
+
+    
+
+    
+
+    
+    
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+      
+  <link rel="preload" href="/web/fonts.css" as="style">
+  <link rel="stylesheet" href="/web/fonts.css">
+  <link rel="preload" href="/web/fonts/font-awesome/css/font-awesome.min.css" as="style">
+  <link rel="stylesheet" href="/web/fonts/font-awesome/css/font-awesome.min.css">
+  <link href="/web/app.min.css" rel="stylesheet">
+  <link href="/web/shared.min.css" rel="stylesheet">
+
+
+    
+
+    
+    
+      
+    
+
+    
+    <script>window.Path = 'docs\/tempo\/_index.md';window.Country = `\u003c!--# echo var=\u0022http_x_client_region\u0022 default=\u0022unknown\u0022 --\u003e`
+    </script>
+
+    
+    
+
+  </head>
+
+  <body class="section-docs ">
+    <div x-data="app_banner()" x-init="init()" x-cloak>
+      <div x-ref="top-banner" id="top-banner"></div>
+    </div>
+    
+      
+        
+          <!--# include file="/header.html" -->
+        
+      
+    
+
+    
+    <div class="main section">
+      <div class="main-content">
+        
+<div class="grid-layout docs" x-data="app_mobile()" x-init="() => init()">
+
+  <section id="mobile" class="mobile">
+    <div class="mobile__wrapper">
+  <button class="mobile__nav" @click.prevent="toggle_menu('nav')">
+    <template x-if="nav_open">
+      <img src="/static/assets/img/icons/grafana-icon-mobile-nav-close-white.svg" alt="close nav" />
+    </template>
+    <template x-if="!nav_open">
+      <img src="/static/assets/img/icons/grafana-icon-mobile-nav-open-white.svg" alt="open nav" />
+    </template>
+  </button>
+  <div class="mobile__title" x-text="document.title.split(' | ')[0].trim()">
+    Menu
+  </div>
+  <button class="mobile__toc" @click.prevent="toggle_menu('toc')">
+    <template x-if="toc_open">
+      <img src="/static/assets/img/icons/grafana-icon-mobile-toc-close-white.svg" alt="close table of contents" />
+    </template>
+    <template x-if="!toc_open">
+      <img src="/static/assets/img/icons/grafana-icon-mobile-toc-open-white.svg" alt="open table of contents" />
+    </template>
+  </button>
+</div>
+  </section>
+
+  <nav id="nav" class="section-docs__sidebar--left hide-mobile">
+    
+      
+
+
+
+
+
+
+
+
+<div class="docs__leftnav--wrapper">
+  <div class="docs__leftnav docs__sidebar-left">
+    <div class="mb-1">
+      <div  x-data="search_bar({&#34;input_class&#34;:&#34;docs__leftnav--input&#34;,&#34;input_wrapper_class&#34;:&#34;docs__leftnav--search&#34;,&#34;key&#34;:&#34;doc&#34;,&#34;title&#34;:&#34;docs&#34;})" x-init="init()">
+  <div class="docs__leftnav--search">
+    <input :placeholder="`Search ${title}`" @keydown.prevent.enter="start_search()" x-model="term" type="text" class="docs__leftnav--input" autocomplete="off">
+    <span class="search_icon"><img src="/static/assets/img/icons/grafana-icon-docs-search.svg" width="18" height="18"></span>
+  </div>
+</div>
+    </div>
+
+    <div class="docs__menu m-0 body-xsmall pb-1">
+          <a href="/docs/" class="pb-half">Technical documentation</a>
+        
+          <a href="/grafana/plugins/" class="pb-half">Plugin catalog</a>
+        </div>
+
+    <div x-data="docs_menu('/docs/tempo/', '', '')" x-init="init()">
+      <div>
+        <div class="docs__leftnav--product">Choose a product</div>
+        <div class="mb-half">
+          
+        </div>
+      </div>
+
+      
+
+
+
+
+
+
+      
+        <ul class="docs__menu docs-menu__show-mobile" x-ref="menu-root" data-id="the-menu">
+  
+    <div class="docs__menu--group" x-ref="/docs/tempo/">
+      <li class="docs__menu--section">
+        <a class="docs__menu-a" href="/docs/tempo/"></a>
+      </li>
+    </div>
+
+    
+  
+
+  
+</ul>
+
+      
+
+
+    </div>
+  </div>
+  
+
+<div x-show="show" class="scroll scroll-dark" :class="fade ? 'scroll-fade' : ''" x-data="app_scroll('docs__leftnav')" x-init="init()" x-cloak>
+  <div class="scroll__text">Scroll for more</div>
+  <div class="scroll__icon">
+    
+      <div class="svg-wrap " >
+    <?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 152.6 89" style="enable-background:new 0 0 152.6 89;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+</style>
+<g id="Rounded_Rectangle_33_copy_4_1_">
+	<path class="st0" d="M76.3,61.8L19.5,4.7c-4.2-4.3-11.1-4.3-15.3,0c-4.2,4.3-4.2,11.2,0,15.4l63.9,64.2c2.3,2.3,5.3,3.3,8.2,3.1
+		c3,0.1,6-0.9,8.2-3.1l63.9-64.2c4.2-4.3,4.2-11.2,0-15.4c-4.2-4.3-11.1-4.3-15.3,0L76.3,61.8z"/>
+</g>
+</svg>
+
+
+    
+
+</div>
+    
+  </div>
+</div>
+</div>
+
+    
+  </nav>
+
+  <main id="main" class="section-docs__main docs__content">
+    
+
+
+
+
+
+
+
+<div
+  class="scrollspy-init"
+  
+    data-collection="docs-content"
+    data-filename="_index"
+  
+  
+    data-edit=""
+    data-mount="false"
+    data-repo_prefix=""
+  
+  >
+  <div class="docs-content scrollspy-wrap" id="doc-article-text"><div aria-label="breadcrumb" class="docs__breadcrumb" data-bcstart="">
+      
+      
+        <span data-counter="1"><a class="docs__breadcrumb--link" href="/docs/">Documentation</a><img class="docs__breadcrumb--arrow" src="/static/assets/img/icons/grafana-icon-breadcrumb-arrow-gray.svg" width="7" height="11" alt="breadcrumb arrow">
+        </span>
+      <span data-counter="2"></span>
+</div>
+
+
+    
+
+    
+
+      
+
+    
+      
+    
+
+    
+
+    
+
+
+    
+
+  </div>
+  <div>
+    
+
+  
+  
+  
+
+  <div class="docs__feedback">
+    <div class="docs__feedback--title">
+      <h2 class="docs__feedback--heading">Was this page helpful?</h2>
+      <div x-data="docs_feedback()" class="docs__feedback--container" x-init="init()" x-cloak>
+  <button @click="submitRating('yes')" class="docs__feedback--button feedback-option body-small fw-600" :class="{ 'selected': rating === 'yes' }">
+    <span><img src="/media/images/svg/thumbs-up.svg" alt="👍" width="16" height="16"> Yes</span>
+  </button>
+  <button @click="submitRating('no')" class="docs__feedback--button feedback-option body-small fw-600" :class="{ 'selected': rating === 'no' }">
+    <span><img class="scale-rotate" src="/media/images/svg/thumbs-up.svg" alt="👎" width="16" height="16"> No</span>
+  </button>
+</div>
+    </div>
+    <div class="docs__feedback--links">
+      <div class="d-grid d-grid__columns--3 w-100p gap-1">
+        
+        
+        <a class="docs__feedback--link" href="mailto:docs@grafana.com">
+          <div class="svg-wrap " >
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M13.1667 2.5C12.4593 3.20733 11.14 3.14 10 2L9 2.99933L14.3333 8.33267L16.6667 5.99933L13.1667 2.5Z" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8.95893 7.62539L6.43026 5.09739C6.88737 4.08638 6.67069 2.89797 5.88621 2.11334C5.10172 1.3287 3.91335 1.1118 2.90226 1.56872L4.33293 2.99872V4.33205H2.99959L1.56893 2.90205C1.11182 3.91306 1.32849 5.10146 2.11298 5.8861C2.89747 6.67074 4.08583 6.88763 5.09693 6.43072L7.62559 8.95872" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.03906 10.3731L11.5677 12.9017C11.1106 13.9127 11.3273 15.1011 12.1118 15.8858C12.8963 16.6704 14.0846 16.8873 15.0957 16.4304L13.6651 14.9984V13.6651H14.9984L16.4291 15.0964C16.8862 14.0854 16.6695 12.897 15.885 12.1123C15.1005 11.3277 13.9122 11.1108 12.9011 11.5677L10.3724 9.03906" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.2917 5.29297L1.62502 14.9596C1.23437 15.3503 1.23437 15.9837 1.62502 16.3743C2.01567 16.765 2.64904 16.765 3.03968 16.3743L12.7064 6.70764" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    
+
+</div>
+          <span>Email docs@grafana.com</span>
+        </a>
+        <a class="docs__feedback--link" href="/help/">
+          <div class="svg-wrap " >
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.582 1.41406L8.4987 16.4141L4.33203 12.2474" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.2266 11.4109C17.0056 14.8276 15.3127 18.3279 12.1508 19.8386C8.98884 21.3494 5.2021 20.4672 3.03336 17.7146C0.864615 14.962 0.892991 11.074 3.10168 8.35329C5.31037 5.63262 9.10958 4.80581 12.2491 6.36257" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    
+
+</div>
+          <span>Help and support</span>
+        </a>
+        <a class="docs__feedback--link" href="/community/">
+          <div class="svg-wrap " >
+    <svg width="22" height="22" viewBox="0 0 27 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group">
+<g id="hierarchy-7">
+<path id="Oval" fill-rule="evenodd" clip-rule="evenodd" d="M4.7474 20.5807C6.58834 20.5807 8.08073 19.0883 8.08073 17.2474C8.08073 15.4064 6.58834 13.9141 4.7474 13.9141C2.90645 13.9141 1.41406 15.4064 1.41406 17.2474C1.41406 19.0883 2.90645 20.5807 4.7474 20.5807Z" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Oval_2" fill-rule="evenodd" clip-rule="evenodd" d="M17.2474 20.5807C19.0883 20.5807 20.5807 19.0883 20.5807 17.2474C20.5807 15.4064 19.0883 13.9141 17.2474 13.9141C15.4064 13.9141 13.9141 15.4064 13.9141 17.2474C13.9141 19.0883 15.4064 20.5807 17.2474 20.5807Z" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Oval_3" fill-rule="evenodd" clip-rule="evenodd" d="M10.9974 8.08073C12.8383 8.08073 14.3307 6.58834 14.3307 4.7474C14.3307 2.90645 12.8383 1.41406 10.9974 1.41406C9.15645 1.41406 7.66406 2.90645 7.66406 4.7474C7.66406 6.58834 9.15645 8.08073 10.9974 8.08073Z" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Shape" d="M8.07812 17.2461H13.9115" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Shape_2" d="M12.6484 7.625L15.9234 14.1867" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Shape_3" d="M9.33115 7.66406L6.07031 14.1857" stroke="#1866D4" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</svg>
+
+
+    
+
+</div>
+          <span>Community</span>
+        </a>
+      </div>
+    </div>
+
+
+
+    
+
+    
+
+      
+      
+      
+
+      
+      
+      
+
+      
+      
+
+        
+
+      
+
+      
+
+
+    
+
+  </div>
+
+</div>
+
+  </main>
+
+  <aside id="toc" class="section-docs__sidebar--right hide-mobile">
+    <div class="pl-4">
+      
+
+    </div>
+    <div class="docs__toc--wrapper">
+      <div class="docs__feedback--title flex-direction-column align-items-start pb-1 h-85">
+        <p class="docs__feedback--heading body-default fw-600 mb-half">Is this page helpful?</p>
+        <div x-data="docs_feedback()" class="docs__feedback--container" x-init="init()" x-cloak>
+  <button @click="submitRating('yes')" class="docs__feedback--button feedback-option body-small fw-600" :class="{ 'selected': rating === 'yes' }">
+    <span><img src="/media/images/svg/thumbs-up.svg" alt="👍" width="16" height="16"> Yes</span>
+  </button>
+  <button @click="submitRating('no')" class="docs__feedback--button feedback-option body-small fw-600" :class="{ 'selected': rating === 'no' }">
+    <span><img class="scale-rotate" src="/media/images/svg/thumbs-up.svg" alt="👎" width="16" height="16"> No</span>
+  </button>
+</div>
+      </div>
+      
+
+      <div class="docs__toc--ad" x-data="app_banner()" x-init="init()" x-cloak>
+        <div x-ref="docs-sidebar" id="docs-sidebar"></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+
+      </div>
+    </div>
+
+    
+    <footer class="section">
+      
+    </footer>
+
+    
+    
+
+    
+      <script type="text/javascript" src="/web/app.js"></script>
+<script type="text/javascript" src="/web/shared.js"></script>
+<script type="text/javascript" src="/web/banner.js"></script>
+<script type="text/javascript" src="/web/marked.js"></script>
+
+    
+  </body>
+</html>

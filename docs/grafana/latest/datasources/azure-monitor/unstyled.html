@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<h1 id="azure-monitor-data-source">Azure Monitor data source</h1>
+<p>Grafana ships with built-in support for Azure Monitor, the Azure service to maximize the availability and performance of applications and services in the Azure Cloud.
+This topic explains configuring and querying specific to the Azure Monitor data source.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.
+Only users with the organization administrator role can add data sources.</p>
+<p>Once you&rsquo;ve added the Azure Monitor data source, you can <a href="#configure-the-data-source">configure it</a> so that your Grafana instance&rsquo;s users can create queries in its <a href="query-editor/">query editor</a> when they 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build dashboards</a> and use 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<p>The Azure Monitor data source supports visualizing data from four Azure services:</p>
+<ul>
+<li><strong>Azure Monitor Metrics:</strong> Collect numeric data from resources in your Azure account.</li>
+<li><strong>Azure Monitor Logs:</strong> Collect log and performance data from your Azure account, and query using the Kusto Query Language (KQL).</li>
+<li><strong>Azure Resource Graph:</strong> Query your Azure resources across subscriptions.</li>
+<li><strong>Azure Monitor Application Insights:</strong> Collect trace logging data and other application performance metrics.</li>
+</ul>
+<h2 id="configure-the-data-source">Configure the data source</h2>
+<p><strong>To access the data source configuration page:</strong></p>
+<ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>Azure Monitor</code> in the search bar.</p>
+</li>
+<li>
+<p>Click <strong>Azure Monitor</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+</ol>
+<h3 id="configure-azure-active-directory-ad-authentication">Configure Azure Active Directory (AD) authentication</h3>
+<p>You must create an app registration and service principal in Azure AD to authenticate the data source.
+For configuration details, refer to the <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in" target="_blank" rel="noopener noreferrer">Azure documentation for service principals</a>.</p>
+<p>The app registration you create must have the <code>Reader</code> role assigned on the subscription.
+For more information, refer to <a href="https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal?tabs=current" target="_blank" rel="noopener noreferrer">Azure documentation for role assignments</a>.</p>
+<p>If you host Grafana in Azure, such as in App Service or Azure Virtual Machines, you can configure the Azure Monitor data source to use Managed Identity for secure authentication without entering credentials into Grafana.
+For details, refer to <a href="#configuring-using-managed-identity">Configuring using Managed Identity</a>.</p>
+<p>You can configure the Azure Monitor data source to use Workload Identity for secure authentication without entering credentials into Grafana if you host Grafana in a Kubernetes environment, such as AKS, and require access to Azure resources.
+For details, refer to <a href="#configuring-using-workload-identity">Configuring using Workload Identity</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Authentication</strong></td>
+          <td>Enables Managed Identity. Selecting Managed Identity hides many of the other fields. For details, see <a href="#configuring-using-managed-identity">Configuring using Managed Identity</a>.</td>
+      </tr>
+      <tr>
+          <td><strong>Azure Cloud</strong></td>
+          <td>Sets the national cloud for your Azure account. For most users, this is the default &ldquo;Azure&rdquo;. For details, see the <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/authentication-national-cloud" target="_blank" rel="noopener noreferrer">Azure documentation</a>.</td>
+      </tr>
+      <tr>
+          <td><strong>Directory (tenant) ID</strong></td>
+          <td>Sets the directory/tenant ID for the Azure AD app registration to use for authentication. For details, see the <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in" target="_blank" rel="noopener noreferrer">Azure tenant and app ID docs</a>.</td>
+      </tr>
+      <tr>
+          <td><strong>Application (client) ID</strong></td>
+          <td>Sets the application/client ID for the Azure AD app registration to use for authentication.</td>
+      </tr>
+      <tr>
+          <td><strong>Client secret</strong></td>
+          <td>Sets the application client secret for the Azure AD app registration to use for authentication. For details, see the <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret" target="_blank" rel="noopener noreferrer">Azure application secret docs</a>.</td>
+      </tr>
+      <tr>
+          <td><strong>Default subscription</strong></td>
+          <td><em>(Optional)</em> Sets a default subscription for template variables to use.</td>
+      </tr>
+      <tr>
+          <td><strong>Enable Basic Logs</strong></td>
+          <td>Allows this data source to execute queries against <a href="https://learn.microsoft.com/en-us/azure/azure-monitor/logs/basic-logs-query?tabs=portal-1" target="_blank" rel="noopener noreferrer">Basic Logs tables</a> in supported Log Analytics Workspaces. These queries may incur additional costs.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="provision-the-data-source">Provision the data source</h3>
+<p>You can define and configure the data source in YAML files as part of Grafana&rsquo;s provisioning system.
+For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+<h4 id="provisioning-examples">Provisioning examples</h4>
+<p><strong>Azure AD App Registration (client secret):</strong></p>
+<pre>apiVersion: 1 # config file version
+
+datasources:
+  - name: Azure Monitor
+    type: grafana-azure-monitor-datasource
+    access: proxy
+    jsonData:
+      azureAuthType: clientsecret
+      cloudName: azuremonitor # See table below
+      tenantId: &lt;tenant-id&gt;
+      clientId: &lt;client-id&gt;
+      subscriptionId: &lt;subscription-id&gt; # Optional, default subscription
+    secureJsonData:
+      clientSecret: &lt;client-secret&gt;
+    version: 1</pre>
+<p><strong>Managed Identity:</strong></p>
+<pre>apiVersion: 1 # config file version
+
+datasources:
+  - name: Azure Monitor
+    type: grafana-azure-monitor-datasource
+    access: proxy
+    jsonData:
+      azureAuthType: msi
+      subscriptionId: &lt;subscription-id&gt; # Optional, default subscription
+    version: 1</pre>
+<p><strong>Workload Identity:</strong></p>
+<pre>apiVersion: 1 # config file version
+
+datasources:
+  - name: Azure Monitor
+    type: grafana-azure-monitor-datasource
+    access: proxy
+    jsonData:
+      azureAuthType: workloadidentity
+      subscriptionId: &lt;subscription-id&gt; # Optional, default subscription
+    version: 1</pre>
+<p><strong>Current User:</strong></p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>oauthPassThru</code> property is required for current user authentication to function.
+Additionally, <code>disableGrafanaCache</code> is necessary to prevent the data source returning cached responses for resources users don&rsquo;t have access to.</p></blockquote></div>
+
+<pre>apiVersion: 1 # config file version
+
+datasources:
+  - name: Azure Monitor
+    type: grafana-azure-monitor-datasource
+    access: proxy
+    jsonData:
+      azureAuthType: currentuser
+      oauthPassThru: true
+      disableGrafanaCache: true
+      subscriptionId: &lt;subscription-id&gt; # Optional, default subscription
+    version: 1</pre>
+<h4 id="supported-cloud-names">Supported cloud names</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Azure Cloud</th>
+          <th><code>cloudName</code> Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Microsoft Azure public cloud</strong></td>
+          <td><code>azuremonitor</code> (<em>Default</em>)</td>
+      </tr>
+      <tr>
+          <td><strong>Microsoft Chinese national cloud</strong></td>
+          <td><code>chinaazuremonitor</code></td>
+      </tr>
+      <tr>
+          <td><strong>US Government cloud</strong></td>
+          <td><code>govazuremonitor</code></td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Cloud names for current user authentication differ to the <code>cloudName</code> values in the preceding table.
+The public cloud name is <code>AzureCloud</code>, the Chinese national cloud name is <code>AzureChinaCloud</code>, and the US Government cloud name is <code>AzureUSGovernment</code>.</p></blockquote></div>
+
+<h3 id="configure-managed-identity">Configure Managed Identity</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Managed Identity is available only in <a href="https://azure.microsoft.com/en-us/products/managed-grafana" target="_blank" rel="noopener noreferrer">Azure Managed Grafana</a> or Grafana OSS/Enterprise when deployed in Azure. It is not available in Grafana Cloud.</p></blockquote></div>
+
+<p>You can use managed identity to configure Azure Monitor in Grafana if you host Grafana in Azure (such as an App Service or with Azure Virtual Machines) and have managed identity enabled on your VM.
+This lets you securely authenticate data sources without manually configuring credentials via Azure AD App Registrations.
+For details on Azure managed identities, refer to the <a href="https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview" target="_blank" rel="noopener noreferrer">Azure documentation</a>.</p>
+<p><strong>To enable managed identity for Grafana:</strong></p>
+<ol>
+<li>
+<p>Set the <code>managed_identity_enabled</code> flag in the <code>[azure]</code> section of the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#azure">Grafana server configuration</a>.</p>
+<pre>[azure]
+managed_identity_enabled = true</pre>
+</li>
+<li>
+<p>In the Azure Monitor data source configuration, set <strong>Authentication</strong> to <strong>Managed Identity</strong>.</p>
+<p>This hides the directory ID, application ID, and client secret fields, and the data source uses managed identity to authenticate to Azure Monitor Metrics and Logs, and Azure Resource Graph.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 800px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/grafana/data-sources/screenshot-managed-identity-2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/grafana/data-sources/screenshot-managed-identity-2.png"data-srcset="/media/docs/grafana/data-sources/screenshot-managed-identity-2.png?w=320 320w, /media/docs/grafana/data-sources/screenshot-managed-identity-2.png?w=550 550w, /media/docs/grafana/data-sources/screenshot-managed-identity-2.png?w=750 750w, /media/docs/grafana/data-sources/screenshot-managed-identity-2.png?w=900 900w, /media/docs/grafana/data-sources/screenshot-managed-identity-2.png?w=1040 1040w, /media/docs/grafana/data-sources/screenshot-managed-identity-2.png?w=1240 1240w, /media/docs/grafana/data-sources/screenshot-managed-identity-2.png?w=1920 1920w"
+             data-sizes="auto"alt="Azure Monitor screenshot showing Managed Identity authentication"width="2449"height="1306"title="Azure Monitor screenshot showing Managed Identity authentication"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/data-sources/screenshot-managed-identity-2.png"
+               alt="Azure Monitor screenshot showing Managed Identity authentication"width="2449"height="1306"title="Azure Monitor screenshot showing Managed Identity authentication"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Azure Monitor screenshot showing Managed Identity authentication</figcaption></a></figure>
+</li>
+<li>
+<p>You can set the <code>managed_identity_client_id</code> field in the <code>[azure]</code> section of the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#azure">Grafana server configuration</a> to allow a user-assigned managed identity to be used instead of the default system-assigned identity.</p>
+</li>
+</ol>
+<pre>[azure]
+managed_identity_enabled = true
+managed_identity_client_id = USER_ASSIGNED_IDENTITY_CLIENT_ID</pre>
+<h3 id="configure-workload-identity">Configure Workload Identity</h3>
+<p>You can use workload identity to configure Azure Monitor in Grafana if you host Grafana in a Kubernetes environment, such as AKS, in conjunction with managed identities.
+This lets you securely authenticate data sources without manually configuring credentials via Azure AD App Registrations.
+For details on workload identity, refer to the <a href="https://azure.github.io/azure-workload-identity/docs/" target="_blank" rel="noopener noreferrer">Azure workload identity documentation</a>.</p>
+<p><strong>To enable workload identity for Grafana:</strong></p>
+<ol>
+<li>
+<p>Set the <code>workload_identity_enabled</code> flag in the <code>[azure]</code> section of the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#azure">Grafana server configuration</a>.</p>
+<pre>[azure]
+workload_identity_enabled = true</pre>
+</li>
+<li>
+<p>In the Azure Monitor data source configuration, set <strong>Authentication</strong> to <strong>Workload Identity</strong>.</p>
+<p>This hides the directory ID, application ID, and client secret fields, and the data source uses workload identity to authenticate to Azure Monitor Metrics and Logs, and Azure Resource Graph.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 800px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/grafana/data-sources/screenshot-workload-identity.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/grafana/data-sources/screenshot-workload-identity.png"data-srcset="/media/docs/grafana/data-sources/screenshot-workload-identity.png?w=320 320w, /media/docs/grafana/data-sources/screenshot-workload-identity.png?w=550 550w, /media/docs/grafana/data-sources/screenshot-workload-identity.png?w=750 750w, /media/docs/grafana/data-sources/screenshot-workload-identity.png?w=900 900w, /media/docs/grafana/data-sources/screenshot-workload-identity.png?w=1040 1040w, /media/docs/grafana/data-sources/screenshot-workload-identity.png?w=1240 1240w, /media/docs/grafana/data-sources/screenshot-workload-identity.png?w=1920 1920w"
+             data-sizes="auto"alt="Azure Monitor screenshot showing Workload Identity authentication"width="2462"height="1306"title="Azure Monitor screenshot showing Workload Identity authentication"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/data-sources/screenshot-workload-identity.png"
+               alt="Azure Monitor screenshot showing Workload Identity authentication"width="2462"height="1306"title="Azure Monitor screenshot showing Workload Identity authentication"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Azure Monitor screenshot showing Workload Identity authentication</figcaption></a></figure>
+</li>
+<li>
+<p>There are additional configuration variables that can control the authentication method.<code>workload_identity_tenant_id</code> represents the Azure AD tenant that contains the managed identity, <code>workload_identity_client_id</code> represents the client ID of the managed identity if it differs from the default client ID, <code>workload_identity_token_file</code> represents the path to the token file. Refer to the <a href="https://azure.github.io/azure-workload-identity/docs/" target="_blank" rel="noopener noreferrer">documentation</a> for more information on what values these variables should use, if any.</p>
+<pre>[azure]
+workload_identity_enabled = true
+workload_identity_tenant_id = IDENTITY_TENANT_ID
+workload_identity_client_id = IDENTITY_CLIENT_ID
+workload_identity_token_file = TOKEN_FILE_PATH</pre>
+</li>
+</ol>
+<h3 id="configure-current-user-authentication">Configure Current User authentication</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Current user authentication is an <a href="/docs/release-life-cycle/">experimental feature</a>. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. Contact Grafana Support to enable this feature in Grafana Cloud. Aspects of Grafana may not work as expected when using this authentication method.</p></blockquote></div>
+
+<p>If your Grafana instance is configured with Azure Entra (formerly Active Directory) authentication for login, this authentication method can be used to forward the currently logged in user&rsquo;s credentials to the data source. The users credentials will then be used when requesting data from the data source. For details on how to configure your Grafana instance using Azure Entra refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/azuread/">documentation</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Additional configuration is required to ensure that the App Registration used to login a user via Azure provides an access token with the permissions required by the data source.</p>
+<p>The App Registration must be configured to issue both <strong>Access Tokens</strong> and <strong>ID Tokens</strong>.</p>
+<ol>
+<li>In the Azure Portal, open the App Registration that requires configuration.</li>
+<li>Select <strong>Authentication</strong> in the side menu.</li>
+<li>Under <strong>Implicit grant and hybrid flows</strong> check both the <strong>Access tokens</strong> and <strong>ID tokens</strong> boxes.</li>
+<li>Save the changes to ensure the App Registration is updated.</li>
+</ol>
+<p>The App Registration must also be configured with additional <strong>API Permissions</strong> to provide authenticated users with access to the APIs utilised by the data source.</p>
+<ol>
+<li>In the Azure Portal, open the App Registration that requires configuration.</li>
+<li>Select <strong>API Permissions</strong> in the side menu.</li>
+<li>Ensure the <code>openid</code>, <code>profile</code>, <code>email</code>, and <code>offline_access</code> permissions are present under the <strong>Microsoft Graph</strong> section. If not, they must be added.</li>
+<li>Select <strong>Add a permission</strong> and choose the following permissions. They must be added individually. Refer to the <a href="https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-access-web-apis" target="_blank" rel="noopener noreferrer">Azure documentation</a> for more information.
+<ul>
+<li>Select <strong>Azure Service Management</strong> &gt; <strong>Delegated permissions</strong> &gt; <code>user_impersonation</code> &gt; <strong>Add permissions</strong></li>
+<li>Select <strong>APIs my organization uses</strong> &gt; Search for <strong>Log Analytics API</strong> and select it &gt; <strong>Delegated permissions</strong> &gt; <code>Date.Read</code> &gt; <strong>Add permissions</strong></li>
+</ul>
+</li>
+</ol>
+<p>Once all permissions have been added, the Azure authentication section in Grafana must be updated. The <code>scopes</code> section must be updated to include the <code>.default</code> scope to ensure that a token with access to all APIs declared on the App Registration is requested by Grafana. Once updated the scopes value should equal: <code>.default openid email profile</code>.</p></blockquote></div>
+
+<p>This method of authentication doesn&rsquo;t inherently support all backend functionality as a user&rsquo;s credentials won&rsquo;t be in scope.
+Affected functionality includes alerting, reporting, and recorded queries.
+In order to support backend queries when using a data source configured with current user authentication, you can configure service credentials.
+Also, note that query and resource caching is disabled by default for data sources using current user authentication.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To configure fallback service credentials the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#feature_toggles">feature toggle</a> <code>idForwarding</code> must be set to <code>true</code> and <code>user_identity_fallback_credentials_enabled</code> must be enabled in the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#azure">Azure configuration section</a> (enabled by default when <code>user_identity_enabled</code> is set to <code>true</code>).</p></blockquote></div>
+
+<p>Permissions for fallback credentials may need to be broad to appropriately support backend functionality.
+For example, an alerting query created by a user is dependent on their permissions.
+If a user tries to create an alert for a resource that the fallback credentials can&rsquo;t access, the alert will fail.</p>
+<p><strong>To enable current user authentication for Grafana:</strong></p>
+<ol>
+<li>
+<p>Set the <code>user_identity_enabled</code> flag in the <code>[azure]</code> section of the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#azure">Grafana server configuration</a>.
+By default this will also enable fallback service credentials.
+If you want to disable service credentials at the instance level set <code>user_identity_fallback_credentials_enabled</code> to false.</p>
+<pre>[azure]
+user_identity_enabled = true</pre>
+</li>
+<li>
+<p>In the Azure Monitor data source configuration, set <strong>Authentication</strong> to <strong>Current User</strong>.
+If fallback service credentials are enabled at the instance level, an additional configuration section is visible that you can use to enable or disable using service credentials for this data source.
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 800px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/grafana/data-sources/screenshot-current-user.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/grafana/data-sources/screenshot-current-user.png"data-srcset="/media/docs/grafana/data-sources/screenshot-current-user.png?w=320 320w, /media/docs/grafana/data-sources/screenshot-current-user.png?w=550 550w, /media/docs/grafana/data-sources/screenshot-current-user.png?w=750 750w, /media/docs/grafana/data-sources/screenshot-current-user.png?w=900 900w, /media/docs/grafana/data-sources/screenshot-current-user.png?w=1040 1040w, /media/docs/grafana/data-sources/screenshot-current-user.png?w=1240 1240w, /media/docs/grafana/data-sources/screenshot-current-user.png?w=1920 1920w"
+             data-sizes="auto"alt="Azure Monitor screenshot showing Current User authentication"width="2994"height="1464"title="Azure Monitor screenshot showing Current User authentication"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/data-sources/screenshot-current-user.png"
+               alt="Azure Monitor screenshot showing Current User authentication"width="2994"height="1464"title="Azure Monitor screenshot showing Current User authentication"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Azure Monitor screenshot showing Current User authentication</figcaption></a></figure></p>
+</li>
+<li>
+<p>If you want backend functionality to work with this data source, enable service credentials and configure the data source using the most applicable credentials for your circumstances.</p>
+</li>
+</ol>
+<h2 id="query-the-data-source">Query the data source</h2>
+<p>The Azure Monitor data source can query data from Azure Monitor Metrics and Logs, the Azure Resource Graph, and Application Insights Traces. Each source has its own specialized query editor.</p>
+<p>For details, see the <a href="query-editor/">query editor documentation</a>.</p>
+<h2 id="use-template-variables">Use template variables</h2>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For details, see the <a href="template-variables/">template variables documentation</a>.</p>
+<h2 id="application-insights-and-insights-analytics-removed">Application Insights and Insights Analytics (removed)</h2>
+<p>Until Grafana v8.0, you could query the same Azure Application Insights data using Application Insights and Insights Analytics.</p>
+<p>These queries were deprecated in Grafana v7.5. In Grafana v8.0, Application Insights and Insights Analytics were made read-only in favor of querying this data through Metrics and Logs. These query methods were completely removed in Grafana v9.0.</p>
+<p>If you&rsquo;re upgrading from a Grafana version prior to v9.0 and relied on Application Insights and Analytics queries, refer to the <a href="/docs/grafana/v9.0/datasources/azuremonitor/deprecated-application-insights/">Grafana v9.0 documentation</a> for help migrating these queries to Metrics and Logs queries.</p>

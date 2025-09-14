@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<h1 id="notifications">Notifications</h1>
+<p>Choosing how, when, and where to send your alert notifications is an important part of setting up your alerting system. These decisions have a direct impact on your team’s ability to receive the necessary information to resolve issues quickly and minimize alert noise.</p>
+<p>Start defining your 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/contact-points/">contact points</a> to specify how to receive your alert notifications. Then, configure your alert rules to send their alerts to either a contact point or use the <a href="#notification-policies">Notification Policy Tree</a> to flexibly route alerts to contact points.</p>
+<br/>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alerting-configure-notifications-v2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alerting-configure-notifications-v2.png"data-srcset="/media/docs/alerting/alerting-configure-notifications-v2.png?w=320 320w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=550 550w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=750 750w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=900 900w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=1040 1040w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=1240 1240w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=1920 1920w"
+          data-sizes="auto"alt="Configure alert rules to forward firing alerts directly to a contact point or through notification policies"width="713"height="224"title="Configure alert rules to forward firing alerts directly to a contact point or through notification policies"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-configure-notifications-v2.png"
+            alt="Configure alert rules to forward firing alerts directly to a contact point or through notification policies"width="713"height="224"title="Configure alert rules to forward firing alerts directly to a contact point or through notification policies"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Configure alert rules to forward firing alerts directly to a contact point or through notification policies</figcaption></a></figure>
+<h2 id="how-it-works-at-a-glance">How it works at a glance</h2>
+<ul>
+<li>Grafana alerting periodically 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/">evaluates your alert rules</a>.</li>
+<li>It triggers notifications for alert instances that are <strong>firing</strong> or <strong>resolved</strong>.</li>
+<li>You can configure an alert rule to send notifications to a <strong>contact point</strong> or route them through <strong>notification policies</strong> for greater flexibility.</li>
+<li>To reduce the number of notifications, you can <strong>group related alerts</strong> into a single notification by using label grouping and notification timings.</li>
+</ul>
+<h2 id="fundamentals">Fundamentals</h2>
+<h3 id="contact-points">Contact points</h3>
+<p>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/contact-points/">Contact points</a> contain the configuration for sending alert notifications, specifying destinations like email, Slack, IRM, webhooks, and their notification messages.</p>
+<p>A contact point is a list of integrations, each sending a message to a specific destination.</p>
+
+
+<p>By default, notification messages include common alert details, such as the number of alerts, alert names, labels, annotations, and other alert information. You can also customize notification messages and use notification templates.</p>
+<p>First, create the contact point and test the notifications. Then, configure the alert rule to send its notifications to either a contact point or through Notification Policies.</p>
+<h3 id="notification-policies">Notification policies</h3>
+<p>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">Notification policies</a> are the backbone of a comprehensive alerting system. They provide a flexible and effective method to route alerts to distinct contact points, helping reduce alert noise while ensuring no alerts are missed.</p>
+<p>The notification policy tree is responsible for:</p>
+<ul>
+<li>Defining nested policies that can inherit or overwrite parent notification settings.</li>
+<li>Routing alerts by matching alert labels to the appropriate notification policy.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/notification-routing.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/notification-routing.png"data-srcset="/media/docs/alerting/notification-routing.png?w=320 320w, /media/docs/alerting/notification-routing.png?w=550 550w, /media/docs/alerting/notification-routing.png?w=750 750w, /media/docs/alerting/notification-routing.png?w=900 900w, /media/docs/alerting/notification-routing.png?w=1040 1040w, /media/docs/alerting/notification-routing.png?w=1240 1240w, /media/docs/alerting/notification-routing.png?w=1920 1920w"
+          data-sizes="auto"alt="A diagram displaying how the notification policy tree routes alerts"width="1598"height="968"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/notification-routing.png"
+            alt="A diagram displaying how the notification policy tree routes alerts"width="1598"height="968"/>
+        </noscript></div></a></figure>
+<p>Each notification policy handles specific tasks:</p>
+<ul>
+<li>Deciding which contact point receives the alert notification.</li>
+<li>Controlling when to send notifications based on its notification timing options.</li>
+<li>Grouping multiple alerts into a single notification to reduce alert noise.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alerting-notification-policy-diagram-v5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alerting-notification-policy-diagram-v5.png"data-srcset="/media/docs/alerting/alerting-notification-policy-diagram-v5.png?w=320 320w, /media/docs/alerting/alerting-notification-policy-diagram-v5.png?w=550 550w, /media/docs/alerting/alerting-notification-policy-diagram-v5.png?w=750 750w, /media/docs/alerting/alerting-notification-policy-diagram-v5.png?w=900 900w, /media/docs/alerting/alerting-notification-policy-diagram-v5.png?w=1040 1040w, /media/docs/alerting/alerting-notification-policy-diagram-v5.png?w=1240 1240w, /media/docs/alerting/alerting-notification-policy-diagram-v5.png?w=1920 1920w"
+          data-sizes="auto"alt="A diagram of the notification policy component"width="1724"height="464"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-notification-policy-diagram-v5.png"
+            alt="A diagram of the notification policy component"width="1724"height="464"/>
+        </noscript></div></a></figure>
+<h3 id="group-alert-notifications">Group alert notifications</h3>
+<p>When something fails in our system, our alerting setup can easily trigger hundreds or even thousands of alert instances (notifications). Several alert rules often fail simultaneously. Additionally, each alert rule may generate multiple alert instances.</p>
+<p>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/">Grouping alert notifications</a> is commonly necessary to avoid bombarding our alert inbox. Grouping combines similar alert instances in a given period into one single notification.</p>
+<p>Notification grouping uses:</p>
+<ul>
+<li><strong>Labels</strong>: Group alert instances of the same type by using labels.</li>
+<li><strong>Timing options</strong>: Wait for a specified period before sending the notification, allowing for the grouping of incoming alert instances.</li>
+</ul>
+<h3 id="templates-silences-and-mute-timings">Templates, silences and mute timings</h3>
+<p>Grafana Alerting provides advanced notification capabilities that you’ll find useful as you and your team refine your initial alerting system.</p>
+<p>For instance, you can customize notifications with shared 
+    <a href="/docs/grafana/latest/alerting/fundamentals/templates/">templates</a> that provide actionable alert information and can be reused for multiple notifications.</p>
+<p>Additionally, you can use 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-silence/">silences</a> and 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/mute-timings/">mute timings</a> to pause or suppress notifications without interrupting alert evaluation.</p>
+<h2 id="architecture">Architecture</h2>
+<p>Grafana Alerting is built on the Prometheus model, which separates two main components for scalability and performance:</p>
+<ul>
+<li><strong>An alert generator</strong> that evaluates alert rules and sends firing and resolved alerts to the alert receiver.</li>
+<li><strong>An alert receiver</strong> (also known as Alertmanager) that receives the alerts and is responsible for sending their notifications.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alerting-alertmanager-architecture.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alerting-alertmanager-architecture.png"data-srcset="/media/docs/alerting/alerting-alertmanager-architecture.png?w=320 320w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=550 550w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=750 750w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=900 900w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1040 1040w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1240 1240w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1920 1920w"
+          data-sizes="auto"alt="A diagram with the alert generator and alert manager architecture"width="669"height="240"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-alertmanager-architecture.png"
+            alt="A diagram with the alert generator and alert manager architecture"width="669"height="240"/>
+        </noscript></div></a></figure>
+<p>Grafana includes a custom Alertmanager that extends the Prometheus Alertmanager to manage and deliver alert notifications. You can also 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alertmanager/">configure Grafana Alerting to work with other Alertmanagers</a>.</p>

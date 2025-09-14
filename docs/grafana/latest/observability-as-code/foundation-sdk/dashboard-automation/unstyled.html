@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<h1 id="automate-dashboard-provisioning-with-cicd">Automate dashboard provisioning with CI/CD</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Managing Grafana dashboards manually can be inefficient and error-prone. As you saw in the Getting Started guide, we can define dashboards using strongly typed code with the Grafana Foundation SDK. We can then commit them to version controls, and automatically deploy them using GitHub Actions.</p>
+<p>This guide walks through:</p>
+<ul>
+<li>Generating a Grafana dashboard as code</li>
+<li>Formatting it for Kubernetes-style deployment</li>
+<li>Using GitHub Actions to deploy the dashboard</li>
+<li>Checking if the dashboard exists and updating it if needed</li>
+</ul>
+<p>By the end, every change to your dashboard code will be automatically created or updated in your Grafana instance without manual intervention.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=cFnO8kVOaAI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>You can find the full example source code in the <a href="https://github.com/grafana/intro-to-foundation-sdk/tree/main/github-actions-example" target="_blank" rel="noopener noreferrer">intro-to-foundation-sdk repository</a>.</p>
+<h2 id="1-generating-the-dashboard-json">1. Generating the dashboard JSON</h2>
+<p>Before deploying a dashboard, we need to define it in code using the Grafana Foundation SDK. We ran through an example of this in the Getting Started guide, however, in order to comply with the Kubernetes resource compatible API that Grafana exposes, we’ll make some changes to the code to output the dashboard JSON in the appropriate format.</p>
+
+
+
+  
+
+  
+
+
+
+  <div class="code" x-data="app_code([&#34;go&#34;,&#34;typescript&#34;])" x-init="init()" data-codetoggle="true">
+    <div class="toggle-toolbar">
+      <div><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'go' }" @click="$store.code.language = 'go'"><span>Go</span></button><button class="toggle-toolbar__item" :class="{ 'toggle-toolbar__item-active': active === 'typescript' }" @click="$store.code.language = 'typescript'"><span>typescript</span></button></div>
+      <span class="code-clipboard" x-ref="tooltip">
+        <button @click="copy()">
+          <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+          <span>Copy</span>
+        </button>
+      </span>
+    <div class="toggle-toolbar__border"></div>
+    </div>
+    <div>
+    <pre>package main
+
+import (
+	&#34;encoding/json&#34;
+	&#34;log&#34;
+	&#34;os&#34;
+
+	&#34;github.com/grafana/grafana-foundation-sdk/go/cog&#34;
+	&#34;github.com/grafana/grafana-foundation-sdk/go/common&#34;
+	&#34;github.com/grafana/grafana-foundation-sdk/go/dashboard&#34;
+)
+
+type DashboardWrapper struct {
+	APIVersion string              `json:&#34;apiVersion&#34;`
+	Kind       string              `json:&#34;kind&#34;`
+	Metadata   Metadata            `json:&#34;metadata&#34;`
+	Spec       dashboard.Dashboard `json:&#34;spec&#34;`
+}
+
+type Metadata struct {
+	Name string `json:&#34;name&#34;`
+}
+
+func main() {
+	builder := dashboard.NewDashboardBuilder(&#34;My Dashboard&#34;).
+		Uid(&#34;my-dashboard&#34;).
+		Tags([]string{&#34;generated&#34;, &#34;foundation-sdk&#34;, &#34;go&#34;}).
+		Refresh(&#34;5m&#34;).
+		Time(&#34;now-1h&#34;, &#34;now&#34;).
+		Timezone(common.TimeZoneBrowser).
+		WithRow(dashboard.NewRowBuilder(&#34;Overview&#34;))
+
+	dashboard, err := builder.Build()
+	if err != nil {
+		log.Fatalf(&#34;failed to build dashboard: %v&#34;, err)
+	}
+
+	dashboardWrapper := DashboardWrapper{
+		APIVersion: &#34;dashboard.grafana.app/v1beta1&#34;,
+		Kind:       &#34;Dashboard&#34;,
+		Metadata: Metadata{
+			Name: *dashboard.Uid,
+		},
+		Spec: dashboard,
+	}
+
+	dashboardJson, err := json.MarshalIndent(dashboardWrapper, &#34;&#34;, &#34;  &#34;)
+	if err != nil {
+		log.Fatalf(&#34;failed to marshal dashboard: %v&#34;, err)
+	}
+
+	err = os.WriteFile(&#34;dashboard.json&#34;, dashboardJson, 0644)
+	if err != nil {
+		log.Fatalf(&#34;failed to write dashboard to file: %v&#34;, err)
+	}
+
+	log.Printf(&#34;Dashboard JSON:\n%s&#34;, dashboardJson)
+}</pre>
+<pre>import { DashboardBuilder, RowBuilder } from &#39;@grafana/grafana-foundation-sdk/dashboard&#39;;
+import * as fs from &#39;fs&#39;;
+
+// Generate the dashboard JSON
+const dashboard = new DashboardBuilder(&#39;My Dashboard&#39;)
+  .uid(&#39;my-dashboard&#39;)
+  .tags([&#39;generated&#39;, &#39;foundation-sdk&#39;, &#39;typescript&#39;])
+  .refresh(&#39;5m&#39;)
+  .time({ from: &#39;now-1h&#39;, to: &#39;now&#39; })
+  .timezone(&#39;browser&#39;)
+  .withRow(new RowBuilder(&#39;Overview&#39;))
+  .build();
+
+// Convert to Kubernetes-style format
+const dashboardWrapper = {
+  apiVersion: &#34;dashboard.grafana.app/v1beta1&#34;,
+  kind: &#34;Dashboard&#34;,
+  metadata: {
+    name: dashboard.uid!
+  },
+  spec: dashboard
+};
+
+// Save the formatted JSON to a file
+const dashboardJSON = JSON.stringify(dashboardWrapper, null, 2);
+fs.writeFileSync(&#39;dashboard.json&#39;, dashboardJSON, &#39;utf8&#39;);
+
+console.log(`Dashboard JSON:\n${}`);</pre>
+
+    </div>
+  </div>
+
+
+<p>This script:</p>
+<ul>
+<li>Generates a Grafana dashboard JSON file</li>
+<li>Wraps it in a Kubernetes-style API format (<code>apiVersion</code>, <code>kind</code>, <code>metadata</code>, <code>spec</code>)</li>
+<li>Saves it as <code>dashboard.json</code> for deployment</li>
+</ul>
+<h2 id="2-automating-deployment-with-github-actions">2. Automating deployment with GitHub Actions</h2>
+<p>Next, we’ll set up GitHub Actions to:
+Extract the dashboard name from <code>dashboard.json</code>
+Check if the dashboard already exists within our Grafana instance
+Update it if it does, create it if it doesn’t</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The following GitHub Action configuration assumes you are using a Go-based dashboard generator. If you are using one of the other languages that the Foundation SDK supports, please modify the <strong>Generate Dashboard JSON</strong> step accordingly.</p></blockquote></div>
+
+<p><code>.github/workflows/deploy-dashboard.yml</code></p>
+<pre>name: Deploy Grafana Dashboard
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.6
+
+      - name: Verify Go version
+        run: go version
+
+      - name: Download and Extract grafanactl
+        run: |
+          curl -L -o grafanactl-x86_64.tar.gz &#34;https://github.com/grafana/grafanactl/releases/download/${{ vars.GRAFANACTL_VERSION }}/grafanactl_Linux_x86_64.tar.gz&#34;
+          tar -xzf grafanactl-x86_64.tar.gz
+          chmod +x grafanactl
+          sudo mv grafanactl /usr/local/bin/grafanactl
+
+      - name: Generate Dashboard JSON
+        working-directory: ./github-actions-example
+        run: go run main.go
+
+      - name: Deploy Dashboard with grafanactl
+        env:
+          GRAFANA_SERVER: ${{ vars.GRAFANA_SERVER }}
+          GRAFANA_STACK_ID: ${{ vars.GRAFANA_STACK_ID }}
+          GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+        run: |
+          if [ -f dashboard.json ]; then
+            echo &#34;dashboard.json exists, deploying dashboard.&#34;
+            grafanactl resources push dashboards --path ./dashboard.json
+          else
+            echo &#34;dashboard.json does not exist.&#34;
+            exit 1
+          fi
+        working-directory: ./github-actions-example</pre>
+<h2 id="3-explaining-this-github-action">3. Explaining this GitHub Action</h2>
+<p>This GitHub Action automates the deployment of a Grafana dashboard using the Foundation SDK and the <code>grafanactl</code> CLI tool.</p>
+<h3 id="1-checkout-and-set-up-go">1. Checkout and set up Go</h3>
+<p>The first few steps:</p>
+<ul>
+<li>Check out the repository to access the project code.</li>
+<li>Install Go 1.24.6 using the <code>actions/setup-go</code> action.</li>
+<li>Verify Go is properly installed.</li>
+</ul>
+<h3 id="2-download-and-install-grafanactl">2. Download and install <code>grafanactl</code></h3>
+<p>This step downloads the <code>grafanactl</code> CLI from GitHub using a version defined in <code>vars.GRAFANACTL_VERSION</code>. It unpacks the tarball, makes it executable, and moves it to a location in the system <code>PATH</code>.</p>
+<h3 id="3-generate-the-dashboard-json">3. Generate the dashboard JSON</h3>
+<p>Runs the dashboard generator (<code>main.go</code>) from the <code>./github-actions-example</code> directory. This should produce a <code>dashboard.json</code> file that contains the Grafana dashboard definition.</p>
+<h3 id="4-deploy-the-dashboard-with-grafanactl">4. Deploy the dashboard with <code>grafanactl</code></h3>
+<p>If <code>dashboard.json</code> exists, it is deployed to your Grafana instance using:</p>
+<pre>grafanactl resources push dashboards --path ./dashboard.json</pre>
+<p>This command authenticates against Grafana using the following environment variables:</p>
+<ul>
+<li><code>GRAFANA_SERVER</code>: Your Grafana instance URL</li>
+<li><code>GRAFANA_STACK_ID</code>: Your Grafana stack ID</li>
+<li><code>GRAFANA_TOKEN</code>: A Grafana service account token with sufficient permissions</li>
+</ul>
+<h3 id="github-variables-and-secrets-used">GitHub variables and secrets used</h3>
+<p>These are configured in your repository under <strong>Settings → Security → Secrets and variables → Actions</strong>:</p>
+<ul>
+<li><code>vars.GRAFANACTL_VERSION</code>: Version of <code>grafanactl</code> to install</li>
+<li><code>vars.GRAFANA_SERVER</code>: The URL of your Grafana instance</li>
+<li><code>vars.GRAFANA_STACK_ID</code>: The stack ID in Grafana</li>
+<li><code>secrets.GRAFANA_TOKEN</code>: Grafana API token</li>
+</ul>
+<p>This action ensures that every push to <code>main</code> will regenerate and deploy your latest dashboard definition to Grafana.</p>
+<h3 id="why-automate-this">Why automate this?</h3>
+<p>Automating Grafana dashboard deployment eliminates the need for manual dashboard creation and updates, ensuring that dashboards remain consistent across environments. By defending dashboards as code and managing them through CI/CD such as GitHub Actions, we gain full version control, making it easy to track changes over time and roll back if needed. This also prevents duplication, as the workflow intelligently checks whether a dashboard exists before deciding to create or update it. With this fully automated CI/CD pipeline, developers can focus on improving their dashboards rather than manually uploading JSON files to Grafana.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>By integrating the Grafana Foundation SDK with GitHub Actions, we have successfully automated the entire lifecycle of Grafana dashboards. This setup allows us to define dashboards programmatically, convert them into a Kubernetes-compatible format, and deploy them automatically. With each push to the repository, the workflow ensures that dashboards are either created or updated as needed. This not only improves the efficiency but also guarantees that all deployed dashboards are always in sync with the latest code changes, reducing manual effort and potential errors.</p>

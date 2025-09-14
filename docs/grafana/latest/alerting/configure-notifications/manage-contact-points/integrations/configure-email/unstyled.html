@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<h1 id="configure-email-for-alerting">Configure email for Alerting</h1>
+<p>Use the Grafana Alerting - email integration to send email notifications when your alerts are firing. An email is sent when an alert fires and when an alert gets resolved.</p>
+<p>Note that you can customize the <code>subject</code> and <code>message</code> of the email using 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>. However, you cannot add HTML and CSS to email notifications for visual changes.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This section is for Grafana OSS only. For Grafana Cloud, SMTP configuration is not required.</p></blockquote></div>
+
+<p>For Grafana OSS, you enable email notifications by first configuring <a href="/docs/grafana/next/setup-grafana/configure-grafana/#smtp">SMTP settings</a> in the Grafana configuration settings.</p>
+<h3 id="smtp-configuration">SMTP configuration</h3>
+<ol>
+<li>
+<p>Access the configuration file.</p>
+<p>Locate the Grafana configuration file. This file is typically named <code>grafana.ini</code> or <code>custom.ini</code> and is located in the <code>conf</code> directory within the Grafana installation directory.</p>
+</li>
+<li>
+<p>Open the configuration file:</p>
+<p>Open the configuration file using a text editor.</p>
+</li>
+<li>
+<p>Locate SMTP settings section.</p>
+<p>Search for the <a href="/docs/grafana/next/setup-grafana/configure-grafana/#smtp">SMTP settings section</a> in the configuration file. It starts with <code>[smtp]</code>.</p>
+</li>
+<li>
+<p>Configure SMTP settings.</p>
+<p>Within the <code>[smtp]</code> settings section, specify the following parameters:</p>
+<ul>
+<li><code>enabled = true</code>: Enables SMTP.</li>
+<li><code>host</code>: The hostname or IP address of your SMTP server, and the port number of your SMTP server (commonly 25, 465, or 587). Default is <code>localhost:25</code>.</li>
+<li><code>user</code>: Your SMTP username (if authentication is required).</li>
+<li><code>password</code>: Your SMTP password (if authentication is required).</li>
+<li><code>from_address</code>: The email address from which Grafana notifications will be sent.</li>
+<li><code>from_name</code>: The name associated with the from_address.</li>
+<li><code>skip_verify = true</code>: Skip SSL/TLS certificate verification (useful for testing, but not recommended for production).</li>
+</ul>
+</li>
+<li>
+<p>Save and close the configuration file.</p>
+<p>After configuring the SMTP settings, save the changes to the configuration file and close the text editor.</p>
+</li>
+<li>
+<p>Restart Grafana.</p>
+<p>Restart the Grafana service to apply the changes made to the configuration file. The method for restarting Grafana depends on your operating system and how Grafana was installed (e.g., <code>systemctl restart grafana-server</code> for systems using systemd).</p>
+</li>
+<li>
+<p>Test email notifications.</p>
+<p>After restarting Grafana, test the email notification functionality by creating an email contact point.</p>
+</li>
+</ol>
+<h2 id="procedure">Procedure</h2>
+<p>To set up email integration, complete the following steps.</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>Enter a contact point name.</p>
+</li>
+<li>
+<p>From the Integration list, select <strong>Email</strong>.</p>
+</li>
+<li>
+<p>Enter the email addresses you want to send notifications to.</p>
+<p>E-mail addresses are case sensitive. Ensure that the e-mail address entered is correct.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong> to check that your integration works.</p>
+<p>** For Grafana Alertmanager only.**</p>
+</li>
+<li>
+<p>Click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>The email contact point is ready to receive alert notifications.</p>
+<p>To add this contact point to your alert, complete the following steps.</p>
+<ol>
+<li>In Grafana, navigate to <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Edit or create a new alert rule.</li>
+<li>Scroll down to the <strong>Configure labels and notifications</strong> section.</li>
+<li>Under Notifications click <strong>Select contact point</strong>.</li>
+<li>From the drop-down menu, select the previously created contact point.</li>
+<li><strong>Click Save rule and exit</strong>.</li>
+</ol>

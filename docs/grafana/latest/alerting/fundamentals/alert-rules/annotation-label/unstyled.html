@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<h1 id="labels-and-annotations">Labels and annotations</h1>
+<p>Labels and annotations add additional information about an alert using key/value pairs:</p>
+<ul>
+<li><a href="#labels">Labels</a> are used to differentiate an alert from all other alerts and decide how to manage them.</li>
+<li><a href="#annotations">Annotations</a> provide extra details for alert responders to help them understand and address potential issues.</li>
+</ul>
+<h2 id="labels">Labels</h2>
+<p><strong>Labels</strong> are unique identifiers of an 
+    <a href="/docs/grafana/latest/alerting/fundamentals/#alert-instances">alert instance</a>. You can use them for searching, silencing, and routing notifications.</p>
+<p>Examples of labels are <code>server=server1</code> or <code>team=backend</code>. Each alert rule can have more than one label and the complete set of labels for an alert rule is called its label set. It is this label set that identifies the alert.</p>
+
+
+<p>For example, an alert instance might have the label set <code>{alertname=&quot;High CPU usage&quot;,server=&quot;server1&quot;}</code> while another alert instance might have the label set <code>{alertname=&quot;High CPU usage&quot;,server=&quot;server2&quot;}</code>. These are two separate alert instances because although their <code>alertname</code> labels are the same, their <code>server</code> labels are different.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 2294px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/alerting/unified/multi-dimensional-alert.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/alerting/unified/multi-dimensional-alert.png"data-srcset="/static/img/docs/alerting/unified/multi-dimensional-alert.png?w=320 320w, /static/img/docs/alerting/unified/multi-dimensional-alert.png?w=550 550w, /static/img/docs/alerting/unified/multi-dimensional-alert.png?w=750 750w, /static/img/docs/alerting/unified/multi-dimensional-alert.png?w=900 900w, /static/img/docs/alerting/unified/multi-dimensional-alert.png?w=1040 1040w, /static/img/docs/alerting/unified/multi-dimensional-alert.png?w=1240 1240w, /static/img/docs/alerting/unified/multi-dimensional-alert.png?w=1920 1920w"
+          data-sizes="auto"alt="Image shows an example of an alert instance and the labels used on the alert instance."width="2294"height="442"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/unified/multi-dimensional-alert.png"
+            alt="Image shows an example of an alert instance and the labels used on the alert instance."width="2294"height="442"/>
+        </noscript></div></a></figure>
+<p>Labels are a fundamental component of alerting:</p>
+<ul>
+<li>The complete set of labels for an alert is what uniquely identifies an alert instance.</li>
+<li>The alerting UI shows labels for every alert instance generated during evaluation of that rule.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">Notification policies</a> and 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-silence/">silences</a> use labels to match alert instances and route them to contact points or stop their notifications.</li>
+<li>Contact points can include information from labels in notification messages.</li>
+</ul>
+<h3 id="label-types">Label types</h3>
+<p>An alert&rsquo;s label set can contain three types of labels:</p>
+<p><strong>User-configured labels</strong></p>
+<p>Labels that you manually configure in the alert rule to identify the generated alert instances and manage the alerts. Common custom labels, depending on the use case, are: <code>severity</code>, <code>priority</code>, <code>team</code>, and <code>service</code>.</p>
+<p>Additionally, you can use a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/templates/">template</a> to customize the label value and generate dynamic values from query data.</p>
+<p><strong>Query labels</strong></p>
+<p>Query labels are labels returned by the data source query.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/query-labels-and-values.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/query-labels-and-values.png"data-srcset="/media/docs/alerting/query-labels-and-values.png?w=320 320w, /media/docs/alerting/query-labels-and-values.png?w=550 550w, /media/docs/alerting/query-labels-and-values.png?w=750 750w, /media/docs/alerting/query-labels-and-values.png?w=900 900w, /media/docs/alerting/query-labels-and-values.png?w=1040 1040w, /media/docs/alerting/query-labels-and-values.png?w=1240 1240w, /media/docs/alerting/query-labels-and-values.png?w=1920 1920w"
+          data-sizes="auto"alt="An alert rule query returning labels from the query."width="1275"height="367"title="An alert rule query returning labels from the query."/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/query-labels-and-values.png"
+            alt="An alert rule query returning labels from the query."width="1275"height="367"title="An alert rule query returning labels from the query."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">An alert rule query returning labels from the query.</figcaption></a></figure>
+<p>Query labels can generate multiple alert instances from the same alert rule, helping to distinguish alerts from different data. In this example, the <code>instance</code> label generates an alert instance for each server.</p>
+<p><strong>Reserved labels</strong></p>
+<p>Reserved labels are automatically added by Grafana:</p>
+<ul>
+<li><code>alertname</code>: the name of the alert rule.</li>
+<li><code>grafana_folder</code>: the title of the folder containing the alert.</li>
+</ul>
+<p>Labels prefixed with <code>grafana_</code> are reserved by Grafana for special use. You can disable reserved labels via the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#unified_alertingreserved_labels"><code>unified_alerting.reserved_labels</code></a> option.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Two alert rules cannot produce alert instances with the same labels. If two alert rules have the same labels such as <code>foo=bar,bar=baz</code> and <code>foo=bar,bar=baz</code> then one of the generated alert instances is discarded.</p>
+<p>Ensure the label set for an alert does not have two or more labels with the same name.</p>
+<ul>
+<li>If a configured label has the same name as a data source query label, it replaces the data source label.</li>
+<li>If a configured label has the same name as a reserved label, it is omitted.</li>
+</ul></blockquote></div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Label key format</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <p>Grafana has a built-in Alertmanager that supports both Unicode label keys and values. If you are using an external Prometheus Alertmanager, label keys must be compatible with their <a href="https://prometheus.io/docs/concepts/data_model/#metric-names-and-labels" target="_blank" rel="noopener noreferrer">data model</a>.
+This means that label keys must only contain <em>ASCII letters</em>, <em>numbers</em>, and <em>underscores</em>.
+Label keys must also be matched by the regular expression <code>[a-zA-Z_][a-zA-Z0-9_]*</code>.
+Any invalid characters are removed or replaced by the Grafana alerting engine before being sent to the external Alertmanager according to the following rules:</p>
+<ul>
+<li>Whitespace is removed.</li>
+<li>ASCII characters are replaced with <code>_</code>.</li>
+<li>All other characters are replaced with their lower-case hex representation.
+If this is the first character it&rsquo;s prefixed with <code>_</code>.</li>
+</ul>
+<p>Example: A label key/value pair <code>Alert! 🔔=&quot;🔥&quot;</code> will become <code>Alert_0x1f514=&quot;🔥&quot;</code>.</p>
+<p>If multiple label keys are sanitized to the same value, the duplicates have a short hash of the original label appended as a suffix.</p>
+
+    </div>
+  </div>
+</div>
+
+<h2 id="annotations">Annotations</h2>
+<p>Annotations add additional information to alert instances, helping responders identify and address potential issues.</p>
+<p>Create clear and self-explanatory annotations so that first responders can investigate without needing deeper knowledge of the alert setup.</p>
+<p>Annotations are displayed in Grafana and are included by default in notifications. Grafana provides several optional annotations that you can edit:</p>
+<ul>
+<li><code>summary</code>: A short summary of what the alert has detected and why.</li>
+<li><code>description</code>: A detailed description of what happened and what the alert does.</li>
+<li><code>runbook_url</code>: The runbook page to guide operators managing a potential incident.</li>
+<li><code>__dashboardUid__</code> and <code>__panelId__</code>: 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/link-alert-rules-to-panels/">Link the alert to a dashboard and panel</a> to facilitate alert investigation.</li>
+</ul>
+
+
+<p>For example, you can edit the annotation <code>summary</code> to explain why the alert was triggered:</p>
+<pre>CPU usage has exceeded 80% for the last 5 minutes.</pre>
+<p>And edit the <code>description</code> annotation to provide more context and how to respond:</p>
+<pre>The web server&#39;s CPU has exceeded 80% for more than 5 minutes.
+
+This indicates that the system is under heavy load and may result in an outage.
+
+Consider scaling the server&#39;s resources and investigating bottlenecks.</pre>
+<p>Like labels, annotations can use a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/templates/">template</a> to include dynamic data from queries.</p>

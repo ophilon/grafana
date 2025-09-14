@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<h1 id="reporting-api">Reporting API</h1>
+<p>This API allows you to interact programmatically with the <a href="/docs/grafana/latest/dashboards/create-reports/">Reporting</a> feature.</p>
+<blockquote>
+<p>The Reporting API is not stabilized yet, it is still in active development and may change without prior notice.</p></blockquote>
+<blockquote>
+<p>Reporting is only available in Grafana Enterprise. Read more about <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a>.</p></blockquote>
+<blockquote>
+<p>If you are running Grafana Enterprise, for some endpoints you&rsquo;ll need to have specific permissions. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a> for more information.</p></blockquote>
+<h2 id="list-all-reports">List all reports</h2>
+<p><code>GET /api/reports</code></p>
+<h4 id="required-permissions">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports:read</td>
+          <td>reports:*<br>reports:id:*</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request">Example request</h3>
+<pre>GET /api/reports HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<h3 id="example-response">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 1840
+
+[
+	{
+		&#34;id&#34;: 2,
+		&#34;userId&#34;: 1,
+		&#34;orgId&#34;: 1,
+		&#34;name&#34;: &#34;Report 2&#34;,
+		&#34;recipients&#34;: &#34;example-report@grafana.com&#34;,
+		&#34;replyTo&#34;: &#34;&#34;,
+		&#34;message&#34;: &#34;Hi, \nPlease find attached a PDF status report. If you have any questions, feel free to contact me!\nBest,&#34;,
+		&#34;schedule&#34;: {
+			&#34;startDate&#34;: &#34;2022-10-02T00:00:00+02:00&#34;,
+			&#34;endDate&#34;: null,
+			&#34;frequency&#34;: &#34;once&#34;,
+			&#34;intervalFrequency&#34;: &#34;&#34;,
+			&#34;intervalAmount&#34;: 0,
+			&#34;workdaysOnly&#34;: false,
+			&#34;dayOfMonth&#34;: &#34;2&#34;,
+			&#34;timeZone&#34;: &#34;Europe/Warsaw&#34;
+		},
+		&#34;options&#34;: {
+			&#34;orientation&#34;: &#34;landscape&#34;,
+			&#34;layout&#34;: &#34;grid&#34;,
+		},
+		&#34;enableDashboardUrl&#34;: true,
+		&#34;state&#34;: &#34;scheduled&#34;,
+		&#34;dashboards&#34;: [
+			{
+				&#34;dashboard&#34;: {
+					&#34;id&#34;: 463,
+					&#34;uid&#34;: &#34;7MeksYbmk&#34;,
+					&#34;name&#34;: &#34;Alerting with TestData&#34;
+				},
+				&#34;reportVariables&#34;: {
+					&#34;namefilter&#34;: &#34;TestData&#34;
+				}
+			}
+		],
+		&#34;formats&#34;: [
+			&#34;pdf&#34;,
+			&#34;csv&#34;
+		],
+		&#34;created&#34;: &#34;2022-09-19T11:44:42+02:00&#34;,
+		&#34;updated&#34;: &#34;2022-09-19T11:44:42+02:00&#34;
+	}
+]</pre>
+<h3 id="status-codes">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>500</strong> – Unexpected error or server misconfiguration. Refer to server logs for more details.</li>
+</ul>
+<h2 id="get-a-report">Get a report</h2>
+<p><code>GET /api/reports/:id</code></p>
+<h4 id="required-permissions-1">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports:read</td>
+          <td>reports:*<br>reports:id:*<br>reports:id:1(single report)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-1">Example request</h3>
+<pre>GET /api/reports/2 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<h3 id="example-response-1">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 940
+
+{
+	&#34;id&#34;: 2,
+	&#34;userId&#34;: 1,
+	&#34;orgId&#34;: 1,
+	&#34;name&#34;: &#34;Report 2&#34;,
+	&#34;recipients&#34;: &#34;example-report@grafana.com&#34;,
+	&#34;replyTo&#34;: &#34;&#34;,
+	&#34;message&#34;: &#34;Hi, \nPlease find attached a PDF status report. If you have any questions, feel free to contact me!\nBest,&#34;,
+	&#34;schedule&#34;: {
+		&#34;startDate&#34;: &#34;2022-10-02T00:00:00+02:00&#34;,
+		&#34;endDate&#34;: null,
+		&#34;frequency&#34;: &#34;once&#34;,
+		&#34;intervalFrequency&#34;: &#34;&#34;,
+		&#34;intervalAmount&#34;: 0,
+		&#34;workdaysOnly&#34;: false,
+		&#34;dayOfMonth&#34;: &#34;2&#34;,
+		&#34;timeZone&#34;: &#34;Europe/Warsaw&#34;
+	},
+	&#34;options&#34;: {
+		&#34;orientation&#34;: &#34;landscape&#34;,
+		&#34;layout&#34;: &#34;grid&#34;,
+	},
+	&#34;enableDashboardUrl&#34;: true,
+	&#34;state&#34;: &#34;scheduled&#34;,
+	&#34;dashboards&#34;: [
+		{
+			&#34;dashboard&#34;: {
+				&#34;id&#34;: 463,
+				&#34;uid&#34;: &#34;7MeksYbmk&#34;,
+				&#34;name&#34;: &#34;Alerting with TestData&#34;
+			},
+			&#34;timeRange&#34;: {
+				&#34;from&#34;: &#34;&#34;,
+				&#34;to&#34;: &#34;&#34;
+			},
+			&#34;reportVariables&#34;: {
+				&#34;namefilter&#34;: &#34;TestData&#34;
+			}
+		}
+	],
+	&#34;formats&#34;: [
+		&#34;pdf&#34;,
+		&#34;csv&#34;
+	],
+	&#34;created&#34;: &#34;2022-09-12T11:44:42+02:00&#34;,
+	&#34;updated&#34;: &#34;2022-09-12T11:44:42+02:00&#34;
+}</pre>
+<h3 id="status-codes-1">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Bad request (invalid report ID).</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>403</strong> – Forbidden (access denied to a report or a dashboard used in the report).</li>
+<li><strong>404</strong> – Not found (such report does not exist).</li>
+<li><strong>500</strong> – Unexpected error or server misconfiguration. Refer to server logs for more details.</li>
+</ul>
+<h2 id="create-a-report">Create a report</h2>
+<p><code>POST /api/reports</code></p>
+<h4 id="required-permissions-2">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports:create</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-2">Example request</h3>
+<pre>POST /api/reports HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+	&#34;name&#34;: &#34;Report 4&#34;,
+	&#34;recipients&#34;: &#34;texample-report@grafana.com&#34;,
+	&#34;replyTo&#34;: &#34;&#34;,
+	&#34;message&#34;: &#34;Hello, please, find the report attached&#34;,
+	&#34;schedule&#34;: {
+		&#34;startDate&#34;: &#34;2022-10-02T10:00:00+02:00&#34;,
+		&#34;endDate&#34;: &#34;2022-11-02T20:00:00+02:00&#34;,
+		&#34;frequency&#34;: &#34;daily&#34;,
+		&#34;intervalFrequency&#34;: &#34;&#34;,
+		&#34;intervalAmount&#34;: 0,
+		&#34;workdaysOnly&#34;: true,
+		&#34;timeZone&#34;: &#34;Europe/Warsaw&#34;
+	},
+	&#34;options&#34;: {
+		&#34;orientation&#34;: &#34;landscape&#34;,
+		&#34;layout&#34;: &#34;grid&#34;
+	},
+	&#34;enableDashboardUrl&#34;: true,
+	&#34;dashboards&#34;: [
+		{
+			&#34;dashboard&#34;: {
+				&#34;uid&#34;: &#34;7MeksYbmk&#34;,
+			},
+			&#34;timeRange&#34;: {
+				&#34;from&#34;: &#34;2022-08-08T15:00:00+02:00&#34;,
+				&#34;to&#34;: &#34;2022-09-02T17:00:00+02:00&#34;
+			},
+			&#34;reportVariables&#34;: {
+				&#34;variable1&#34;: &#34;Value1&#34;
+			}
+		}
+	],
+	&#34;formats&#34;: [
+		&#34;pdf&#34;,
+		&#34;csv&#34;
+	]
+}</pre>
+<h4 id="config-json-body-schema">Config JSON Body Schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Data type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string</td>
+          <td>Name of the report that is used as an email subject.</td>
+      </tr>
+      <tr>
+          <td>recipients</td>
+          <td>string</td>
+          <td>Comma-separated list of emails to which to send the report to.</td>
+      </tr>
+      <tr>
+          <td>replyTo</td>
+          <td>string</td>
+          <td>Comma-separated list of emails used in a reply-to field of the report email.</td>
+      </tr>
+      <tr>
+          <td>message</td>
+          <td>string</td>
+          <td>Text message used for the body of the report email.</td>
+      </tr>
+      <tr>
+          <td>startDate</td>
+          <td>string</td>
+          <td>Report distribution starts from this date.</td>
+      </tr>
+      <tr>
+          <td>endDate</td>
+          <td>string</td>
+          <td>Report distribution ends on this date.</td>
+      </tr>
+      <tr>
+          <td>frequency</td>
+          <td>string</td>
+          <td>Specifies how often the report should be sent. Can be <code>once</code>, <code>hourly</code>, <code>daily</code>, <code>weekly</code>, <code>monthly</code>, <code>last</code> or <code>custom</code>.<br/><br/><code>last</code> - schedules the report for the last day of month.<br/><br/><code>custom</code> - schedules the report to be sent on a custom interval.<br/>It requires <code>intervalFrequency</code> and <code>intervalAmount</code> to be specified: for example, every 2 weeks, where 2 is an <code>intervalAmount</code> and <code>weeks</code> is an <code>intervalFrequency</code>.</td>
+      </tr>
+      <tr>
+          <td>intervalFrequency</td>
+          <td>string</td>
+          <td>The type of the <code>custom</code> interval: <code>hours</code>, <code>days</code>, <code>weeks</code>, <code>months</code>.</td>
+      </tr>
+      <tr>
+          <td>intervalAmount</td>
+          <td>number</td>
+          <td><code>custom</code> interval amount.</td>
+      </tr>
+      <tr>
+          <td>workdaysOnly</td>
+          <td>string</td>
+          <td>Send the report only on Monday-Friday. Applicable to <code>hourly</code> and <code>daily</code> types of schedule.</td>
+      </tr>
+      <tr>
+          <td>timeZone</td>
+          <td>string</td>
+          <td>Time zone used to schedule report execution.</td>
+      </tr>
+      <tr>
+          <td>orientation</td>
+          <td>string</td>
+          <td>Can be <code>portrait</code> or <code>landscape</code>.</td>
+      </tr>
+      <tr>
+          <td>layout</td>
+          <td>string</td>
+          <td>Can be <code>grid</code> or <code>simple</code>.</td>
+      </tr>
+      <tr>
+          <td>enableDashboardUrl</td>
+          <td>bool</td>
+          <td>Adds a dashboard url to the bottom of the report email.</td>
+      </tr>
+      <tr>
+          <td>formats</td>
+          <td>[]string</td>
+          <td>Specified what kind of attachment to generate for the report - <code>csv</code>, <code>pdf</code>, <code>image</code>.<br/><code>pdf</code> is the default one.<br/><code>csv</code> attaches a CSV file for each table panel.<br/><code>image</code> embeds an image of a dashboard into the email&rsquo;s body.</td>
+      </tr>
+      <tr>
+          <td>dashboards</td>
+          <td>[]object</td>
+          <td>Dashboards to generate a report for.<br/> See &ldquo;Report Dashboard Schema&rdquo; section below.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="report-dashboard-schema">Report Dashboard Schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Data type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>dashboard.uid</td>
+          <td>string</td>
+          <td>Dashboard <a href="../dashboard#identifier-id-vs-unique-identifier-uid">UID</a>.</td>
+      </tr>
+      <tr>
+          <td>timeRange.from</td>
+          <td>string</td>
+          <td>Dashboard time range from.</td>
+      </tr>
+      <tr>
+          <td>timeRange.to</td>
+          <td>string</td>
+          <td>Dashboard time range to.</td>
+      </tr>
+      <tr>
+          <td>reportVariables.<variableName></td>
+          <td>string</td>
+          <td>Key-value pairs containing the template variables for this report, in JSON format. If empty, the template variables from the report&rsquo;s dashboard will be used.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-response-2">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 35
+
+{
+	&#34;id&#34;: 4,
+	&#34;message&#34;: &#34;Report created&#34;
+}</pre>
+<h3 id="status-codes-2">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Bad request (invalid json, missing or invalid fields values, etc.).</li>
+<li><strong>403</strong> - Forbidden (access denied to a report or a dashboard used in the report).</li>
+<li><strong>500</strong> - Unexpected error or server misconfiguration. Refer to server logs for more details</li>
+</ul>
+<h2 id="update-a-report">Update a report</h2>
+<p><code>PUT /api/reports/:id</code></p>
+<h4 id="required-permissions-3">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports:write</td>
+          <td>reports:*</br>reports:id:*</br>reports:1(single report)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-3">Example request</h3>
+<p>See <a href="#config-json-body-schema">JSON body schema</a> for fields description.</p>
+<pre>GET /api/reports HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+	&#34;name&#34;: &#34;Updated Report&#34;,
+	&#34;recipients&#34;: &#34;example-report@grafana.com&#34;,
+	&#34;replyTo&#34;: &#34;&#34;,
+	&#34;message&#34;: &#34;Hello, please, find the report attached&#34;,
+	&#34;schedule&#34;: {
+		&#34;frequency&#34;: &#34;hourly&#34;,
+		&#34;timeZone&#34;: &#34;Africa/Cairo&#34;,
+		&#34;workdaysOnly&#34;: true,
+		&#34;startDate&#34;: &#34;2022-10-10T10:00:00+02:00&#34;,
+		&#34;endDate&#34;: &#34;2022-11-20T19:00:00+02:00&#34;
+	},
+	&#34;options&#34;: {
+		&#34;orientation&#34;: &#34;landscape&#34;,
+		&#34;layout&#34;: &#34;grid&#34;,
+	},
+	&#34;enableDashboardUrl&#34;: true,
+	&#34;state&#34;: &#34;scheduled&#34;,
+	&#34;dashboards&#34;: [
+		{
+			&#34;dashboard&#34;: {
+				&#34;id&#34;: 463,
+				&#34;uid&#34;: &#34;7MeksYbmk&#34;,
+				&#34;name&#34;: &#34;Alerting with TestData&#34;
+			},
+			&#34;timeRange&#34;: {
+				&#34;from&#34;: &#34;2022-08-08T15:00:00+02:00&#34;,
+				&#34;to&#34;: &#34;2022-09-02T17:00:00+02:00&#34;
+			},
+			&#34;reportVariables&#34;: {
+				&#34;variable1&#34;: &#34;Value1&#34;
+			}
+		}
+	],
+	&#34;formats&#34;: [
+		&#34;pdf&#34;,
+		&#34;csv&#34;
+	]
+}</pre>
+<h3 id="example-response-3">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 28
+
+{
+	&#34;message&#34;: &#34;Report updated&#34;
+}</pre>
+<h3 id="status-codes-3">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Bad request (invalid json, missing or invalid fields values, etc.).</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>403</strong> – Forbidden (access denied to a report or a dashboard used in the report).</li>
+<li><strong>404</strong> – Not found (such report does not exist).</li>
+<li><strong>500</strong> – Unexpected error or server misconfiguration. Refer to server logs for more details.</li>
+</ul>
+<h2 id="delete-a-report">Delete a report</h2>
+<p><code>DELETE /api/reports/:id</code></p>
+<h4 id="required-permissions-4">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports:delete</td>
+          <td>reports:*</br>reports:id:*</br>reports:1(single report)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-4">Example request</h3>
+<pre>DELETE /api/reports/6 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<h3 id="example-response-4">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 39
+
+{
+	&#34;message&#34;: &#34;Report config was removed&#34;
+}</pre>
+<h3 id="status-codes-4">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Bad request (invalid report ID).</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>404</strong> - Not found (report with this ID does not exist).</li>
+<li><strong>500</strong> - Unexpected error or server misconfiguration. Refer to server logs for more details</li>
+</ul>
+<h2 id="send-a-report">Send a report</h2>
+<p><code>POST /api/reports/email</code></p>
+<p>Generate and send a report. This API waits for the report to be generated before returning. We recommend that you set the client&rsquo;s timeout to at least 60 seconds.</p>
+<h4 id="required-permissions-5">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports:send</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-5">Example request</h3>
+<pre>POST /api/reports/email HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;id&#34;:&#34;3&#34;,
+  &#34;useEmailsFromReport&#34;: true
+}</pre>
+<h4 id="json-body-schema">JSON Body Schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Data type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>id</td>
+          <td>string</td>
+          <td>ID of the report to send. It is the same as in the URL when editing a report, not to be confused with the ID of the dashboard. Required.</td>
+      </tr>
+      <tr>
+          <td>emails</td>
+          <td>string</td>
+          <td>Comma-separated list of emails to which to send the report to. Overrides the emails from the report. Required if <code>useEmailsFromReport</code> is not present.</td>
+      </tr>
+      <tr>
+          <td>useEmailsFromReport</td>
+          <td>boolean</td>
+          <td>Send the report to the emails specified in the report. Required if <code>emails</code> is not present.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-response-5">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 29
+
+{&#34;message&#34;:&#34;Report was sent&#34;}</pre>
+<h3 id="status-codes-5">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – Report was sent.</li>
+<li><strong>400</strong> – Bad request (invalid json, missing content-type, missing or invalid fields, etc.).</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>403</strong> - Forbidden (access denied to a report or a dashboard used in the report).</li>
+<li><strong>404</strong> - Report not found.</li>
+<li><strong>500</strong> - Unexpected error or server misconfiguration. Refer to server logs for more details.</li>
+</ul>
+<h2 id="get-reports-branding-settings">Get reports branding settings</h2>
+<p><code>GET /api/reports/settings</code></p>
+<p>Returns reports branding settings that are global and used across all the reports.</p>
+<h4 id="required-permissions-6">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports.settings:read</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-6">Example request</h3>
+<pre>GET /api/reports/settings HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<h3 id="example-response-6">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 181
+
+{
+	&#34;id&#34;: 1,
+	&#34;userId&#34;: 1,
+	&#34;orgId&#34;: 1,
+	&#34;branding&#34;: {
+		&#34;reportLogoUrl&#34;: &#34;&#34;,
+		&#34;emailLogoUrl&#34;: &#34;&#34;,
+		&#34;emailFooterMode&#34;: &#34;sent-by&#34;,
+		&#34;emailFooterText&#34;: &#34;Grafana Labs&#34;,
+		&#34;emailFooterLink&#34;: &#34;/&#34;
+	}
+}</pre>
+<h3 id="status-codes-6">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>500</strong> - Unexpected error or server misconfiguration. Refer to server logs for more detail</li>
+</ul>
+<h2 id="save-reports-branding-settings">Save reports branding settings</h2>
+<p><code>POST /api/reports/settings</code></p>
+<p>Creates settings if they don&rsquo;t exist, otherwise updates them. These settings are global and used across all the reports.</p>
+<h4 id="required-permissions-7">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports.settings:write</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-7">Example request</h3>
+<pre>POST /api/reports/settings HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+	&#34;branding&#34;: {
+		&#34;reportLogoUrl&#34;: &#34;/reportLogo.jpg&#34;,
+		&#34;emailLogoUrl&#34;: &#34;/emailLogo.jpg&#34;,
+		&#34;emailFooterMode&#34;: &#34;sent-by&#34;,
+		&#34;emailFooterText&#34;: &#34;Grafana Labs&#34;,
+		&#34;emailFooterLink&#34;: &#34;/&#34;
+	}
+}</pre>
+<h4 id="json-body-schema-1">JSON Body Schema</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Data type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>branding.reportLogoUrl</td>
+          <td>string</td>
+          <td>URL of an image used as a logo on every page of the report.</td>
+      </tr>
+      <tr>
+          <td>branding.emailLogoUrl</td>
+          <td>string</td>
+          <td>URL of an image used as a logo in the email.</td>
+      </tr>
+      <tr>
+          <td>branding.emailFooterMode</td>
+          <td>string</td>
+          <td>Can be <code>sent-by</code> or <code>none</code>.<br/><code>sent-by</code> adds a &ldquo;Sent by <code>branding.emailFooterText</code>&rdquo; footer link to the email. Requires specifying values in the <code>branding.emailFooterText</code> and <code>branding.emailFooterLink</code> fields.<br/><code>none</code> suppresses adding a &ldquo;Sent by&rdquo; footer link to the email.</td>
+      </tr>
+      <tr>
+          <td>branding.emailFooterText</td>
+          <td>string</td>
+          <td>Text of a URL added to the email &ldquo;Sent by&rdquo; footer.</td>
+      </tr>
+      <tr>
+          <td>branding.emailFooterLink</td>
+          <td>string</td>
+          <td>URL address value added to the email &ldquo;Sent by&rdquo; footer.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-response-7">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 35
+
+{
+	&#34;message&#34;: &#34;Report settings saved&#34;
+}</pre>
+<h3 id="status-codes-7">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Bad request (invalid json, missing or invalid fields values, etc.).</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>500</strong> - Unexpected error or server misconfiguration. Refer to server logs for more detail</li>
+</ul>
+<h2 id="send-a-test-email">Send a test email</h2>
+<p><code>POST /api/reports/test-email</code></p>
+<p>Sends a test email with a report without persisting it in the database.</p>
+<h4 id="required-permissions-8">Required permissions</h4>
+<p>See note in the <a href="#reporting-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>reports:send</td>
+          <td>n/a</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example-request-8">Example request</h3>
+<p>See <a href="#config-json-body-schema">JSON body schema</a> for fields description.</p>
+<pre>POST /api/reports/test-email HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{{
+	&#34;name&#34;: &#34;Report 4&#34;,
+	&#34;recipients&#34;: &#34;example-report@grafana.com&#34;,
+	&#34;replyTo&#34;: &#34;&#34;,
+	&#34;message&#34;: &#34;Hello, please, find the report attached&#34;,
+	&#34;schedule&#34;: {
+		&#34;startDate&#34;: &#34;2022-10-02T10:00:00+02:00&#34;,
+		&#34;endDate&#34;: &#34;2022-11-02T20:00:00+02:00&#34;,
+		&#34;frequency&#34;: &#34;daily&#34;,
+		&#34;intervalFrequency&#34;: &#34;&#34;,
+		&#34;intervalAmount&#34;: 0,
+		&#34;workdaysOnly&#34;: true,
+		&#34;timeZone&#34;: &#34;Europe/Warsaw&#34;
+	},
+	&#34;options&#34;: {
+		&#34;orientation&#34;: &#34;landscape&#34;,
+		&#34;layout&#34;: &#34;grid&#34;
+	},
+	&#34;enableDashboardUrl&#34;: true,
+	&#34;dashboards&#34;: [
+		{
+			&#34;dashboard&#34;: {
+				&#34;uid&#34;: &#34;7MeksYbmk&#34;,
+			},
+			&#34;timeRange&#34;: {
+				&#34;from&#34;: &#34;2022-08-08T15:00:00+02:00&#34;,
+				&#34;to&#34;: &#34;2022-09-02T17:00:00+02:00&#34;
+			},
+			&#34;reportVariables&#34;: {
+				&#34;variable1&#34;: &#34;Value1&#34;
+			}
+		}
+	],
+	&#34;formats&#34;: [
+		&#34;pdf&#34;,
+		&#34;csv&#34;
+	]
+}</pre>
+<h3 id="example-response-8">Example response</h3>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 29
+
+{
+	&#34;message&#34;: &#34;Test email sent&#34;
+}</pre>
+<h3 id="status-codes-8">Status Codes</h3>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> – Bad request (invalid json, missing or invalid fields values, etc.).</li>
+<li><strong>401</strong> - Authentication failed, refer to <a href="/docs/grafana/latest/developers/http_api/auth/">Authentication API</a>.</li>
+<li><strong>403</strong> - Forbidden (access denied to a report or a dashboard used in the report).</li>
+<li><strong>500</strong> - Unexpected error or server misconfiguration. Refer to server logs for more details</li>
+</ul>

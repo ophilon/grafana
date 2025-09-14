@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<h1 id="alerting-template-language">Alerting template language</h1>
+<p>Notification templates and alert rule templates, such as annotations and labels, both use the Go template language, <a href="https://pkg.go.dev/text/template" target="_blank" rel="noopener noreferrer">text/template</a>.</p>
+<p>Both types of templates can use the same keywords, functions, and comparison operators of the Go template language, such as <code>range</code>, <code>if</code>, <code>and</code>, <code>index</code>, <code>eq</code>, and more.</p>
+<p>However, it&rsquo;s important to note that because notifications and alert rules operate in distinct context, some additional variables and functions are only available for either notification or alert rule templates. Refer to:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/">Annotation and label template reference</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/">Notification template reference</a></li>
+</ul>
+<p>This documentation provides an overview of the functions and operators of the Go template language that are available for both notification and alert rule templates.</p>
+<h2 id="print">Print</h2>
+<p>To print the value of something, use <code>{{</code> and <code>}}</code>. You can print the value of a <a href="#variables">variable</a>, a field of a variable, the result of a function, or the value of dot.</p>
+<pre>{{ $values }}
+{{ $values.A.Value }}
+{{ humanize 1000.0 }}
+{{ .Alerts }}</pre>
+<h2 id="dot">Dot</h2>
+<p>In <code>text/template</code>, there is a special cursor called dot, written as <code>.</code>. You can think of this cursor as a variable whose value changes depending on where in the template it is used.</p>
+<p>At the start of notification templates, dot (<code>.</code>) refers to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/#notification-data">Notification Data</a>.</p>
+<pre>{{ .Alerts }}</pre>
+<p>In annotation and label templates, dot (<code>.</code>) is initialized with all alert data. It’s recommended to use the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#variables"><code>$labels</code> and <code>$values</code> variables</a> instead to directly access the alert labels and query values.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Dot (<code>.</code>) might refer to something else when used in a <a href="#range">range</a>, a <a href="#with">with</a>, or when writing <a href="#templates">templates</a> used in other templates.</p></blockquote></div>
+
+
+
+<div data-shared="alerts/template-language.md">
+            <h2 id="if">If</h2>
+<p>You can use <code>if</code> statements in templates. For example, you can print <code>Variable empty</code> when a variable is empty:</p>
+<pre>{{ if $element }}
+Element value: {{$element}}
+{{ else }}
+Element is empty
+{{ end }}</pre>
+<h2 id="with">With</h2>
+<p><code>with</code> is similar to <code>if</code> statements, but unlike <code>if</code>, it updates dot(<code>.</code>) to refer to the value of the expression in <code>with</code>:</p>
+<pre>{{ with $array }}
+There are {{ len . }} item(s)
+{{ else }}
+There are no alerts
+{{ end }}</pre>
+<h2 id="range">Range</h2>
+<p><code>range</code> iterates over an array or map, and dot (<code>.</code>) is set to the current element of the array:</p>
+<pre>{{ range $array }}
+{{ .itemPropertyName }}
+{{ end }}</pre>
+<p>Optionally, you can handle empty objects using <code>else</code>:</p>
+<pre>{{ range $array }}
+  {{ .itemPropertyName }}
+{{ else }}
+  Empty array
+{{ end }}</pre>
+<p>You can also get the index of each item within a range by defining index and value variables at the start of the range:</p>
+<pre>{{ $num_items := len $array }}
+{{ range $index, $item := $array }}
+This is item {{ $index }} out of {{ $num_items }}
+{{ end }}</pre>
+<p>Additionally, you can use <code>{{break}}</code> to stop the remaining iterations or <code>{{continue}}</code> to stop the current iteration and continue with the next one.</p>
+<h2 id="functions">Functions</h2>
+<p>The global functions available in <code>text/template</code> are:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Function</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>and</code></td>
+          <td>Returns the boolean AND of its arguments by returning the first empty argument or the last argument.</td>
+      </tr>
+      <tr>
+          <td><code>call</code></td>
+          <td>Returns the result of calling the first argument, which must be a function, with the remaining arguments as parameters.</td>
+      </tr>
+      <tr>
+          <td><code>html</code></td>
+          <td>Returns the escaped HTML equivalent of the textual representation of its arguments.</td>
+      </tr>
+      <tr>
+          <td><code>index</code></td>
+          <td>Returns the result of indexing its first argument by the following arguments, e.g., <code>{{ index $labels &quot;instance&quot; }}</code> returns the <code>instance</code> key in the <code>$labels</code> map variable.</td>
+      </tr>
+      <tr>
+          <td><code>slice</code></td>
+          <td>Returns the result of slicing its first argument by the remaining arguments.</td>
+      </tr>
+      <tr>
+          <td><code>js</code></td>
+          <td>Returns the escaped JavaScript equivalent of the textual representation of its arguments.</td>
+      </tr>
+      <tr>
+          <td><code>len</code></td>
+          <td>Returns the integer length of its argument, e.g., <code>{{ len $array }}</code></td>
+      </tr>
+      <tr>
+          <td><code>not</code></td>
+          <td>Returns the boolean negation of its single argument.</td>
+      </tr>
+      <tr>
+          <td><code>or</code></td>
+          <td>Returns the boolean OR of its arguments by returning the first non-empty argument or the last argument.</td>
+      </tr>
+      <tr>
+          <td><code>print</code></td>
+          <td>An alias for fmt.Sprint</td>
+      </tr>
+      <tr>
+          <td><code>printf</code></td>
+          <td>An alias for fmt.Sprintf</td>
+      </tr>
+      <tr>
+          <td><code>println</code></td>
+          <td>An alias for fmt.Sprintln</td>
+      </tr>
+      <tr>
+          <td><code>urlquery</code></td>
+          <td>Returns the escaped value of the textual representation of its arguments in a form suitable for embedding in a URL query</td>
+      </tr>
+  </tbody>
+</table>
+<p>For more details, refer to the official documentation on <a href="https://pkg.go.dev/text/template#hdr-Functions" target="_blank" rel="noopener noreferrer">functions in <code>text/template</code></a>.</p>
+<h2 id="comparison-operators">Comparison operators</h2>
+<p>Boolean comparison operators are also available in <code>text/template</code>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Function</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>eq</code></td>
+          <td>Returns the boolean truth of arg1 == arg2</td>
+      </tr>
+      <tr>
+          <td><code>ne</code></td>
+          <td>Returns the boolean truth of arg1 != arg2</td>
+      </tr>
+      <tr>
+          <td><code>lt</code></td>
+          <td>Returns the boolean truth of arg1 &lt; arg2</td>
+      </tr>
+      <tr>
+          <td><code>le</code></td>
+          <td>Returns the boolean truth of arg1 &lt;= arg2</td>
+      </tr>
+      <tr>
+          <td><code>gt</code></td>
+          <td>Returns the boolean truth of arg1 &gt; arg2</td>
+      </tr>
+      <tr>
+          <td><code>ge</code></td>
+          <td>Returns the boolean truth of arg1 &gt;= arg2</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="variables">Variables</h2>
+<p>Variables in <code>text/template</code> must be created within the template. For example, you can create a variable with the current value of dot (<code>.</code>) and assign a string or another object to the variable like this:</p>
+<pre>{{ $variable := . }}
+{{ $variable := &#34;This is a test&#34; }}
+{{ $variable }}</pre>
+<p>This template outputs:</p>
+<pre>This is a test</pre>
+<h2 id="templates">Templates</h2>
+<p>You can create reusable templates that can be executed from other templates or within the same template.</p>
+<p>Define templates using <code>define</code> and the name of the template in double quotes:</p>
+<pre>{{ define &#34;print_labels&#34; }}
+{{ end }}</pre>
+<p>You should not define templates with the same name as other templates, including default templates such as <code>__subject</code>, <code>__text_values_list</code>, <code>__text_alert_list</code>, <code>default.title</code> and <code>default.message</code>. Where a template has been created with the same name as a default template, or a template in another notification template, Grafana might use either template. Grafana does not prevent, or show an error message, when there are two or more templates with the same name.</p>
+<h3 id="execute-templates">Execute templates</h3>
+<p>You can execute defined templates using <code>template</code>, the name of the template in double quotes, and the cursor that should be passed to the template:</p>
+<pre>{{ template &#34;print_labels&#34; . }}</pre>
+<p>Within a template dot refers to the value that is passed to the template.</p>
+<p>For example, if a template is passed a list of firing alerts then dot refers to that list of firing alerts:</p>
+<pre>{{ template &#34;print_alerts&#34; .Alerts }}</pre>
+<p>If the template is passed the sorted labels for an alert then dot refers to the list of sorted labels:</p>
+<pre>{{ template &#34;print_labels&#34; .SortedLabels }}</pre>
+<p>This is useful when writing reusable templates. For example, to print all alerts you might write the following:</p>
+<pre>{{ template &#34;print_alerts&#34; .Alerts }}</pre>
+<p>Then to print just the firing alerts you could write this:</p>
+<pre>{{ template &#34;print_alerts&#34; .Alerts.Firing }}</pre>
+<p>This works because both <code>.Alerts</code> and <code>.Alerts.Firing</code> is a list of alerts.</p>
+<pre>{{ define &#34;print_alerts&#34; }}
+{{ range . }}
+{{ template &#34;print_labels&#34; .SortedLabels }}
+{{ end }}
+{{ end }}</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You cannot create independent, reusable templates for labels and annotations as you can with notification templates. In alert rule templates, you need to write each template inline within the label or annotation field.</p></blockquote></div>
+
+<h2 id="comments">Comments</h2>
+<p>You can add comments with <code>{{/*</code> and <code>*/}}</code>:</p>
+<pre>{{/* This is a comment */}}</pre>
+<p>To avoid adding line breaks, use:</p>
+<pre>{{- /* This is a comment with no leading or trailing line breaks */ -}}</pre>
+<h2 id="indentation">Indentation</h2>
+<p>You can use indentation, both tabs and spaces, and line breaks, to make templates more readable:</p>
+<pre>{{ range .Alerts }}
+  {{ range .Labels.SortedPairs }}
+    {{ .Name }} = {{ .Value }}
+  {{ end }}
+{{ end }}</pre>
+<p>However, indentation in the template is also present in the text.</p>
+<h3 id="remove-spaces-and-line-breaks">Remove spaces and line breaks</h3>
+<p>In text/template use <code>{{-</code> and <code>-}}</code> to remove leading and trailing spaces and line breaks.</p>
+<p>For example, when using indentation and line breaks to make a template more readable:</p>
+<pre>{{ range .Alerts }}
+  {{ range .Labels.SortedPairs }}
+    {{ .Name }} = {{ .Value }}
+  {{ end }}
+{{ end }}</pre>
+<p>The indentation and line breaks are also present in the text:</p>
+<pre>    alertname = &#34;Test&#34;
+
+    grafana_folder = &#34;Test alerts&#34;</pre>
+<p>You can remove the indentation and line breaks from the text changing <code>}}</code> to <code>-}}</code> at the start of each range:</p>
+<pre>{{ range .Alerts -}}
+  {{ range .Labels.SortedPairs -}}
+    {{ .Name }} = {{ .Value }}
+  {{ end }}
+{{ end }}</pre>
+<p>The indentation and line breaks in the template are now absent from the text:</p>
+<pre>alertname = &#34;Test&#34;
+grafana_folder = &#34;Test alerts&#34;</pre>
+</div>
+
+        

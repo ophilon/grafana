@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v72">What&rsquo;s new in Grafana v7.2</h1>
+<p>This topic includes the release notes for the Grafana v7.2. For all details, read the full <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a>.</p>
+<p>The main highlights are:</p>
+<ul>
+<li><a href="#new=date-formatting-options-added"><strong>New date formatting options added</strong></a></li>
+<li><a href="#field-options-are-out-of-beta"><strong>Field options are out of beta!</strong></a>
+<ul>
+<li><a href="#added-table-column-filters"><strong>Added table column filters</strong></a></li>
+<li><a href="#new-field-override-selection-options"><strong>New field override selection options</strong></a></li>
+</ul>
+</li>
+<li><a href="#new-transformations-and-enhancements"><strong>New transformations and enhancements</strong></a></li>
+<li><a href="#drag-to-reorder-queries"><strong>Drag to reorder queries</strong></a></li>
+<li><a href="#inspect-queries-in-explore"><strong>Inspect queries in Explore</strong></a></li>
+<li><a href="#__rate_interval-for-prometheus"><strong>$__rate_interval for Prometheus</strong></a></li>
+<li><a href="#toggle-parsed-log-fields"><strong>Toggle parsed log fields</strong></a></li>
+<li><a href="#sensitive-alert-channel-settings-are-now-encrypted"><strong>Sensitive alert channel settings are now encrypted</strong></a></li>
+<li><a href="#grafana-enterprise-features"><strong>Grafana Enterprise features</strong></a>
+<ul>
+<li><a href="#report-time-range"><strong>Report time range</strong></a></li>
+<li><a href="#organization-wide-report-settings"><strong>Organization-wide report settings</strong></a></li>
+<li><a href="#report-grid-layout"><strong>Report grid layout</strong></a></li>
+</ul>
+</li>
+<li><a href="#whats-new-in-other-parts-of-the-grafana-ecosystem"><strong>What&rsquo;s new in other parts of the Grafana ecosystem</strong></a>
+<ul>
+<li><a href="#adx-azure-data-explorer-plugin"><strong>ADX (Azure Data Explorer) plugin</strong></a></li>
+<li><a href="#x-ray-data-source-plugin"><strong>X-Ray data source plugin</strong></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="new-date-formatting-options-added">New date formatting options added</h2>
+<p>You can now customize how dates are formatted in Grafana. Custom date formats apply to the time range picker, graphs, and other panel visualizations.</p>
+<p>This screenshot shows both a custom full date format with a 12 hour clock and am/pm suffix. The graph is also showing the same 12-hour clock format and a customized month and day format compared to the Grafana default <code>MM/DD</code> format.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v72/date_formats.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v72/date_formats.png"data-srcset="/static/img/docs/v72/date_formats.png?w=320 320w, /static/img/docs/v72/date_formats.png?w=550 550w, /static/img/docs/v72/date_formats.png?w=750 750w, /static/img/docs/v72/date_formats.png?w=900 900w, /static/img/docs/v72/date_formats.png?w=1040 1040w, /static/img/docs/v72/date_formats.png?w=1240 1240w, /static/img/docs/v72/date_formats.png?w=1920 1920w"
+          data-sizes="auto"alt="Custom date time formats"width="875"height="596"title="Custom date time formats"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v72/date_formats.png"
+            alt="Custom date time formats"width="875"height="596"title="Custom date time formats"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Custom date time formats</figcaption></a></figure>
+<p>Date formats are set for a Grafana instance by adjusting <a href="../../setup-grafana/configure-grafana/#date_formats">server-wide settings</a> in the Grafana configuration file. We hope to add org- and user-level settings in the future.</p>
+<pre>[date_formats]
+full_date = MMM Do, YYYY @ hh:mm:ss a
+interval_second = hh:mm:ss a
+interval_minute = hh:mm a
+interval_hour = MMM DD hh:mm a
+interval_day = MMM DD
+interval_month = YYYY-MM
+interval_year = YYYY</pre>
+<p>There is also experimental support to use the browser location and language to dynamically change the current date format for each user. This feature is disabled by default.</p>
+<p>The <a href="../../setup-grafana/configure-grafana/#date_formats">Configuration</a> topic has been updated as a result of this change.</p>
+<h2 id="field-options-are-out-of-beta">Field options are out of beta!</h2>
+<p>After lots of testing and user feedback, we removed the beta label from the configuration options in the Field and Override tabs. This release also includes the following feature enhancements.</p>
+<h3 id="added-table-column-filters">Added table column filters</h3>
+<p>You can now dynamically apply value filters to any table column. This option can be enabled for all columns or one specific column using an override rule.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v72/table_column_filters.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v72/table_column_filters.png"data-srcset="/static/img/docs/v72/table_column_filters.png?w=320 320w, /static/img/docs/v72/table_column_filters.png?w=550 550w, /static/img/docs/v72/table_column_filters.png?w=750 750w, /static/img/docs/v72/table_column_filters.png?w=900 900w, /static/img/docs/v72/table_column_filters.png?w=1040 1040w, /static/img/docs/v72/table_column_filters.png?w=1240 1240w, /static/img/docs/v72/table_column_filters.png?w=1920 1920w"
+          data-sizes="auto"alt="Table column filters"width="707"height="415"title="Table column filters"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v72/table_column_filters.png"
+            alt="Table column filters"width="707"height="415"title="Table column filters"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Table column filters</figcaption></a></figure>
+<p><a href="../../panels-visualizations/visualizations/table/#filter-table-columns">Filter table columns</a> has been added as a result of this feature.</p>
+<h3 id="new-field-override-selection-options">New field override selection options</h3>
+<p>You can now add override rules that use a regex matcher to choose which fields to apply rules to.</p>
+<h2 id="new-transformations-and-enhancements">New transformations and enhancements</h2>
+<p>Grafana 7.2 includes the following transformation enhancements:</p>
+<ul>
+<li>A new <a href="../../panels-visualizations/query-transform-data/transform-data/#group-by">Group By</a> transformation that allows you to group by multiple fields and add any number of aggregations for other fields.</li>
+<li>The <a href="../../panels-visualizations/query-transform-data/transform-data/#labels-to-fields">Labels to fields</a> transformation now allows you to pick one label and use that as the name of the value field.</li>
+<li>You can drag transformations to reorder them. Remember that transformations are processed in the order they are listed in the UI, so think before you move something!</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v72/transformations.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v72/transformations.gif"alt="Group by and reordering of transformations"width="900"height="543"title="Group by and reordering of transformations"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v72/transformations.gif"
+            alt="Group by and reordering of transformations"width="900"height="543"title="Group by and reordering of transformations"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Group by and reordering of transformations</figcaption></a></figure>
+<h2 id="drag-to-reorder-queries">Drag to reorder queries</h2>
+<p>The up and down arrows, which were previously the only way to change query order, have been removed. Instead, there is now a grab icon that allows you to drag and drop queries in a list to change their order.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v72/drag-queries.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v72/drag-queries.gif"alt="Drag to reorder queries"width="1496"height="532"title="Drag to reorder queries"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v72/drag-queries.gif"
+            alt="Drag to reorder queries"width="1496"height="532"title="Drag to reorder queries"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Drag to reorder queries</figcaption></a></figure>
+<p>The <a href="../../panels-visualizations/#add-a-query">Queries</a> topic has been updated as a result of this change.</p>
+<h2 id="inspect-queries-in-explore">Inspect queries in Explore</h2>
+<p>You can enjoy all the details query inspector gave you in dashboards now in Explore as well. You can open query inspector tab with the button next to query history. See <a href="../../explore/#query-inspector">Query inspector in Explore</a> for more details.</p>
+<h2 id="__rate_interval-for-prometheus">$__rate_interval for Prometheus</h2>
+<p>You can now use the new variable <code>$__rate_interval</code> in Prometheus for rate functions mainly. <code>$__rate_interval</code> in general is one scrape interval larger than <code>$__interval</code> but is never smaller than four times the scrape interval (which is 15s by default). See the <a href="../../datasources/prometheus/#using-__rate_interval-variable">Prometheus data source</a> for more details.</p>
+<h2 id="toggle-parsed-log-fields">Toggle parsed log fields</h2>
+<p>With this awesome contribution from one of our community members, you can now toggle parsed fields in Explore if your logs are structured in <code>json</code> or <code>logfmt</code>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v72/explore-toggle-parsed-fields.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v72/explore-toggle-parsed-fields.gif"alt="Toggling parsed fields in Explore"width="1280"height="720"title="Toggling parsed fields in Explore"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v72/explore-toggle-parsed-fields.gif"
+            alt="Toggling parsed fields in Explore"width="1280"height="720"title="Toggling parsed fields in Explore"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Toggling parsed fields in Explore</figcaption></a></figure>
+<p>The <a href="../../explore/#toggle-detected-fields">Toggle parsed fields</a> section has been added to <a href="../../explore/">Explore</a> as a result of this feature.</p>
+<h2 id="sensitive-alert-channel-settings-are-now-encrypted">Sensitive alert channel settings are now encrypted</h2>
+<p>Alert notification channels now store sensitive settings and secrets, such as API tokens and passwords, encrypted in the database.</p>
+<h2 id="grafana-enterprise-features">Grafana Enterprise features</h2>
+<p>These features are included in the Grafana Enterprise edition software.</p>
+<h3 id="report-and-export-dashboards-in-grid-layout">Report and export dashboards in grid layout</h3>
+<p>A new layout option is available when rendering reports: the grid layout. With this option, your report uses the panel layout from your dashboard, so that what you see is what you get. Learn more about the <a href="../../dashboards/share-dashboards-panels/#layout-and-orientation">grid layout</a> in the documentation.</p>
+<p>The grid layout is also available for the <a href="../../dashboards/share-dashboards-panels/#export-dashboard-as-pdf">Export dashboard as PDF</a> feature.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/reports_grid_landscape_preview.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/reports_grid_landscape_preview.png"data-srcset="/static/img/docs/enterprise/reports_grid_landscape_preview.png?w=320 320w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=550 550w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=750 750w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=900 900w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=1040 1040w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=1240 1240w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=1920 1920w"
+          data-sizes="auto"alt="Report in grid layout"width="1397"height="987"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reports_grid_landscape_preview.png"
+            alt="Report in grid layout"width="1397"height="987"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h3 id="report-time-range">Report time range</h3>
+<p>You can now generate a report with a different time range from the dashboard it is based on. This means that you no longer have to apply workarounds, such as copying dashboards or carefully aligning report generation with the end of the month, to generate reports that cover the period you want.</p>
+<p>For more information, refer to <a href="../../dashboards/share-dashboards-panels/#report-time-range">Reports time range</a>.</p>
+<h3 id="organization-wide-report-settings">Organization-wide report settings</h3>
+<p>You can now configure organization-wide report settings, such as report branding, in the Settings tab on the Reporting page. Settings are applied to all the reports of your current organization.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/reports_settings.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/reports_settings.png"data-srcset="/static/img/docs/enterprise/reports_settings.png?w=320 320w, /static/img/docs/enterprise/reports_settings.png?w=550 550w, /static/img/docs/enterprise/reports_settings.png?w=750 750w, /static/img/docs/enterprise/reports_settings.png?w=900 900w, /static/img/docs/enterprise/reports_settings.png?w=1040 1040w, /static/img/docs/enterprise/reports_settings.png?w=1240 1240w, /static/img/docs/enterprise/reports_settings.png?w=1920 1920w"
+          data-sizes="auto"alt="Reports settings"width="1128"height="1029"title="Reports settings"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reports_settings.png"
+            alt="Reports settings"width="1128"height="1029"title="Reports settings"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Reports settings</figcaption></a></figure>
+<p>For more information, refer to <a href="../../dashboards/share-dashboards-panels/#report-settings">Report settings</a>.</p>
+<h2 id="changelog">Changelog</h2>
+<p>Check out <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a> for a complete list of new features, changes, and bug fixes.</p>
+<h2 id="whats-new-in-other-parts-of-the-grafana-ecosystem">What&rsquo;s new in other parts of the Grafana ecosystem</h2>
+<h3 id="adx-azure-data-explorer-plugin">ADX (Azure Data Explorer) plugin</h3>
+<p>In collaboration with Microsoft, we have improved the usability of our ADX datasource plugin by adding a visual query builder. The goal is to make it easier for users, regardless of their previous knowledge of writing KQL (Kusto Query Language) queries, to query and visualize their data.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v72/adx-ds.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v72/adx-ds.png"data-srcset="/static/img/docs/v72/adx-ds.png?w=320 320w, /static/img/docs/v72/adx-ds.png?w=550 550w, /static/img/docs/v72/adx-ds.png?w=750 750w, /static/img/docs/v72/adx-ds.png?w=900 900w, /static/img/docs/v72/adx-ds.png?w=1040 1040w, /static/img/docs/v72/adx-ds.png?w=1240 1240w, /static/img/docs/v72/adx-ds.png?w=1920 1920w"
+          data-sizes="auto"alt="ADX visual query builder"width="2550"height="1542"title="ADX visual query builder"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v72/adx-ds.png"
+            alt="ADX visual query builder"width="2550"height="1542"title="ADX visual query builder"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">ADX visual query builder</figcaption></a></figure>
+<h3 id="x-ray-data-source-plugin">X-Ray data source plugin</h3>
+<p>We are pleased to announce our very first version of our data source plugin for AWS X-Ray. You can use this plugin to visualize traces, look at analytics tables, and see insight summaries. For more information, refer to the <a href="/grafana/plugins/grafana-x-ray-datasource">X-Ray data source</a> plugin page.</p>

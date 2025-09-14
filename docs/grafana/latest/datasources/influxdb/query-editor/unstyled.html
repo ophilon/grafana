@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<h1 id="influxdb-query-editor">InfluxDB query editor</h1>
+<p>Grafana&rsquo;s query editors are unique to each data source. For general information on Grafana query editors, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#query-editors">Query editors</a>. For general information on querying data sources in Grafana, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<p>The InfluxDB query editor is located on the 
+    <a href="/docs/grafana/latest/explore/">Explore page</a>. You can also access the InfluxDB query editor from a dashboard panel. Click the ellipsis in the upper right of the panel and select <strong>Edit</strong>.</p>
+<p>You can also use the query editor to retrieve <a href="#query-logs">log data</a> and <a href="#apply-annotations">annotate</a> visualizations.</p>
+<h2 id="choose-a-query-editing-mode">Choose a query editing mode</h2>
+<p>The InfluxDB data source has three different types of query editors, each corresponding to the query language selected in the 
+    <a href="/docs/grafana/latest/datasources/influxdb/configure-influxdb-data-source/#influxdb-configuration-options">data source configuration</a>:</p>
+<ul>
+<li><a href="#influxql-query-editor">InfluxQL</a></li>
+<li><a href="#sql-query-editor">SQL</a></li>
+<li><a href="#flux-query-editor">Flux</a></li>
+</ul>
+<p>Editor options vary based on query language.</p>
+<h2 id="influxql-query-editor">InfluxQL query editor</h2>
+<p>The InfluxQL query editor helps you select metrics and tags to create InfluxQL queries. There are two modes: <code>visual editor mode</code> and <code>raw query mode</code>. To switch between the two modes click the <strong>pencil icon</strong> in the upper right.</p>
+<p>Visual query editor mode contains the following components:</p>
+<ul>
+<li><strong>FROM</strong> - Select a measurement to query.</li>
+<li><strong>WHERE</strong> - Select filters by clicking the <strong>+ sign</strong>.</li>
+<li><strong>SELECT</strong> - Select fields and functions from the drop-down. You can add multiple fields and functions by clicking the <strong>+ sign</strong>.</li>
+<li><strong>GROUP BY</strong> - Select a tag from the drop-down menu.</li>
+<li><strong>TIMEZONE</strong> - <em>Optional</em> Group data by a specific timezone.</li>
+<li><strong>ORDER BY TIME</strong> - Sort data by time in either ascending or descending order.</li>
+<li><strong>LIMIT</strong> - <em>Optional</em> Limits the number of rows returned by the query.</li>
+<li><strong>SLIMIT</strong> - <em>Optional</em> Limits the number of series returned by the query. Refer to <a href="https://docs.influxdata.com/influxdb/cloud/query-data/influxql/explore-data/limit-and-slimit/#slimit-clause" target="_blank" rel="noopener noreferrer">SLIMIT clause</a> for more information on this option.</li>
+<li><strong>FORMAT AS</strong> - Select a format option from the drop-down menu.</li>
+<li><strong>ALIAS</strong> - Add an alias. Refer to <a href="#alias-patterns">Alias patterns</a> for more information.</li>
+</ul>
+<h3 id="raw-query-editor-mode">Raw query editor mode</h3>
+<p>You can write raw InfluxQL queries by switching to raw query mode. Click the pencil in the upper right of the query editor to switch modes. Note that when you switch to visual editor mode, you will lose any changes made in raw query mode.</p>
+<p>If you use raw query mode, your query must include <code>WHERE $timeFilter</code>. You should also provide a group by time and an aggregation function. Otherwise, InfluxDB may return hundreds of thousands of data points, potentially causing your browser to hang.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/influxdb/influxql-query-editor-8-0.png"
+  alt="InfluxQL query editor" width="633"
+     height="267"/></p>
+<h3 id="match-by-regular-expressions">Match by regular expressions</h3>
+<p>You can enter regular expressions for metric names or tag filter values.
+Wrap the regex pattern in forward slashes (<code>/</code>), as shown in this example: <code>/measurement/</code>.</p>
+<p>Grafana automatically adjusts the filter tag condition to use the InfluxDB regex match condition operator (<code>=~</code>).</p>
+<h3 id="field-and-aggregation-functions">Field and aggregation functions</h3>
+<p>In the <code>SELECT</code> row, you can specify which fields and functions to use.</p>
+<p>If you <strong>group by time</strong> you must use an aggregation function. Certain functions such as <code>derivative</code> also require an aggregation function.</p>
+<p>If you have the following:</p>
+<p><img
+  class="lazyload"
+  data-src="/static/img/docs/influxdb/select_editor.png"
+  alt="" width="657"
+     height="46"/></p>
+<p>The query editor input generates an InfluxDB <code>SELECT</code> clause:</p>
+<pre>SELECT derivative(mean(&#34;value&#34;), 10s) / 10 AS &#34;REQ/s&#34;
+FROM....</pre>
+<p>You can also use a * in a SELECT statement to select all fields.</p>
+<pre>SELECT * FROM &lt;measurement_name&gt;</pre>
+<h3 id="group-by-results">GROUP BY results</h3>
+<p>To group results by a tag, specify the tag in the <strong>GROUP BY</strong> row:</p>
+<ol>
+<li>Click the <strong>+ sign</strong> in the GROUP BY row.</li>
+<li>Select a tag from the drop-down.</li>
+</ol>
+<p>You can GROUP BY multiple options.</p>
+<p>To remove a GROUP BY option click the <strong>X icon</strong> next to the option.</p>
+<h3 id="alias-patterns">Alias patterns</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Alias pattern</th>
+          <th>Replaced with</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>$m</code></td>
+          <td>Measurement name.</td>
+      </tr>
+      <tr>
+          <td><code>$measurement</code></td>
+          <td>Measurement name.</td>
+      </tr>
+      <tr>
+          <td><code>$1</code> - <code>$9</code></td>
+          <td>Part of measurement name (if you separate your measurement name with dots).</td>
+      </tr>
+      <tr>
+          <td><code>$col</code></td>
+          <td>Column name.</td>
+      </tr>
+      <tr>
+          <td><code>$tag_exampletag</code></td>
+          <td>The value of the <code>exampletag</code> tag. The syntax is <code>$tag*yourTagName</code> and must start with <code>$tag*</code>. To use your tag as an alias in the ALIAS BY field, you must use the tag to group by in the query.</td>
+      </tr>
+  </tbody>
+</table>
+<p>You can also use the <code>[[tag_hostname]]</code> pattern replacement syntax.</p>
+<p>For example, entering the value <code>Host: [[tag_hostname]]</code> in the ALIAS BY field replaces it with the <code>hostname</code> tag value for each legend value.</p>
+<p>An example legend value is <code>Host: server1</code>.</p>
+<h2 id="sql-query-editor">SQL query editor</h2>
+<p>Grafana supports the <a href="https://docs.influxdata.com/influxdb/cloud-serverless/query-data/sql/" target="_blank" rel="noopener noreferrer">SQL query language</a> in <a href="https://www.influxdata.com/blog/introducing-influxdb-3-0/" target="_blank" rel="noopener noreferrer">InfluxDB v3.0</a> and higher.</p>
+<p>You construct your SQL query directly in the query editor.</p>
+<h3 id="macros">Macros</h3>
+<p>You can use macros in your query to automatically substitute them with values from Grafana&rsquo;s context.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Macro example</th>
+          <th>Replaced with</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>$__timeFrom</code></td>
+          <td>The start of the currently active time selection, such as <code>2020-06-11T13:31:00Z</code>.</td>
+      </tr>
+      <tr>
+          <td><code>$__timeTo</code></td>
+          <td>The end of the currently active time selection, such as <code>2020-06-11T14:31:00Z</code>.</td>
+      </tr>
+      <tr>
+          <td><code>$__timeFilter</code></td>
+          <td>The time range that applies the start and the end of currently active time selection.</td>
+      </tr>
+      <tr>
+          <td><code>$__interval</code></td>
+          <td>An interval string that corresponds to Grafana&rsquo;s calculated interval based on the time range of the active time selection, such as <code>5s</code>.</td>
+      </tr>
+      <tr>
+          <td><code>$__dateBin(&lt;column&gt;)</code></td>
+          <td>Applies <a href="https://docs.influxdata.com/influxdb/cloud-serverless/reference/sql/functions/time-and-date/#date_bin" target="_blank" rel="noopener noreferrer">date_bin</a> function. Column must be timestamp.</td>
+      </tr>
+      <tr>
+          <td><code>$__dateBinAlias(&lt;column&gt;)</code></td>
+          <td>Applies <a href="https://docs.influxdata.com/influxdb/cloud-serverless/reference/sql/functions/time-and-date/#date_bin" target="_blank" rel="noopener noreferrer">date_bin</a> function with suffix <code>_binned</code>. Column must be timestamp.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Examples:</p>
+<pre>// with macro
+1. SELECT * FROM cpu WHERE time &gt;= $__timeFrom AND time &lt;= $__timeTo
+2. SELECT * FROM cpu WHERE $__timeFilter(time)
+3. SELECT $__dateBin(time) from cpu
+
+// interpolated
+1. SELECT * FROM iox.cpu WHERE time &gt;= cast(&#39;2023-12-15T12:38:30Z&#39; as timestamp) AND time &lt;= cast(&#39;2023-12-15T18:38:30Z&#39; as timestamp)
+2. SELECT * FROM cpu WHERE time &gt;= &#39;2023-12-15T12:41:28Z&#39; AND time &lt;= &#39;2023-12-15T18:41:28Z&#39;
+3. SELECT date_bin(interval &#39;15 second&#39;, time, timestamp &#39;1970-01-01T00:00:00Z&#39;) from cpu</pre>
+<h2 id="flux-query-editor">Flux query editor</h2>
+<p>Grafana supports Flux when running InfluxDB v1.8 and higher.
+If your data source is 
+    <a href="/docs/grafana/latest/datasources/influxdb/configure-influxdb-data-source/">configured for Flux</a>, you can use
+the <a href="https://docs.influxdata.com/flux/v0/" target="_blank" rel="noopener noreferrer">Flux</a> in the query editor, which serves as
+a text editor for raw Flux queries with macro support.</p>
+<p>For more information and connection details, refer
+to <a href="https://github.com/influxdata/influxdb-client-go/#influxdb-18-api-compatibility" target="_blank" rel="noopener noreferrer">InfluxDB 1.8 API compatibility</a>.</p>
+<h3 id="use-macros">Use macros</h3>
+<p>You can enter macros in the query to replace them with values from Grafana&rsquo;s context.
+Macros support copying and pasting from <a href="https://www.influxdata.com/time-series-platform/chronograf/" target="_blank" rel="noopener noreferrer">Chronograf</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Macro example</th>
+          <th>Replaced with</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>v.timeRangeStart</code></td>
+          <td>The start of the currently active time selection, such as <code>2020-06-11T13:31:00Z</code>.</td>
+      </tr>
+      <tr>
+          <td><code>v.timeRangeStop</code></td>
+          <td>The end of the currently active time selection, such as <code>2020-06-11T14:31:00Z</code>.</td>
+      </tr>
+      <tr>
+          <td><code>v.windowPeriod</code></td>
+          <td>An interval string compatible with Flux that corresponds to Grafana&rsquo;s calculated interval based on the time range of the active time selection, such as <code>5s</code>.</td>
+      </tr>
+      <tr>
+          <td><code>v.defaultBucket</code></td>
+          <td>The data source configuration&rsquo;s &ldquo;Default Bucket&rdquo; setting.</td>
+      </tr>
+      <tr>
+          <td><code>v.organization</code></td>
+          <td>The data source configuration&rsquo;s &ldquo;Organization&rdquo; setting.</td>
+      </tr>
+  </tbody>
+</table>
+<p>For example, consider the following Flux query:</p>
+<pre>from(bucket: v.defaultBucket)
+  |&gt; range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |&gt; filter(fn: (r) =&gt; r[&#34;_measurement&#34;] == &#34;cpu&#34; or r[&#34;_measurement&#34;] == &#34;swap&#34;)
+  |&gt; filter(fn: (r) =&gt; r[&#34;_field&#34;] == &#34;usage_system&#34; or r[&#34;_field&#34;] == &#34;free&#34;)
+  |&gt; aggregateWindow(every: v.windowPeriod, fn: mean)
+  |&gt; yield(name: &#34;mean&#34;)</pre>
+<p>This Flux query is interpolated into the following query and sent to InfluxDB, with the interval and time period values changing according to the active time selection:</p>
+<pre>from(bucket: &#34;grafana&#34;)
+  |&gt; range(start: 2020-06-11T13:59:07Z, stop: 2020-06-11T14:59:07Z)
+  |&gt; filter(fn: (r) =&gt; r[&#34;_measurement&#34;] == &#34;cpu&#34; or r[&#34;_measurement&#34;] == &#34;swap&#34;)
+  |&gt; filter(fn: (r) =&gt; r[&#34;_field&#34;] == &#34;usage_system&#34; or r[&#34;_field&#34;] == &#34;free&#34;)
+  |&gt; aggregateWindow(every: 2s, fn: mean)
+  |&gt; yield(name: &#34;mean&#34;)</pre>
+<p>To view the interpolated version of a query with the Query inspector, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/panel-inspector/">Panel Inspector</a>.</p>
+<h2 id="query-logs">Query logs</h2>
+<p>You can query and display log data from InfluxDB in 
+    <a href="/docs/grafana/latest/explore/">Explore</a> and in the dashboard 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/logs/">Logs panel</a>.</p>
+<p>Select an InfluxDB data source in the Query editor. Under the <strong>Select measurement field</strong> next to the <strong>FROM</strong> section, choose a measurement containing your log data, then choose the appropriate fields that will display the log message. Add any additional filters by clicking the <strong>+ sign</strong> next to the <strong>WHERE</strong> field. Add additional conditions in the GROUP BY, ORDER BY and the rest of the options.</p>
+<p>After InfluxDB returns the results, the log panel displays log rows along with a bar chart. The x-axis represents time, while the y-axis shows the frequency or count.</p>
+<h2 id="apply-annotations">Apply annotations</h2>
+<p>
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/">Annotations</a> overlay rich event information on top of graphs.
+You can add annotation queries in the dashboard menu&rsquo;s <strong>Annotations view</strong>.</p>
+<p>For InfluxDB, your query <strong>must</strong> include <code>WHERE $timeFilter</code>.</p>
+<p>If you select only one column, you don&rsquo;t need to enter anything in the column mapping fields.</p>
+<p>The <strong>Tags</strong> field&rsquo;s value can be a comma-separated string.</p>
+<h3 id="annotation-query-example">Annotation query example</h3>
+<pre>SELECT title, description
+from events
+WHERE $timeFilter
+ORDER BY time ASC</pre>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<h1 id="use-variables-and-transformations-in-a-correlation">Use variables and transformations in a correlation</h1>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>This example walks through creating a link in a test data source but the same principles apply to any data source.</p>
+<p>The example emulates a scenario with two data sources:</p>
+<ul>
+<li>Logs containing lines in the format: “2020-01-01 10:00 level=error message=error service=app1.loginService” stored in a field named “msg”</li>
+<li>Metrics for application included in the service name of a log line (e.g. app1)</li>
+</ul>
+<p>Instructions below show how to set up a link that can run metrics query for the host included in each log line with provisioning and regex transformation. Additionally, a link with a query containing the full name of the service is set up to demonstrate the logfmt transformation.</p>
+<h2 id="use-variables-and-transformations-in-provisioning">Use variables and transformations in provisioning</h2>
+<ol>
+<li>
+<p>Add the following provisioning configuration to your Grafana:</p>
+<pre>datasources:
+  - name: Target
+    uid: test-target
+    type: testdata
+
+  - name: Source
+    uid: test-source
+    type: testdata
+  - name: Source
+    uid: test-source
+    type: testdata
+    correlations:
+      - targetUID: test-target
+        label: App metrics
+        description: Application HTTP request metrics
+        config:
+          type: query
+          target:
+            scenario_id: random_walk
+            alias: $${application}
+          field: msg
+          transformations:
+            - type: regex
+              field: msg
+              expression: service=(\w+)\.\w+
+              mapValue: application
+      - targetUID: test-target
+        label: Service metrics
+        description: Service metrics
+        config:
+          type: query
+          target:
+            scenario_id: random_walk
+            alias: $${service}
+          field: msg
+          transformations:
+            - type: logfmt
+              field: msg</pre>
+<p>Two data sources are created: Source (emulating logs data source) and Target (emulating metrics data source):</p>
+<ul>
+<li>A correlation called “App metrics” is created targeting the Target data source with its UID.
+<ul>
+<li>The label and description are provided as text</li>
+<li>Each correlation contains the following configuration:
+<ul>
+<li>Required correlation type (query)</li>
+<li>Target query matching test data source model</li>
+</ul>
+</li>
+<li>“App metrics” correlation contains the following configuration:
+<ul>
+<li>Alias is set to ${application} variable (note that in provisioning files $ is used to access environment variables so it has to be <a href="../../provisioning/#using-environment-variables">escaped</a>).</li>
+<li>Regular expression transformation is created to extract values from “msg” field
+<ul>
+<li>Regular expression transformation is used to capture the application name from the full name of the service stored in the log line.</li>
+<li>The output of the transformation is mapped to a variable called “application”.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>“Service metrics” correlation is created in a similar way but with logfmt transformation to break down log message and access full name of the service (e.g. “app1.loginService”).
+<ul>
+<li>For example, when a logline “2020-01-01 10:00 level=error message=error service=app1.loginService” is provided as the input, the transformation produces new variables: level, message, and service.</li>
+<li>“service” variable is used as the alias in the target query.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Navigate to Explore and open “Source” data source.</p>
+</li>
+<li>
+<p>Select the “Raw Frames” scenario and provide the following data frames to emulate returning log lines:</p>
+<pre>[
+  {
+    &#34;meta&#34;: {
+      &#34;preferredVisualisationType&#34;: &#34;logs&#34;
+    },
+    &#34;fields&#34;: [
+      {
+        &#34;name&#34;: &#34;time&#34;,
+        &#34;values&#34;: [1, 2]
+      },
+      {
+        &#34;name&#34;: &#34;msg&#34;,
+        &#34;values&#34;: [
+          &#34;level=error msg=error service=app1.loginService&#34;,
+          &#34;level=debug msg=info service=app2.userProfileService&#34;
+        ]
+      }
+    ]
+  }
+]</pre>
+</li>
+<li>
+<p>Run the query and open log details by clicking on the log line.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/correlations-in-logs-panel-10-0.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/correlations-in-logs-panel-10-0.png"data-srcset="/static/img/docs/correlations/correlations-in-logs-panel-10-0.png?w=320 320w, /static/img/docs/correlations/correlations-in-logs-panel-10-0.png?w=550 550w, /static/img/docs/correlations/correlations-in-logs-panel-10-0.png?w=750 750w, /static/img/docs/correlations/correlations-in-logs-panel-10-0.png?w=900 900w, /static/img/docs/correlations/correlations-in-logs-panel-10-0.png?w=1040 1040w, /static/img/docs/correlations/correlations-in-logs-panel-10-0.png?w=1240 1240w, /static/img/docs/correlations/correlations-in-logs-panel-10-0.png?w=1920 1920w"
+             data-sizes="auto"alt="Correlation links in Logs panel"width="1122"height="398"title="Correlation links in Logs panel"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/correlations-in-logs-panel-10-0.png"
+               alt="Correlation links in Logs panel"width="1122"height="398"title="Correlation links in Logs panel"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Correlation links in Logs panel</figcaption></a></figure>
+<p>A link “App metrics” and “Service metrics” show next to variables extracted out of the log line with transformations</p>
+</li>
+<li>
+<p>Click on the “App metrics” link.</p>
+</li>
+<li>
+<p>A split view is opened and the target query is run.</p>
+</li>
+<li>
+<p>Notice how the application name from the log line is filled in as the alias property in the target query.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/interpolated-target-query-10-0.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/interpolated-target-query-10-0.png"data-srcset="/static/img/docs/correlations/interpolated-target-query-10-0.png?w=320 320w, /static/img/docs/correlations/interpolated-target-query-10-0.png?w=550 550w, /static/img/docs/correlations/interpolated-target-query-10-0.png?w=750 750w, /static/img/docs/correlations/interpolated-target-query-10-0.png?w=900 900w, /static/img/docs/correlations/interpolated-target-query-10-0.png?w=1040 1040w, /static/img/docs/correlations/interpolated-target-query-10-0.png?w=1240 1240w, /static/img/docs/correlations/interpolated-target-query-10-0.png?w=1920 1920w"
+             data-sizes="auto"alt="Interpolated target query"width="1999"height="684"title="Interpolated target query"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/interpolated-target-query-10-0.png"
+               alt="Interpolated target query"width="1999"height="684"title="Interpolated target query"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Interpolated target query</figcaption></a></figure>
+<p>This allows you to run a specific query based on the source results:</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/target-query-results-10-0.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/target-query-results-10-0.png"data-srcset="/static/img/docs/correlations/target-query-results-10-0.png?w=320 320w, /static/img/docs/correlations/target-query-results-10-0.png?w=550 550w, /static/img/docs/correlations/target-query-results-10-0.png?w=750 750w, /static/img/docs/correlations/target-query-results-10-0.png?w=900 900w, /static/img/docs/correlations/target-query-results-10-0.png?w=1040 1040w, /static/img/docs/correlations/target-query-results-10-0.png?w=1240 1240w, /static/img/docs/correlations/target-query-results-10-0.png?w=1920 1920w"
+             data-sizes="auto"alt="Interpolated target query results"width="1999"height="1084"title="Interpolated target query results"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/target-query-results-10-0.png"
+               alt="Interpolated target query results"width="1999"height="1084"title="Interpolated target query results"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Interpolated target query results</figcaption></a></figure>
+</li>
+<li>
+<p>Go back to the source query and change raw frames’ preferred visualization type to “table” to see how links are displayed in a Table visualization.</p>
+<pre>[
+  {
+    &#34;meta&#34;: {
+      &#34;preferredVisualisationType&#34;: &#34;table&#34;
+    },
+    &#34;fields&#34;: [...]
+  }
+]</pre>
+</li>
+<li>
+<p>Run the query and notice how links are created in the Table cell:</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/correlations-in-table-10-0.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/correlations-in-table-10-0.png"data-srcset="/static/img/docs/correlations/correlations-in-table-10-0.png?w=320 320w, /static/img/docs/correlations/correlations-in-table-10-0.png?w=550 550w, /static/img/docs/correlations/correlations-in-table-10-0.png?w=750 750w, /static/img/docs/correlations/correlations-in-table-10-0.png?w=900 900w, /static/img/docs/correlations/correlations-in-table-10-0.png?w=1040 1040w, /static/img/docs/correlations/correlations-in-table-10-0.png?w=1240 1240w, /static/img/docs/correlations/correlations-in-table-10-0.png?w=1920 1920w"
+             data-sizes="auto"alt="Correlations links in table"width="1544"height="460"title="Correlations links in table"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/correlations-in-table-10-0.png"
+               alt="Correlations links in table"width="1544"height="460"title="Correlations links in table"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Correlations links in table</figcaption></a></figure>
+</li>
+</ol>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<h1 id="span-filters">Span filters</h1>
+<p>When working with traces, especially those comprising a vast number of spans, pinpointing specific spans of interest can be a daunting task.
+This is where span filtering comes in.
+Located above the trace view, span filters allow you to refine the spans displayed based on specific criteria.
+Whether you’re looking to identify spans from a certain service, those exceeding a particular duration, or spans tagged with specific attributes, span filtering streamlines the process.</p>
+<p>Using span filters, you can filter your spans in the trace timeline viewer. The more filters you add, the more specific are the filtered spans.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/tempo/screenshot-grafana-tempo-span-filters-v10-1.png"
+  alt="Screenshot of span filtering" width="833"
+     height="239"/></p>
+<p>You can add one or more of the following filters:</p>
+<ul>
+<li>Service name</li>
+<li>Span name</li>
+<li>Duration</li>
+<li>Tags (which include tags, process tags, and log fields)</li>
+</ul>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=VP2XV3IIc80" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="use-span-filters">Use span filters</h2>
+<p>You can access span filters from within the trace view. You can add one or more filters.
+The more filters you add, the more specific data that you are filtering.</p>
+<ol>
+<li>Expand a trace to view individual spans.</li>
+<li>Select a span to view the span details.</li>
+<li>Select <strong>Span Filters</strong> to display the available filters.</li>
+</ol>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo-span-filters-find.gif"
+  alt="Locate span filters in trace view" width="1384"
+     height="912"/></p>
+<p>Query results in the span view update as you select filters.</p>
+<h3 id="show-matches-only">Show matches only</h3>
+<p>For a more focused view, the <strong>Show matches only</strong> toggle ensures only the spans meeting your criteria are displayed. This is particularly useful when sifting through thousands of spans, allowing you to zero in on those that truly matter.
+For instance, if you’re keen on understanding why a specific request is lagging, or if you’re on the hunt for spans without a certain tag, span filtering is your go-to tool.
+It even lets you search for spans based on specific tag keys, like cluster.</p>
+<h3 id="remove-a-filter">Remove a filter</h3>
+<p>To remove a filter, select the <strong>X</strong> next to the line item.</p>

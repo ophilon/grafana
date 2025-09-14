@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<h1 id="send-a-support-bundle-to-grafana-labs-support">Send a support bundle to Grafana Labs support</h1>
+<p>When you encounter problems with your Grafana instance, you can send us a support bundle that contains information about your Grafana instance, including:</p>
+<ul>
+<li>Grafana version</li>
+<li>Installed plugins</li>
+<li>Grafana configuration</li>
+<li>Deployed database information and migrations</li>
+</ul>
+<blockquote>
+<p><strong>Note</strong>: The Support Bundle is available on Grafana instances running 9.5 and above.</p></blockquote>
+<h2 id="available-support-bundle-components">Available support bundle components</h2>
+<p>A support bundle can include any of the following components:</p>
+<ul>
+<li><strong>Usage statistics</strong>: Usage statistic for the Grafana instance</li>
+<li><strong>User information</strong>: A list of users of the Grafana instance</li>
+<li><strong>Database and Migration information</strong>: Database information and migration log</li>
+<li><strong>Plugin information</strong>: Plugin information for the Grafana instance</li>
+<li><strong>Basic information</strong>: Basic information about the Grafana instance (version, memory usage, and so on)</li>
+<li><strong>Settings</strong>: Settings for the Grafana instance</li>
+<li><strong>SAML</strong>: Healthcheck connection and metadata for SAML (only displayed if SAML is enabled)</li>
+<li><strong>LDAP</strong>: Healthcheck connection and metadata for LDAP (only displayed if LDAP is enabled)</li>
+<li><strong>OAuth2</strong>: Healthcheck connection and metadata for each OAuth2 Provider supporter (only displayed if OAuth provider is enabled)</li>
+</ul>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To follow these instructions, you need the following permissions:</p>
+<ul>
+<li>
+<p>In Grafana Cloud, you need the organization administrator role.</p>
+</li>
+<li>
+<p>In Grafana on-premises, you need the Grafana server administrator role.</p>
+<p>Note that you can set <code>server_admin_only</code> configuration option to <code>false</code> to allow organization administrators to access support bundles in Grafana on-premises.</p>
+</li>
+</ul>
+<h2 id="steps">Steps</h2>
+<p>To generate a support bundle and send the support bundle to Grafana Labs via a support ticket:</p>
+<ol>
+<li>
+<p>Click the Help icon.</p>
+</li>
+<li>
+<p>Click <strong>Support Bundles</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/troubleshooting/support-bundle.png"
+  alt="Support bundle panel" width="2876"
+     height="934"/></p>
+</li>
+<li>
+<p>Click <strong>New Support Bundle</strong>.</p>
+</li>
+<li>
+<p>Select the components that you want to include in the support bundle.</p>
+</li>
+<li>
+<p>Click <strong>Create</strong>.</p>
+</li>
+<li>
+<p>After the support bundle is ready, click <strong>Download</strong>.</p>
+<p>Grafana downloads the support bundle to an archive (tar.gz) file.</p>
+</li>
+<li>
+<p>Attach the archive (tar.gz) file to a support ticket that you send to Grafana Labs Technical Support.</p>
+</li>
+</ol>
+<h2 id="support-bundle-configuration">Support bundle configuration</h2>
+<p>You can configure the following settings for support bundles in the Grafana configuration file:</p>
+<pre>[support_bundles]
+# Enable support bundle creation (default: true)
+enabled = true
+# Only server admins can generate and view support bundles. When set to false, organization admins can generate and view support bundles (default: true)
+server_admin_only = true
+# If set, bundles will be encrypted with the provided public keys separated by whitespace
+public_keys = &#34;&#34;</pre>
+<h2 id="encrypting-a-support-bundle">Encrypting a support bundle</h2>
+<p>Support bundles can be encrypted with <a href="https://age-encryption.org" target="_blank" rel="noopener noreferrer">age</a> before they are sent to
+recipients. This is useful when you want to send a support bundle to Grafana through a
+channel that is not private.</p>
+<h3 id="generate-a-key-pair">Generate a key pair</h3>
+<p>Ensure <a href="https://github.com/FiloSottile/age#installation" target="_blank" rel="noopener noreferrer">age</a> is installed on your system.</p>
+<pre>$ age-keygen -o key.txt
+Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p</pre>
+<h3 id="support-bundle-encryption">Support bundle encryption</h3>
+<p>Ensure <a href="https://github.com/FiloSottile/age#installation" target="_blank" rel="noopener noreferrer">age</a> is installed on your system.</p>
+<p>Add the public key to the <code>public_keys</code> setting in the <code>support_bundle</code> section of the Grafana configuration file.</p>
+<pre>[support_bundles]
+public_keys = &#34;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&#34;</pre>
+<blockquote>
+<p>Multiple public keys can be defined by separating them with whitespace.
+All included public keys will be able to decrypt the support bundle.</p></blockquote>
+<p>Example:</p>
+<pre>[support_bundles]
+public_keys = &#34;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p age1yu8vzu554pv3klw46yhdv4raz36k5w3vy30lpxn46923lqngudyqvxacer&#34;</pre>
+<p>When you restart Grafana, new support bundles will be encrypted with the provided
+public keys. The support bundle file extension is <code>tar.gz.age</code>.</p>
+<h4 id="decrypt-a-support-bundle">Decrypt a support bundle</h4>
+<p>Ensure <a href="https://github.com/FiloSottile/age#installation" target="_blank" rel="noopener noreferrer">age</a> is installed on your system.</p>
+<p>Execute the following command to decrypt the support bundle:</p>
+<pre>age --decrypt -i keyfile -o output.tar.gz downloaded.tar.gz.age</pre>
+<p>Example:</p>
+<pre>age --decrypt -i key.txt -o data.tar.gz af6684b4-d613-4b31-9fc3-7cb579199bea.tar.gz.age</pre>

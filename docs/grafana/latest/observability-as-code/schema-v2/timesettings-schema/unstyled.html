@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<h1 id="timesettings"><code>timeSettings</code></h1>
+<p>The <code>TimeSettingsSpec</code> defines the default time configuration for the time picker and the refresh picker for the specific dashboard.</p>
+<p>Following is the JSON for default time settings:</p>
+<pre>  &#34;timeSettings&#34;: {
+    &#34;autoRefresh&#34;: &#34;&#34;,
+    &#34;autoRefreshIntervals&#34;: [
+      &#34;5s&#34;,
+      &#34;10s&#34;,
+      &#34;30s&#34;,
+      &#34;1m&#34;,
+      &#34;5m&#34;,
+      &#34;15m&#34;,
+      &#34;30m&#34;,
+      &#34;1h&#34;,
+      &#34;2h&#34;,
+      &#34;1d&#34;
+    ],
+    &#34;fiscalYearStartMonth&#34;: 0,
+    &#34;from&#34;: &#34;now-6h&#34;,
+    &#34;hideTimepicker&#34;: false,
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;to&#34;: &#34;now&#34;
+  },</pre>
+<p><code>timeSettings</code> consists of:</p>
+<ul>
+<li><a href="#timesettingsspec">TimeSettingsSpec</a></li>
+</ul>
+<h2 id="timesettingsspec"><code>TimeSettingsSpec</code></h2>
+<p>The following table explains the usage of the time settings JSON fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>timezone?</td>
+          <td>string. Timezone of dashboard. Accepted values are IANA TZDB zone ID, <code>browser</code>, or <code>utc</code>. Default is <code>browser</code>.</td>
+      </tr>
+      <tr>
+          <td>from</td>
+          <td>string. Start time range for dashboard. Accepted values are relative time strings like <code>now-6h</code> or absolute time strings like <code>2020-07-10T08:00:00.000Z</code>. Default is <code>now-6h</code>.</td>
+      </tr>
+      <tr>
+          <td>to</td>
+          <td>string. End time range for dashboard. Accepted values are relative time strings like <code>now-6h</code> or absolute time strings like <code>2020-07-10T08:00:00.000Z</code>. Default is <code>now</code>.</td>
+      </tr>
+      <tr>
+          <td>autoRefresh</td>
+          <td>string. Refresh rate of dashboard. Represented by interval string. For example: <code>5s</code>, <code>1m</code>, <code>1h</code>, <code>1d</code>. No default. In schema v1: <code>refresh</code>.</td>
+      </tr>
+      <tr>
+          <td>autoRefreshIntervals</td>
+          <td>string. Interval options available in the refresh picker drop-down menu. The default array is <code>[&quot;5s&quot;, &quot;10s&quot;, &quot;30s&quot;, &quot;1m&quot;, &quot;5m&quot;, &quot;15m&quot;, &quot;30m&quot;, &quot;1h&quot;, &quot;2h&quot;, &quot;1d&quot;]</code>.</td>
+      </tr>
+      <tr>
+          <td>quickRanges?</td>
+          <td>Selectable options available in the time picker drop-down menu. Has no effect on provisioned dashboard. Defined in the <a href="#timerangeoption"><code>TimeRangeOption</code></a> spec. In schema v1: <code>timepicker.quick_ranges</code>, not exposed in the UI.</td>
+      </tr>
+      <tr>
+          <td>hideTimepicker</td>
+          <td>bool. Whether or not the time picker is visible. Default is <code>false</code>. In schema v1: <code>timepicker.hidden</code>.</td>
+      </tr>
+      <tr>
+          <td>weekStart?</td>
+          <td>Day when the week starts. Expressed by the name of the day in lowercase. For example: <code>monday</code>. Options are <code>saturday</code>, <code>monday</code>, and <code>sunday</code>.</td>
+      </tr>
+      <tr>
+          <td>fiscalYearStartMonth</td>
+          <td>The month that the fiscal year starts on. <code>0</code> = January, <code>11</code> = December</td>
+      </tr>
+      <tr>
+          <td>nowDelay?</td>
+          <td>string. Override the &ldquo;now&rdquo; time by entering a time delay. Use this option to accommodate known delays in data aggregation to avoid null values. In schema v1: <code>timepicker.nowDelay</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="timerangeoption"><code>TimeRangeOption</code></h3>
+<p>The following table explains the usage of the time range option JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>display</td>
+          <td>string. Default is <code>Last 6 hours</code>.</td>
+      </tr>
+      <tr>
+          <td>from</td>
+          <td>string. Default is <code>now-6h</code>.</td>
+      </tr>
+      <tr>
+          <td>to</td>
+          <td>string. Default is <code>now</code>.</td>
+      </tr>
+  </tbody>
+</table>

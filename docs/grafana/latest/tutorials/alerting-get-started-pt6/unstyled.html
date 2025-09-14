@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!-- INTERACTIVE page intro.md START -->
+<p>This tutorial is a continuation of the <a href="http://www.grafana.com/tutorials/alerting-get-started-pt5/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting - Route alerts using dynamic labels</a> tutorial.</p>
+<!-- USE CASE -->
+<p>In this tutorial you will learn how to:</p>
+<ul>
+<li>Link alert rules to time series panels for better visualization</li>
+<li>View alert annotations directly on dashboards for better context</li>
+<li>Write Prometheus queries</li>
+</ul>
+<!-- INTERACTIVE page intro.md END -->
+<!-- INTERACTIVE page step1.md START -->
+<!-- INTERACTIVE ignore START -->
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>
+<p><strong>Interactive learning environment</strong></p>
+<ul>
+<li>Alternatively, you can <a href="https://killercoda.com/grafana-labs/course/grafana/alerting-get-started-pt6/" target="_blank" rel="noopener noreferrer">try out this example in our interactive learning environment</a>. It’s a fully configured environment with all the dependencies already installed.</li>
+</ul>
+</li>
+<li>
+<p><strong>Grafana OSS</strong></p>
+<ul>
+<li>If you opt to run a Grafana stack locally, ensure you have the following applications installed:
+<ul>
+<li>Docker Compose (included in Docker for Desktop for macOS and Windows)</li>
+<li>Git</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- INTERACTIVE ignore END -->
+<h3 id="set-up-the-grafana-stack">Set up the Grafana stack</h3>
+<p>To observe data using the Grafana stack, download and run the following files.</p>
+<ol>
+<li>
+<p>Clone the <a href="https://github.com/tonypowa/grafana-prometheus-alerting-demo.git" target="_blank" rel="noopener noreferrer">tutorial environment repository</a>.</p>
+<pre>git clone https://github.com/tonypowa/grafana-prometheus-alerting-demo.git</pre>
+</li>
+<li>
+<p>Change to the directory where you cloned the repository:</p>
+<pre>cd grafana-prometheus-alerting-demo</pre>
+</li>
+<li>
+<p>Build the Grafana stack:</p>
+<!-- INTERACTIVE ignore START -->
+<pre>docker compose build</pre>
+<!-- INTERACTIVE ignore END -->
+
+</li>
+<li>
+<p>Bring up the containers:</p>
+ <!-- INTERACTIVE ignore START -->
+<pre>docker compose up -d</pre>
+<!-- INTERACTIVE ignore END -->
+
+<p>The first time you run <code>docker compose up -d</code>, Docker downloads all the necessary resources for the tutorial. This might take a few minutes, depending on your internet connection.</p>
+</li>
+</ol>
+ <!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you already have Grafana, Loki, or Prometheus running on your system, you might see errors, because the Docker image is trying to use ports that your local installations are already using. If this is the case, stop the services, then run the command again.</p></blockquote></div>
+
+   <!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page step1.md END -->
+<!-- INTERACTIVE page step2.md START -->
+<h2 id="use-case-monitoring-and-alerting-for-system-health-with-prometheus-and-grafana">Use case: monitoring and alerting for system health with Prometheus and Grafana</h2>
+<p>In this use case, we focus on monitoring the system&rsquo;s CPU, memory, and disk usage as part of a monitoring setup. The <a href="https://github.com/tonypowa/grafana-prometheus-alerting-demo" target="_blank" rel="noopener noreferrer">demo app</a>, launches a stack that includes a Python script to simulate metrics, which Grafana collects and visualizes as a time-series visualization.</p>
+<p>The script simulates random CPU and memory usage values (10% to 100%) every <strong>10 seconds</strong> and exposes them as Prometheus metrics.</p>
+<h3 id="objective">Objective</h3>
+<p>You&rsquo;ll build a time series visualization to monitor CPU and memory usage, define alert rules with threshold-based conditions, and link those alerts to your dashboards to display real-time annotations when thresholds are breached.</p>
+<!-- INTERACTIVE page step2.md END -->
+<!-- INTERACTIVE page step3.md START -->
+<h2 id="step-1-create-a-visualization-to-monitor-metrics">Step 1: Create a visualization to monitor metrics</h2>
+<p>To keep track of these metrics you can set up a visualization for CPU usage and memory consumption. This will make it easier to see how the system is performing.</p>
+<p>The time-series visualization supports alert rules to provide more context in the form of annotations and alert rule state. Follow these steps to create a visualization to monitor the application’s metrics.</p>
+<ol>
+<li>
+<p>Log in to Grafana:</p>
+<ul>
+<li>Navigate to <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a>, where Grafana should be running.</li>
+<li>Username and password: <code>admin</code></li>
+</ul>
+</li>
+<li>
+<p>Create a time series panel:</p>
+<ul>
+<li>Navigate to <strong>Dashboards</strong>.</li>
+<li>Click <strong>+ Create dashboard</strong>.</li>
+<li>Click <strong>+ Add visualization</strong>.</li>
+<li>Select <strong>Prometheus</strong> as the data source (provided with the demo).</li>
+<li>Enter a title for your panel, e.g., <strong>CPU and Memory Usage</strong>.</li>
+</ul>
+</li>
+<li>
+<p>Add queries for metrics:</p>
+<ul>
+<li>
+<p>In the query area, copy and paste the following PromQL query:</p>
+<p>** switch to <strong>Code</strong> mode if not already selected **</p>
+<pre>flask_app_cpu_usage{instance=&#34;flask-prod:5000&#34;}</pre>
+</li>
+<li>
+<p>Click <strong>Run queries</strong>.</p>
+</li>
+</ul>
+<p>This query should display the simulated CPU usage data for the <strong>prod</strong> environment.</p>
+</li>
+<li>
+<p>Add memory usage query:</p>
+<ul>
+<li>
+<p>Click <strong>+ Add query</strong>.</p>
+</li>
+<li>
+<p>In the query area, paste the following PromQL query:</p>
+<pre>flask_app_memory_usage{instance=&#34;flask-prod:5000&#34;}</pre>
+</li>
+</ul>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/cpu-mem-dash.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/cpu-mem-dash.png"data-srcset="/media/docs/alerting/cpu-mem-dash.png?w=320 320w, /media/docs/alerting/cpu-mem-dash.png?w=550 550w, /media/docs/alerting/cpu-mem-dash.png?w=750 750w, /media/docs/alerting/cpu-mem-dash.png?w=900 900w, /media/docs/alerting/cpu-mem-dash.png?w=1040 1040w, /media/docs/alerting/cpu-mem-dash.png?w=1240 1240w, /media/docs/alerting/cpu-mem-dash.png?w=1920 1920w"
+             data-sizes="auto"alt="Time-series panel displaying CPU and memory usage metrics in production."width="1114"height="670"title="Time-series panel displaying CPU and memory usage metrics in production."/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/cpu-mem-dash.png"
+               alt="Time-series panel displaying CPU and memory usage metrics in production."width="1114"height="670"title="Time-series panel displaying CPU and memory usage metrics in production."/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Time-series panel displaying CPU and memory usage metrics in production.</figcaption></a></figure>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>. Name it: <code>cpu-and-memory-metrics</code>.</p>
+</li>
+</ol>
+<p>We have our time-series panel ready. Feel free to combine metrics with labels such as <code>flask_app_cpu_usage{instance=“flask-staging:5000”}</code>, or other labels like <code>deployment</code>.</p>
+<!-- INTERACTIVE page step3.md END -->
+<!-- INTERACTIVE page step4.md START -->
+<h2 id="step-2-create-alert-rules">Step 2: Create alert rules</h2>
+<p>Follow these steps to manually create alert rules and link them to a visualization.</p>
+<h2 id="create-an-alert-rule-for-cpu-usage">Create an alert rule for CPU usage</h2>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM &gt; Alerting &gt; Alert rules</strong> from the Grafana sidebar.</li>
+<li>Click <strong>+ New alert rule</strong> rule to create a new alert.</li>
+</ol>
+<h3 id="enter-alert-rule-name">Enter alert rule name</h3>
+<p>Make it short and descriptive, as this will appear in your alert notification. For instance, <code>cpu-usage</code> .</p>
+<h3 id="define-query-and-alert-condition">Define query and alert condition</h3>
+<ol>
+<li>
+<p>Select <strong>Prometheus</strong> data source from the drop-down menu.</p>
+</li>
+<li>
+<p>In the query section, enter the following query:</p>
+<p>** switch to <strong>Code</strong> mode if not already selected **</p>
+<pre>flask_app_cpu_usage{instance=&#34;flask-prod:5000&#34;}</pre>
+</li>
+<li>
+<p><strong>Alert condition</strong></p>
+<ul>
+<li>
+<p>Enter 75 as the value for <strong>WHEN QUERY IS ABOVE</strong> to set the threshold for the alert.</p>
+</li>
+<li>
+<p>Click <strong>Preview alert rule condition</strong> to run the queries.</p>
+<figure
+         class="figure-wrapper figure-wrapper__lightbox w-100p "
+         style="max-width: 1200px;"
+         itemprop="associatedMedia"
+         itemscope=""
+         itemtype="http://schema.org/ImageObject"
+       ><a
+             class="lightbox-link captioned"
+             href="/media/docs/alerting/alert-condition-details-prod.png"
+             itemprop="contentUrl"
+           ><div class="img-wrapper w-100p h-auto"><img
+               class="lazyload mb-0"
+               data-src="/media/docs/alerting/alert-condition-details-prod.png"data-srcset="/media/docs/alerting/alert-condition-details-prod.png?w=320 320w, /media/docs/alerting/alert-condition-details-prod.png?w=550 550w, /media/docs/alerting/alert-condition-details-prod.png?w=750 750w, /media/docs/alerting/alert-condition-details-prod.png?w=900 900w, /media/docs/alerting/alert-condition-details-prod.png?w=1040 1040w, /media/docs/alerting/alert-condition-details-prod.png?w=1240 1240w, /media/docs/alerting/alert-condition-details-prod.png?w=1920 1920w"
+               data-sizes="auto"alt="Preview of a query returning alert instances in Grafana."width="1273"height="649"title="Preview of a query returning alert instances in Grafana."/>
+             <noscript>
+               <img
+                 src="/media/docs/alerting/alert-condition-details-prod.png"
+                 alt="Preview of a query returning alert instances in Grafana."width="1273"height="649"title="Preview of a query returning alert instances in Grafana."/>
+             </noscript></div><figcaption class="w-100p caption text-gray-13  ">Preview of a query returning alert instances in Grafana.</figcaption></a></figure>
+</li>
+</ul>
+<p>The query returns the CPU usage of the Flask application in the production environment. In this case, the usage is <code>86.01%</code>, which exceeds the configured threshold of <code>75%</code>, causing the alert to fire.</p>
+</li>
+</ol>
+<!-- INTERACTIVE page step4.md END -->
+<!-- INTERACTIVE page step5.md START -->
+<h3 id="add-folders-and-labels">Add folders and labels</h3>
+<ol>
+<li>In <strong>Folder</strong>, click <strong>+ New folder</strong> and enter a name. For example: <code>system-metrics</code> . This folder contains our alert rules.</li>
+</ol>
+<h3 id="set-evaluation-behaviour">Set evaluation behaviour</h3>
+<ol>
+<li>Click + <strong>New evaluation group</strong>. Name it <code>system-usage</code>.</li>
+<li>Choose an <strong>Evaluation interval</strong> (how often the alert will be evaluated). Choose <code>1m</code>.</li>
+<li>Set the <strong>pending period</strong> to <code>0s</code> (None), so the alert rule fires the moment the condition is met (this minimizes the waiting time for the demonstration.).</li>
+<li>Set <strong>Keep firing for</strong> to, <code>0s</code>, so the alert stops firing immediately after the condition is no longer true.</li>
+</ol>
+<h3 id="configure-notifications">Configure notifications</h3>
+<ul>
+<li>
+<p>Select a <strong>Contact point</strong>. If you don’t have any contact points, add a <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/#add-a-contact-point">Contact point</a>.</p>
+<p>For a quick test, you can use a public webhook from <a href="https://webhook.site/" target="_blank" rel="noopener noreferrer">webhook.site</a> to capture and inspect alert notifications. If you choose this method, select <strong>Webhook</strong> from the drop-down menu in contact points.</p>
+</li>
+</ul>
+<h3 id="configure-notification-message">Configure notification message</h3>
+<p>To link this alert rule to our visualization click <a href="/docs/grafana/latest/alerting/alerting-rules/link-alert-rules-to-panels/#link-alert-rules-to-panels"><strong>Link dashboard and panel</strong></a></p>
+<ul>
+<li>Select the folder that contains the dashboard. In this case: <strong>system-metrics</strong></li>
+<li>Select the <strong>cpu-and-memory-metrics</strong> visualization</li>
+<li>Click <strong>confirm</strong></li>
+</ul>
+<p>You have successfully linked this alert rule to your visualization!</p>
+<p>When the CPU usage exceeds the defined threshold, an annotation should appear on the graph to mark the event. Similarly, when the alert is resolved, another annotation is added to indicate the moment it returned to normal.</p>
+<p>Try adding a second alert rule using the memory usage metric (<code>flask_app_memory_usage{instance=&quot;flask-prod:5000&quot;</code>}) to see how combining multiple alerts can enhance your dashboard.</p>
+<p>Check how your dashboard looks now that your alert has been linked to your dashboard panel.</p>
+<!-- INTERACTIVE page step5.md END -->
+<!-- INTERACTIVE page step6.md START -->
+<h2 id="step-3-visualizing-metrics-and-alert-annotations">Step 3: Visualizing metrics and alert annotations</h2>
+<p>After the alert rules are linked to visualization, they should appear as <strong>health indicators</strong> (colored heart icons: a red heart when the alert is in <strong>Alerting</strong> state, and a green heart when in <strong>Normal</strong> state) on the linked panel. In addition, annotations provide helpful context, such as the time the alert was triggered.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alert-in-panel.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alert-in-panel.png"data-srcset="/media/docs/alerting/alert-in-panel.png?w=320 320w, /media/docs/alerting/alert-in-panel.png?w=550 550w, /media/docs/alerting/alert-in-panel.png?w=750 750w, /media/docs/alerting/alert-in-panel.png?w=900 900w, /media/docs/alerting/alert-in-panel.png?w=1040 1040w, /media/docs/alerting/alert-in-panel.png?w=1240 1240w, /media/docs/alerting/alert-in-panel.png?w=1920 1920w"
+          data-sizes="auto"alt="Time series panel displaying health indicators and annotations."width="882"height="436"title="Time series panel displaying health indicators and annotations."/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-in-panel.png"
+            alt="Time series panel displaying health indicators and annotations."width="882"height="436"title="Time series panel displaying health indicators and annotations."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Time series panel displaying health indicators and annotations.</figcaption></a></figure>
+<!-- INTERACTIVE page step6.md END -->
+<!-- INTERACTIVE page step7.md START -->
+<h2 id="step-4-receiving-notifications">Step 4: Receiving notifications</h2>
+<p>Finally, as part of the alerting process, you should receive notifications at the associated contact point. If you&rsquo;re receiving alerts via email, the default email template will include two buttons:</p>
+<ul>
+<li>
+<p><strong>View dashboard</strong>: links to the dashboard that contains the alerting panel</p>
+</li>
+<li>
+<p><strong>View panel</strong>: links directly to the individual panel where the alert was triggered</p>
+</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/email-notification-w-url.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/email-notification-w-url.png"data-srcset="/media/docs/alerting/email-notification-w-url.png?w=320 320w, /media/docs/alerting/email-notification-w-url.png?w=550 550w, /media/docs/alerting/email-notification-w-url.png?w=750 750w, /media/docs/alerting/email-notification-w-url.png?w=900 900w, /media/docs/alerting/email-notification-w-url.png?w=1040 1040w, /media/docs/alerting/email-notification-w-url.png?w=1240 1240w, /media/docs/alerting/email-notification-w-url.png?w=1920 1920w"
+          data-sizes="auto"alt="Alert notification with links to panel and dashboard."width="1266"height="1152"title="Alert notification with links to panel and dashboard."/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/email-notification-w-url.png"
+            alt="Alert notification with links to panel and dashboard."width="1266"height="1152"title="Alert notification with links to panel and dashboard."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Alert notification with links to panel and dashboard.</figcaption></a></figure>
+<p>Clicking either button opens Grafana with a pre-applied time range relevant to the alert.</p>
+<p>By default, this URL includes <code>from</code> and <code>to</code> query <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/#alert">parameters</a> that reflect the time window around the alert event (one hour before and after the alert). This helps you land directly in the time window where the alert occurred, making it easier to analyze what happened.</p>
+<p>If you want to define a more intentional time range, you can customize your notifications using a <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/examples/#print-a-link-to-a-dashboard-with-time-range">notification template</a>. With a template, you can explicitly set <code>from</code> and <code>to</code> values for more precise control over what users see when they follow the dashboard link. The final URL is constructed using a custom annotation (e.g., <code>MyDashboardURL</code>) along with the <code>from</code> and <code>to</code> parameters, which are calculated in the notification template.</p>
+<!-- INTERACTIVE page step7.md END -->
+<!-- INTERACTIVE page finish.md START -->
+<h2 id="conclusion">Conclusion</h2>
+<p>You’ve now linked Prometheus-based alert rules to your Grafana visualizations, giving your dashboards real-time context with alert annotations and health indicators. By visualizing alerts alongside metrics, responders can quickly understand what’s happening and when. You also saw how alert notifications can include direct links to the affected dashboard or panel, helping teams jump straight into the right time window for faster troubleshooting.</p>
+<p>Have feedback or ideas to improve this tutorial? <a href="https://github.com/grafana/tutorials/issues/new" target="_blank" rel="noopener noreferrer">Let us know</a>.</p>
+<!-- INTERACTIVE page finish.md END -->

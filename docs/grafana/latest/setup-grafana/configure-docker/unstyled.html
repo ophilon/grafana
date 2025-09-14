@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Starting with Grafana release <code>12.4.0</code>, the <code>grafana/grafana-oss</code> Docker Hub repository will no longer be updated.
+Instead, we encourage you to use the <code>grafana/grafana</code> Docker Hub repository. These two repositories have the same Grafana OSS docker images.</p></blockquote></div>
+
+<h1 id="configure-a-grafana-docker-image">Configure a Grafana Docker image</h1>
+<p>This topic explains how to run Grafana on Docker in complex environments that require you to:</p>
+<ul>
+<li>Use different images</li>
+<li>Change logging levels</li>
+<li>Define secrets on the Cloud</li>
+<li>Configure plugins</li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> The examples in this topic use the Grafana Enterprise Docker image. You can use the Grafana Open Source edition by changing the Docker image to <code>grafana/grafana</code>.</p></blockquote>
+<h2 id="supported-docker-image-variants">Supported Docker image variants</h2>
+<p>You can install and run Grafana using the following official Docker images.</p>
+<ul>
+<li>
+<p><strong>Grafana Enterprise</strong>: <code>grafana/grafana-enterprise</code></p>
+</li>
+<li>
+<p><strong>Grafana Open Source</strong>: <code>grafana/grafana</code></p>
+</li>
+</ul>
+<p>Each edition is available in two variants: Alpine and Ubuntu.</p>
+<h2 id="alpine-image-recommended">Alpine image (recommended)</h2>
+<p><a href="https://alpinelinux.org/about/" target="_blank" rel="noopener noreferrer">Alpine Linux</a> is a Linux distribution not affiliated with any commercial entity. It is a versatile operating system that caters to users who prioritize security, efficiency, and user-friendliness. Alpine Linux is much smaller than other distribution base images, allowing for slimmer and more secure images to be created.</p>
+<p>By default, the images are built using the widely used <a href="http://alpinelinux.org/" target="_blank" rel="noopener noreferrer">Alpine Linux project</a> base image, which can be found in the <a href="https://hub.docker.com/_/alpine" target="_blank" rel="noopener noreferrer">Alpine docker repo</a>.
+If you prioritize security and want to minimize the size of your image, it is recommended that you use the Alpine variant. However, it&rsquo;s important to note that the Alpine variant uses <a href="http://www.musl-libc.org/" target="_blank" rel="noopener noreferrer">musl libc</a> instead of <a href="http://www.etalabs.net/compare_libcs.html" target="_blank" rel="noopener noreferrer">glibc and others</a>. As a result, some software might encounter problems depending on their libc requirements. Nonetheless, most software should not experience any issues, so the Alpine variant is generally reliable.</p>
+<h2 id="ubuntu-image">Ubuntu image</h2>
+<p>The Ubuntu-based Grafana Enterprise and OSS images are built using the <a href="https://ubuntu.com/" target="_blank" rel="noopener noreferrer">Ubuntu</a> base image, which can be found in the <a href="https://hub.docker.com/_/ubuntu" target="_blank" rel="noopener noreferrer">Ubuntu docker repo</a>. An Ubuntu-based image can be a good option for users who prefer an Ubuntu-based image or require certain tools unavailable on Alpine.</p>
+<ul>
+<li>
+<p><strong>Grafana Enterprise</strong>: <code>grafana/grafana-enterprise:&lt;version&gt;-ubuntu</code></p>
+</li>
+<li>
+<p><strong>Grafana Open Source</strong>: <code>grafana/grafana:&lt;version&gt;-ubuntu</code></p>
+</li>
+</ul>
+<h2 id="run-a-specific-version-of-grafana">Run a specific version of Grafana</h2>
+<p>You can also run a specific version of Grafana or a beta version based on the main branch of the <a href="https://github.com/grafana/grafana" target="_blank" rel="noopener noreferrer"><code>grafana/grafana</code> GitHub repository</a>.</p>
+<blockquote>
+<p><strong>Note:</strong> If you use a Linux operating system such as Debian or Ubuntu and encounter permission errors when running Docker commands, you might need to prefix the command with <code>sudo</code> or add your user to the <code>docker</code> group. The official Docker documentation provides instructions on how to <a href="https://docs.docker.com/engine/install/linux-postinstall/" target="_blank" rel="noopener noreferrer">run Docker without a non-root user</a>.</p></blockquote>
+<p>To run a specific version of Grafana, add it in the command <version number> section:</p>
+<pre>docker run -d -p 3000:3000 --name grafana grafana/grafana-enterprise:&lt;version number&gt;</pre>
+<p>Example:</p>
+<p>The following command runs the Grafana Enterprise container and specifies version 9.4.7. If you want to run a different version, modify the version number section.</p>
+<pre>docker run -d -p 3000:3000 --name grafana grafana/grafana-enterprise:9.4.7</pre>
+<p>For recent releases of Grafana, there are also <code>minor</code> version tags in the <code>grafana/grafana</code> and <code>grafana/grafana-enterprise</code> docker repositories. For example, if you want to always have the latest <code>12.1</code> version, you can use <code>grafana/grafana-enterprise:12.1</code> or <code>grafana/grafana-enterprise:12.1-ubuntu</code>.</p>
+<h2 id="run-the-grafana-main-branch">Run the Grafana main branch</h2>
+<p>After every successful build of the main branch, two tags, <code>grafana/grafana:main</code> and <code>grafana/grafana:main-ubuntu</code>, are updated. Additionally, two new tags are created: <code>grafana/grafana-dev:&lt;version&gt;</code> and <code>grafana/grafana-dev:&lt;version&gt;-ubuntu</code>, where <code>version</code> is a prerelease version of Grafana. For example, if <code>1234</code> is the GitHub Run ID of the build, <code>12.2.0-1234</code>. These tags provide access to the most recent Grafana main builds. For more information, refer to <a href="https://hub.docker.com/r/grafana/grafana-dev/tags" target="_blank" rel="noopener noreferrer"><code>grafana/grafana-dev</code></a>.</p>
+<p>To ensure stability and consistency, we strongly recommend using the <code>grafana/grafana-dev:&lt;version&gt;</code> tag when running the Grafana main branch in a production environment. This tag ensures that you are using a specific version of Grafana instead of the most recent commit, which could potentially introduce bugs or issues. It also avoids polluting the tag namespace for the main Grafana images with thousands of pre-release tags.</p>
+<p>For a list of available tags, refer to <a href="https://hub.docker.com/r/grafana/grafana/tags/" target="_blank" rel="noopener noreferrer"><code>grafana/grafana</code></a> and <a href="https://hub.docker.com/r/grafana/grafana-dev/tags/" target="_blank" rel="noopener noreferrer"><code>grafana/grafana-dev</code></a>.</p>
+<h2 id="default-paths">Default paths</h2>
+<p>Grafana comes with default configuration parameters that remain the same among versions regardless of the operating system or the environment (for example, virtual machine, Docker, Kubernetes, etc.). You can refer to the <a href="../configure-grafana/">Configure Grafana</a> documentation to view all the default configuration settings.</p>
+<p>The following configurations are set by default when you start the Grafana Docker container. When running in Docker you cannot change the configurations by editing the <code>conf/grafana.ini</code> file. Instead, you can modify the configuration using <a href="../configure-grafana/#override-configuration-with-environment-variables">environment variables</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Default value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>GF_PATHS_CONFIG</td>
+          <td>/etc/grafana/grafana.ini</td>
+      </tr>
+      <tr>
+          <td>GF_PATHS_DATA</td>
+          <td>/var/lib/grafana</td>
+      </tr>
+      <tr>
+          <td>GF_PATHS_HOME</td>
+          <td>/usr/share/grafana</td>
+      </tr>
+      <tr>
+          <td>GF_PATHS_LOGS</td>
+          <td>/var/log/grafana</td>
+      </tr>
+      <tr>
+          <td>GF_PATHS_PLUGINS</td>
+          <td>/var/lib/grafana/plugins</td>
+      </tr>
+      <tr>
+          <td>GF_PATHS_PROVISIONING</td>
+          <td>/etc/grafana/provisioning</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="install-plugins-in-the-docker-container">Install plugins in the Docker container</h2>
+<p>You can install publicly available plugins and plugins that are private or used internally in an organization. For plugin installation instructions, refer to <a href="../installation/docker/#install-plugins-in-the-docker-container">Install plugins in the Docker container</a>.</p>
+<h3 id="install-plugins-from-other-sources">Install plugins from other sources</h3>
+<p>To install plugins from other sources, you must define the custom URL and specify it immediately before the plugin name in the <code>GF_PLUGINS_PREINSTALL</code> environment variable: <code>GF_PLUGINS_PREINSTALL=&lt;plugin ID&gt;@[&lt;plugin version&gt;]@&lt;url to plugin zip&gt;</code>.</p>
+<p>Example:</p>
+<p>The following command runs Grafana Enterprise on <strong>port 3000</strong> in detached mode and installs the custom plugin, which is specified as a URL parameter in the <code>GF_PLUGINS_PREINSTALL</code> environment variable.</p>
+<pre>docker run -d -p 3000:3000 --name=grafana \
+  -e &#34;GF_PLUGINS_PREINSTALL=custom-plugin@@http://plugin-domain.com/my-custom-plugin.zip,grafana-clock-panel&#34; \
+  grafana/grafana-enterprise</pre>
+<h2 id="build-a-custom-grafana-docker-image">Build a custom Grafana Docker image</h2>
+<p>In the Grafana GitHub repository, the <code>packaging/docker/custom/</code> folder includes a <code>Dockerfile</code> that you can use to build a custom Grafana image. The <code>Dockerfile</code> accepts <code>GRAFANA_VERSION</code>, <code>GF_INSTALL_PLUGINS</code>, and <code>GF_INSTALL_IMAGE_RENDERER_PLUGIN</code> as build arguments.</p>
+<p>The <code>GRAFANA_VERSION</code> build argument must be a valid <code>grafana/grafana</code> Docker image tag. By default, Grafana builds an Alpine-based image. To build an Ubuntu-based image, append <code>-ubuntu</code> to the <code>GRAFANA_VERSION</code> build argument.</p>
+<p>Example:</p>
+<p>The following example shows you how to build and run a custom Grafana Docker image based on the latest official Ubuntu-based Grafana Docker image:</p>
+<pre># go to the custom directory
+cd packaging/docker/custom
+
+# run the docker build command to build the image
+docker build \
+  --build-arg &#34;GRAFANA_VERSION=latest-ubuntu&#34; \
+  -t grafana-custom .
+
+# run the custom grafana container using docker run command
+docker run -d -p 3000:3000 --name=grafana grafana-custom</pre>
+<h3 id="build-grafana-with-the-image-renderer-plugin-pre-installed">Build Grafana with the Image Renderer plugin pre-installed</h3>
+<blockquote>
+<p><strong>Note:</strong> This feature is experimental.</p></blockquote>
+<p>Currently, the Grafana Image Renderer plugin requires dependencies that are not available in the Grafana Docker image (see <a href="https://github.com/grafana/grafana-image-renderer/issues/301" target="_blank" rel="noopener noreferrer">GitHub Issue#301</a> for more details). However, you can create a customized Docker image using the <code>GF_INSTALL_IMAGE_RENDERER_PLUGIN</code> build argument as a solution. This will install the necessary dependencies for the Grafana Image Renderer plugin to run.</p>
+<p>Example:</p>
+<p>The following example shows how to build a customized Grafana Docker image that includes the Image Renderer plugin.</p>
+<pre># go to the folder
+cd packaging/docker/custom
+
+# running the build command
+docker build \
+  --build-arg &#34;GRAFANA_VERSION=latest&#34; \
+  --build-arg &#34;GF_INSTALL_IMAGE_RENDERER_PLUGIN=true&#34; \
+  -t grafana-custom .
+
+# running the docker run command
+docker run -d -p 3000:3000 --name=grafana grafana-custom</pre>
+<h3 id="build-a-grafana-docker-image-with-pre-installed-plugins">Build a Grafana Docker image with pre-installed plugins</h3>
+<p>If you run multiple Grafana installations with the same plugins, you can save time by building a customized image that includes plugins available on the <a href="/grafana/plugins">Grafana Plugin download page</a>. When you build a customized image, Grafana doesn&rsquo;t have to install the plugins each time it starts, making the startup process more efficient.</p>
+<blockquote>
+<p><strong>Note:</strong> To specify the version of a plugin, you can use the <code>GF_INSTALL_PLUGINS</code> build argument and add the version number. The latest version is used if you don&rsquo;t specify a version number. For example, you can use <code>--build-arg &quot;GF_INSTALL_PLUGINS=grafana-clock-panel 1.0.1,grafana-simple-json-datasource 1.3.5&quot;</code> to specify the versions of two plugins.</p></blockquote>
+<p>Example:</p>
+<p>The following example shows how to build and run a custom Grafana Docker image with pre-installed plugins.</p>
+<pre># go to the custom directory
+cd packaging/docker/custom
+
+# running the build command
+# include the plugins you want e.g. clock planel etc
+docker build \
+  --build-arg &#34;GRAFANA_VERSION=latest&#34; \
+  --build-arg &#34;GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource&#34; \
+  -t grafana-custom .
+
+# running the custom Grafana container using the docker run command
+docker run -d -p 3000:3000 --name=grafana grafana-custom</pre>
+<h3 id="build-a-grafana-docker-image-with-pre-installed-plugins-from-other-sources">Build a Grafana Docker image with pre-installed plugins from other sources</h3>
+<p>You can create a Docker image containing a plugin that is exclusive to your organization, even if it is not accessible to the public. Simply use the <code>GF_INSTALL_PLUGINS</code> build argument to specify the plugin&rsquo;s URL and installation folder name, such as <code>GF_INSTALL_PLUGINS=&lt;url to plugin zip&gt;;&lt;plugin install folder name&gt;</code>.</p>
+<p>The following example demonstrates creating a customized Grafana Docker image that includes a custom plugin from a URL link, the clock panel plugin, and the simple-json-datasource plugin. You can define these plugins in the build argument using the Grafana Plugin environment variable.</p>
+<pre># go to the folder
+cd packaging/docker/custom
+
+# running the build command
+docker build \
+  --build-arg &#34;GRAFANA_VERSION=latest&#34; \
+  --build-arg &#34;GF_INSTALL_PLUGINS=http://plugin-domain.com/my-custom-plugin.zip;my-custom-plugin,grafana-clock-panel,grafana-simple-json-datasource&#34; \
+  -t grafana-custom .
+
+# running the docker run command
+docker run -d -p 3000:3000 --name=grafana grafana-custom</pre>
+<h2 id="logging">Logging</h2>
+<p>By default, Docker container logs are directed to <code>STDOUT</code>, a common practice in the Docker community. You can change this by setting a different <a href="../configure-grafana/#mode">log mode</a> such as <code>console</code>, <code>file</code>, or <code>syslog</code>. You can use one or more modes by separating them with spaces, for example, <code>console file</code>. By default, both <code>console</code> and <code>file</code> modes are enabled.</p>
+<p>Example:</p>
+<p>The following example runs Grafana using the <code>console file</code> log mode that is set in the <code>GF_LOG_MODE</code> environment variable.</p>
+<pre># Run Grafana while logging to both standard out
+# and /var/log/grafana/grafana.log
+
+docker run -p 3000:3000 -e &#34;GF_LOG_MODE=console file&#34; grafana/grafana-enterprise</pre>
+<h2 id="configure-grafana-with-docker-secrets">Configure Grafana with Docker Secrets</h2>
+<p>You can input confidential data like login credentials and secrets into Grafana using configuration files. This method works well with <a href="https://docs.docker.com/engine/swarm/secrets/" target="_blank" rel="noopener noreferrer">Docker Secrets</a>, as the secrets are automatically mapped to the <code>/run/secrets/</code> location within the container.</p>
+<p>You can apply this technique to any configuration options in <code>conf/grafana.ini</code> by setting <code>GF_&lt;SectionName&gt;_&lt;KeyName&gt;__FILE</code> to the file path that contains the secret information. For more information about Docker secret command usage, refer to <a href="https://docs.docker.com/engine/reference/commandline/secret/" target="_blank" rel="noopener noreferrer">docker secret</a>.</p>
+<p>The following example demonstrates how to set the admin password:</p>
+<ul>
+<li>Admin password secret: <code>/run/secrets/admin_password</code></li>
+<li>Environment variable: <code>GF_SECURITY_ADMIN_PASSWORD__FILE=/run/secrets/admin_password</code></li>
+</ul>
+<h3 id="configure-docker-secrets-credentials-for-aws-cloudwatch">Configure Docker secrets credentials for AWS CloudWatch</h3>
+<p>Grafana ships with built-in support for the <a href="../../datasources/aws-cloudwatch/">Amazon CloudWatch datasource</a>. To configure the data source, you must provide information such as the AWS ID-Key, secret access key, region, and so on. You can use Docker secrets as a way to provide this information.</p>
+<p>Example:</p>
+<p>The example below shows how to use Grafana environment variables via Docker Secrets for the AWS ID-Key, secret access key, region, and profile.</p>
+<p>The example uses the following values for the AWS Cloudwatch data source:</p>
+<pre>AWS_default_ACCESS_KEY_ID=aws01us02
+AWS_default_SECRET_ACCESS_KEY=topsecret9b78c6
+AWS_default_REGION=us-east-1</pre>
+<ol>
+<li>
+<p>Create a Docker secret for each of the values noted above.</p>
+<pre>echo &#34;aws01us02&#34; | docker secret create aws_access_key_id -</pre>
+<pre>echo &#34;topsecret9b78c6&#34; | docker secret create aws_secret_access_key -</pre>
+<pre>echo &#34;us-east-1&#34; | docker secret create aws_region -</pre>
+</li>
+<li>
+<p>Run the following command to determine that the secrets were created.</p>
+<pre>$ docker secret ls</pre>
+<p>The output from the command should look similar to the following:</p>
+<pre>ID                          NAME           DRIVER    CREATED              UPDATED
+i4g62kyuy80lnti5d05oqzgwh   aws_access_key_id             5 minutes ago        5 minutes ago
+uegit5plcwodp57fxbqbnke7h   aws_secret_access_key         3 minutes ago        3 minutes ago
+fxbqbnke7hplcwodp57fuegit   aws_region                    About a minute ago   About a minute ago</pre>
+<p>Where:</p>
+<p>ID = the secret unique ID that will be use in the docker run command</p>
+<p>NAME = the logical name defined for each secret</p>
+</li>
+<li>
+<p>Add the secrets to the command line when you run Docker.</p>
+<pre>docker run -d -p 3000:3000 --name grafana \
+  -e &#34;GF_DEFAULT_INSTANCE_NAME=my-grafana&#34; \
+  -e &#34;GF_AWS_PROFILES=default&#34; \
+  -e &#34;GF_AWS_default_ACCESS_KEY_ID__FILE=/run/secrets/aws_access_key_id&#34; \
+  -e &#34;GF_AWS_default_SECRET_ACCESS_KEY__FILE=/run/secrets/aws_secret_access_key&#34; \
+  -e &#34;GF_AWS_default_REGION__FILE=/run/secrets/aws_region&#34; \
+  -v grafana-data:/var/lib/grafana \
+  grafana/grafana-enterprise</pre>
+</li>
+</ol>
+<p>You can also specify multiple profiles to <code>GF_AWS_PROFILES</code> (for example, <code>GF_AWS_PROFILES=default another</code>).</p>
+<p>The following list includes the supported environment variables:</p>
+<ul>
+<li><code>GF_AWS_${profile}_ACCESS_KEY_ID</code>: AWS access key ID (required).</li>
+<li><code>GF_AWS_${profile}_SECRET_ACCESS_KEY</code>: AWS secret access key (required).</li>
+<li><code>GF_AWS_${profile}_REGION</code>: AWS region (optional).</li>
+</ul>
+<h2 id="troubleshoot-a-docker-deployment">Troubleshoot a Docker deployment</h2>
+<p>By default, the Grafana log level is set to <code>INFO</code>, but you can increase the log level to <code>DEBUG</code> mode when you want to reproduce a problem.</p>
+<p>For more information about logging, refer to <a href="../configure-grafana/#log">logs</a>.</p>
+<h3 id="increase-log-level-using-the-docker-run-cli-command">Increase log level using the Docker run (CLI) command</h3>
+<p>To increase the log level to <code>DEBUG</code> mode, add the environment variable <code>GF_LOG_LEVEL</code> to the command line.</p>
+<pre>docker run -d -p 3000:3000 --name=grafana \
+  -e &#34;GF_LOG_LEVEL=debug&#34; \
+  grafana/grafana-enterprise</pre>
+<h3 id="increase-log-level-using-the-docker-compose">Increase log level using the Docker Compose</h3>
+<p>To increase the log level to <code>DEBUG</code> mode, add the environment variable <code>GF_LOG_LEVEL</code> to the <code>docker-compose.yaml</code> file.</p>
+<pre>version: &#39;3.8&#39;
+services:
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      # increases the log level from info to debug
+      - GF_LOG_LEVEL=debug
+    ports:
+      - &#39;3000:3000&#39;
+    volumes:
+      - &#39;grafana_storage:/var/lib/grafana&#39;
+volumes:
+  grafana_storage: {}</pre>
+<h3 id="validate-docker-compose-yaml-file">Validate Docker Compose YAML file</h3>
+<p>The chance of syntax errors appearing in a YAML file increases as the file becomes more complex. You can use the following command to check for syntax errors.</p>
+<pre># go to your docker-compose.yaml directory
+cd /path-to/docker-compose/file
+
+# run the validation command
+docker compose config</pre>
+<p>If there are errors in the YAML file, the command output highlights the lines that contain errors. If there are no errors in the YAML file, the output includes the content of the <code>docker-compose.yaml</code> file in detailed YAML format.</p>

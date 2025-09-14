@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<h1 id="manage-and-inspect-variables">Manage and inspect variables</h1>
+<p>In the <strong>Variables</strong> tab, you can 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">add</a> variables and <a href="#manage-variables">manage</a> existing variables. You can also <a href="#inspect-variables">inspect</a> variables to identify any dependencies between them. <!--whether a variable is being referenced (or used) in other variables or dashboard.--></p>
+<h2 id="manage-variables">Manage variables</h2>
+<p>You can take the following actions in the <strong>Variables</strong> tab:</p>
+<ul>
+<li><strong>Move</strong> - Move a variable up or down the list using drag and drop.</li>
+<li><strong>Clone</strong> - Clone a variable by clicking the clone icon in the set of icons on the right. This creates a copy of the variable with the name of the original variable prefixed with <code>copy_of_</code>.</li>
+<li><strong>Delete</strong> - Delete a variable by clicking the trash icon in the set of icons on the right.</li>
+</ul>
+<h2 id="inspect-variables">Inspect variables</h2>
+<p>In addition to <a href="#manage-variables">managing variables</a>, the <strong>Variables</strong> tab lets you easily identify whether variables have any dependencies. To check, click <strong>Show dependencies</strong> at the bottom of the list, which opens the dependencies diagram:</p>
+<!-- Update and comment this back in when the reference functionality is working again
+
+The variables page lets you easily identify whether a variable is being referenced (or used) in other variables or dashboard. In addition, you can also [add](ref:add) and [manage variables](#manage-variables) on this page.
+
+![Variables list](/static/img/docs/variables-templates/variables-list-7-4.png)
+
+Any variable that is referenced or used has a green check mark next to it, while unreferenced variables have a orange caution icon next to them.
+
+![Variables list](/static/img/docs/variables-templates/variable-not-referenced-7-4.png)
+
+In addition, all referenced variables have a dependency icon next to the green check mark. You can click on the icon to view the dependency map. The dependency map can be moved. You can zoom in out with mouse wheel or track pad equivalent.-->
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/variables-templates/dependancy-map-7-4.png"
+  alt="Variables list" width="772"
+     height="580"/></p>

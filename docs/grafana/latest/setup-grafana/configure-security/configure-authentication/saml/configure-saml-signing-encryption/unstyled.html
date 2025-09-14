@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<h1 id="configure-saml-signing-and-encryption">Configure SAML signing and encryption</h1>
+<p>Grafana supports signed and encrypted responses, and <em>only</em> supports signed requests.</p>
+<h2 id="certificate-and-private-key">Certificate and private key</h2>
+<p>Commonly, the certificate and key are embedded in the IdP metadata and refreshed as needed by Grafana automatically. However, if your IdP expects signed requests, you must supply a certificate and private key.</p>
+<p>The SAML SSO standard uses asymmetric encryption to exchange information between the SP (Grafana) and the IdP. To perform such encryption, you need a public part and a private part. In this case, the X.509 certificate provides the public part, while the private key provides the private part. The private key needs to be issued in a <a href="https://en.wikipedia.org/wiki/PKCS_8" target="_blank" rel="noopener noreferrer">PKCS#8</a> format.</p>
+<p>If you are directly supplying the certificate and key, Grafana supports two ways of specifying both the <code>certificate</code> and <code>private_key</code>:</p>
+<ul>
+<li>Without a suffix (<code>certificate</code> or <code>private_key</code>), the configuration assumes you&rsquo;ve supplied the base64-encoded file contents.</li>
+<li>With the <code>_path</code> suffix (<code>certificate_path</code> or <code>private_key_path</code>), then Grafana treats the value entered as a path and attempts to read the file from the file system.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can only use one form of each configuration option. Using multiple forms, such as both <code>certificate</code> and <code>certificate_path</code>, results in an error.</p></blockquote></div>
+
+<p>Always work with your company&rsquo;s security team on setting up certificates and private keys. If you need to generate them yourself (such as in the short term, for testing purposes, and so on), use the following example to generate your certificate and private key, including the step of ensuring that the key is generated with the <a href="https://en.wikipedia.org/wiki/PKCS_8" target="_blank" rel="noopener noreferrer">PKCS#8</a> format.</p>
+<h2 id="signature-algorithm">Signature algorithm</h2>
+<p>The SAML standard requires digital signatures for security-critical messages such as authentication and logout requests. When you configure the <code>signature_algorithm</code> option, Grafana automatically signs these SAML requests using your configured private key and certificate.</p>
+<h3 id="supported-algorithms">Supported algorithms</h3>
+<ul>
+<li><code>rsa-sha1</code>: Legacy algorithm, not recommended for new deployments</li>
+<li><code>rsa-sha256</code>: Recommended for most use cases</li>
+<li><code>rsa-sha512</code>: Strongest security, but may impact performance</li>
+</ul>
+<h3 id="important-considerations">Important considerations</h3>
+<ul>
+<li>The signature algorithm must match your IdP configuration exactly</li>
+<li>Mismatched algorithms will cause signature validation failures</li>
+<li>Grafana uses the key and certificate specified in <code>private_key</code> and <code>certificate</code> options for signing</li>
+<li>We recommend using <code>rsa-sha256</code> for new SAML implementations</li>
+</ul>
+<h2 id="example-of-private-key-generation-for-saml-authentication">Example of private key generation for SAML authentication</h2>
+<p>An example of how to generate a self-signed certificate and private key that&rsquo;s valid for one year:</p>
+<pre>$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes​</pre>
+<p>Base64-encode the cert.pem and key.pem files:
+(-w0 switch is not needed on Mac, only for Linux)</p>
+<pre>$ base64 -i key.pem -o key.pem.base64
+$ base64 -i cert.pem -o cert.pem.base64</pre>
+<p>The base64-encoded values (<code>key.pem.base64, cert.pem.base64</code> files) are then used for <code>certificate</code> and <code>private key</code>.</p>
+<p>The key you provide should look like:</p>
+<pre>-----BEGIN PRIVATE KEY-----
+...
+...
+-----END PRIVATE KEY-----</pre>

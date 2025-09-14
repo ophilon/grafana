@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<h1 id="configure-grafana-irm-for-alerting">Configure Grafana IRM for Alerting</h1>
+<p>In Grafana OSS and Grafana Enterprise, you can use a webhook contact point to send alerts to <a href="/docs/grafana-cloud/alerting-and-irm/irm/">Grafana IRM</a>. Grafana IRM can then route alerts based on escalation chains for your team&rsquo;s workflows.</p>
+<p>The alert notification flow is as follows:</p>
+<p><sup>*</sup> <strong>Grafana OSS/Enterprise</strong> (send webhook alerts)-&gt;<strong>Grafana Cloud IRM</strong> (route via <a href="/docs/grafana-cloud/alerting-and-irm/irm/configure/escalation-routing/escalation-chains/">escalation chains</a>)</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The Free Forever plan in Grafana Cloud IRM includes 3 IRM active users per month.</p>
+<p>These instructions apply only to Grafana OSS and Grafana Enterprise. To configure IRM for Grafana Cloud Alerting, refer to the <a href="/docs/grafana-cloud/alerting-and-irm/alerting/configure-notifications/manage-contact-points/integrations/configure-irm/">Grafana Cloud documentation</a>.</p></blockquote></div>
+
+<h2 id="configure-an-integration-in-grafana-irm">Configure an integration in Grafana IRM</h2>
+<p>First, enable an integration in IRM to accept alerts from Grafana Alerting. You can either create a new integration or use an existing <strong>Alertmanager</strong> or <strong>Webhook</strong> integration in IRM.</p>
+<p>To create the integration, follow the same steps as described in <a href="/docs/grafana-cloud/alerting-and-irm/irm/configure/integrations/configure-integrations/">Configure an OnCall integration in IRM</a>:</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>IRM</strong> -&gt; <strong>Integrations</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ New integration</strong>.</p>
+</li>
+<li>
+<p>Select either <strong>Alertmanager</strong> or <strong>Webhook</strong> integration from the list.</p>
+<ul>
+<li>
+<p><strong>Alertmanager</strong> integration – Includes preconfigured IRM templates for processing Grafana and Prometheus alerts.</p>
+</li>
+<li>
+<p><strong>Webhook</strong> integration – Uses default IRM templates for general alert processing.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Provide a title, description, and assign it to a team, then click <strong>Create Integration</strong>.</p>
+</li>
+<li>
+<p>On the integration details page, copy the <strong>HTTP Endpoint</strong> URL to use in the next section.</p>
+</li>
+</ol>
+<h2 id="configure-a-webhook-contact-point-in-grafana-alerting">Configure a webhook contact point in Grafana Alerting</h2>
+<p>Next, configure the contact point in Grafana Alerting to send alert notifications to Grafana IRM.</p>
+<p>In <strong>Grafana OSS</strong> and <strong>Grafana Enterprise</strong>, you need to create a <strong>Webhook</strong> contact point using the HTTP endpoint URL you copied in the previous step.</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</li>
+<li>Click <strong>+ Add contact point</strong>.</li>
+<li>Enter a name for the contact point.</li>
+<li>From the <strong>Integration</strong> list, select <strong>Webhook</strong>.</li>
+<li>In the <strong>URL</strong> field, enter the HTTP endpoint URL of the IRM integration.</li>
+<li>Click <strong>Save contact point</strong>.</li>
+</ol>
+<p>After configuring the contact point in Grafana Alerting and the integration in Grafana IRM, you can start testing the Alerting-to-IRM integration.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/test-alert-group-on-irm.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/test-alert-group-on-irm.png"data-srcset="/media/docs/alerting/test-alert-group-on-irm.png?w=320 320w, /media/docs/alerting/test-alert-group-on-irm.png?w=550 550w, /media/docs/alerting/test-alert-group-on-irm.png?w=750 750w, /media/docs/alerting/test-alert-group-on-irm.png?w=900 900w, /media/docs/alerting/test-alert-group-on-irm.png?w=1040 1040w, /media/docs/alerting/test-alert-group-on-irm.png?w=1240 1240w, /media/docs/alerting/test-alert-group-on-irm.png?w=1920 1920w"
+          data-sizes="auto"alt="Example of a test alert group in Grafana IRM"width="1147"height="811"title="Example of a test alert group in Grafana IRM"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/test-alert-group-on-irm.png"
+            alt="Example of a test alert group in Grafana IRM"width="1147"height="811"title="Example of a test alert group in Grafana IRM"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Example of a test alert group in Grafana IRM</figcaption></a></figure>
+<p>For more information, see:</p>
+<ul>
+<li><strong>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a></strong> – Learn how to test the integration and enable notifications in Alerting.</li>
+<li><strong>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/">Webhook contact point</a></strong> – Learn the format of the webhook payload and additional settings in Alerting.</li>
+<li><strong><a href="/docs/grafana-cloud/alerting-and-irm/irm/configure/escalation-routing/alert-templates/">Configure IRM alert templates</a></strong> – Learn how to process the incoming webhook messages in IRM.</li>
+</ul>
+<h2 id="enable-heartbeat-monitoring-in-grafana-irm-optional">Enable heartbeat monitoring in Grafana IRM (optional)</h2>
+<p>Enabling the heartbeat in the IRM integration acts as a monitoring for your Grafana Alerting setup. If Grafana Alerting stops sending alerts—due to downtime or misconfiguration—Grafana IRM creates a new alert group to notify you.</p>
+<p>To set up heartbeat monitoring, you must enable the heartbeat in IRM and create an alert rule that continuously sends alerts to the heartbeat endpoint.</p>
+<h4 id="enable-the-heartbeat-for-the-irm-integration">Enable the heartbeat for the IRM integration</h4>
+<ol>
+<li>In <strong>IRM</strong>, select the IRM integration you configured earlier.</li>
+<li>Click the ⋮ (three dots) on top right, then select <strong>Heartbeat Settings</strong>.</li>
+<li>Copy the <strong>Endpoint</strong> URL—this will be used in a new contact point in Grafana Alerting.</li>
+<li>Set the <strong>heartbeat interval</strong>, time period after which Grafana IRM starts a new alert group if it doesn’t receive a heartbeat.</li>
+</ol>
+<h4 id="create-another-webhook-contact-point-in-grafana-alerting">Create another Webhook contact point in Grafana Alerting</h4>
+<p>Follow the same steps as before to create a webhook contact point in Grafana Alerting:</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</li>
+<li>Click <strong>+ Add contact point</strong>.</li>
+<li>Enter a name for the contact point.</li>
+<li>From the <strong>Integration</strong> list, select <strong>Webhook</strong>.</li>
+<li>In the <strong>URL</strong> field, enter the endpoint URL of the heartbeat.</li>
+<li>Click <strong>Save contact point</strong>.</li>
+</ol>
+<p>You can now click the <strong>Test</strong> button to send an alert to the heartbeat endpoint. In <strong>IRM</strong>, verify the heartbeat status in the <strong>Hearbeat</strong> column on the <strong>Integrations</strong> page.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/view-heartbeat-status-on-irm.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/view-heartbeat-status-on-irm.png"data-srcset="/media/docs/alerting/view-heartbeat-status-on-irm.png?w=320 320w, /media/docs/alerting/view-heartbeat-status-on-irm.png?w=550 550w, /media/docs/alerting/view-heartbeat-status-on-irm.png?w=750 750w, /media/docs/alerting/view-heartbeat-status-on-irm.png?w=900 900w, /media/docs/alerting/view-heartbeat-status-on-irm.png?w=1040 1040w, /media/docs/alerting/view-heartbeat-status-on-irm.png?w=1240 1240w, /media/docs/alerting/view-heartbeat-status-on-irm.png?w=1920 1920w"
+          data-sizes="auto"alt="Heartbeat status column in the Grafana IRM Integrations page"width="1153"height="255"title="Heartbeat status column in the Grafana IRM Integrations page"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/view-heartbeat-status-on-irm.png"
+            alt="Heartbeat status column in the Grafana IRM Integrations page"width="1153"height="255"title="Heartbeat status column in the Grafana IRM Integrations page"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Heartbeat status column in the Grafana IRM Integrations page</figcaption></a></figure>
+<h4 id="create-an-alert-rule-in-grafana-alerting">Create an alert rule in Grafana Alerting</h4>
+<p>Create a 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/">Grafana-managed alert rule</a> with the following settings:</p>
+<ul>
+<li><strong>Always firing</strong> – Use a query and alert condition that constantly fire. For example, select a Prometheus data source and set the query to <code>vector(1) &gt; 0</code>.</li>
+<li>Configure a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/#pending-period">pending period</a> that is shorter than the <strong>hearbeat interval</strong>.</li>
+<li>Choose the <strong>webhook contact point</strong> you created for the heartbeat to forward alerts.</li>
+<li>Adjust 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/#timing-options">timing options</a> in the alert rule or notification policy to ensure alerts are forwarded before the <strong>heartbeat interval</strong> elapses:
+<ul>
+<li><strong>Group wait</strong>: <code>0s</code></li>
+<li><strong>Group interval</strong>: <code>1s</code></li>
+<li><strong>Repeat interval</strong>: shorter than the <strong>hearbeat interval</strong>.</li>
+</ul>
+</li>
+</ul>
+<p>After it&rsquo;s created, the alert rule acts as a heartbeat, verifying that Grafana Alerting is running and sending alerts to Grafana IRM.</p>

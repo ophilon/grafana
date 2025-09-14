@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<h1 id="configure-webhook-notifications">Configure webhook notifications</h1>
+<p>Use the webhook integration in contact points to send alert notifications to your webhook.</p>
+<p>The webhook integration is a flexible way to integrate alerts into your system. When a notification is triggered, it sends a JSON request with alert details and additional data to the webhook endpoint.</p>
+<h2 id="configure-webhook-for-a-contact-point">Configure webhook for a contact point</h2>
+<p>To create a contact point with webhook integration, complete the following steps.</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</li>
+<li>Click <strong>+ Add contact point</strong>.</li>
+<li>Enter a name for the contact point.</li>
+<li>From the <strong>Integration</strong> list, select <strong>Webhook</strong>.</li>
+<li>In the <strong>URL</strong> field, copy in your Webhook URL.</li>
+<li>(Optional) Configure <a href="#webhook-settings">additional settings</a>.</li>
+<li>Click <strong>Save contact point</strong>.</li>
+</ol>
+<p>For more details on contact points, including how to test them and enable notifications, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a>.</p>
+<h2 id="webhook-settings">Webhook settings</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>URL</td>
+          <td>The Webhook URL.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="optional-settings">Optional settings</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>HTTP Method</td>
+          <td>Specifies the HTTP method to use: <code>POST</code> or <code>PUT</code>.</td>
+      </tr>
+      <tr>
+          <td>Basic Authentication Username</td>
+          <td>Username for HTTP Basic Authentication.</td>
+      </tr>
+      <tr>
+          <td>Basic Authentication Password</td>
+          <td>Password for HTTP Basic Authentication.</td>
+      </tr>
+      <tr>
+          <td>Authentication Header Scheme</td>
+          <td>Scheme for the <code>Authorization</code> Request Header. Default is <code>Bearer</code>.</td>
+      </tr>
+      <tr>
+          <td>Authentication Header Credentials</td>
+          <td>Credentials for the <code>Authorization</code> Request header.</td>
+      </tr>
+      <tr>
+          <td>Extra Headers</td>
+          <td>Additional HTTP headers to include in the request. You can also override the default <code>Content-Type: application/json</code> header to specify a different content type for the request payload.</td>
+      </tr>
+      <tr>
+          <td>Max Alerts</td>
+          <td>Maximum number of alerts to include in a notification. Any alerts exceeding this limit are ignored. <code>0</code> means no limit.</td>
+      </tr>
+      <tr>
+          <td>TLS</td>
+          <td>TLS configuration options, including CA certificate, client certificate, and client key.</td>
+      </tr>
+      <tr>
+          <td>HMAC Signature</td>
+          <td>HMAC signature configuration options.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can configure either HTTP Basic Authentication or the Authorization request header, but not both.</p></blockquote></div>
+
+<h4 id="hmac-signature">HMAC signature</h4>
+<p>You can secure your webhook notifications using HMAC signatures to verify the authenticity and integrity of the requests. When enabled, Grafana signs the webhook payload with a shared secret using HMAC-SHA256.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Secret</td>
+          <td>The shared secret key used to generate the HMAC signature.</td>
+      </tr>
+      <tr>
+          <td>Header</td>
+          <td>The HTTP header where the signature will be set. Default is <code>X-Grafana-Alerting-Signature</code>.</td>
+      </tr>
+      <tr>
+          <td>Timestamp Header</td>
+          <td>Optional header to include a timestamp in the signature calculation. When specified, Grafana will set a Unix timestamp in this header and include it in the HMAC calculation. This provides protection against replay attacks.</td>
+      </tr>
+  </tbody>
+</table>
+<p>When HMAC signing is configured, Grafana generates a signature using HMAC-SHA256 with your secret key. If a timestamp header is specified, a Unix timestamp is included in the signature calculation. The signature is calculated as:</p>
+<pre>HMAC(timestamp + &#34;:&#34; + body)</pre>
+<p>The timestamp is sent in the specified header. If no timestamp header is specified, the signature is calculated just from the request body. The signature is sent as a hex-encoded string in the specified signature header.</p>
+<h5 id="validate-a-request">Validate a request</h5>
+<p>To validate incoming webhook requests from Grafana, follow these steps:</p>
+<ol>
+<li>Extract the signature from the header (default is <code>X-Grafana-Alerting-Signature</code>).</li>
+<li>If you configured a timestamp header, extract the timestamp value and verify it&rsquo;s recent to prevent replay attacks.</li>
+<li>Calculate the expected signature:
+<ul>
+<li>Create an HMAC-SHA256 hash using your shared secret</li>
+<li>If using timestamps, include the timestamp followed by a colon (<code>:</code>) before the request body</li>
+<li>Hash the raw request body</li>
+<li>Convert the result to a hexadecimal string</li>
+</ul>
+</li>
+<li>Compare the calculated signature with the one in the request header.</li>
+</ol>
+<h4 id="optional-settings-using-templates">Optional settings using templates</h4>
+<p>Use the following settings to include custom data within the <a href="#body">JSON payload</a>. Both options support using 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>Sends the value as a string in the <code>title</code> field of the <a href="#body">JSON payload</a>. Supports 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>.</td>
+      </tr>
+      <tr>
+          <td>Message</td>
+          <td>Sends the value as a string in the <code>message</code> field of the <a href="#body">JSON payload</a>. Supports 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>.</td>
+      </tr>
+      <tr>
+          <td><a href="#custom-payload">Custom Payload</a></td>
+          <td>Optionally override the default payload format with a custom template.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="optional-notification-settings">Optional notification settings</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Disable resolved message</td>
+          <td>Enable this option to prevent notifications when an alert resolves.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="default-json-payload">Default JSON payload</h2>
+<p>The following example shows the payload of a webhook notification containing information about two firing alerts:</p>
+<pre>{
+  &#34;receiver&#34;: &#34;My Super Webhook&#34;,
+  &#34;status&#34;: &#34;firing&#34;,
+  &#34;orgId&#34;: 1,
+  &#34;alerts&#34;: [
+    {
+      &#34;status&#34;: &#34;firing&#34;,
+      &#34;labels&#34;: {
+        &#34;alertname&#34;: &#34;High memory usage&#34;,
+        &#34;team&#34;: &#34;blue&#34;,
+        &#34;zone&#34;: &#34;us-1&#34;
+      },
+      &#34;annotations&#34;: {
+        &#34;description&#34;: &#34;The system has high memory usage&#34;,
+        &#34;runbook_url&#34;: &#34;https://myrunbook.com/runbook/1234&#34;,
+        &#34;summary&#34;: &#34;This alert was triggered for zone us-1&#34;
+      },
+      &#34;startsAt&#34;: &#34;2021-10-12T09:51:03.157076+02:00&#34;,
+      &#34;endsAt&#34;: &#34;0001-01-01T00:00:00Z&#34;,
+      &#34;generatorURL&#34;: &#34;https://play.grafana.org/alerting/1afz29v7z/edit&#34;,
+      &#34;fingerprint&#34;: &#34;c6eadffa33fcdf37&#34;,
+      &#34;silenceURL&#34;: &#34;https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT2%2Cteam%3Dblue%2Czone%3Dus-1&#34;,
+      &#34;dashboardURL&#34;: &#34;&#34;,
+      &#34;panelURL&#34;: &#34;&#34;,
+      &#34;values&#34;: {
+        &#34;B&#34;: 44.23943737541908,
+        &#34;C&#34;: 1
+      }
+    },
+    {
+      &#34;status&#34;: &#34;firing&#34;,
+      &#34;labels&#34;: {
+        &#34;alertname&#34;: &#34;High CPU usage&#34;,
+        &#34;team&#34;: &#34;blue&#34;,
+        &#34;zone&#34;: &#34;eu-1&#34;
+      },
+      &#34;annotations&#34;: {
+        &#34;description&#34;: &#34;The system has high CPU usage&#34;,
+        &#34;runbook_url&#34;: &#34;https://myrunbook.com/runbook/1234&#34;,
+        &#34;summary&#34;: &#34;This alert was triggered for zone eu-1&#34;
+      },
+      &#34;startsAt&#34;: &#34;2021-10-12T09:56:03.157076+02:00&#34;,
+      &#34;endsAt&#34;: &#34;0001-01-01T00:00:00Z&#34;,
+      &#34;generatorURL&#34;: &#34;https://play.grafana.org/alerting/d1rdpdv7k/edit&#34;,
+      &#34;fingerprint&#34;: &#34;bc97ff14869b13e3&#34;,
+      &#34;silenceURL&#34;: &#34;https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT1%2Cteam%3Dblue%2Czone%3Deu-1&#34;,
+      &#34;dashboardURL&#34;: &#34;&#34;,
+      &#34;panelURL&#34;: &#34;&#34;,
+      &#34;values&#34;: {
+        &#34;B&#34;: 44.23943737541908,
+        &#34;C&#34;: 1
+      }
+    }
+  ],
+  &#34;groupLabels&#34;: {},
+  &#34;commonLabels&#34;: {
+    &#34;team&#34;: &#34;blue&#34;
+  },
+  &#34;commonAnnotations&#34;: {},
+  &#34;externalURL&#34;: &#34;https://play.grafana.org/&#34;,
+  &#34;version&#34;: &#34;1&#34;,
+  &#34;groupKey&#34;: &#34;{}:{}&#34;,
+  &#34;truncatedAlerts&#34;: 0,
+  &#34;title&#34;: &#34;[FIRING:2]  (blue)&#34;,
+  &#34;state&#34;: &#34;alerting&#34;,
+  &#34;message&#34;: &#34;**Firing**\n\nLabels:\n - alertname = T2\n - team = blue\n - zone = us-1\nAnnotations:\n - description = This is the alert rule checking the second system\n - runbook_url = https://myrunbook.com\n - summary = This is my summary\nSource: https://play.grafana.org/alerting/1afz29v7z/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT2%2Cteam%3Dblue%2Czone%3Dus-1\n\nLabels:\n - alertname = T1\n - team = blue\n - zone = eu-1\nAnnotations:\nSource: https://play.grafana.org/alerting/d1rdpdv7k/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT1%2Cteam%3Dblue%2Czone%3Deu-1\n&#34;
+}</pre>
+<h3 id="body">Body</h3>
+<p>The JSON payload of webhook notifications includes the following key-value pairs:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>receiver</code></td>
+          <td>string</td>
+          <td>Name of the contact point.</td>
+      </tr>
+      <tr>
+          <td><code>status</code></td>
+          <td>string</td>
+          <td>Current status of the alert, <code>firing</code> or <code>resolved</code>.</td>
+      </tr>
+      <tr>
+          <td><code>orgId</code></td>
+          <td>number</td>
+          <td>ID of the organization related to the payload.</td>
+      </tr>
+      <tr>
+          <td><code>alerts</code></td>
+          <td>array of <a href="#alert">alerts</a></td>
+          <td>Alerts that are triggering.</td>
+      </tr>
+      <tr>
+          <td><code>groupLabels</code></td>
+          <td>object</td>
+          <td>Labels that are used for grouping, map of string keys to string values.</td>
+      </tr>
+      <tr>
+          <td><code>commonLabels</code></td>
+          <td>object</td>
+          <td>Labels that all alarms have in common, map of string keys to string values.</td>
+      </tr>
+      <tr>
+          <td><code>commonAnnotations</code></td>
+          <td>object</td>
+          <td>Annotations that all alarms have in common, map of string keys to string values.</td>
+      </tr>
+      <tr>
+          <td><code>externalURL</code></td>
+          <td>string</td>
+          <td>External URL to the Grafana instance sending this webhook.</td>
+      </tr>
+      <tr>
+          <td><code>version</code></td>
+          <td>string</td>
+          <td>Version of the payload structure.</td>
+      </tr>
+      <tr>
+          <td><code>groupKey</code></td>
+          <td>string</td>
+          <td>Key that is used for grouping.</td>
+      </tr>
+      <tr>
+          <td><code>truncatedAlerts</code></td>
+          <td>number</td>
+          <td>Number of alerts that were truncated.</td>
+      </tr>
+      <tr>
+          <td><code>state</code></td>
+          <td>string</td>
+          <td>State of the alert group (either <code>alerting</code> or <code>ok</code>).</td>
+      </tr>
+  </tbody>
+</table>
+<p>The following key-value pairs are also included in the JSON payload and can be configured in the <a href="#optional-settings-using-templates">webhook settings using notification templates</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>title</code></td>
+          <td>string</td>
+          <td>Custom title. Configurable in <a href="#optional-settings-using-templates">webhook settings using notification templates</a>.</td>
+      </tr>
+      <tr>
+          <td><code>message</code></td>
+          <td>string</td>
+          <td>Custom message. Configurable in <a href="#optional-settings-using-templates">webhook settings using notification templates</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="alert">Alert</h3>
+<p>The Alert object represents an alert included in the notification group, as provided by the <a href="#body"><code>alerts</code> field</a>.</p>
+
+
+<div data-shared="alerts/table-for-json-alert-object.md">
+            <table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>status</code></td>
+          <td>string</td>
+          <td>Current status of the alert, <code>firing</code> or <code>resolved</code>.</td>
+      </tr>
+      <tr>
+          <td><code>labels</code></td>
+          <td>object</td>
+          <td>Labels that are part of this alert, map of string keys to string values.</td>
+      </tr>
+      <tr>
+          <td><code>annotations</code></td>
+          <td>object</td>
+          <td>Annotations that are part of this alert, map of string keys to string values.</td>
+      </tr>
+      <tr>
+          <td><code>startsAt</code></td>
+          <td>string</td>
+          <td>Start time of the alert.</td>
+      </tr>
+      <tr>
+          <td><code>endsAt</code></td>
+          <td>string</td>
+          <td>End time of the alert, default value when not resolved is <code>0001-01-01T00:00:00Z</code>.</td>
+      </tr>
+      <tr>
+          <td><code>values</code></td>
+          <td>object</td>
+          <td>Values that triggered the current status.</td>
+      </tr>
+      <tr>
+          <td><code>generatorURL</code></td>
+          <td>string</td>
+          <td>URL of the alert rule in the Grafana UI.</td>
+      </tr>
+      <tr>
+          <td><code>fingerprint</code></td>
+          <td>string</td>
+          <td>The labels fingerprint, alarms with the same labels will have the same fingerprint.</td>
+      </tr>
+      <tr>
+          <td><code>silenceURL</code></td>
+          <td>string</td>
+          <td>URL to silence the alert rule in the Grafana UI.</td>
+      </tr>
+      <tr>
+          <td><code>dashboardURL</code></td>
+          <td>string</td>
+          <td>A link to the Grafana Dashboard if the alert has a Dashboard UID annotation.</td>
+      </tr>
+      <tr>
+          <td><code>panelURL</code></td>
+          <td>string</td>
+          <td>A link to the panel if the alert has a Panel ID annotation.</td>
+      </tr>
+      <tr>
+          <td><code>imageURL</code></td>
+          <td>string</td>
+          <td>URL of a screenshot of a panel assigned to the rule that created this notification.</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+
+        
+<h2 id="custom-payload">Custom Payload</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Custom Payload is not yet <a href="/docs/release-life-cycle/#general-availability">generally available</a> in Grafana Cloud.</p></blockquote></div>
+
+<p>The <code>Custom Payload</code> option allows you to completely customize the webhook payload using templates. This gives you full control over the structure and content of the webhook request.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Payload Template</td>
+          <td>Template string that defines the structure of the webhook payload.</td>
+      </tr>
+      <tr>
+          <td>Payload Variables</td>
+          <td>Key-value pairs that define additional variables available in the template under <code>.Vars.&lt;variable_name&gt;</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Example of a custom payload template that includes variables:</p>
+<pre>{
+  &#34;alert_name&#34;: &#34;{{ .CommonLabels.alertname }}&#34;,
+  &#34;status&#34;: &#34;{{ .Status }}&#34;,
+  &#34;environment&#34;: &#34;{{ .Vars.environment }}&#34;,
+  &#34;custom_field&#34;: &#34;{{ .Vars.custom_field }}&#34;
+}</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When using Custom Payload, the Title and Message fields are ignored as the entire payload structure is determined by your template.</p></blockquote></div>
+
+<h3 id="json-template-functions">JSON Template Functions</h3>
+<p>When creating custom payloads, several template functions are available to help generate valid JSON structures. These include functions for creating dictionaries (<code>coll.Dict</code>), arrays (<code>coll.Slice</code>, <code>coll.Append</code>), and converting between JSON strings and objects (<code>data.ToJSON</code>, <code>data.JSON</code>).</p>
+<p>For detailed information about these and other template functions, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/#namespaced-functions">notification template functions</a>.</p>
+<p>Example using JSON helper functions:</p>
+
+
+<div data-shared="alerts/example-custom-json-payload.md">
+            <pre>{{ define &#34;webhook.custom.payload&#34; -}}
+  {{ coll.Dict
+  &#34;receiver&#34; .Receiver
+  &#34;status&#34; .Status
+  &#34;alerts&#34; (tmpl.Exec &#34;webhook.custom.simple_alerts&#34; .Alerts | data.JSON)
+  &#34;groupLabels&#34; .GroupLabels
+  &#34;commonLabels&#34; .CommonLabels
+  &#34;commonAnnotations&#34; .CommonAnnotations
+  &#34;externalURL&#34; .ExternalURL
+  &#34;version&#34; &#34;1&#34;
+  &#34;orgId&#34;  (index .Alerts 0).OrgID
+  &#34;truncatedAlerts&#34;  .TruncatedAlerts
+  &#34;groupKey&#34; .GroupKey
+  &#34;state&#34;  (tmpl.Inline &#34;{{ if eq .Status \&#34;resolved\&#34; }}ok{{ else }}alerting{{ end }}&#34; . )
+  &#34;allVariables&#34;  .Vars
+  &#34;title&#34; (tmpl.Exec &#34;default.title&#34; . )
+  &#34;message&#34; (tmpl.Exec &#34;default.message&#34; . )
+  | data.ToJSONPretty &#34; &#34;}}
+{{- end }}
+
+{{- /* Embed json templates in other json templates. */ -}}
+{{ define &#34;webhook.custom.simple_alerts&#34; -}}
+  {{- $alerts := coll.Slice -}}
+  {{- range . -}}
+    {{ $alerts = coll.Append (coll.Dict
+    &#34;status&#34; .Status
+    &#34;labels&#34; .Labels
+    &#34;startsAt&#34; .StartsAt
+    &#34;endsAt&#34; .EndsAt
+    ) $alerts}}
+  {{- end -}}
+  {{- $alerts | data.ToJSON -}}
+{{- end }}</pre>
+</div>
+
+        

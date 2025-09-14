@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<h2 id="introduction">Introduction</h2>
+<p>Learn how you can reuse dashboards and data sources across multiple teams by provisioning Grafana from version-controlled configuration files.</p>
+<p>In this tutorial, you&rsquo;ll:</p>
+<ul>
+<li>Provision dashboards.</li>
+<li>Provision data sources.</li>
+</ul>
+<div class="prerequisite-section" style="">
+	<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Grafana 7.0</li>
+<li>Administrator privileges on the system you are doing the tutorial on</li>
+</ul>
+</div>
+<h2 id="configuration-as-code">Configuration as code</h2>
+<p>Configuration as code is the practice of storing the configuration of your system as a set of version controlled, human-readable configuration files, rather than in a database. These configuration files can be reused across environments to avoid duplicated resources.</p>
+<p>As the number of dashboards and data sources grows within your organization, manually managing changes can become tedious and error-prone. Encouraging reuse becomes important to avoid multiple teams redesigning the same dashboards.</p>
+<p>Grafana supports configuration as code through <em>provisioning</em>. The resources that currently supports provisioning are:</p>
+<ul>
+<li><a href="/docs/grafana/latest/administration/provisioning/#dashboards">Dashboards</a></li>
+<li><a href="/docs/grafana/latest/administration/provisioning/#datasources">Data sources</a></li>
+</ul>
+<h2 id="set-the-provisioning-directory">Set the provisioning directory</h2>
+<p>Before you can start provisioning resources, Grafana needs to know where to find the <em>provisioning directory</em>. The provisioning directory contains configuration files that are applied whenever Grafana starts and continuously updated while running.</p>
+<p>By default, Grafana looks for a provisioning directory in the configuration directory (grafana &gt; conf) on the system where Grafana is installed. However, if you are a Grafana Administrator, then you might want to place the config files in a shared resource like a network folder, so you would need to change the path to the provisioning directory.</p>
+<p>You can set a different path by setting the <code>paths.provisioning</code> property in the main config file:</p>
+<pre>[paths]
+provisioning = &lt;path to config files&gt;</pre>
+<p>For more information about configuration files, refer to <a href="/docs/grafana/latest/installation/configuration/">Configuration</a> in the <a href="/docs/grafana/latest/">Grafana documentation</a>.</p>
+<p>The provisioning directory assumes the following structure:</p>
+<pre>provisioning/
+  datasources/
+    &lt;yaml files&gt;
+  dashboards/
+    &lt;yaml files&gt;</pre>
+<p>Next, we&rsquo;ll look at how to provision a data source.</p>
+<h2 id="provision-a-data-source">Provision a data source</h2>
+<p>Each data source provisioning config file contains a <em>manifest</em> that specifies the desired state of a set of provisioned data sources.</p>
+<p>At startup, Grafana loads the configuration files and provisions the data sources listed in the manifests.</p>
+<p>Let&rsquo;s configure a <a href="/docs/grafana/latest/features/datasources/testdata/">TestData</a> data source that you can use for your dashboards.</p>
+<h4 id="create-a-data-source-manifest">Create a data source manifest</h4>
+<ol>
+<li>
+<p>In the <code>provisioning/datasources/</code> directory, create a file called <code>default.yaml</code> with the following content:</p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: TestData
+    type: testdata</pre>
+</li>
+<li>
+<p>Restart Grafana to load the new changes.</p>
+</li>
+<li>
+<p>In the sidebar, hover the cursor over the <strong>Configuration</strong> (gear) icon and click <strong>Data Sources</strong>. TestData appears in the list of data sources.</p>
+</li>
+</ol>
+<blockquote>
+<p>The configuration options can vary between different types of data sources. For more information on how to configure a specific data source, refer to <a href="/docs/grafana/latest/administration/provisioning/#datasources">Data sources</a>.</p></blockquote>
+<h2 id="provision-a-dashboard">Provision a dashboard</h2>
+<p>Each dashboard config file contains a manifest that specifies the desired state of a set of <em>dashboard providers</em>.</p>
+<p>A dashboard provider tells Grafana where to find the dashboard definitions and where to put them.</p>
+<p>Grafana regularly checks for changes to the dashboard definitions (by default every 10 seconds).</p>
+<p>Let&rsquo;s define a dashboard provider so that Grafana knows where to find the dashboards we want to provision.</p>
+<h4 id="define-a-dashboard-provider">Define a dashboard provider</h4>
+<p>In the <code>provisioning/dashboards/</code> directory, create a file called <code>default.yaml</code> with the following content:</p>
+<pre>apiVersion: 1
+
+providers:
+  - name: Default # A uniquely identifiable name for the provider
+    folder: Services # The folder where to place the dashboards
+    type: file
+    options:
+      path:
+        &lt;path to dashboard definitions&gt;
+        # Default path for Windows: C:/Program Files/GrafanaLabs/grafana/public/dashboards
+        # Default path for Linux is: /var/lib/grafana/dashboards</pre>
+<p>For more information on how to configure dashboard providers, refer to <a href="/docs/grafana/latest/administration/provisioning/#dashboards">Dashboards</a>.</p>
+<h4 id="create-a-dashboard-definition">Create a dashboard definition</h4>
+<ol>
+<li>
+<p>In the dashboard definitions directory you specified in the dashboard provider, i.e. <code>options.path</code>, create a file called <code>cluster.json</code> with the following content:</p>
+<pre>{
+  &#34;__inputs&#34;: [],
+  &#34;__requires&#34;: [],
+  &#34;annotations&#34;: {
+    &#34;list&#34;: []
+  },
+  &#34;editable&#34;: false,
+  &#34;gnetId&#34;: null,
+  &#34;graphTooltip&#34;: 0,
+  &#34;hideControls&#34;: false,
+  &#34;id&#34;: null,
+  &#34;links&#34;: [],
+  &#34;panels&#34;: [
+    {
+      &#34;aliasColors&#34;: {},
+      &#34;bars&#34;: false,
+      &#34;dashLength&#34;: 10,
+      &#34;dashes&#34;: false,
+      &#34;datasource&#34;: &#34;TestData&#34;,
+      &#34;fill&#34;: 1,
+      &#34;gridPos&#34;: {
+        &#34;h&#34;: 8,
+        &#34;w&#34;: 24,
+        &#34;x&#34;: 0,
+        &#34;y&#34;: 0
+      },
+      &#34;id&#34;: 2,
+      &#34;legend&#34;: {
+        &#34;alignAsTable&#34;: false,
+        &#34;avg&#34;: false,
+        &#34;current&#34;: false,
+        &#34;max&#34;: false,
+        &#34;min&#34;: false,
+        &#34;rightSide&#34;: false,
+        &#34;show&#34;: true,
+        &#34;total&#34;: false,
+        &#34;values&#34;: false
+      },
+      &#34;lines&#34;: true,
+      &#34;linewidth&#34;: 1,
+      &#34;links&#34;: [],
+      &#34;nullPointMode&#34;: &#34;null&#34;,
+      &#34;percentage&#34;: false,
+      &#34;pointradius&#34;: 5,
+      &#34;points&#34;: false,
+      &#34;renderer&#34;: &#34;flot&#34;,
+      &#34;repeat&#34;: null,
+      &#34;seriesOverrides&#34;: [],
+      &#34;spaceLength&#34;: 10,
+      &#34;stack&#34;: false,
+      &#34;steppedLine&#34;: false,
+      &#34;targets&#34;: [],
+      &#34;thresholds&#34;: [],
+      &#34;timeFrom&#34;: null,
+      &#34;timeShift&#34;: null,
+      &#34;title&#34;: &#34;CPU Usage&#34;,
+      &#34;tooltip&#34;: {
+        &#34;shared&#34;: true,
+        &#34;sort&#34;: 0,
+        &#34;value_type&#34;: &#34;individual&#34;
+      },
+      &#34;type&#34;: &#34;graph&#34;,
+      &#34;xaxis&#34;: {
+        &#34;buckets&#34;: null,
+        &#34;mode&#34;: &#34;time&#34;,
+        &#34;name&#34;: null,
+        &#34;show&#34;: true,
+        &#34;values&#34;: []
+      },
+      &#34;yaxes&#34;: [
+        {
+          &#34;format&#34;: &#34;short&#34;,
+          &#34;label&#34;: null,
+          &#34;logBase&#34;: 1,
+          &#34;max&#34;: null,
+          &#34;min&#34;: null,
+          &#34;show&#34;: true
+        },
+        {
+          &#34;format&#34;: &#34;short&#34;,
+          &#34;label&#34;: null,
+          &#34;logBase&#34;: 1,
+          &#34;max&#34;: null,
+          &#34;min&#34;: null,
+          &#34;show&#34;: true
+        }
+      ]
+    }
+  ],
+  &#34;refresh&#34;: &#34;&#34;,
+  &#34;rows&#34;: [],
+  &#34;schemaVersion&#34;: 16,
+  &#34;tags&#34;: [&#34;kubernetes&#34;],
+  &#34;templating&#34;: {
+    &#34;list&#34;: []
+  },
+  &#34;time&#34;: {
+    &#34;from&#34;: &#34;now-6h&#34;,
+    &#34;to&#34;: &#34;now&#34;
+  },
+  &#34;timepicker&#34;: {},
+  &#34;timezone&#34;: &#34;browser&#34;,
+  &#34;title&#34;: &#34;Cluster&#34;,
+  &#34;version&#34;: 0
+}</pre>
+</li>
+<li>
+<p>Restart Grafana to provision the new dashboard or wait 10 seconds for Grafana to automatically create the dashboard.</p>
+</li>
+<li>
+<p>In the sidebar, hover the cursor over <strong>Dashboards</strong> (squares) icon, and then click <strong>Manage</strong>. The dashboard appears in a <strong>Services</strong> folder.</p>
+</li>
+</ol>
+<blockquote>
+<p>If you don&rsquo;t specify an <code>id</code> in the dashboard definition, then Grafana assigns one during provisioning. You can set the <code>id</code> yourself if you want to reference the dashboard from other dashboards. Be careful to not use the same <code>id</code> for multiple dashboards, as this will cause a conflict.</p></blockquote>
+<h2 id="summary">Summary</h2>
+<p>In this tutorial you learned how you to reuse dashboards and data sources across multiple teams by provisioning Grafana from version-controlled configuration files.</p>
+<p>Dashboard definitions can get unwieldy as more panels and configurations are added to them. There are a number of open source tools available to make it easier to manage dashboard definitions:</p>
+<ul>
+<li><a href="https://github.com/uber/grafana-dash-gen" target="_blank" rel="noopener noreferrer">grafana-dash-gen</a> (Javascript)</li>
+<li><a href="https://github.com/weaveworks/grafanalib" target="_blank" rel="noopener noreferrer">grafanalib</a> (Python)</li>
+<li><a href="https://github.com/grafana/grafonnet-lib" target="_blank" rel="noopener noreferrer">grafonnet-lib</a> (Jsonnet)</li>
+<li><a href="https://docs.openstack.org/infra/grafyaml/" target="_blank" rel="noopener noreferrer">grafyaml</a> (YAML)</li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="/docs/grafana/latest/administration/provisioning/">Provisioning Grafana</a></li>
+</ul>

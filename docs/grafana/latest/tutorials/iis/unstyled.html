@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<h1 id="use-iis-with-url-rewrite-as-a-reverse-proxy">Use IIS with URL Rewrite as a reverse proxy</h1>
+<p>If you want Grafana to be a subpath/subfolder under a website in IIS then the Application Request Routing (ARR) and URL Rewrite modules for ISS can be used to support this.</p>
+<p>Example:</p>
+<ul>
+<li>Parent site: <a href="http://yourdomain.com:8080" target="_blank" rel="noopener noreferrer">http://yourdomain.com:8080</a></li>
+<li>Grafana: http://localhost:3000</li>
+</ul>
+<p>Grafana as a subpath: <a href="http://yourdomain.com:8080/grafana" target="_blank" rel="noopener noreferrer">http://yourdomain.com:8080/grafana</a></p>
+<p>Other Examples:</p>
+<ul>
+<li>If the application is only served on the local server, the parent site can also look like http://localhost:8080.</li>
+<li>If your domain is served using https on port 443, and thus the port is not normally entered in the address of your site, then the need to specify a port for the parent site in the configuration steps below can be eliminated.</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>Install the URL Rewrite module for IIS.</p>
+<ul>
+<li>Download and install the URL Rewrite module for IIS: <a href="https://www.iis.net/downloads/microsoft/url-rewrite" target="_blank" rel="noopener noreferrer">https://www.iis.net/downloads/microsoft/url-rewrite</a></li>
+</ul>
+<p>You will also need the Application Request Routing (ARR) module for IIS for proxy forwarding</p>
+<ul>
+<li>Download and install ARR module for IIS: <a href="https://www.iis.net/downloads/microsoft/application-request-routing" target="_blank" rel="noopener noreferrer">https://www.iis.net/downloads/microsoft/application-request-routing</a></li>
+</ul>
+<h2 id="grafana-config">Grafana Config</h2>
+<p>The Grafana config can be set by creating a file named/editing the existing file named <code>custom.ini</code> in the <code>conf</code> subdirectory of your Grafana installation. See the 
+    <a href="/docs/grafana/latest/installation/windows/#configure">installation instructions</a> for more details.</p>
+<p>Using the example from above, if the subpath is <code>grafana</code> (you can set this to whatever is required) and the parent site is <code>yourdomain.com:8080</code>, then you would add this to the <code>custom.ini</code> config file:</p>
+<pre>[server]
+domain = yourdomain.com:8080
+root_url = %(protocol)s://%(domain)s/grafana/</pre>
+<p>Restart the Grafana server after changing the config file.</p>
+<p>Configured address to serve Grafana: <a href="http://yourdomain.com:8080/grafana" target="_blank" rel="noopener noreferrer">http://yourdomain.com:8080/grafana</a></p>
+<hr />
+<p>If you already have a subpath on your domain, configure it as follows:</p>
+<ul>
+<li>Your Parent Site Address: <a href="http://yourdomain.com/existingsubpath" target="_blank" rel="noopener noreferrer">http://yourdomain.com/existingsubpath</a></li>
+</ul>
+<pre>[server]
+domain = yourdomain.com/existingsubpath
+root_url = %(protocol)s://%(domain)s/grafana/</pre>
+<p>Restart the Grafana server after changing the config file.</p>
+<p>Configured address to serve Grafana: <a href="http://yourdomain.com/existingsubpath/grafana" target="_blank" rel="noopener noreferrer">http://yourdomain.com/existingsubpath/grafana</a></p>
+<h2 id="iis-config">IIS Config</h2>
+<h3 id="step-1-forward-proxy">Step 1: Forward Proxy</h3>
+<ol>
+<li>Open the IIS Manager and click on the server</li>
+<li>In the admin console for the server, double click on the Application Request Routing option:</li>
+<li>Click the <code>Server Proxy Settings</code> action on the right-hand pane</li>
+<li>Select the <code>Enable proxy</code> checkbox so that it is enabled</li>
+<li>Click <code>Apply</code> and proceed with the URL Rewriting configuration</li>
+</ol>
+<p><strong>Note:</strong> If you don&rsquo;t enable the Forward Proxy, you will most likely get 404 Not Found if you only apply the URL Rewrite rule</p>
+<h3 id="step-2-url-rewriting">Step 2: URL Rewriting</h3>
+<ol>
+<li>In the IIS Manager, click on the website that grafana will run under. For example, select the website that is bound to the <a href="http://yourdomain.com" target="_blank" rel="noopener noreferrer">http://yourdomain.com</a> domain.</li>
+<li>In the admin console for this website, double click on the URL Rewrite option:</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tutorials/IIS_admin_console.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tutorials/IIS_admin_console.png"data-srcset="/static/img/docs/tutorials/IIS_admin_console.png?w=320 320w, /static/img/docs/tutorials/IIS_admin_console.png?w=550 550w, /static/img/docs/tutorials/IIS_admin_console.png?w=750 750w, /static/img/docs/tutorials/IIS_admin_console.png?w=900 900w, /static/img/docs/tutorials/IIS_admin_console.png?w=1040 1040w, /static/img/docs/tutorials/IIS_admin_console.png?w=1240 1240w, /static/img/docs/tutorials/IIS_admin_console.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="1318"height="406"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tutorials/IIS_admin_console.png"
+            alt=""width="1318"height="406"/>
+        </noscript></div></a></figure>
+<ol start="3">
+<li>Click on the <code>Add Rule(s)...</code> action</li>
+<li>Choose the Blank Rule template for an Inbound Rule</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tutorials/IIS_add_inbound_rule.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tutorials/IIS_add_inbound_rule.png"data-srcset="/static/img/docs/tutorials/IIS_add_inbound_rule.png?w=320 320w, /static/img/docs/tutorials/IIS_add_inbound_rule.png?w=550 550w, /static/img/docs/tutorials/IIS_add_inbound_rule.png?w=750 750w, /static/img/docs/tutorials/IIS_add_inbound_rule.png?w=900 900w, /static/img/docs/tutorials/IIS_add_inbound_rule.png?w=1040 1040w, /static/img/docs/tutorials/IIS_add_inbound_rule.png?w=1240 1240w, /static/img/docs/tutorials/IIS_add_inbound_rule.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="678"height="454"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tutorials/IIS_add_inbound_rule.png"
+            alt=""width="678"height="454"/>
+        </noscript></div></a></figure>
+<ol start="5">
+<li>Create an Inbound Rule for the website with the following settings:</li>
+</ol>
+<ul>
+<li>pattern: <code>grafana(/)?(.*)</code> (if you have customised the subpath that will be used, use that instead of <code>grafana</code>)</li>
+<li>check the <code>Ignore case</code> checkbox</li>
+<li>rewrite URL set to <code>http://localhost:3000/{R:2}</code></li>
+<li>check the <code>Append query string</code> checkbox</li>
+<li>check the <code>Stop processing of subsequent rules</code> checkbox</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tutorials/IIS_url_rewrite.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tutorials/IIS_url_rewrite.png"data-srcset="/static/img/docs/tutorials/IIS_url_rewrite.png?w=320 320w, /static/img/docs/tutorials/IIS_url_rewrite.png?w=550 550w, /static/img/docs/tutorials/IIS_url_rewrite.png?w=750 750w, /static/img/docs/tutorials/IIS_url_rewrite.png?w=900 900w, /static/img/docs/tutorials/IIS_url_rewrite.png?w=1040 1040w, /static/img/docs/tutorials/IIS_url_rewrite.png?w=1240 1240w, /static/img/docs/tutorials/IIS_url_rewrite.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="708"height="768"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tutorials/IIS_url_rewrite.png"
+            alt=""width="708"height="768"/>
+        </noscript></div></a></figure>
+<ol start="6">
+<li>If your version of Grafana is greater than 8.3.5, you also need to configure the reverse proxy to preserve host headers.</li>
+</ol>
+<ul>
+<li>This can be achieved by configuring the IIS config file by running this in a cmd prompt
+<code>%windir%\system32\inetsrv\appcmd.exe set config -section:system.webServer/proxy -preserveHostHeader:true /commit:apphost</code></li>
+<li>More information here <a href="https://github.com/grafana/grafana/issues/45261" target="_blank" rel="noopener noreferrer">https://github.com/grafana/grafana/issues/45261</a></li>
+</ul>
+<p>Finally, navigate to <code>http://yourdomain.com:8080/grafana</code> and you should come to the Grafana login page.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="404-error">404 error</h3>
+<p>When navigating to the Grafana URL (<code>http://yourdomain.com:8080/grafana</code>) and a <code>HTTP Error 404.0 - Not Found</code> error is returned, then either:</p>
+<ul>
+<li>The pattern for the Inbound Rule is incorrect. Edit the rule, click on the <code>Test pattern...</code> button, test the part of the URL after <code>http://yourdomain.com:8080/</code> and make sure it matches. For <code>grafana/login</code> the test should return 3 capture groups: {R:0}: <code>grafana</code> {R:1}: <code>/</code> and {R:2}: <code>login</code>.</li>
+<li>The <code>root_url</code> setting in the Grafana config file does not match the parent URL with subpath.</li>
+</ul>
+<h3 id="grafana-website-only-shows-text-with-no-images-or-css">Grafana Website only shows text with no images or css</h3>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tutorials/IIS_proxy_error.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tutorials/IIS_proxy_error.png"data-srcset="/static/img/docs/tutorials/IIS_proxy_error.png?w=320 320w, /static/img/docs/tutorials/IIS_proxy_error.png?w=550 550w, /static/img/docs/tutorials/IIS_proxy_error.png?w=750 750w, /static/img/docs/tutorials/IIS_proxy_error.png?w=900 900w, /static/img/docs/tutorials/IIS_proxy_error.png?w=1040 1040w, /static/img/docs/tutorials/IIS_proxy_error.png?w=1240 1240w, /static/img/docs/tutorials/IIS_proxy_error.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="449"height="258"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tutorials/IIS_proxy_error.png"
+            alt=""width="449"height="258"/>
+        </noscript></div></a></figure>
+<ol>
+<li>
+<p>The <code>root_url</code> setting in the Grafana config file does not match the parent URL with subpath. This could happen if the root_url is commented out by mistake (<code>;</code> is used for commenting out a line in .ini files):</p>
+<p><code>; root_url = %(protocol)s://%(domain)s/grafana/</code></p>
+</li>
+<li>
+<p>or if the subpath in the <code>root_url</code> setting does not match the subpath used in the pattern in the Inbound Rule in IIS:</p>
+<p><code>root_url = %(protocol)s://%(domain)s/grafana/</code></p>
+<p>pattern in Inbound Rule: <code>wrongsubpath(/)?(.*)</code></p>
+</li>
+<li>
+<p>or if the Rewrite URL in the Inbound Rule is incorrect.</p>
+<p>The Rewrite URL should not include the subpath.</p>
+<p>The Rewrite URL should contain the capture group from the pattern matching that returns the part of the URL after the subpath. The pattern used above returns three capture groups and the third one {R:2} returns the part of the URL after <code>http://yourdomain.com:8080/grafana/</code>.</p>
+</li>
+</ol>
+<h3 id="you-see-an-error-updating-options-origin-not-allowed-error">You see an &lsquo;Error updating options: origin not allowed&rsquo; error</h3>
+<ul>
+<li>Ensure you have undertaken step 6 above, to configure IIS to preserve host headers by edit IIS config by running this in cmd prompt:
+<code>%windir%\system32\inetsrv\appcmd.exe set config -section:system.webServer/proxy -preserveHostHeader:true /commit:apphost</code></li>
+</ul>

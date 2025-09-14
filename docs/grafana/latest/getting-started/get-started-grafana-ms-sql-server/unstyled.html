@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<h1 id="get-started-with-grafana-and-ms-sql-server">Get started with Grafana and MS SQL Server</h1>
+<p>Microsoft SQL Server is a popular relational database management system that is widely used in development and production environments. This topic walks you through the steps to create a series of dashboards in Grafana to display metrics from a MS SQL Server database.</p>
+<h4 id="download-ms-sql-server">Download MS SQL Server</h4>
+<p>MS SQL Server can be installed on Windows or Linux operating systems and also on Docker containers. Refer to the <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" rel="noopener noreferrer">MS SQL Server downloads page</a>, for a complete list of all available options.</p>
+<h4 id="install-ms-sql-server">Install MS SQL Server</h4>
+<p>You can install MS SQL Server on the host running Grafana or on a remote server. To install the software from the <a href="https://www.microsoft.com/en-us/sql-server/sql-server-downloads" target="_blank" rel="noopener noreferrer">downloads page</a>, follow their setup prompts.</p>
+<p>If you are on a Windows host but want to use Grafana and MS SQL data source on a Linux environment, refer to the <a href="/blog/2021/03/03/how-to-set-up-a-grafana-development-environment-on-a-windows-pc-using-wsl">WSL to set up your Grafana development environment</a> blog post. This will allow you to leverage the resources available in <a href="https://github.com/grafana/grafana" target="_blank" rel="noopener noreferrer">grafana/grafana</a> GitHub repository. Here you will find a collection of supported data sources, including MS SQL Server, along with test data and pre-configured dashboards for use.</p>
+<h4 id="add-the-ms-sql-data-source">Add the MS SQL data source</h4>
+<p>There are several ways to authenticate in MSSQL. Start by:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu and filter by <code>mssql</code>.</li>
+<li>Select the <strong>Microsoft SQL Server</strong> option.</li>
+<li>Click <strong>Create a Microsoft SQL Server data source</strong> in the top right corner to open the configuration page.</li>
+<li>Select the desired authentication method and fill in the right information as detailed below.</li>
+<li>Click <strong>Save &amp; test</strong>.</li>
+</ol>
+<h5 id="general-configuration">General configuration</h5>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Name</code></td>
+          <td>The data source name. This is how you refer to the data source in panels and queries.</td>
+      </tr>
+      <tr>
+          <td><code>Host</code></td>
+          <td>The IP address/hostname and optional port of your MS SQL instance. If port is omitted, the default 1433 will be used.</td>
+      </tr>
+      <tr>
+          <td><code>Database</code></td>
+          <td>Name of your MS SQL database.</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="sql-server-authentication">SQL Server Authentication</h5>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>User</code></td>
+          <td>Database user&rsquo;s login/username.</td>
+      </tr>
+      <tr>
+          <td><code>Password</code></td>
+          <td>Database user&rsquo;s password.</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="windows-active-directory-kerberos">Windows Active Directory (Kerberos)</h5>
+<p>Below are the four possible ways to authenticate via Windows Active Directory/Kerberos.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Windows Active Directory (Kerberos) authentication is not supported in Grafana Cloud at the moment.</p></blockquote></div>
+
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Username + password</strong></td>
+          <td>Enter the domain user and password</td>
+      </tr>
+      <tr>
+          <td><strong>Keytab file</strong></td>
+          <td>Specify the path to a valid keytab file to use that for authentication.</td>
+      </tr>
+      <tr>
+          <td><strong>Credential cache</strong></td>
+          <td>Log in on the host via <code>kinit</code> and pass the path to the credential cache. The cache path can be found by running <code>klist</code> on the host in question.</td>
+      </tr>
+      <tr>
+          <td><strong>Credential cache file</strong></td>
+          <td>This option allows multiple valid configurations to be present and matching is performed on host, database, and user. See the example JSON below this table.</td>
+      </tr>
+  </tbody>
+</table>
+<pre>[
+  {
+    &#34;user&#34;: &#34;grot@GF.LAB&#34;,
+    &#34;database&#34;: &#34;dbone&#34;,
+    &#34;address&#34;: &#34;mysql1.mydomain.com:3306&#34;,
+    &#34;credentialCache&#34;: &#34;/tmp/krb5cc_1000&#34;
+  },
+  {
+    &#34;user&#34;: &#34;grot@GF.LAB&#34;,
+    &#34;database&#34;: &#34;dbtwo&#34;,
+    &#34;address&#34;: &#34;mysql2.gf.lab&#34;,
+    &#34;credentialCache&#34;: &#34;/tmp/krb5cc_1000&#34;
+  }
+]</pre>
+<p>For installations from the <a href="https://github.com/grafana/grafana/tree/main" target="_blank" rel="noopener noreferrer">grafana/grafana</a> repository, <code>gdev-mssql</code> data source is available. Once you add this data source, you can use the <code>Datasource tests - MSSQL</code> dashboard with three panels showing metrics generated from a test database.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/getting-started/gdev-sql-dashboard.png"
+  alt="MS SQL Server dashboard" width="1701"
+     height="866"/></p>
+<p>Optionally, play around this dashboard and customize it to:</p>
+<ul>
+<li>Create different panels.</li>
+<li>Change titles for panels.</li>
+<li>Change frequency of data polling.</li>
+<li>Change the period for which the data is displayed.</li>
+<li>Rearrange and resize panels.</li>
+</ul>
+<h4 id="start-building-dashboards">Start building dashboards</h4>
+<p>Now that you have gained some idea of using the pre-packaged MS SQL data source and some test data, the next step is to setup your own instance of MS SQL Server database and data your development or sandbox area.</p>
+<p>To fetch data from your own instance of MS SQL Server, add the data source using instructions in Step 4 of this topic. In Grafana <a href="../../explore/">Explore</a> build queries to experiment with the metrics you want to monitor.</p>
+<p>Once you have a curated list of queries, create <a href="../../dashboards/">dashboards</a> to render metrics from the SQL Server database. For troubleshooting, user permissions, known issues, and query examples, refer to <a href="../../datasources/mssql/">Using Microsoft SQL Server in Grafana</a>.</p>

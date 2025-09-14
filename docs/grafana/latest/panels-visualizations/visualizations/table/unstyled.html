@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<h1 id="table">Table</h1>
+<p>Tables are a highly flexible visualization designed to display data in columns and rows.
+The table visualization can take multiple datasets and provide the option to switch between them.
+With this versatility, it&rsquo;s the preferred visualization for viewing multiple data types, aiding in your data analysis needs.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-basic-table-v11.3.png"
+  alt="Basic table visualization" width="972"
+     height="352"/></p>
+<p>You can use a table visualization to show datasets such as:</p>
+<ul>
+<li>Common database queries like logs, traces, metrics</li>
+<li>Financial reports</li>
+<li>Customer lists</li>
+<li>Product catalogs</li>
+</ul>
+<p>Any information you might want to put in a spreadsheet can often be best visualized in a table.</p>
+<p>Tables also provide different styles to visualize data inside the table cells, such as colored text and cell backgrounds, gauges, sparklines, data links, JSON code, and images.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Annotations and alerts are not currently supported for tables.</p></blockquote></div>
+
+<h2 id="configure-a-table-visualization">Configure a table visualization</h2>
+<p>The following video provides a visual walkthrough of the options you can set in a table visualization.
+If you want to see a configuration in action, check out the video:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=PCY7O8EJeJY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/OhR1ID6Mk/" target="_blank" rel="noopener noreferrer">Table Visualizations in Grafana</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/OhR1ID6Mk/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>The table visualization supports any data that has a column-row structure.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you’re using a cell type such as sparkline or JSON, the data requirements may differ in a way that’s specific to that type. For more info refer to <a href="#cell-type">Cell type</a>.</p></blockquote></div>
+
+<h3 id="example">Example</h3>
+<p>This example shows a basic dataset in which there&rsquo;s data for every table cell:</p>
+<pre>Column1, Column2, Column3
+value1 , value2 , value3
+value4 , value5 , value6
+value7 , value8 , value9</pre>
+<p>If a cell is missing or the table column-row structure is not complete, as in the following example, the table visualization won’t display any of the data:</p>
+<pre>Column1, Column2, Column3
+value1 , value2 , value3
+gap1   , gap2
+value4 , value5 , value6</pre>
+<p>If you need to hide columns, you can do so using 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/">data transformations</a>, <a href="#field-overrides">field overrides</a>, or by 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">building a query</a> that returns only the needed columns.</p>
+<h2 id="column-filtering">Column filtering</h2>
+<p>You can temporarily change how column data is displayed using column filtering.
+For example, you can show or hide specific values.</p>
+<h3 id="turn-on-column-filtering">Turn on column filtering</h3>
+<p>To turn on column filtering, follow these steps:</p>
+<ol>
+<li>In Grafana, navigate to the dashboard with the table with the columns that you want to filter.</li>
+<li>Hover over any part of the panel to which you want to add the link to display the actions menu on the top right corner.</li>
+<li>Click the menu and select <strong>Edit</strong>.</li>
+<li>In the panel editor pane, expand the <strong>Table</strong> options section.</li>
+<li>Toggle on the <a href="#table-options"><strong>Column filter</strong> switch</a>.</li>
+</ol>
+<p>A filter icon (funnel) appears next to each column title.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tables/column-filter-with-icon.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tables/column-filter-with-icon.png"data-srcset="/static/img/docs/tables/column-filter-with-icon.png?w=320 320w, /static/img/docs/tables/column-filter-with-icon.png?w=550 550w, /static/img/docs/tables/column-filter-with-icon.png?w=750 750w, /static/img/docs/tables/column-filter-with-icon.png?w=900 900w, /static/img/docs/tables/column-filter-with-icon.png?w=1040 1040w, /static/img/docs/tables/column-filter-with-icon.png?w=1240 1240w, /static/img/docs/tables/column-filter-with-icon.png?w=1920 1920w"
+          data-sizes="auto"alt="Column filtering turned on"width="512"height="99"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tables/column-filter-with-icon.png"
+            alt="Column filtering turned on"width="512"height="99"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h3 id="filter-column-values">Filter column values</h3>
+<p>To filter column values, follow these steps:</p>
+<ol>
+<li>
+<p>Click the filter icon (funnel) next to a column title.</p>
+<p>Grafana displays the filter options for that column.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 300px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/panels-visualizations/filter-column-values_12.2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/panels-visualizations/filter-column-values_12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/filter-column-values_12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/filter-column-values_12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/filter-column-values_12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/filter-column-values_12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/filter-column-values_12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/filter-column-values_12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/filter-column-values_12.2.png?w=1920 1920w"
+             data-sizes="auto"alt="Filter column values"width="736"height="840"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/panels-visualizations/filter-column-values_12.2.png"
+               alt="Filter column values"width="736"height="840"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Click the checkbox next to the values that you want to display or click <strong>Select all</strong>.</p>
+</li>
+<li>
+<p>Enter text in the search field at the top to show those values in the display so that you can select them rather than scroll to find them.</p>
+</li>
+<li>
+<p>Choose from several operators to display column values:</p>
+<ul>
+<li><strong>Contains</strong> - Matches a regex pattern (operator by default).</li>
+<li><strong>Expression</strong> - Evaluates a boolean expression. The character <code>$</code> represents the column value in the expression (for example, &ldquo;$ &gt;= 10 &amp;&amp; $ &lt;= 12&rdquo;).</li>
+<li>The typical comparison operators: <code>=</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>.</li>
+</ul>
+</li>
+<li>
+<p>Click the checkbox above the <strong>Ok</strong> and <strong>Cancel</strong> buttons to add or remove all displayed values to and from the filter.</p>
+</li>
+</ol>
+<h3 id="clear-column-filters">Clear column filters</h3>
+<p>Columns with filters applied have a blue filter displayed next to the title.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tables/filtered-column.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tables/filtered-column.png"data-srcset="/static/img/docs/tables/filtered-column.png?w=320 320w, /static/img/docs/tables/filtered-column.png?w=550 550w, /static/img/docs/tables/filtered-column.png?w=750 750w, /static/img/docs/tables/filtered-column.png?w=900 900w, /static/img/docs/tables/filtered-column.png?w=1040 1040w, /static/img/docs/tables/filtered-column.png?w=1240 1240w, /static/img/docs/tables/filtered-column.png?w=1920 1920w"
+          data-sizes="auto"alt="Filtered column"width="162"height="193"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tables/filtered-column.png"
+            alt="Filtered column"width="162"height="193"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>To remove the filter, click the blue filter icon and then click <strong>Clear filter</strong>.</p>
+<h2 id="sort-columns">Sort columns</h2>
+<p>Click a column title to change the sort order from default to descending to ascending.
+Each time you click, the sort order changes to the next option in the cycle.
+You can sort multiple columns by holding the <code>Cmd</code> or <code>Ctrl</code> key
+and clicking the column name.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tables/sort-descending.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tables/sort-descending.png"data-srcset="/static/img/docs/tables/sort-descending.png?w=320 320w, /static/img/docs/tables/sort-descending.png?w=550 550w, /static/img/docs/tables/sort-descending.png?w=750 750w, /static/img/docs/tables/sort-descending.png?w=900 900w, /static/img/docs/tables/sort-descending.png?w=1040 1040w, /static/img/docs/tables/sort-descending.png?w=1240 1240w, /static/img/docs/tables/sort-descending.png?w=1920 1920w"
+          data-sizes="auto"alt="Sort descending"width="400"height="147"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tables/sort-descending.png"
+            alt="Sort descending"width="400"height="147"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="dataset-selector">Dataset selector</h2>
+<p>If the data queried contains multiple datasets, a table displays a drop-down list at the bottom, so you can select the dataset you want to visualize.
+This option is only available when you&rsquo;re editing the panel.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 650px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Table visualization with multiple datasets"width="792"height="419"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-table-multi-dataset-v11.3.png"
+            alt="Table visualization with multiple datasets"width="792"height="419"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="table-options">Table options</h3>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Show table header</td>
+          <td>Show or hide column names imported from your data source.</td>
+      </tr>
+      <tr>
+          <td>Frozen columns</td>
+          <td>Freeze columns starting from the left side of the table. Enter a value to set how many columns are frozen.</td>
+      </tr>
+      <tr>
+          <td>Cell height</td>
+          <td>Set the height of the cell. Choose from <strong>Small</strong>, <strong>Medium</strong>, or <strong>Large</strong>.</td>
+      </tr>
+      <tr>
+          <td>Max row height</td>
+          <td>Define the maximum height for a row in the table. This can be useful when <strong>Wrap text</strong> is enabled for one or more columns.</td>
+      </tr>
+      <tr>
+          <td>Enable pagination</td>
+          <td>Toggle the switch to control how many table rows are visible at once. When switched on, the page size automatically adjusts to the height of the table. This option doesn&rsquo;t affect queries.</td>
+      </tr>
+      <tr>
+          <td>Minimum column width</td>
+          <td>Define the lower limit of the column width, in pixels. By default, the minimum width of the table column is 150 pixels. For small-screen devices, such as mobile phones or tablets, reduce the value to <code>50</code> to allow table-based panels to render correctly in dashboards.</td>
+      </tr>
+      <tr>
+          <td>Column width</td>
+          <td>Define a column width, in pixels, rather than allowing the width to be set automatically. By default, Grafana calculates the column width based on the table size and the minimum column width.</td>
+      </tr>
+      <tr>
+          <td>Column alignment</td>
+          <td>Set how Grafana should align cell contents. Choose from: <strong>Auto</strong> (default), <strong>Left</strong>, <strong>Center</strong>, or <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Column filter</td>
+          <td>Temporarily change how column data is displayed. For example, show or hide specific values. For more information, refer to <a href="#column-filtering">Column filtering</a>.</td>
+      </tr>
+      <tr>
+          <td>Wrap text</td>
+          <td>Enables text wrapping for cell content.</td>
+      </tr>
+      <tr>
+          <td>Wrap header text</td>
+          <td>Enables text wrapping for column headers.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="table-footer-options">Table footer options</h3>
+<p>The table footer displays the results of calculations (and reducer functions) on fields.
+The footer is only displayed after you select an option in the <strong>Calculation</strong> drop-down list:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 300px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="The footer calculation selector, open"width="626"height="650"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-table-footer-selector-v12.2.png"
+            alt="The footer calculation selector, open"width="626"height="650"/>
+        </noscript></div></a></figure>
+<p>There are several calculations you can choose from including minimum, maximum, first, last, and total.
+For the full list of options, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculations</a>.</p>
+<p>In the table footer:</p>
+<ul>
+<li>You can apply multiple calculations at once.</li>
+<li>The calculations and reducer functions apply to all fields in the table, by default. To control which fields have a calculation or function applied, add the table footer in an override instead.</li>
+<li>If you enable a mathematical function for a non-numeric field, nothing for that function is displayed for that field.</li>
+</ul>
+<p>In the following image, multiple calculations—<strong>Mean</strong>, <strong>Max</strong>, and <strong>Last</strong>—have been applied:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Table with footer displaying mean, max, and last"width="1704"height="748"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-tablefooter-v12.2.png"
+            alt="Table with footer displaying mean, max, and last"width="1704"height="748"/>
+        </noscript></div></a></figure>
+<p>You can also see in the previous image that the mathematical functions, <strong>Mean</strong> and <strong>Max</strong>, haven&rsquo;t been applied to the text field in the table.
+Only the <strong>Last</strong> function has been applied to that field.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Calculations applied to cell types like <strong>Markdown + HTML</strong> might have unexpected results.</p></blockquote></div>
+
+<h3 id="cell-options">Cell options</h3>
+<p>Cell options allow you to control how data is displayed in a table.
+The options are differ based on the cell type that you select and are outlined within the descriptions of each cell type.
+The following table provides short descriptions for each cell type and links to a longer description and the cell type options.</p>
+<h4 id="cell-type">Cell type</h4>
+<p>By default, Grafana automatically chooses display settings.
+You can override these settings by choosing one of the following cell types to control the default display for all fields.
+Additional configuration is available for some cell types.</p>
+<p>If you want to apply a cell type to only some fields instead of all fields, you can do so using the <strong>Cell options &gt; Cell type</strong> field override.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Cell type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#auto">Auto</a></td>
+          <td>A basic text and number cell.</td>
+      </tr>
+      <tr>
+          <td><a href="#colored-text">Colored text</a></td>
+          <td>If thresholds, value mappings, or color schemes are set, then the cell text is displayed in the appropriate color.</td>
+      </tr>
+      <tr>
+          <td><a href="#colored-background">Colored background</a></td>
+          <td>If thresholds, value mappings, or color schemes are set, then the cell background is displayed in the appropriate color.</td>
+      </tr>
+      <tr>
+          <td><a href="#data-links">Data links</a></td>
+          <td>The cell text reflects the titles of the configured data links.</td>
+      </tr>
+      <tr>
+          <td><a href="#gauge">Gauge</a></td>
+          <td>Values are displayed as a horizontal bar gauge. You can set the <a href="#gauge-display-mode">Gauge display mode</a> and the <a href="#value-display">Value display</a> options.</td>
+      </tr>
+      <tr>
+          <td><a href="#sparkline">Sparkline</a></td>
+          <td>Shows values rendered as a sparkline.</td>
+      </tr>
+      <tr>
+          <td><a href="#json-view">JSON View</a></td>
+          <td>Shows values formatted as code.</td>
+      </tr>
+      <tr>
+          <td><a href="#pill">Pill</a></td>
+          <td>Displays each item in a comma-separated string in a colored block.</td>
+      </tr>
+      <tr>
+          <td><a href="#markdown--html">Markdown + HTML</a></td>
+          <td>Displays rich markdown or HTML content.</td>
+      </tr>
+      <tr>
+          <td><a href="#image">Image</a></td>
+          <td>Displays an image when the value is a URL or a base64 encoded image.</td>
+      </tr>
+      <tr>
+          <td><a href="#actions">Actions</a></td>
+          <td>The cell displays a button that triggers a basic, unauthenticated API call when clicked.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="auto">Auto</h4>
+<p>This is a basic text and number cell.</p>
+<p>It has the following cell options:</p>
+
+
+<div data-shared="visualizations/cell-options.md">
+            <!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Cell value inspect</td>
+          <td><p>Enables value inspection from table cells. When the switch is toggled on, clicking the inspect icon in a cell opens the <strong>Inspect value</strong> drawer which contains two tabs: <strong>Plain text</strong> and <strong>Code editor</strong>.</p><p>Grafana attempts to automatically detect the type of data in the cell and opens the drawer with the associated tab showing. However, you can switch back and forth between tabs.</p></td>
+      </tr>
+      <tr>
+          <td>Tooltip from field</td>
+          <td>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip. For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+</div>
+
+        
+<h4 id="colored-text">Colored text</h4>
+<p>If thresholds, value mappings, or color schemes are set, the cell text is displayed in the appropriate color.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-table-colored-text-v11.3-2.png"
+  alt="Table with colored text cell type" width="549"
+     height="111"/></p>
+<p>The colored text cell type has the following options:</p>
+
+
+<div data-shared="visualizations/cell-options.md">
+            <!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Cell value inspect</td>
+          <td><p>Enables value inspection from table cells. When the switch is toggled on, clicking the inspect icon in a cell opens the <strong>Inspect value</strong> drawer which contains two tabs: <strong>Plain text</strong> and <strong>Code editor</strong>.</p><p>Grafana attempts to automatically detect the type of data in the cell and opens the drawer with the associated tab showing. However, you can switch back and forth between tabs.</p></td>
+      </tr>
+      <tr>
+          <td>Tooltip from field</td>
+          <td>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip. For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+</div>
+
+        
+<h4 id="colored-background">Colored background</h4>
+<p>If thresholds, value mappings, or color schemes are set, the cell background is displayed in the appropriate color.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-table-colored-bkgrnd-v11.3-2.png"
+  alt="Table with colored background cell type" width="550"
+     height="104"/></p>
+<p>You can also set background cell color by row:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-table-colored-row-v11.3.png"
+  alt="Table with background cell color applied to row" width="550"
+     height="107"/></p>
+<p>The colored background cell type has the following options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Background display mode</td>
+          <td>Choose between <strong>Basic</strong> and <strong>Gradient</strong>.</td>
+      </tr>
+      <tr>
+          <td>Apply to entire row</td>
+          <td>Toggle the switch on to apply the background color that&rsquo;s configured for the cell to the whole row.</td>
+      </tr>
+      <tr>
+          <td>Cell value inspect</td>
+          <td><p>Enables value inspection from table cells. When the switch is toggled on, clicking the inspect icon in a cell opens the <strong>Inspect value</strong> drawer which contains two tabs: <strong>Plain text</strong> and <strong>Code editor</strong>.</p><p>Grafana attempts to automatically detect the type of data in the cell and opens the drawer with the associated tab showing. However, you can switch back and forth between tabs.</p></td>
+      </tr>
+      <tr>
+          <td>Tooltip from field</td>
+          <td>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip. For more information, refer to the <a href="#tooltip-from-field">Tooltip from field</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<!-- The cell value inspect and tooltip from field descriptions above should be copied from docs/sources/shared/visualizations/cell-options.md -->
+<h4 id="data-links">Data links</h4>
+<p>If you&rsquo;ve configured data links, when the cell type is <strong>Auto</strong>, the cell text becomes clickable.
+If you change the cell type to <strong>Data links</strong>, the cell text reflects the titles of the configured data links. To control the application of data link text more granularly, use a <strong>Cell option &gt; Cell type &gt; Data links</strong> field override.</p>
+<h4 id="gauge">Gauge</h4>
+<p>With this cell type, cells can be displayed as a graphical gauge, with several different presentation types.</p>
+<p>The gauge cell type has the following options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Gauge display mode</td>
+          <td>Controls the type of gauge used. For more information, refer to the <a href="#gauge-display-mode">Gauge display mode</a>.</td>
+      </tr>
+      <tr>
+          <td>Value display</td>
+          <td>Controls how the value is displayed. For more information, refer to the <a href="#value-display">Value display</a>.</td>
+      </tr>
+      <tr>
+          <td>Tooltip from field</td>
+          <td>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip. For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The maximum and minimum values of the gauges are configured automatically from the smallest and largest values in your whole dataset.
+If you don&rsquo;t want the max/min values to be pulled from the whole dataset, you can configure them for each column using <a href="#field-overrides">field overrides</a>.</p></blockquote></div>
+
+<h5 id="gauge-display-mode">Gauge display mode</h5>
+<p>You can set three gauge display modes.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Basic</td>
+          <td>Shows a simple gauge with the threshold levels defining the color of gauge. <figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 164px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Table cell with basic gauge mode"width="164"height="120"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-basic-v11.3.png"
+            alt="Table cell with basic gauge mode"width="164"height="120"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>Gradient</td>
+          <td>The threshold levels define a gradient. <figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 160px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Table cell with gradient gauge mode"width="160"height="120"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-gradient-v11.3.png"
+            alt="Table cell with gradient gauge mode"width="160"height="120"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>Retro LCD</td>
+          <td>The gauge is split up in small cells that are lit or unlit. <figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 164px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Table cell with retro LCD gauge mode"width="164"height="120"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-gauge-mode-retro-v11.3.png"
+            alt="Table cell with retro LCD gauge mode"width="164"height="120"/>
+        </noscript></div></a></figure></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h5 id="value-display">Value display</h5>
+<p>Labels displayed alongside of the gauges can be set to be colored by value, match the theme text color, or be hidden.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value color</td>
+          <td>Labels are colored by value. <figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 163px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Table with labels in value color"width="163"height="120"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-labels-value-color-v11.3.png"
+            alt="Table with labels in value color"width="163"height="120"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>Text color</td>
+          <td>Labels match the theme text color. <figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 165px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Table with labels in theme color"width="165"height="120"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-labels-text-color-v11.3.png"
+            alt="Table with labels in theme color"width="165"height="120"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>Hidden</td>
+          <td>Labels are hidden. <figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 160px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Table with labels hidden"width="160"height="120"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-labels-hidden-v11.3.png"
+            alt="Table with labels hidden"width="160"height="120"/>
+        </noscript></div></a></figure></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="sparkline">Sparkline</h4>
+<p>This cell type shows values rendered as a sparkline.
+To show sparklines on data with multiple time series, use the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#time-series-to-table-transform">Time series to table transformation</a> to process it into a format the table can show.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-table-as-sparkline-v11.3.png"
+  alt="Table using sparkline cell type" width="434"
+     height="75"/></p>
+<p>The sparkline cell type options are described in the following table.
+For more detailed information about all of the sparkline styling options (except <strong>Hide value</strong>), refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/#graph-styles-options">time series graph styles documentation</a>.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Hide value</td>
+          <td>Toggle the switch on or off to display or hide the cell value on the sparkline.</td>
+      </tr>
+      <tr>
+          <td>Style</td>
+          <td>Choose whether to display your time-series data as <strong>Lines</strong>, <strong>Bars</strong>, or <strong>Points</strong>. You can use overrides to combine multiple styles in the same graph.</td>
+      </tr>
+      <tr>
+          <td>Line interpolation</td>
+          <td>How the graph interpolates the series line. Choose from:<ul><li><strong>Linear</strong> - Points are joined by straight lines.</li><li><strong>Smooth</strong> - Points are joined by curved lines that smooths transitions between points.</li><li><strong>Step before</strong> - The line is displayed as steps between points. Points are rendered at the end of the step.</li><li><strong>Step after</strong> - The line is displayed as steps between points. Points are rendered at the beginning of the step.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Line width</td>
+          <td>The thickness of the series lines or the outline for bars using the <strong>Line width</strong> slider.</td>
+      </tr>
+      <tr>
+          <td>Fill opacity</td>
+          <td>The series area fill color using the <strong>Fill opacity</strong> slider.</td>
+      </tr>
+      <tr>
+          <td>Gradient mode</td>
+          <td>Gradient mode controls the gradient fill, which is based on the series color. Gradient appearance is influenced by the <strong>Fill opacity</strong> setting. To change the color, use the standard color scheme field option. For more information, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">Color scheme</a>. Choose from:<ul><li><strong>None</strong> - No gradient fill. This is the default setting.</li><li><strong>Opacity</strong> - An opacity gradient where the opacity of the fill increases as y-axis values increase.</li><li><strong>Hue</strong> - A subtle gradient that&rsquo;s based on the hue of the series color.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Line style</td>
+          <td>Choose from:<ul><li><strong>Solid</strong></li><li><strong>Dash</strong> - Select the length and gap for the line dashes. Default dash spacing is 10, 10.</li><li><strong>Dots</strong> - Select the gap for the dot spacing. Default dot spacing is 0, 10.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Connect null values</td>
+          <td>How null values, which are gaps in the data, appear on the graph. Null values can be connected to form a continuous line or set to a threshold above which gaps in the data are no longer connected. Choose from:<ul><li><strong>Never</strong> - Time series data points with gaps in the data are never connected.</li><li><strong>Always</strong> - Time series data points with gaps in the data are always connected.</li><li><strong>Threshold</strong> - Specify a threshold above which gaps in the data are no longer connected. This can be useful when the connected gaps in the data are of a known size or within a known range, and gaps outside this range should no longer be connected.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Show points</td>
+          <td>Whether to show data points to lines or bars. Choose from: <ul><li><strong>Auto</strong> - Grafana determines a point&rsquo;s visibility based on the density of the data. If the density is low, then points appear.</li><li><strong>Always</strong> - Show the points regardless of how dense the dataset is.</li><li><strong>Never</strong> - Don&rsquo;t show points.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Point size</td>
+          <td>Set the size of the points, from 1 to 40 pixels in diameter.</td>
+      </tr>
+      <tr>
+          <td>Bar alignment</td>
+          <td>Set the position of the bar relative to a data point.</td>
+      </tr>
+      <tr>
+          <td>Tooltip from field</td>
+          <td>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip. For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="json-view">JSON View</h4>
+<p>This cell type shows values formatted as code.
+If a value is an object the JSON view allowing browsing the JSON object will appear on hover.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tables/json-view.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tables/json-view.png"data-srcset="/static/img/docs/tables/json-view.png?w=320 320w, /static/img/docs/tables/json-view.png?w=550 550w, /static/img/docs/tables/json-view.png?w=750 750w, /static/img/docs/tables/json-view.png?w=900 900w, /static/img/docs/tables/json-view.png?w=1040 1040w, /static/img/docs/tables/json-view.png?w=1240 1240w, /static/img/docs/tables/json-view.png?w=1920 1920w"
+          data-sizes="auto"alt="JSON view"width="399"height="114"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tables/json-view.png"
+            alt="JSON view"width="399"height="114"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>For the JSON view cell type, you can set enable <strong>Cell value inspect</strong>.
+This enables value inspection from table cells.
+When the switch is toggled on, clicking the inspect icon in a cell opens the <strong>Inspect value</strong> drawer which contains two tabs: <strong>Plain text</strong> and <strong>Code editor</strong>.</p>
+<p>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip.
+For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</p>
+<p>Grafana attempts to automatically detect the type of data in the cell and opens the drawer with the associated tab showing.
+However, you can switch back and forth between tabs.</p>
+<h4 id="pill">Pill</h4>
+<p>The <strong>Pill</strong> cell type displays each item in a comma-separated string in a colored block.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png?w=1920 1920w"
+          data-sizes="auto"alt="Table using the pill cell type"width="1728"height="750"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-table-pills-v12.1.png"
+            alt="Table using the pill cell type"width="1728"height="750"/>
+        </noscript></div></a></figure>
+<p>The colors applied to each piece of text are maintained throughout the table.
+For example, if the word &ldquo;test&rdquo; is first displayed in a red pill, it will always be displayed in a red pill.</p>
+<p>The following data formats are supported for the pill cell type:</p>
+<ul>
+<li>Comma-separated values (<code>cows,chickens,goats</code>)</li>
+<li>JSON arrays of uniform (<code>([&quot;cows&quot;,&quot;chickens&quot;,&quot;goats&quot;])</code>) or mixed (<code>[1,2,3,&quot;foo&quot;,42,&quot;bar&quot;]</code>) types</li>
+</ul>
+<p>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip.
+For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</p>
+<h4 id="markdown--html">Markdown + HTML</h4>
+<p>The <strong>Markdown + HTML</strong> cell type displays rich Markdown or HTML content, rendered using the
+<a href="https://github.github.com/gfm/" target="_blank" rel="noopener noreferrer">GitHub-Flavored Markdown</a> spec. This is useful if you need to display
+customized, pre-formatted information alongside tabular data, such as formatted strings,
+lists of links, or other dynamic cases.</p>
+<p>For this cell type, you can toggle the <strong>Dynamic height</strong> switch, which allows the cell to resize
+dynamically based on the cell content. If you use dynamic height, we strongly recommend that you
+also toggle on <strong>Pagination</strong> to avoid performance issues in larger tables, since enabling
+Dynamic height disables table <span class="term" x-data="app_term('virtualization', `A technique to avoid rendering content until it&amp;rsquo;s needed to improve performance.`)" x-init="init()" :class="{ 'term-hover' : open }">
+    <span x-ref="tooltip">virtualization</span>
+  </span>.</p>
+<p>By default, the HTML rendered is sanitized, and un-sanitized HTML can only be rendered
+in these cells if the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#disable_sanitize_html"><code>disable_sanitize_html</code></a> option is set to true for your Grafana instance.</p>
+<p>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip.
+For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</p>
+<h4 id="image">Image</h4>
+<p>If you have a field value that is an image URL or a base64 encoded image, this cell type displays it as an image.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-table-cell-image-v11.3.png"
+  alt="Table with image cell type" width="803"
+     height="219"/></p>
+<p>It has the following options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Alt text</td>
+          <td>Set the alternative text of an image. The text will be available for screen readers and in cases when images can&rsquo;t be loaded.</td>
+      </tr>
+      <tr>
+          <td>Title text</td>
+          <td>Set the text that&rsquo;s displayed when the image is hovered over with a cursor.</td>
+      </tr>
+      <tr>
+          <td>Tooltip from field</td>
+          <td>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip. For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="actions">Actions</h4>
+<p>The cell displays a button that triggers a basic, unauthenticated API call when clicked.
+Configure the API call with the following options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Endpoint</td>
+          <td>Enter the endpoint URL.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Choose from <strong>GET</strong>, <strong>POST</strong>, and <strong>PUT</strong>.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select an option in the drop-down list. Choose from: JSON, Text, JavaScript, HTML, XML, and x-www-form-urlencoded.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td>Enter as many <strong>Key</strong>, <strong>Value</strong> pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Header parameters</td>
+          <td>Enter as many <strong>Key</strong>, <strong>Value</strong> pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Payload</td>
+          <td>Enter the body of the API call.</td>
+      </tr>
+      <tr>
+          <td>Tooltip from field</td>
+          <td>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip. For more information, refer to <a href="#tooltip-from-field">Tooltip from field</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="tooltip-from-field">Tooltip from field</h4>
+<p>Toggle on the <strong>Tooltip from field</strong> switch to use the values from another field (or column) in a tooltip.</p>
+<p>When you toggle the switch on, you can select from a drop-down list any of the fields in the table to be used as the source of the tooltip content.
+All table fields are included in the drop-down list, whether visible or hidden.</p>
+<p>When a tooltip from a field has been added to a cell, a chip is displayed in the top-right or top-left corner of the cell:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Tooltip chip"width="938"height="128"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-chip-1-v12.2.png"
+            alt="Tooltip chip"width="938"height="128"/>
+        </noscript></div></a></figure>
+<p>Hover your mouse over the chip to display the tooltip.</p>
+<p>When you toggle on the switch, the <strong>Tooltip placement</strong> option, which controls where the tooltip box opens upon hover, is also displayed.
+Select one of the following options: <strong>Auto</strong>, <strong>Top</strong>, <strong>Right</strong>, <strong>Bottom</strong>, and <strong>Left</strong>.</p>
+<p>The content of the tooltip is determined by the values of the source field and can&rsquo;t be directly edited.
+However, you can affect the display of the value using overrides like value mappings, as shown in the <a href="#example-tooltip-from-field-with-value-mappings">Example: Tooltip from field with value mappings</a> section.</p>
+<p>While you can turn on this option under <strong>Cell options</strong>, and have it applied to all cells in the table, it&rsquo;s typically used as an override on a sub-set of cells instead.
+This is demonstrated in the example in the following section.</p>
+<h5 id="example-tooltip-from-field-using-overrides">Example: Tooltip from field using overrides</h5>
+<p>The following table has five visible fields (columns) as well as a hidden field called &ldquo;Info&rdquo;:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Table that includes a hidden column"width="1980"height="660"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-table-1-v12.2.png"
+            alt="Table that includes a hidden column"width="1980"height="660"/>
+        </noscript></div></a></figure>
+<ul>
+<li>The &ldquo;Info&rdquo; field is hidden using the <strong>Table &gt; Hide in table</strong> override property.</li>
+<li>The following overrides have been applied to the &ldquo;Short text&rdquo; field:
+<ul>
+<li>The values from the &ldquo;Info&rdquo; field are used as tooltip text for the &ldquo;Short text&rdquo; cells using the <strong>Cell options &gt; Tooltip from field</strong> override property.</li>
+<li>The <strong>Cell options &gt; Tooltip placement</strong> override property is set to control the placement of the tooltip.</li>
+</ul>
+</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 300px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Override to use the Info field values as tooltips for the Short text column"width="796"height="614"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-override-2-v12.2.png"
+            alt="Override to use the Info field values as tooltips for the Short text column"width="796"height="614"/>
+        </noscript></div></a></figure>
+<p>Now, when you hover the cursor over the chip in the &ldquo;Short text&rdquo; column, the corresponding values from the &ldquo;Info&rdquo; column appear in the tooltip:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Info field value in the tooltip of the Short text cell upon hover"width="1980"height="754"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-v12.2.png"
+            alt="Info field value in the tooltip of the Short text cell upon hover"width="1980"height="754"/>
+        </noscript></div></a></figure>
+<h5 id="example-tooltip-from-field-with-value-mappings">Example: Tooltip from field with value mappings</h5>
+<p>While the content of the tooltip is determined by the values of the source field and can&rsquo;t be directly edited, you can use field overrides on the source field to manipulate the display of that value.</p>
+<p>For example, if the &ldquo;Info&rdquo; column is being used as the source field for the tooltip values, you could set up a value mapping.
+In this case, the value &ldquo;up&rdquo; is mapped to the word &ldquo;Good&rdquo;:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Info field value up being mapped to the value Good in an override"width="2516"height="1190"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-value-map-v12.2.png"
+            alt="Info field value up being mapped to the value Good in an override"width="2516"height="1190"/>
+        </noscript></div></a></figure>
+<p>Now, when you hover the cursor over the chip in the &ldquo;Short text&rdquo; cell, the mapped value appears in the tooltip:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Info field mapped to a new value in the tooltip of the Short text cell upon hover"width="1978"height="666"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-tooltip-on-hover-2-v12.2.png"
+            alt="Info field mapped to a new value in the tooltip of the Short text cell upon hover"width="1978"height="666"/>
+        </noscript></div></a></figure>
+<p>You can use all field overrides to affect the display of the tooltip.
+For example, the <strong>Table &gt; Column width</strong> or <strong>Cell options &gt; Cell type</strong> overrides can change the cell width or visual display of the data.</p>
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-3.md">
+            <p><em>Data links</em> allow you to link to other panels, dashboards, and external resources and <em>actions</em> let you trigger basic, unauthenticated, API calls.
+In both cases, you can carry out these tasks while maintaining the context of the source panel.</p>
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+</ul>
+<p>Data links for this visualization don&rsquo;t include the <strong>One click</strong> switch, however, if there&rsquo;s only one data link configured, that data link has single-click functionality.
+If multiple data links are configured, then clicking the visualization opens a menu that displays all the data links.</p>
+<p>For each action, define the following API call settings:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>A human-readable label for the action that&rsquo;s displayed in the UI.</td>
+      </tr>
+      <tr>
+          <td>Confirmation message</td>
+          <td>A descriptive prompt to confirm or cancel the action.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Select from <strong>POST</strong>, <strong>PUT</strong>, or <strong>GET</strong>.</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>The request URL.</p><p>To add a variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables.</td>
+      </tr>
+      <tr>
+          <td>Variables</td>
+          <td><strong>Key</strong> and <strong>Name</strong> pairs with a type selection. Click the <strong>+</strong> icon to add as many variables as you need. To add a variable to the request, prefix the key with <code>$</code>. You can set the values for the variables when performing an action.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td><strong>Key</strong> and <strong>Value</strong> pairs. Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Headers</td>
+          <td>Comprised of <strong>Key</strong> and <strong>Value</strong> pairs and a <strong>Content-Type</strong>.</p><p>Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select from the following: <strong>application/json</strong>, <strong>text/plain</strong>, <strong>application/XML</strong>, and <strong>application/x-www-form-urlencoded</strong>.</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>The body of the request.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-2.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

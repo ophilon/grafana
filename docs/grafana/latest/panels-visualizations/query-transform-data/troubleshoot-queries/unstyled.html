@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<h1 id="troubleshoot-queries">Troubleshoot queries</h1>
+<p>This page provides information to solve common dashboard problems.</p>
+<h2 id="i-get-different-results-when-i-rearrange-my-functions">I get different results when I rearrange my functions</h2>
+<p>Function order is very important. Just like in math, the order that you place your functions can affect the result.</p>
+<h2 id="inspect-your-query-request-and-response">Inspect your query request and response</h2>
+<p>The most common problems are related to the query and response from your data source. Even if it looks
+like a bug or visualization issue in Grafana, it is almost always a problem with the data source query or
+the data source response. Start by inspecting your panel query and response.</p>
+<p>For more information, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/panel-inspector/#inspect-query-request-and-response-data">Inspect request and response data</a>.</p>
+<h2 id="my-query-is-slow">My query is slow</h2>
+<p>How many data points is your query returning? A query that returns lots of data points will be slow. Try this:</p>
+<ul>
+<li>In <strong>Query options</strong>, limit the <strong>Max data points</strong> returned.</li>
+<li>In <strong>Query options</strong>, increase the <strong>Min interval</strong> time.</li>
+<li>In your query, use a <code>group by</code> function.</li>
+</ul>

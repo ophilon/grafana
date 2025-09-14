@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v84">What&rsquo;s new in Grafana v8.4</h1>
+<p>We’re excited to announce Grafana v8.4, with a variety of improvements that focus on Grafana’s usability, performance, and security. Read on to learn about Alerting enhancements like a WeCom contact point, improved Alert panel and custom mute timings, as well as visualization improvements and details to help you share playlists more easily. In Grafana Enterprise, we’ve made caching more powerful to save you time and money while loading dashboards, boosted database encryption to keep secrets safe in your Grafana database, and made usability improvements to Recorded Queries, which allow you to track any data point over time.</p>
+<p>We’ve summarized what’s new in the release here, but you might also be interested in the announcement blog post. If you’d like all the details you can check out the complete <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>.</p>
+<h2 id="oss">OSS</h2>
+<h3 id="ease-of-use">Ease of use</h3>
+<h4 id="share-playlists">Share playlists</h4>
+<p>You can now share links to your playlists the same way as with dashboards, to easily set up the same playlist on multiple devices or kiosks.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/dashboards/share-playlists-8-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/dashboards/share-playlists-8-4.png"data-srcset="/static/img/docs/dashboards/share-playlists-8-4.png?w=320 320w, /static/img/docs/dashboards/share-playlists-8-4.png?w=550 550w, /static/img/docs/dashboards/share-playlists-8-4.png?w=750 750w, /static/img/docs/dashboards/share-playlists-8-4.png?w=900 900w, /static/img/docs/dashboards/share-playlists-8-4.png?w=1040 1040w, /static/img/docs/dashboards/share-playlists-8-4.png?w=1240 1240w, /static/img/docs/dashboards/share-playlists-8-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Share playlist"width="1324"height="774"title="Share playlist"/>
+        <noscript>
+          <img
+            src="/static/img/docs/dashboards/share-playlists-8-4.png"
+            alt="Share playlist"width="1324"height="774"title="Share playlist"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Share playlist</figcaption></a></figure>
+<h4 id="__interval-and-__interval_ms-in-panel-title"><code>$__interval</code> and <code>$__interval_ms</code> in panel title</h4>
+<p>We’ve expanded the functionality of this existing and popular feature. You can now use <code>$__interval</code> and <code>$__interval_ms</code> in panel titles. This new function displays the interval that’s used in a specific panel without requiring edit mode.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/panels/interval-8-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/panels/interval-8-4.png"data-srcset="/static/img/docs/panels/interval-8-4.png?w=320 320w, /static/img/docs/panels/interval-8-4.png?w=550 550w, /static/img/docs/panels/interval-8-4.png?w=750 750w, /static/img/docs/panels/interval-8-4.png?w=900 900w, /static/img/docs/panels/interval-8-4.png?w=1040 1040w, /static/img/docs/panels/interval-8-4.png?w=1240 1240w, /static/img/docs/panels/interval-8-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Time intervals"width="1556"height="720"title="Time intervals"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/interval-8-4.png"
+            alt="Time intervals"width="1556"height="720"title="Time intervals"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Time intervals</figcaption></a></figure>
+<h4 id="accessibility-improvements">Accessibility improvements</h4>
+<p>We’re continuing to improve accessibility across Grafana, particularly focusing on keyboard navigation and screen readers.</p>
+<ul>
+<li>Navigation: We’ve improved our keyboard navigation support in our main navbar, added focus states, and removed keyboard traps.</li>
+<li>General components (tooltips, color pickers, modals, dropdowns, and so forth): we’ve ensured they’re keyboard navigable, improved focus trapping, and improved screen reader support.</li>
+<li>Time series panel: charts are one of our main areas of limited accessibility. As of 8.4, you can also move a panel and make range selections using your keyboard. - Press arrow keys to move the cursor around. - Hold Shift to increase cursor speed. - Hold space to start rage selection.
+You can read our accessibility statement <a href="/accessibility/">here</a> and reach out to us with accessibility issues using our community Slack or our community forums.</li>
+</ul>
+<h4 id="new-option-to-configure-opentelemetry">New option to configure OpenTelemetry</h4>
+<p>Grafana is used to visualize traces and metrics, but Grafana itself can be traced as well. For example, users running a Grafana instance can export all the traces of endpoints and database requests to Jaeger, which helps you view all Grafana traffic.</p>
+<p>We’re currently using OpenTracing for this, but since the repository is being deprecated, we’ve started our work to migrate to OpenTelemetry and remove OpenTracing. This release is the first step toward this goal. It also adds the option to configure OpenTelemetry instead of OpenTracing.</p>
+<h4 id="rotate-your-encryption-key">Rotate your encryption key</h4>
+<p>In Grafana 8.3, we upgraded Grafana to use envelope encryption, which adds a layer of indirection to the encryption process. Instead of encrypting all secrets in the database with a single key, Grafana uses a set of keys, called data encryption keys (DEKs), to encrypt them. These data encryption keys are themselves encrypted with a single key-encryption key (KEK).</p>
+<p>As of 8.4, you can rotate your KEK and quickly re-encrypt your DEKs in case a key is compromised.</p>
+<p>Envelope encryption is not enabled by default in version 8.4. You can enable it by adding the term <code>envelopeEncryption</code> to the list of feature toggles in your <a href="/docs/grafana/next/administration/configuration/#feature_toggles?mdm=email">Grafana configuration</a>, or by sending a request to support if you use Grafana Cloud.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/encryption/rotate-encryption-8-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/encryption/rotate-encryption-8-4.png"data-srcset="/static/img/docs/encryption/rotate-encryption-8-4.png?w=320 320w, /static/img/docs/encryption/rotate-encryption-8-4.png?w=550 550w, /static/img/docs/encryption/rotate-encryption-8-4.png?w=750 750w, /static/img/docs/encryption/rotate-encryption-8-4.png?w=900 900w, /static/img/docs/encryption/rotate-encryption-8-4.png?w=1040 1040w, /static/img/docs/encryption/rotate-encryption-8-4.png?w=1240 1240w, /static/img/docs/encryption/rotate-encryption-8-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Rotate encryption"width="1556"height="420"title="Rotate encryption"/>
+        <noscript>
+          <img
+            src="/static/img/docs/encryption/rotate-encryption-8-4.png"
+            alt="Rotate encryption"width="1556"height="420"title="Rotate encryption"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Rotate encryption</figcaption></a></figure>
+<h3 id="alerting">Alerting</h3>
+<h4 id="support-for-mute-timings">Support for mute timings</h4>
+<p><a href="/docs/grafana/next/alerting/unified-alerting/notifications/mute-timings/">Mute timings</a> have been a popular request from the community. They are a powerful addition to the new alerting feature set and allow you to suppress specific alerts on a recurring interval or schedule, <a href="/docs/grafana/next/alerting/unified-alerting/notifications/mute-timings/#mute-timings-vs-silences">contrary to</a> Silences.</p>
+<p>Paired with the existing Silences, this gives you even more control over when alerts should be sent and contact points notified.</p>
+<h4 id="custom-grouping-for-the-alert-panel">Custom grouping for the Alert Panel</h4>
+<p>The new Alert Panel displays your alerts and associated alert instances, and supports grouping by one or more custom labels. You can also display all alert instances in an ungrouped list by choosing the custom grouping mode without any configured labels.</p>
+<p>Traditionally alerts in the Alert Panel were grouped by the alert rule that created them. When you are monitoring a complex resource like an industrial pump, you typically have multiple alerts defined for that resource to observe different metrics. The new custom grouping feature allows you to view all alert instances for individual resource by specifying a label such as “pump identifier”.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/alerting/unified/custom-grouping-8-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/alerting/unified/custom-grouping-8-4.png"data-srcset="/static/img/docs/alerting/unified/custom-grouping-8-4.png?w=320 320w, /static/img/docs/alerting/unified/custom-grouping-8-4.png?w=550 550w, /static/img/docs/alerting/unified/custom-grouping-8-4.png?w=750 750w, /static/img/docs/alerting/unified/custom-grouping-8-4.png?w=900 900w, /static/img/docs/alerting/unified/custom-grouping-8-4.png?w=1040 1040w, /static/img/docs/alerting/unified/custom-grouping-8-4.png?w=1240 1240w, /static/img/docs/alerting/unified/custom-grouping-8-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Custom grouping in alerting"width="826"height="766"title="Custom grouping in alerting"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/unified/custom-grouping-8-4.png"
+            alt="Custom grouping in alerting"width="826"height="766"title="Custom grouping in alerting"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Custom grouping in alerting</figcaption></a></figure>
+<h4 id="wecom-contact-point">WeCom contact point</h4>
+<p>Starting with Grafana 8.4, you can configure a <a href="/docs/grafana/latest/alerting/alerting-rules/manage-contact-points/">WeCom contact point</a> , to send alert notifications to WeCom.</p>
+<h3 id="new-panel-options">New panel options</h3>
+<h4 id="bar-chart">Bar chart</h4>
+<p>We’ve expanded the bar chart so that you can:</p>
+<ul>
+<li>Use time for the x-axis.</li>
+<li>Color bars using a field property (that is, build success).</li>
+<li>Use labels effectively:
+<ul>
+<li>Skip values when there are too many labels.</li>
+<li>Rotate labels.</li>
+</ul>
+</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/bar-chart-panel/bar-chart-8-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/bar-chart-panel/bar-chart-8-4.png"data-srcset="/static/img/docs/bar-chart-panel/bar-chart-8-4.png?w=320 320w, /static/img/docs/bar-chart-panel/bar-chart-8-4.png?w=550 550w, /static/img/docs/bar-chart-panel/bar-chart-8-4.png?w=750 750w, /static/img/docs/bar-chart-panel/bar-chart-8-4.png?w=900 900w, /static/img/docs/bar-chart-panel/bar-chart-8-4.png?w=1040 1040w, /static/img/docs/bar-chart-panel/bar-chart-8-4.png?w=1240 1240w, /static/img/docs/bar-chart-panel/bar-chart-8-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Updated bar chart"width="1552"height="720"title="Updated bar chart"/>
+        <noscript>
+          <img
+            src="/static/img/docs/bar-chart-panel/bar-chart-8-4.png"
+            alt="Updated bar chart"width="1552"height="720"title="Updated bar chart"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Updated bar chart</figcaption></a></figure>
+<h4 id="geomap">Geomap</h4>
+<p>Geomap now supports tooltips with data-links across multiple layers.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png"data-srcset="/static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png?w=320 320w, /static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png?w=550 550w, /static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png?w=750 750w, /static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png?w=900 900w, /static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png?w=1040 1040w, /static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png?w=1240 1240w, /static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Assign SAML users role"width="1562"height="832"title="Assign SAML users role"/>
+        <noscript>
+          <img
+            src="/static/img/docs/geomap-panel/geomap-tooltips-multiple-layers-8-4.png"
+            alt="Assign SAML users role"width="1562"height="832"title="Assign SAML users role"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Assign SAML users role</figcaption></a></figure>
+<h3 id="openapi-v2-specification">OpenAPI v2 specification</h3>
+<p>The HTTP API details are now <a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/grafana/grafana/papagian/api-spec/public/api-merged.json" target="_blank" rel="noopener noreferrer">specified</a> using OpenAPI v2.</p>
+<p>The grafana server serves a <a href="https://swagger.io/tools/swagger-ui/" target="_blank" rel="noopener noreferrer">SwaggerUI</a> editor via the /swagger-ui endpoint that enables users to make requests to the HTTP API via the browser. This is disabled by default and it’s enabled when the <code>swaggerUi</code> feature toggle is set.</p>
+<h2 id="grafana-enterprise">Grafana Enterprise</h2>
+<h3 id="security-improvements">Security improvements</h3>
+<h4 id="role-based-access-control-works-for-teams">Role-based access control works for teams</h4>
+<p>Occasionally, Viewer, Editor, and Admin roles don’t fit what a certain user needs to do in Grafana. Now you can assign role-based roles directly to users so they can create reports, use Explore mode, create data sources, and perform other specific actions in Grafana. Role-based access control is currently in beta.</p>
+<p>In Grafana 8.4, you can assign roles to teams, which apply to all members of that team. This is a convenient way to grant certain permissions to a group of users all at once. It also makes permissions easier to manage when you synchronize groups from an SSO provider, like Google Oauth or Okta, to teams in Grafana.</p>
+<p>In 8.4 you can also control access to Team and API key functionality itself, like viewing or editing API keys and adding members to certain teams.</p>
+<p>Enable role-based access control by adding the term <code>accesscontrol</code> to the list of feature toggles in your <a href="/docs/grafana/next/administration/configuration/#feature_toggles?mdm=email">Grafana configuration</a>, or by sending a request to support if you use Grafana Cloud. Learn more about role-based access control in the <a href="/docs/grafana/next/enterprise/access-control/">role-based access control section of the docs</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/8-4-fine-grain-access-control.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/8-4-fine-grain-access-control.png"data-srcset="/static/img/docs/enterprise/8-4-fine-grain-access-control.png?w=320 320w, /static/img/docs/enterprise/8-4-fine-grain-access-control.png?w=550 550w, /static/img/docs/enterprise/8-4-fine-grain-access-control.png?w=750 750w, /static/img/docs/enterprise/8-4-fine-grain-access-control.png?w=900 900w, /static/img/docs/enterprise/8-4-fine-grain-access-control.png?w=1040 1040w, /static/img/docs/enterprise/8-4-fine-grain-access-control.png?w=1240 1240w, /static/img/docs/enterprise/8-4-fine-grain-access-control.png?w=1920 1920w"
+          data-sizes="auto"alt="Assign SAML users role"width="1552"height="782"title="Assign SAML users role"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/8-4-fine-grain-access-control.png"
+            alt="Assign SAML users role"width="1552"height="782"title="Assign SAML users role"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Assign SAML users role</figcaption></a></figure>
+<h4 id="assign-saml-users-different-roles-in-different-organizations">Assign SAML users different roles in different Organizations</h4>
+<p>You can use Grafana&rsquo;s SAML integration to map organizations in your SAML service to <a href="../../setup-grafana/configure-security/configure-authentication/saml/#configure-organization-mapping">Organizations</a> in Grafana so that users who authenticate using SAML have the right permissions. Previously, you could only choose a single role (Viewer, Editor, or Admin) for users, which would apply to all of their Organizations. Now, you can map a given SAML user or org to different roles in different Organizations, so that, for example, they can be a Viewer in one Organization and an Admin in another.</p>
+<p>Additionally, you can now grant multiple SAML organizations access to Grafana, using the <code>allowed_organizations</code> attribute. Previously, you could only map one.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/8-4-SAML-auth.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/8-4-SAML-auth.png"data-srcset="/static/img/docs/enterprise/8-4-SAML-auth.png?w=320 320w, /static/img/docs/enterprise/8-4-SAML-auth.png?w=550 550w, /static/img/docs/enterprise/8-4-SAML-auth.png?w=750 750w, /static/img/docs/enterprise/8-4-SAML-auth.png?w=900 900w, /static/img/docs/enterprise/8-4-SAML-auth.png?w=1040 1040w, /static/img/docs/enterprise/8-4-SAML-auth.png?w=1240 1240w, /static/img/docs/enterprise/8-4-SAML-auth.png?w=1920 1920w"
+          data-sizes="auto"alt="Assign SAML users role"width="1368"height="744"title="Assign SAML users role"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/8-4-SAML-auth.png"
+            alt="Assign SAML users role"width="1368"height="744"title="Assign SAML users role"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Assign SAML users role</figcaption></a></figure>
+<p>Learn more in our <a href="../../setup-grafana/configure-security/configure-authentication/saml/">SAML docs</a>.</p>
+<h3 id="performance-improvements">Performance improvements</h3>
+<h4 id="recorded-queries-is-more-stable-and-usable">Recorded queries is more stable and usable</h4>
+<p>We’ve made stability and usability improvements to Recorded Queries, and removed the feature flag so you can get started with Recorded Queries out of the box.</p>
+<h4 id="measure-query-cache-hit-rate-and-clear-the-cache">Measure query cache hit rate and clear the cache</h4>
+<p><a href="/blog/2021/09/02/reduce-costs-and-increase-performance-with-query-caching-in-grafana-cloud/">Query caching</a> significantly reduces load times and costs of Grafana dashboards, by temporarily storing query results in a cache. Now you can measure the hit rate of your query cache, to see how many queries (and therefore how much time and money) it is saving. You can also use these measurements to tune the cache time to live (TTL), to balance performance and up-to-date data.</p>
+<p>You can also now manually clear the cache for a given data source in case data becomes stale, so that the next set of queries run against the data source itself.</p>
+<p>To learn more, refer to <a href="/docs/grafana/next/enterprise/query-caching/">query caching in the Grafana Enterprise docs</a></p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/8-4-query-caching.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/8-4-query-caching.png"data-srcset="/static/img/docs/enterprise/8-4-query-caching.png?w=320 320w, /static/img/docs/enterprise/8-4-query-caching.png?w=550 550w, /static/img/docs/enterprise/8-4-query-caching.png?w=750 750w, /static/img/docs/enterprise/8-4-query-caching.png?w=900 900w, /static/img/docs/enterprise/8-4-query-caching.png?w=1040 1040w, /static/img/docs/enterprise/8-4-query-caching.png?w=1240 1240w, /static/img/docs/enterprise/8-4-query-caching.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana Enterprise query caching"width="1564"height="738"title="Grafana Enterprise query caching"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/8-4-query-caching.png"
+            alt="Grafana Enterprise query caching"width="1564"height="738"title="Grafana Enterprise query caching"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana Enterprise query caching</figcaption></a></figure>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+
+<div data-shared="back-up/back-up-grafana.md">
+            <h1 id="back-up-grafana">Back up Grafana</h1>
+<p>This topic explains how to back up a local Grafana deployment, including configuration, plugin data, and the Grafana database.</p>
+<h2 id="back-up-the-grafana-configuration-file">Back up the Grafana configuration file</h2>
+<p>Copy Grafana configuration files that you might have modified in your Grafana deployment to a backup directory.</p>
+<p>The Grafana configuration files are located in the following directories:</p>
+<ul>
+<li>Default configuration: <code>$WORKING_DIR/defaults.ini</code> (Don&rsquo;t change this file)</li>
+<li>Custom configuration: <code>$WORKING_DIR/custom.ini</code></li>
+</ul>
+<p>For more information on where to find configuration files, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">Configuration file location</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you installed Grafana using the <code>deb</code> or <code>rpm</code> packages, then your configuration file is located at
+<code>/etc/grafana/grafana.ini</code>. This path is specified in the Grafana <code>init.d</code> script using <code>--config</code> file parameter.</p></blockquote></div>
+
+<h2 id="back-up-plugin-data">Back up plugin data</h2>
+<p>Installing plugins in Grafana creates a folder for each plugin with its associated files and data. Copy all files and folders recursively from this location to your backup repository.</p>
+<p>The Grafana plugin files are located in the following directories:</p>
+<ul>
+<li>Default location for plugins in a binary or source installation: <code>$WORKING_DIR/data/plugins</code></li>
+<li>Default location for plugins in a <code>deb</code> or <code>rpm</code> package: <code>/var/lib/grafana/plugins</code>. This path is specified in the Grafana init.d script using <code>--config</code> file parameter.</li>
+</ul>
+<h2 id="back-up-the-grafana-database">Back up the Grafana database</h2>
+<p>We recommend that you back up your Grafana database so that you can roll back to a previous version, if required.</p>
+<h3 id="sqlite">SQLite</h3>
+<p>The default Grafana database is SQLite, which stores its data in a single file on disk. To back up this file, copy it to your backup repository.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To ensure data integrity, shut down your Grafana service before backing up the SQLite database.</p></blockquote></div>
+
+<p>The SQLite database file is located in one of the following directories:</p>
+<ul>
+<li>Default location for SQLite data in a binary or source installation: <code>$WORKING_DIR/data/grafana.db</code></li>
+<li>Default location for SQLite data in a <code>deb</code> or <code>rpm</code> package: <code>/var/lib/grafana/grafana.db</code>. This path is specified in the Grafana
+init.d script using <code>--config</code> file parameter.</li>
+</ul>
+<h3 id="mysql">MySQL</h3>
+<p>To back up or restore a MySQL Grafana database, run the following commands:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">backup:
+&gt; mysqldump -u root -p[root_password] [grafana] &gt; grafana_backup.sql
+
+restore:
+&gt; mysql -u root -p grafana &lt; grafana_backup.sql</code></pre>
+  </div>
+</div><h3 id="postgres">Postgres</h3>
+<p>To back up or restore a Postgres Grafana database, run the following commands:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">backup:
+&gt; pg_dump grafana &gt; grafana_backup
+
+restore:
+&gt; psql grafana &lt; grafana_backup</code></pre>
+  </div>
+</div></div>
+
+        

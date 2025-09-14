@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<h1 id="query-management-in-explore">Query management in Explore</h1>
+<p>Grafana Explore provides a variety of tools to help manage your queries.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For help with debugging queries, Explore allows you to investigate query requests and responses, as well as query statistics, via the Query inspector. Refer to 
+    <a href="/docs/grafana/latest/explore/explore-inspector/">Query inspector in Explore</a> for more information.</p></blockquote></div>
+
+<h2 id="query-history">Query history</h2>
+<p>Query history contains the list of queries that you created in Explore. This history is stored in the Grafana database and isn&rsquo;t shared with other users. The retention period for a query history is <strong>two weeks</strong>. Queries older than two weeks are automatically deleted.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Starred queries aren&rsquo;t subject to the two-week retention period and aren&rsquo;t deleted.</p></blockquote></div>
+
+<p>To view your query history:</p>
+<ol>
+<li>Go to the Explore page.</li>
+<li>Click <strong>Query history</strong>.</li>
+</ol>
+<p>The Query history pane opens at the bottom of the page, and contains the following tabs:</p>
+<ul>
+<li><strong>Query history tab-</strong> Contains a history of all your queries, with options for searching and managing them.</li>
+<li><strong>Starred tab -</strong> Contains all of your starred queries.</li>
+<li><strong>Settings tab-</strong> Provides customizable options for your query history.</li>
+</ul>
+<h3 id="query-history-tab">Query history tab</h3>
+<p>The Query history depicts a history of your queries for the past two weeks, unless the query is starred, which means it doesn&rsquo;t get deleted. For each individual query, you can:</p>
+<ul>
+<li>Run and re-run the query.</li>
+<li>Create and/or edit a comment.</li>
+<li>Copy a query to the clipboard.</li>
+<li>Copy a shortened link with the query to the clipboard.</li>
+<li>Delete a query.</li>
+<li>Star a query.</li>
+<li>Add a query from your history to your 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#saved-queries">saved queries</a>.</li>
+</ul>
+<p>By default, query history shows you newest queries first. Click the sort box in the upper right to change to <strong>Oldest first</strong> to older queries first. You can search your queries using keywords.</p>
+<h3 id="query-history-starred-tab">Query history Starred tab</h3>
+<p>All starred queries are displayed in the <strong>Starred</strong> tab. This gives quick access to key or favorite queries without having to rewrite them.</p>
+<p>You also have the option to switch the data source and run a starred query.</p>
+<h4 id="filter-query-history">Filter query history</h4>
+<p>Filter query history in both the <strong>Query history</strong> and <strong>Starred</strong> tabs by data source name:</p>
+<ol>
+<li>Click the <strong>Filter queries for specific data source(s)</strong> field.</li>
+<li>Select the data source in the dropdown by which you want to filter your history. You can select multiple data sources.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Queries with the <strong>Mixed</strong> data source appear only when filtering for &ldquo;Mixed&rdquo; and not when filtering by individual data source.</p></blockquote></div>
+
+<p>You can also filter queries by date using the vertical slider:</p>
+<ul>
+<li>Drag the bottom circle to adjust the start date.</li>
+<li>Drag the top circle to adjust the end date.</li>
+</ul>
+<h4 id="search-in-query-history">Search in query history</h4>
+<p>Use <strong>Search queries</strong> in both the <strong>Query history</strong> and <strong>Starred</strong> tabs to search your query history and comments using keywords.</p>
+<ol>
+<li>Click in the <strong>Search queries</strong> field.</li>
+<li>Type the keyword(s) or term you are want to search for in search field.</li>
+</ol>
+<h3 id="query-history-settings-tab">Query history Settings tab</h3>
+<p>You can customize your query history in the <strong>Settings</strong> tab.</p>
+<p>Toggle <strong>Change the default active tab from &ldquo;Query history&rdquo; to &ldquo;Starred&rdquo;</strong> to make the <strong>Starred tab</strong> the default active tab.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Query history settings are global, and applied to both panels in split mode.</p></blockquote></div>
+
+<!-- All queries that have been starred in the Query history tab are displayed in the Starred tab. This allows you to access your favorite queries faster and to reuse these queries without typing them from scratch. -->

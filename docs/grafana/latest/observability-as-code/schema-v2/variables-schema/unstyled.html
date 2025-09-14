@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<h1 id="variables"><code>variables</code></h1>
+<p>The available variable types described in the following sections:</p>
+<ul>
+<li><a href="#queryvariablekind">QueryVariableKind</a></li>
+<li><a href="#textvariablekind">TextVariableKind</a></li>
+<li><a href="#constantvariablekind">ConstantVariableKind</a></li>
+<li><a href="#datasourcevariablekind">DatasourceVariableKind</a></li>
+<li><a href="#intervalvariablekind">IntervalVariableKind</a></li>
+<li><a href="#customvariablekind">CustomVariableKind</a></li>
+<li><a href="#groupbyvariablekind">GroupByVariableKind</a></li>
+<li><a href="#adhocvariablekind">AdhocVariableKind</a></li>
+</ul>
+<h2 id="queryvariablekind"><code>QueryVariableKind</code></h2>
+<p>Following is the JSON for a default query variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;QueryVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;current&#34;: {
+          &#34;text&#34;: &#34;&#34;,
+          &#34;value&#34;: &#34;&#34;
+        },
+        &#34;hide&#34;: &#34;dontHide&#34;,
+        &#34;includeAll&#34;: false,
+        &#34;multi&#34;: false,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;options&#34;: [],
+        &#34;query&#34;: defaultDataQueryKind(),
+        &#34;refresh&#34;: &#34;never&#34;,
+        &#34;regex&#34;: &#34;&#34;,
+        &#34;skipUrlSync&#34;: false,
+        &#34;sort&#34;: &#34;disabled&#34;
+      }
+    }
+  ]</pre>
+<p><code>QueryVariableKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;QueryVariable&rdquo;</li>
+<li>spec: <a href="#queryvariablespec">QueryVariableSpec</a></li>
+</ul>
+<h3 id="queryvariablespec"><code>QueryVariableSpec</code></h3>
+<p>The following table explains the usage of the query variable JSON fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable.</td>
+      </tr>
+      <tr>
+          <td>current</td>
+          <td>&ldquo;Text&rdquo; and a &ldquo;value&rdquo; or <a href="#variableoption"><code>VariableOption</code></a></td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>refresh</td>
+          <td><code>VariableRefresh</code>. Options are <code>never</code>, <code>onDashboardLoad</code>, and <code>onTimeChanged</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>datasource?</td>
+          <td><a href="#datasourceref"><code>DataSourceRef</code></a></td>
+      </tr>
+      <tr>
+          <td>query</td>
+          <td><code>DataQueryKind</code>. Consists of:<ul><li>kind: string</li><li>spec: string</li></ul></td>
+      </tr>
+      <tr>
+          <td>regex</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>sort</td>
+          <td><code>VariableSort</code>. Options are:<ul><li>disabled</li><li>alphabeticalAsc</li><li>alphabeticalDesc</li><li>numericalAsc</li><li>numericalDesc</li><li>alphabeticalCaseInsensitiveAsc</li><li>alphabeticalCaseInsensitiveDesc</li><li>naturalAsc</li><li>naturalDesc</li></ul></td>
+      </tr>
+      <tr>
+          <td>definition?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>options</td>
+          <td><a href="#variableoption"><code>VariableOption</code></a></td>
+      </tr>
+      <tr>
+          <td>multi</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>includeAll</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>allValue?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>placeholder?</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="variableoption"><code>VariableOption</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>selected</td>
+          <td>bool. Whether or not the option is selected.</td>
+      </tr>
+      <tr>
+          <td>text</td>
+          <td>string. Text to be displayed for the option.</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td>string. Value of the option.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="datasourceref"><code>DataSourceRef</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>type?</td>
+          <td>string. The plugin type-id.</td>
+      </tr>
+      <tr>
+          <td>uid?</td>
+          <td>The specific data source instance.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="textvariablekind"><code>TextVariableKind</code></h2>
+<p>Following is the JSON for a default text variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;TextVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;current&#34;: {
+          &#34;text&#34;: &#34;&#34;,
+          &#34;value&#34;: &#34;&#34;
+        },
+        &#34;hide&#34;: &#34;dontHide&#34;,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;query&#34;: &#34;&#34;,
+        &#34;skipUrlSync&#34;: false
+      }
+    }
+  ]</pre>
+<p><code>TextVariableKind</code> consists of:</p>
+<ul>
+<li>kind: TextVariableKind</li>
+<li>spec: <a href="#textvariablespec">TextVariableSpec</a></li>
+</ul>
+<h3 id="textvariablespec"><code>TextVariableSpec</code></h3>
+<p>The following table explains the usage of the query variable JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable.</td>
+      </tr>
+      <tr>
+          <td>current</td>
+          <td>&ldquo;Text&rdquo; and a &ldquo;value&rdquo; or <code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>query</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="constantvariablekind"><code>ConstantVariableKind</code></h2>
+<p>Following is the JSON for a default constant variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;ConstantVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;current&#34;: {
+          &#34;text&#34;: &#34;&#34;,
+          &#34;value&#34;: &#34;&#34;
+        },
+        &#34;hide&#34;: &#34;hideVariable&#34;,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;query&#34;: &#34;&#34;,
+        &#34;skipUrlSync&#34;: true
+      }
+    }
+  ]</pre>
+<p><code>ConstantVariableKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;ConstantVariable&rdquo;</li>
+<li>spec: <a href="#constantvariablespec">ConstantVariableSpec</a></li>
+</ul>
+<h3 id="constantvariablespec"><code>ConstantVariableSpec</code></h3>
+<p>The following table explains the usage of the constant variable JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable.</td>
+      </tr>
+      <tr>
+          <td>query</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>current</td>
+          <td>&ldquo;Text&rdquo; and a &ldquo;value&rdquo; or <code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="datasourcevariablekind"><code>DatasourceVariableKind</code></h2>
+<p>Following is the JSON for a default data source variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;DatasourceVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;current&#34;: {
+          &#34;text&#34;: &#34;&#34;,
+          &#34;value&#34;: &#34;&#34;
+        },
+        &#34;hide&#34;: &#34;dontHide&#34;,
+        &#34;includeAll&#34;: false,
+        &#34;multi&#34;: false,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;options&#34;: [],
+        &#34;pluginId&#34;: &#34;&#34;,
+        &#34;refresh&#34;: &#34;never&#34;,
+        &#34;regex&#34;: &#34;&#34;,
+        &#34;skipUrlSync&#34;: false
+      }
+    }
+  ]</pre>
+<p><code>DatasourceVariableKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;DatasourceVariable&rdquo;</li>
+<li>spec: <a href="#datasourcevariablespec">DatasourceVariableSpec</a></li>
+</ul>
+<h3 id="datasourcevariablespec"><code>DatasourceVariableSpec</code></h3>
+<p>The following table explains the usage of the data source variable JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable.</td>
+      </tr>
+      <tr>
+          <td>pluginId</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>refresh</td>
+          <td><code>VariableRefresh</code>. Options are <code>never</code>, <code>onDashboardLoad</code>, and <code>onTimeChanged</code>.</td>
+      </tr>
+      <tr>
+          <td>regex</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>current</td>
+          <td><code>Text</code> and a <code>value</code> or <code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>options</td>
+          <td><code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>multi</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>includeAll</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>allValue?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="intervalvariablekind"><code>IntervalVariableKind</code></h2>
+<p>Following is the JSON for a default interval variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;IntervalVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;auto&#34;: false,
+        &#34;auto_count&#34;: 0,
+        &#34;auto_min&#34;: &#34;&#34;,
+        &#34;current&#34;: {
+          &#34;text&#34;: &#34;&#34;,
+          &#34;value&#34;: &#34;&#34;
+        },
+        &#34;hide&#34;: &#34;dontHide&#34;,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;options&#34;: [],
+        &#34;query&#34;: &#34;&#34;,
+        &#34;refresh&#34;: &#34;never&#34;,
+        &#34;skipUrlSync&#34;: false
+      }
+    }
+  ]</pre>
+<p><code>IntervalVariableKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;IntervalVariable&rdquo;</li>
+<li>spec: <a href="#intervalvariablespec">IntervalVariableSpec</a></li>
+</ul>
+<h3 id="intervalvariablespec"><code>IntervalVariableSpec</code></h3>
+<p>The following table explains the usage of the interval variable JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable.</td>
+      </tr>
+      <tr>
+          <td>query</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>current</td>
+          <td><code>Text</code> and a <code>value</code> or <code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>options</td>
+          <td><code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>auto</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>auto_count</td>
+          <td>integer. Default is <code>0</code>.</td>
+      </tr>
+      <tr>
+          <td>refresh</td>
+          <td><code>VariableRefresh</code>. Options are <code>never</code>, <code>onDashboardLoad</code>, and <code>onTimeChanged</code>.</td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code></td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="customvariablekind"><code>CustomVariableKind</code></h2>
+<p>Following is the JSON for a default custom variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;CustomVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;current&#34;: defaultVariableOption(),
+        &#34;hide&#34;: &#34;dontHide&#34;,
+        &#34;includeAll&#34;: false,
+        &#34;multi&#34;: false,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;options&#34;: [],
+        &#34;query&#34;: &#34;&#34;,
+        &#34;skipUrlSync&#34;: false
+      }
+    }
+  ]</pre>
+<p><code>CustomVariableKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;CustomVariable&rdquo;</li>
+<li>spec: <a href="#customvariablespec">CustomVariableSpec</a></li>
+</ul>
+<h3 id="customvariablespec"><code>CustomVariableSpec</code></h3>
+<p>The following table explains the usage of the custom variable JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable.</td>
+      </tr>
+      <tr>
+          <td>query</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>current</td>
+          <td><code>Text</code> and a <code>value</code> or <code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>options</td>
+          <td><code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>multi</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>includeAll</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>allValue?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="groupbyvariablekind"><code>GroupByVariableKind</code></h2>
+<p>Following is the JSON for a default group by variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;GroupByVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;current&#34;: {
+          &#34;text&#34;: [
+            &#34;&#34;
+          ],
+          &#34;value&#34;: [
+            &#34;&#34;
+          ]
+        },
+        &#34;datasource&#34;: {},
+        &#34;hide&#34;: &#34;dontHide&#34;,
+        &#34;multi&#34;: false,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;options&#34;: [],
+        &#34;skipUrlSync&#34;: false
+      }
+    }
+  ]</pre>
+<p><code>GroupByVariableKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;GroupByVariable&rdquo;</li>
+<li>spec: <a href="#groupbyvariablespec">GroupByVariableSpec</a></li>
+</ul>
+<h3 id="groupbyvariablespec"><code>GroupByVariableSpec</code></h3>
+<p>The following table explains the usage of the group by variable JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable</td>
+      </tr>
+      <tr>
+          <td>datasource?</td>
+          <td><code>DataSourceRef</code>. Refer to the <a href="#datasourceref"><code>DataSourceRef</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>current</td>
+          <td><code>Text</code> and a <code>value</code> or <code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>options</td>
+          <td><code>VariableOption</code>. Refer to the <a href="#variableoption"><code>VariableOption</code> definition</a> under <code>QueryVariableKind</code>.</td>
+      </tr>
+      <tr>
+          <td>multi</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="adhocvariablekind"><code>AdhocVariableKind</code></h2>
+<p>Following is the JSON for a default ad hoc variable:</p>
+<pre>  &#34;variables&#34;: [
+    {
+      &#34;kind&#34;: &#34;AdhocVariable&#34;,
+      &#34;spec&#34;: {
+        &#34;baseFilters&#34;: [],
+        &#34;defaultKeys&#34;: [],
+        &#34;filters&#34;: [],
+        &#34;hide&#34;: &#34;dontHide&#34;,
+        &#34;name&#34;: &#34;&#34;,
+        &#34;skipUrlSync&#34;: false
+      }
+    }
+  ]</pre>
+<p><code>AdhocVariableKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;AdhocVariable&rdquo;</li>
+<li>spec: <a href="#adhocvariablespec">AdhocVariableSpec</a></li>
+</ul>
+<h3 id="adhocvariablespec"><code>AdhocVariableSpec</code></h3>
+<p>The following table explains the usage of the ad hoc variable JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>name</td>
+          <td>string. Name of the variable.</td>
+      </tr>
+      <tr>
+          <td>datasource?</td>
+          <td><code>DataSourceRef</code>. Consists of:<ul><li>type? - string. The plugin type-id.</li><li>uid? - string. The specific data source instance.</li></ul></td>
+      </tr>
+      <tr>
+          <td>baseFilters</td>
+          <td><a href="#adhocfilterswithlabels">AdHocFilterWithLabels</a></td>
+      </tr>
+      <tr>
+          <td>filters</td>
+          <td><a href="#adhocfilterswithlabels">AdHocFilterWithLabels</a></td>
+      </tr>
+      <tr>
+          <td>defaultKeys</td>
+          <td><a href="#metricfindvalue">MetricFindValue</a></td>
+      </tr>
+      <tr>
+          <td>label?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td><code>VariableHide</code>. Options are: <code>dontHide</code>, <code>hideLabel</code>, and <code>hideVariable</code>.</td>
+      </tr>
+      <tr>
+          <td>skipUrlSync</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>description?</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="adhocfilterswithlabels"><code>AdHocFiltersWithLabels</code></h4>
+<p>The following table explains the usage of the ad hoc variable with labels JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>key</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>operator</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>values?</td>
+          <td><code>[...string]</code></td>
+      </tr>
+      <tr>
+          <td>keyLabel</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>valueLabels?</td>
+          <td><code>[...string]</code></td>
+      </tr>
+      <tr>
+          <td>forceEdit?</td>
+          <td>bool</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="metricfindvalue"><code>MetricFindValue</code></h4>
+<p>The following table explains the usage of the metric find value JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>text</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>value?</td>
+          <td>string or number</td>
+      </tr>
+      <tr>
+          <td>group?</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>expandable?</td>
+          <td>bool</td>
+      </tr>
+  </tbody>
+</table>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<h1 id="upgrade-to-grafana-v90">Upgrade to Grafana v9.0</h1>
+
+
+<div data-shared="upgrade/intro.md">
+            <p>We recommend that you upgrade Grafana often to stay current with the latest fixes and enhancements.
+Because Grafana upgrades are backward compatible, the upgrade process is straightforward, and dashboards and graphs will not change.</p>
+<p>In addition to common tasks you should complete for all versions of Grafana, there might be additional upgrade tasks to complete for a version.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>There might be breaking changes in some releases. We outline these changes in the 
+    <a href="/docs/grafana/latest/whatsnew/">What&rsquo;s New </a> document for most releases or a separate 
+    <a href="/docs/grafana/latest/breaking-changes/">Breaking changes</a> document for releases with many breaking changes.</p></blockquote></div>
+
+<p>For versions of Grafana prior to v9.2, we published additional information in the 
+    <a href="/docs/grafana/latest/release-notes/">Release Notes</a>.</p>
+<p>When available, we list all changes with links to pull requests or issues in the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When possible, we recommend that you test the Grafana upgrade process in a test or development environment.</p></blockquote></div>
+
+</div>
+
+        
+
+
+<div data-shared="back-up/back-up-grafana.md">
+            
+
+<h2 id="back-up-grafana">Back up Grafana</h2>
+<p>This topic explains how to back up a local Grafana deployment, including configuration, plugin data, and the Grafana database.</p>
+<h3 id="back-up-the-grafana-configuration-file">Back up the Grafana configuration file</h3>
+<p>Copy Grafana configuration files that you might have modified in your Grafana deployment to a backup directory.</p>
+<p>The Grafana configuration files are located in the following directories:</p>
+<ul>
+<li>Default configuration: <code>$WORKING_DIR/defaults.ini</code> (Don&rsquo;t change this file)</li>
+<li>Custom configuration: <code>$WORKING_DIR/custom.ini</code></li>
+</ul>
+<p>For more information on where to find configuration files, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">Configuration file location</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you installed Grafana using the <code>deb</code> or <code>rpm</code> packages, then your configuration file is located at
+<code>/etc/grafana/grafana.ini</code>. This path is specified in the Grafana <code>init.d</code> script using <code>--config</code> file parameter.</p></blockquote></div>
+
+<h3 id="back-up-plugin-data">Back up plugin data</h3>
+<p>Installing plugins in Grafana creates a folder for each plugin with its associated files and data. Copy all files and folders recursively from this location to your backup repository.</p>
+<p>The Grafana plugin files are located in the following directories:</p>
+<ul>
+<li>Default location for plugins in a binary or source installation: <code>$WORKING_DIR/data/plugins</code></li>
+<li>Default location for plugins in a <code>deb</code> or <code>rpm</code> package: <code>/var/lib/grafana/plugins</code>. This path is specified in the Grafana init.d script using <code>--config</code> file parameter.</li>
+</ul>
+<h3 id="back-up-the-grafana-database">Back up the Grafana database</h3>
+<p>We recommend that you back up your Grafana database so that you can roll back to a previous version, if required.</p>
+<h4 id="sqlite">SQLite</h4>
+<p>The default Grafana database is SQLite, which stores its data in a single file on disk. To back up this file, copy it to your backup repository.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To ensure data integrity, shut down your Grafana service before backing up the SQLite database.</p></blockquote></div>
+
+<p>The SQLite database file is located in one of the following directories:</p>
+<ul>
+<li>Default location for SQLite data in a binary or source installation: <code>$WORKING_DIR/data/grafana.db</code></li>
+<li>Default location for SQLite data in a <code>deb</code> or <code>rpm</code> package: <code>/var/lib/grafana/grafana.db</code>. This path is specified in the Grafana
+init.d script using <code>--config</code> file parameter.</li>
+</ul>
+<h4 id="mysql">MySQL</h4>
+<p>To back up or restore a MySQL Grafana database, run the following commands:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">backup:
+&gt; mysqldump -u root -p[root_password] [grafana] &gt; grafana_backup.sql
+
+restore:
+&gt; mysql -u root -p grafana &lt; grafana_backup.sql</code></pre>
+  </div>
+</div><h4 id="postgres">Postgres</h4>
+<p>To back up or restore a Postgres Grafana database, run the following commands:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">backup:
+&gt; pg_dump grafana &gt; grafana_backup
+
+restore:
+&gt; psql grafana &lt; grafana_backup</code></pre>
+  </div>
+</div>
+  </div>
+
+        
+
+
+<div data-shared="upgrade/upgrade-common-tasks.md">
+            <h2 id="upgrade-grafana">Upgrade Grafana</h2>
+<p>The following sections provide instructions for how to upgrade Grafana based on your installation method. For more information on where to find configuration files, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">Configuration file location</a>.</p>
+<h3 id="debian">Debian</h3>
+<p>To upgrade Grafana installed from a Debian package (<code>.deb</code>), complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download?platform=linux">Download</a> the latest version of Grafana.</p>
+</li>
+<li>
+<p>Run the following <code>dpkg -i</code> command.</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">wget &lt;debian package url&gt;
+sudo apt-get install -y adduser
+sudo dpkg -i grafana_&lt;version&gt;_amd64.deb</code></pre>
+  </div>
+</div></li>
+</ol>
+<h3 id="apt-repository">APT repository</h3>
+<p>To upgrade Grafana installed from the Grafana Labs APT repository, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p>Run the following commands:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">sudo apt-get update
+sudo apt-get upgrade</code></pre>
+  </div>
+</div></li>
+</ol>
+<p>Grafana automatically updates when you run <code>apt-get upgrade</code>.</p>
+<h3 id="binary-tar-file">Binary .tar file</h3>
+<p>To upgrade Grafana installed from the binary <code>.tar.gz</code> package, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to the custom configuration file, <code>custom.ini</code> or <code>grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download">Download</a> the binary <code>.tar.gz</code> package.</p>
+</li>
+<li>
+<p>Extract the downloaded package and overwrite the existing files.</p>
+</li>
+</ol>
+<h3 id="rpm-or-yum">RPM or YUM</h3>
+<p>To upgrade Grafana installed using RPM or YUM complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p>Perform one of the following steps based on your installation.</p>
+<ul>
+<li>
+<p>If you <a href="/grafana/download">downloaded an RPM package</a> to install Grafana, then complete the steps documented in 
+    <a href="/docs/grafana/latest/setup-grafana/installation/redhat-rhel-fedora/">Install Grafana on Red Hat, RHEL, or Fedora</a> or 
+    <a href="/docs/grafana/latest//setup-grafana/installation/suse-opensuse/">Install Grafana on SUSE or openSUSE</a> to upgrade Grafana.</p>
+</li>
+<li>
+<p>If you used the Grafana YUM repository, run the following command:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">sudo yum update grafana</code></pre>
+  </div>
+</div></li>
+<li>
+<p>If you installed Grafana on openSUSE or SUSE, run the following command:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">sudo zypper update</code></pre>
+  </div>
+</div></li>
+</ul>
+</li>
+</ol>
+<h3 id="docker">Docker</h3>
+<p>To upgrade Grafana running in a Docker container, complete the following steps:</p>
+<ol>
+<li>
+<p>Use Grafana 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#override-configuration-with-environment-variables">environment variables</a> to save your custom configurations; this is the recommended method. Alternatively, you can view your configuration files manually by accessing the deployed container.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p>Run a commands similar to the following commands.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This is an example. The parameters you enter depend on how you configured your Grafana container.</p></blockquote></div>
+
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">docker pull grafana/grafana
+docker stop my-grafana-container
+docker rm my-grafana-container
+docker run -d --name=my-grafana-container --restart=always -v /var/lib/grafana:/var/lib/grafana grafana/grafana</code></pre>
+  </div>
+</div></li>
+</ol>
+<h3 id="windows">Windows</h3>
+<p>To upgrade Grafana installed on Windows, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/conf/custom.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download">Download</a> the Windows binary package.</p>
+</li>
+<li>
+<p>Extract the contents of the package to the location in which you installed Grafana.</p>
+<p>You can overwrite existing files and folders, when prompted.</p>
+</li>
+</ol>
+<h3 id="mac">Mac</h3>
+<p>To upgrade Grafana installed on Mac, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to the custom configuration file, <code>custom.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download">Download</a> the Mac binary package.</p>
+</li>
+<li>
+<p>Extract the contents of the package to the location in which you installed Grafana.</p>
+<p>You can overwrite existing files and folders, when prompted.</p>
+</li>
+</ol>
+<h2 id="update-grafana-plugins">Update Grafana plugins</h2>
+<p>After you upgrade Grafana, we recommend that you update all plugins because a new version of Grafana
+can make older plugins stop working properly.</p>
+<p>Run the following command to update plugins:</p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">bash</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-bash">grafana cli plugins update-all</code></pre>
+  </div>
+</div></div>
+
+        
+<h2 id="technical-notes">Technical notes</h2>
+<p>This section describes technical changes associated with this release of Grafana.</p>
+<h3 id="role-based-access-control-changes-for-general-release">Role-based access control: changes for general release</h3>
+<p>Fine-grained access control is now called &ldquo;Role-based access control (RBAC)&rdquo;. As part of the Grafana 9.0 release, the feature is generally available, and there are several breaking changes:</p>
+<ul>
+<li>Built-in roles are now called basic roles. They now consist of permissions, not roles.</li>
+<li>The Terraform <code>builtin_role_assignment</code> resource is deprecated. Please use <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/role" target="_blank" rel="noopener noreferrer">grafana_role</a> resource instead.</li>
+<li>Grafana provisioning has a new schema. Please refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-grafana-provisioning/">Provisioning RBAC with Grafana</a> to learn more about provisioning.</li>
+<li>Basic roles no longer support permission inheritance. Previously, when permissions of a Viewer basic role were modified, it was propagated to the Editor and Admin basic roles. With the Grafana 9.0 release, this is not the case anymore.</li>
+<li>Several role-based access control actions have been renamed. All database entries that use legacy action names will be migrated to use the new names, but provisioning files and scripts will have to be updated by the user. This change also means that if Grafana is downgraded from 9.0 to a lower version, some role-based access control permissions will not be resolved correctly.</li>
+</ul>
+<h3 id="loki-logs-data-format-changed">Loki: logs data format changed</h3>
+<p>In the Loki data source, the data format used to represent Loki logs-data has been changed to a more efficient format. (NOTE: this change applies to logs data only, it does not apply to numeric data)
+The logs are represented by a single dataframe with a &ldquo;labels&rdquo; field added, instead of separate dataframes for every label combination. Displaying logs data in explore, or in a dashboard using the logs panel will continue to work without changes. But, when displaying logs data in other dashboard panels, for example in a table visualization, changes will be visible, and configurations might need to be adjusted. For example, if the &ldquo;Labels to fields&rdquo; transformation was used, it has to be replaced with an “Extract fields” transformation, where the “labels” field is chosen as the source.</p>
+<h3 id="loki-nan-values-representation-changed-in-numeric-data">Loki: NaN values representation changed in numeric data</h3>
+<p>In the Loki data source, when grafana receives numeric data from Loki, it may contain NaN (not a number) values. For consistency and performance reasons we changed how we represent such values in Grafana. In previous versions, the behavior was different between alerting queries and other queries (like dashboard queries or explore queries). Alerting queries kept NaN values unchanged, but other queries converted these values to “null”. Starting with grafana 9.0.0, we will always keep these values unchanged. In other words, queries in dashboards and explore will behave the same as alerting queries in this regard.</p>
+<h3 id="elasticsearch-support-for-versions-after-their-end-of-life-was-removed">Elasticsearch: Support for versions after their end of life was removed</h3>
+<p>Support for Elasticsearch versions that are after their end of life (based on <a href="https://www.elastic.co/support/eol" target="_blank" rel="noopener noreferrer">https://www.elastic.co/support/eol</a>) was removed. This means that versions older than Elasticsearch 7.10.0 will not be supported in Grafana 9.0.0.</p>
+<h3 id="elasticsearch-support-for-browser-access-mode-removed">Elasticsearch: Support for browser access mode removed</h3>
+<p>In the Elasticsearch data source, browser access mode was deprecated in grafana 7.4.0 and removed in 9.0.0. If you used this mode, please switch to server access mode on the data source configuration page.</p>
+<h3 id="prometheus-nan-values-representation-changed-in-numeric-data">Prometheus: NaN values representation changed in numeric data</h3>
+<p>In the Prometheus data source, when grafana receives numeric data from Prometheus, it may contain NaN (not a number) values. For consistency and performance reasons we changed how we represent such values in Grafana. In previous versions, the behavior was different between alerting queries and other queries (like dashboard queries or explore queries). Alerting queries kept NaN values unchanged, but other queries converted these values to “null”. Starting with grafana 9.0.0, we will always keep NaN values unchanged for all queries.</p>
+<!-- ### InfluxDB: Support for browser access mode removed (should this stay??)
+
+In the InfluxDB data source, browser access mode was deprecated in grafana 8.0.0 and we are removing this feature in 9.0.0. If you are using this mode, you need to [switch to server access mode](../../datasources/influxdb/##influxql-classic-influxdb-query) on the data source configuration page or you can do this via provisioning. -->
+<h3 id="transformations-allow-more-complex-regex-expressions-in-rename-by-regex">Transformations: Allow more complex regex expressions in rename by regex</h3>
+<p>The rename by regex transformation has been improved to allow global patterns of the form <code>/&lt;stringToReplace&gt;/g</code>. Depending on the regex match used, this may cause some transformations to behave slightly differently. You can guarantee the same behavior as before by wrapping the match string in forward slashes (<code>/</code>), for example, <code>(.*)</code> would become <code>/(.*)/</code>. (<a href="https://github.com/grafana/grafana/pull/48179" target="_blank" rel="noopener noreferrer">Github Issue #48179</a>)</p>
+<h3 id="clock-panel">Clock Panel</h3>
+<p>We have updated <a href="/grafana/plugins/grafana-clock-panel/">clock panel</a> to version <code>2.0.0</code> to make it compatible with Grafana 9. The previous version <code>1.3.1</code> will cause the Grafana 9 to <a href="https://github.com/grafana/clock-panel/issues/106" target="_blank" rel="noopener noreferrer">crash</a> when being used in a dashboard, we encourage you to update the panel before migrating to Grafana 9.</p>
+<h3 id="polystat-panel">Polystat Panel</h3>
+<p>We have updated <a href="/grafana/plugins/grafana-polystat-panel/">polystat panel</a> to version <code>1.2.10</code> to make it compatible with Grafana 9. The previous versions <code>1.2.8</code> and below will render empty in Grafana 9. We encourage you to update the panel before or immediately after migrating to Grafana 9.</p>
+<h3 id="envelope-encryption-enabled-by-default">Envelope encryption enabled by default</h3>
+<p>Since v8.3 a new kind of encryption called &ldquo;envelope encryption&rdquo; was added, for those secrets stored in the Grafana
+database (data source credentials, alerting notification channel credentials, oauth tokens, etc), behind a feature
+toggle named <code>envelopeEncryption</code>.</p>
+<p>In v9.0, <code>envelopeEncryption</code> feature toggle has been replaced in favor of <code>disableEnvelopeEncryption</code> and envelope encryption is
+the encryption mechanism used by default.</p>
+<p>Therefore, any secret created or updated in Grafana v9.0 won&rsquo;t be decryptable by any previous Grafana version unless the
+feature toggle <code>envelopeEncryption</code> is enabled in the previous version (only available since v8.3).
+This needs to be considered in high availability setups, progressive rollouts or in case of need to roll back to a previous Grafana version for any reason.</p>
+<p>The recommendation here is to enable <code>envelopeEncryption</code> for older versions, or alternatively enable <code>disableEnvelopeEncryption</code>
+before upgrading to v9.0. However, the latter is probably going to be removed in one of the next releases, so we hugely
+encourage to move on with envelope encryption.</p>
+<p>Find <a href="../../setup-grafana/configure-security/configure-database-encryption/">here</a> more details and some
+possible workarounds in case you end up in an undesired situation.</p>
+<h3 id="a-note-on-grafana-enterprise-licensing">A note on Grafana Enterprise licensing</h3>
+<p>When we release Grafana 9.0 on June 14th, Grafana will no longer enforce viewers and editor-admins differently. That means that regardless of whether your Grafana Enterprise license is tiered or combined, instead of seeing this on the Stats &amp; Licensing page:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/separate-licenses.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/separate-licenses.png"data-srcset="/static/img/docs/enterprise/separate-licenses.png?w=320 320w, /static/img/docs/enterprise/separate-licenses.png?w=550 550w, /static/img/docs/enterprise/separate-licenses.png?w=750 750w, /static/img/docs/enterprise/separate-licenses.png?w=900 900w, /static/img/docs/enterprise/separate-licenses.png?w=1040 1040w, /static/img/docs/enterprise/separate-licenses.png?w=1240 1240w, /static/img/docs/enterprise/separate-licenses.png?w=1920 1920w"
+          data-sizes="auto"alt="Separate license"width="1600"height="1246"title="Separate license"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/separate-licenses.png"
+            alt="Separate license"width="1600"height="1246"title="Separate license"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Separate license</figcaption></a></figure>
+<p>You will see this:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/combined-licenses.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/combined-licenses.png"data-srcset="/static/img/docs/enterprise/combined-licenses.png?w=320 320w, /static/img/docs/enterprise/combined-licenses.png?w=550 550w, /static/img/docs/enterprise/combined-licenses.png?w=750 750w, /static/img/docs/enterprise/combined-licenses.png?w=900 900w, /static/img/docs/enterprise/combined-licenses.png?w=1040 1040w, /static/img/docs/enterprise/combined-licenses.png?w=1240 1240w, /static/img/docs/enterprise/combined-licenses.png?w=1920 1920w"
+          data-sizes="auto"alt="Combined license"width="1600"height="1035"title="Combined license"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/combined-licenses.png"
+            alt="Combined license"width="1600"height="1035"title="Combined license"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Combined license</figcaption></a></figure>
+<p>It also means that Grafana will count all users the same, regardless of their role, including org roles (Viewer, Editor, Admin) and fine-grained roles (Dashboard Editor, Reports Editor, etc.). You won’t see a separate warning banner or see users locked out if you hit your limit of viewers or editor-admins, only your total combined limit of active users.</p>
+<p>For example, if you have a license for 10 active admins and 100 active viewers in your Grafana Enterprise license, then starting in v9.0 you will have a limit of 110 active users, and it doesn’t matter what roles those users have, they will all be counted and enforced the same.</p>
+<p>This is a more permissive policy than before.</p>

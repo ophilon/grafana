@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<h1 id="service-graph-and-service-graph-view">Service Graph and Service Graph view</h1>
+<p>The Service Graph is a visual representation of the relationships between services.
+Each node on the graph represents a service such as an API or database.</p>
+<p>You use the Service Graph to detect performance issues; track increases in error, fault, or throttle rates in services; and investigate root causes by viewing corresponding traces.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png"data-srcset="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png?w=320 320w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png?w=550 550w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png?w=750 750w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png?w=900 900w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png?w=1040 1040w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png?w=1240 1240w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of a Node Graph"width="1333"height="715"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-node-graph.png"
+            alt="Screenshot of a Node Graph"width="1333"height="715"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="display-the-service-graph">Display the Service Graph</h2>
+<ol>
+<li>
+    <a href="/docs/tempo/latest/configuration/grafana-alloy/">Configure Grafana Alloy</a> or 
+    <a href="/docs/tempo/latest/metrics-generator/service_graphs/#tempo">Tempo or GET</a> to generate Service Graph data.</li>
+<li>Link a Prometheus data source in the Tempo data source&rsquo;s <a href="../configure-tempo-data-source#configure-service-graph">Service Graph</a> settings.</li>
+<li>Navigate to 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</li>
+<li>Select the Tempo data source.</li>
+<li>Select the <strong>Service Graph</strong> query type.</li>
+<li>Run the query.</li>
+<li><em>(Optional)</em> Filter by service name.</li>
+</ol>
+<p>For details, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/">Node Graph panel</a>.</p>
+<p>Each circle in the graph represents a service.
+To open a context menu with additional links for quick navigation to other relevant information, click a service.</p>
+<p>Numbers inside the circles indicate the average time per request and requests per second.</p>
+<p>Each circle&rsquo;s color represents the percentage of requests in each state:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Color</th>
+          <th>State</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Green</strong></td>
+          <td>Success</td>
+      </tr>
+      <tr>
+          <td><strong>Red</strong></td>
+          <td>Fault</td>
+      </tr>
+      <tr>
+          <td><strong>Yellow</strong></td>
+          <td>Errors</td>
+      </tr>
+      <tr>
+          <td><strong>Purple</strong></td>
+          <td>Throttled responses</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="open-the-service-graph-view">Open the Service Graph view</h2>
+<p>Service graph view displays a table of request rate, error rate, and duration metrics (RED) calculated from your incoming spans. It also includes a node graph view built from your spans.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png"data-srcset="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png?w=320 320w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png?w=550 550w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png?w=750 750w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png?w=900 900w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png?w=1040 1040w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png?w=1240 1240w, /media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of the Service Graph view"width="1290"height="1145"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph.png"
+            alt="Screenshot of the Service Graph view"width="1290"height="1145"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>For details, refer to the 
+    <a href="/docs/tempo/latest/metrics-generator/service-graph-view/">Service Graph view documentation</a>.</p>
+<p>To open the Service Graph view:</p>
+<ol>
+<li>Link a Prometheus data source in the Tempo data source settings.</li>
+<li>Navigate to 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</li>
+<li>Select the Tempo data source.</li>
+<li>Select the <strong>Service Graph</strong> query type.</li>
+<li>Run the query.</li>
+<li><em>(Optional)</em> Filter your results.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana uses the <code>traces_spanmetrics_calls_total</code> metric to display the name, rate, and error rate columns, and <code>traces_spanmetrics_latency_bucket</code> to display the duration column.
+These metrics must exist in your Prometheus data source.</p></blockquote></div>
+
+<p>To open a query in Prometheus with the span name of that row automatically set in the query, click a row in the <strong>rate</strong>, <strong>error rate</strong>, or <strong>duration</strong> columns.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-service-graph-prom.png"
+  alt="Linked Prometheus data for Rate from within a service graph" width="1396"
+     height="1075"/></p>
+<p>To open a query in Tempo with the span name of that row automatically set in the query, click a row in the <strong>links</strong> column.</p>

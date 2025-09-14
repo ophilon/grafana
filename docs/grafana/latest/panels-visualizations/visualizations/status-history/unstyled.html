@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<h1 id="status-history">Status history</h1>
+<p>A status history visualization displays data in a way that shows periodic states over time. In a status history, each field or series is rendered as a horizontal row, with multiple boxes showing the different statuses. This provides you with a centralized view for the status of a component or service.</p>
+<p>For example, if you&rsquo;re monitoring the health status of different services, you can use a status history to visualize the different statuses, such as “True” or &ldquo;False,&rdquo; over time. Each status is represented by a different color:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A status history panel showing the health status of different sensors"width="2602"height="1048"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-status-history-v11.6.png"
+            alt="A status history panel showing the health status of different sensors"width="2602"height="1048"/>
+        </noscript></div></a></figure>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>A status history is similar to a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">state timeline</a>, but has different <a href="#status-history-options">configuration options</a>. Unlike state timelines, status histories don&rsquo;t merge consecutive values.</p></blockquote></div>
+
+<p>Use a status history when you need to:</p>
+<ul>
+<li>Monitor the status of a server, application, or service to know when your infrastructure is experiencing issues over time.</li>
+<li>Identify operational trends over time.</li>
+<li>Spot any recurring issues with the health of your applications.</li>
+</ul>
+<h2 id="configure-a-status-history">Configure a status history</h2>
+<p>Once you&rsquo;ve 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">created a dashboard</a>, you can use the following state timeline video as a reference for how to configure a status history:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=a9wZHM0mdxo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/qD-rVv6Mz/6-state-timeline-and-status-history?orgId=1s" target="_blank" rel="noopener noreferrer">Grafana State Timeline &amp; Status History</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/qD-rVv6Mz/6-state-timeline-and-status-history?orgId=1s">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>The status history visualization works best if you have data capturing the various status of entities over time, formatted as a table. The data must include:</p>
+<ul>
+<li><strong>Timestamps</strong> - Indicate when each status change occurred. This could also be the start time for the status change. You can also add an optional timestamp to indicate the end time for the status change.</li>
+<li><strong>Entity name/identifier</strong> - Represents the name of the entity you&rsquo;re trying to monitor.</li>
+<li><strong>Status value</strong> - Represents the state value of the entity you&rsquo;re monitoring. These can be string, numerical, or boolean states.</li>
+</ul>
+<h3 id="examples">Examples</h3>
+<p>The following tables are examples of the type of data you need for a status history visualization and how it should be formatted.</p>
+<h4 id="single-time-column-with-null-values">Single time column with null values</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamps</th>
+          <th>Backend_01</th>
+          <th>Backend_02</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2024-02-29 8:00:00</td>
+          <td>OK</td>
+          <td>WARN</td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:15:00</td>
+          <td>WARN</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:18:00</td>
+          <td></td>
+          <td>WARN</td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:30:00</td>
+          <td>BAD</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:36:00</td>
+          <td></td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:45:00</td>
+          <td>OK</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is converted as follows, with the null and empty values visualized as gaps in the status history:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/status-history-panel/status_history_with_null.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/status-history-panel/status_history_with_null.png"data-srcset="/static/img/docs/status-history-panel/status_history_with_null.png?w=320 320w, /static/img/docs/status-history-panel/status_history_with_null.png?w=550 550w, /static/img/docs/status-history-panel/status_history_with_null.png?w=750 750w, /static/img/docs/status-history-panel/status_history_with_null.png?w=900 900w, /static/img/docs/status-history-panel/status_history_with_null.png?w=1040 1040w, /static/img/docs/status-history-panel/status_history_with_null.png?w=1240 1240w, /static/img/docs/status-history-panel/status_history_with_null.png?w=1920 1920w"
+          data-sizes="auto"alt="A status history panel with null values showing the status of two servers"width="1406"height="596"/>
+        <noscript>
+          <img
+            src="/static/img/docs/status-history-panel/status_history_with_null.png"
+            alt="A status history panel with null values showing the status of two servers"width="1406"height="596"/>
+        </noscript></div></a></figure>
+<h4 id="two-time-columns-without-null-values">Two time columns without null values</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Start time</th>
+          <th>End time</th>
+          <th>Backend_01</th>
+          <th>Backend_02</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2024-02-29 8:00:00</td>
+          <td>2024-02-29 8:15:00</td>
+          <td>OK</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:15:00</td>
+          <td>2024-02-29 8:30:00</td>
+          <td>OK</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:30:00</td>
+          <td>2024-02-29 8:45:00</td>
+          <td>OK</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2024-02-29 8:45:00</td>
+          <td>2024-02-29 9:00:00</td>
+          <td>BAD</td>
+          <td>WARN</td>
+      </tr>
+      <tr>
+          <td>2024-02-29 9:00:00</td>
+          <td>2024-02-29 9:15:00</td>
+          <td>OK</td>
+          <td>WARN</td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is converted as follows:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/status-history-panel/status_history.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/status-history-panel/status_history.png"data-srcset="/static/img/docs/status-history-panel/status_history.png?w=320 320w, /static/img/docs/status-history-panel/status_history.png?w=550 550w, /static/img/docs/status-history-panel/status_history.png?w=750 750w, /static/img/docs/status-history-panel/status_history.png?w=900 900w, /static/img/docs/status-history-panel/status_history.png?w=1040 1040w, /static/img/docs/status-history-panel/status_history.png?w=1240 1240w, /static/img/docs/status-history-panel/status_history.png?w=1920 1920w"
+          data-sizes="auto"alt="A status history panel with two time columns showing the status of two servers"width="1410"height="598"/>
+        <noscript>
+          <img
+            src="/static/img/docs/status-history-panel/status_history.png"
+            alt="A status history panel with two time columns showing the status of two servers"width="1410"height="598"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="status-history-options">Status history options</h3>
+<p>Use these options to refine the visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Show values</td>
+          <td>Controls whether values are rendered inside the state regions. Choose from <strong>Auto</strong>, <strong>Always</strong>, and <strong>Never</strong>. <strong>Auto</strong> renders values if there is sufficient space.</td>
+      </tr>
+      <tr>
+          <td>Row height</td>
+          <td>Controls the height of boxes. 1 = maximum space and 0 = minimum space.</td>
+      </tr>
+      <tr>
+          <td>Column width</td>
+          <td>Controls the width of boxes. 1 = maximum space and 0 = minimum space.</td>
+      </tr>
+      <tr>
+          <td>Page size (enable pagination)</td>
+          <td>The <strong>Page size</strong> option lets you paginate the status history visualization to limit how many series are visible at once. This is useful when you have many series.</td>
+      </tr>
+      <tr>
+          <td>Line width</td>
+          <td>Controls line width of state regions.</td>
+      </tr>
+      <tr>
+          <td>Fill opacity</td>
+          <td>Controls value alignment inside state regions.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="legend-options">Legend options</h3>
+
+
+<div data-shared="visualizations/legend-options-2.md">
+            
+
+<p>When the legend option is enabled it can show either the value mappings or the threshold brackets. To show the value mappings in the legend, it&rsquo;s important that the <strong>Color scheme</strong> as referenced in 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">Color scheme</a> is set to <strong>Single color</strong> or <strong>Classic palette</strong>. To see the threshold brackets in the legend set the <strong>Color scheme</strong> to <strong>From thresholds</strong>.</p>
+<p>For more information about the legend, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a>.</p>
+<h4 id="visibility">Visibility</h4>
+<p>Toggle the switch to turn the legend on or off.</p>
+<h4 id="mode">Mode</h4>
+<p>Use these settings to define how the legend appears in your visualization.</p>
+<ul>
+<li><strong>List -</strong> Displays the legend as a list. This is a default display mode of the legend.</li>
+<li><strong>Table -</strong> Displays the legend as a table.</li>
+</ul>
+<h4 id="placement">Placement</h4>
+<p>Choose where to display the legend.</p>
+<ul>
+<li><strong>Bottom -</strong> Below the graph.</li>
+<li><strong>Right -</strong> To the right of the graph.</li>
+</ul>
+<h4 id="width">Width</h4>
+<p>Control how wide the legend is when placed on the right side of the visualization. This option is only displayed if you set the legend placement to <strong>Right</strong>.</p>
+
+  </div>
+
+        
+<h3 id="tooltip-options">Tooltip options</h3>
+
+
+<div data-shared="visualizations/tooltip-options-3.md">
+            
+
+<p>Tooltip options control the information overlay that appears when you hover over data points in the visualization.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#tooltip-mode">Tooltip mode</a></td>
+          <td>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</td>
+      </tr>
+      <tr>
+          <td><a href="#values-sort-order">Values sort order</a></td>
+          <td>This option controls the order in which values are listed in a tooltip.</td>
+      </tr>
+      <tr>
+          <td>Max width</td>
+          <td>Set the maximum width of the tooltip box.</td>
+      </tr>
+      <tr>
+          <td>Max height</td>
+          <td>Set the maximum height of the tooltip box. The default is 600 pixels.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="tooltip-mode">Tooltip mode</h4>
+<p>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</p>
+<ul>
+<li><strong>Single</strong> - The hover tooltip shows only a single series, the one that you are hovering over on the visualization.</li>
+<li><strong>All</strong> - The hover tooltip shows all series in the visualization. Grafana highlights the series that you are hovering over in bold in the series list in the tooltip.</li>
+<li><strong>Hidden</strong> - Do not display the tooltip when you interact with the visualization.</li>
+</ul>
+<p>Use an override to hide individual series from the tooltip.</p>
+<h4 id="values-sort-order">Values sort order</h4>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Values sort order</strong> option is displayed. This option controls the order in which values are listed in a tooltip. Choose from the following:</p>
+<ul>
+<li><strong>None</strong> - Grafana automatically sorts the values displayed in a tooltip.</li>
+<li><strong>Ascending</strong> - Values in the tooltip are listed from smallest to largest.</li>
+<li><strong>Descending</strong> - Values in the tooltip are listed from largest to smallest.</li>
+</ul>
+
+  </div>
+
+        
+<h3 id="axis-options">Axis options</h3>
+
+
+<div data-shared="visualizations/axis-options-3.md">
+            
+
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Placement</td>
+          <td>Control the visibility of series names along the y-axis or time values along the x-axis.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Set a fixed width for the axis. By default, Grafana dynamically calculates the width of an axis.</td>
+      </tr>
+  </tbody>
+</table>
+
+  </div>
+
+        
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-2.md">
+            <p><em>Data links</em> allow you to link to other panels, dashboards, and external resources and <em>actions</em> let you trigger basic, unauthenticated, API calls.
+In both cases, you can carry out these tasks while maintaining the context of the source panel.</p>
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+<li><strong>One click</strong> - Opens the data link with a single click. Only one data link can have <strong>One click</strong> enabled at a time.</li>
+</ul>
+<p>For each action, define the following API call settings:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>A human-readable label for the action that&rsquo;s displayed in the UI.</td>
+      </tr>
+      <tr>
+          <td>Confirmation message</td>
+          <td>A descriptive prompt to confirm or cancel the action.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Select from <strong>POST</strong>, <strong>PUT</strong>, or <strong>GET</strong>.</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>The request URL.</p><p>To add a variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables.</td>
+      </tr>
+      <tr>
+          <td>Variables</td>
+          <td><strong>Key</strong> and <strong>Name</strong> pairs with a type selection. Click the <strong>+</strong> icon to add as many variables as you need. To add a variable to the request, prefix the key with <code>$</code>. You can set the values for the variables when performing an action.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td><strong>Key</strong> and <strong>Value</strong> pairs. Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Headers</td>
+          <td>Comprised of <strong>Key</strong> and <strong>Value</strong> pairs and a <strong>Content-Type</strong>.</p><p>Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select from the following: <strong>application/json</strong>, <strong>text/plain</strong>, <strong>application/XML</strong>, and <strong>application/x-www-form-urlencoded</strong>.</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>The body of the request.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-2.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

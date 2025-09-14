@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<h1 id="elasticsearch-template-variables">Elasticsearch template variables</h1>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For an introduction to templating and template variables, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a> documentation.</p>
+<h2 id="choose-a-variable-syntax">Choose a variable syntax</h2>
+<p>The Elasticsearch data source supports two variable syntaxes for use in the <strong>Query</strong> field:</p>
+<ul>
+<li><code>$varname</code>, such as <code>hostname:$hostname</code>, which is easy to read and write but doesn&rsquo;t let you use a variable in the middle of a word.</li>
+<li><code>[[varname]]</code>, such as <code>hostname:[[hostname]]</code></li>
+</ul>
+<p>When the <em>Multi-value</em> or <em>Include all value</em> options are enabled, Grafana converts the labels from plain text to a Lucene-compatible condition.
+For details, see the 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#multi-value-variables">Multi-value variables</a> documentation.</p>
+<h2 id="use-variables-in-queries">Use variables in queries</h2>
+<p>You can use other variables inside the query.
+This example is used to define a variable named <code>$host</code>:</p>
+<pre>{&#34;find&#34;: &#34;terms&#34;, &#34;field&#34;: &#34;hostname&#34;, &#34;query&#34;: &#34;source:$source&#34;}</pre>
+<p>This uses another variable named <code>$source</code> inside the query definition.
+Whenever you change the value of the <code>$source</code> variable via the dropdown, Grafana triggers an update of the <code>$host</code> variable to contain only hostnames filtered by, in this case, the <code>source</code> document property.</p>
+<p>These queries by default return results in term order (which can then be sorted alphabetically or numerically as for any variable).
+To produce a list of terms sorted by doc count (a top-N values list), add an <code>orderBy</code> property of &ldquo;doc_count&rdquo;.
+This automatically selects a descending sort.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To use an ascending sort (<code>asc</code>) with doc_count (a bottom-N list), set <code>order: &quot;asc&quot;</code>. However, Elasticsearch <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html#search-aggregations-bucket-terms-aggregation-order" target="_blank" rel="noopener noreferrer">discourages this</a> because sorting by ascending doc count can return inaccurate results.</p></blockquote></div>
+
+<p>To keep terms in the doc count order, set the variable&rsquo;s Sort dropdown to <strong>Disabled</strong>.
+You can alternatively use other sorting criteria, such as <strong>Alphabetical</strong>, to re-sort them.</p>
+<pre>{&#34;find&#34;: &#34;terms&#34;, &#34;field&#34;: &#34;hostname&#34;, &#34;orderBy&#34;: &#34;doc_count&#34;}</pre>
+<h2 id="template-variable-examples">Template variable examples</h2>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/elasticsearch/elastic-templating-query-7-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/elasticsearch/elastic-templating-query-7-4.png"data-srcset="/static/img/docs/elasticsearch/elastic-templating-query-7-4.png?w=320 320w, /static/img/docs/elasticsearch/elastic-templating-query-7-4.png?w=550 550w, /static/img/docs/elasticsearch/elastic-templating-query-7-4.png?w=750 750w, /static/img/docs/elasticsearch/elastic-templating-query-7-4.png?w=900 900w, /static/img/docs/elasticsearch/elastic-templating-query-7-4.png?w=1040 1040w, /static/img/docs/elasticsearch/elastic-templating-query-7-4.png?w=1240 1240w, /static/img/docs/elasticsearch/elastic-templating-query-7-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Query with template variables"width="920"height="190"title="Query with template variables"/>
+        <noscript>
+          <img
+            src="/static/img/docs/elasticsearch/elastic-templating-query-7-4.png"
+            alt="Query with template variables"width="920"height="190"title="Query with template variables"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Query with template variables</figcaption></a></figure>
+<p>In the above example, a Lucene query filters documents based on the <code>hostname</code> property using a variable named <code>$hostname</code>.
+The example also uses a variable in the <em>Terms</em> group by field input box, which you can use to quickly change how data is grouped.</p>
+<h2 id="create-a-query">Create a query</h2>
+<p>Write the query using a custom JSON string, with the field mapped as a <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/keyword.html#keyword" target="_blank" rel="noopener noreferrer">keyword</a> in the Elasticsearch index mapping.</p>
+<p>If the query is <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html" target="_blank" rel="noopener noreferrer">multi-field</a> with both a <code>text</code> and <code>keyword</code> type, use <code>&quot;field&quot;:&quot;fieldname.keyword&quot;</code> (sometimes <code>fieldname.raw</code>) to specify the keyword field in your query.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Query</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>{&quot;find&quot;: &quot;fields&quot;, &quot;type&quot;: &quot;keyword&quot;}</code></td>
+          <td>Returns a list of field names with the index type <code>keyword</code>.</td>
+      </tr>
+      <tr>
+          <td><code>{&quot;find&quot;: &quot;terms&quot;, &quot;field&quot;: &quot;hostname.keyword&quot;, &quot;size&quot;: 1000}</code></td>
+          <td>Returns a list of values for a keyword using term aggregation. Query will use current dashboard time range as time range query.</td>
+      </tr>
+      <tr>
+          <td><code>{&quot;find&quot;: &quot;terms&quot;, &quot;field&quot;: &quot;hostname&quot;, &quot;query&quot;: '&lt;Lucene query&gt;'}</code></td>
+          <td>Returns a list of values for a keyword field using term aggregation and a specified Lucene query filter. Query will use current dashboard time range as time range for query.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Queries of <code>terms</code> have a 500-result limit by default.
+To set a custom limit, set the <code>size</code> property in your query.</p>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v94">What&rsquo;s new in Grafana v9.4</h1>
+<p>Welcome to Grafana 9.4! Read on to learn about changes to search and navigation, dashboards and visualizations, and authentication and security. For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>.</p>
+<h2 id="search-and-navigation">Search and navigation</h2>
+<p>We&rsquo;ve made the following changes to search and navigation.</p>
+<h3 id="command-palette-enhancements">Command palette enhancements</h3>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>The command palette has been updated to provide a more efficient way to navigate Grafana. You can now search and access all pages and recent dashboards, making it easier to perform tasks without taking your hands off the keyboard.</p>
+<p>To launch the command palette, use the keyboard shortcut <code>cmd + K</code> on Mac or <code>ctrl + K</code> on Linux/Windows.</p>
+<p>To learn more about the command palette, refer to <a href="../../search/">Search</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/screenshot-grafana-94-command-palette.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/screenshot-grafana-94-command-palette.png"data-srcset="/media/docs/grafana/screenshot-grafana-94-command-palette.png?w=320 320w, /media/docs/grafana/screenshot-grafana-94-command-palette.png?w=550 550w, /media/docs/grafana/screenshot-grafana-94-command-palette.png?w=750 750w, /media/docs/grafana/screenshot-grafana-94-command-palette.png?w=900 900w, /media/docs/grafana/screenshot-grafana-94-command-palette.png?w=1040 1040w, /media/docs/grafana/screenshot-grafana-94-command-palette.png?w=1240 1240w, /media/docs/grafana/screenshot-grafana-94-command-palette.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana command palette"width="600"height="371"title="Grafana command palette"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-grafana-94-command-palette.png"
+            alt="Grafana command palette"width="600"height="371"title="Grafana command palette"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana command palette</figcaption></a></figure>
+<h3 id="new-navigation">New navigation</h3>
+<p><em>Generally available on Grafana Cloud, and available to preview using the <code>topnav</code> <a href="../../setup-grafana/configure-grafana/#feature_toggles">feature toggle</a> in all editions of Grafana.</em></p>
+<p>The navigation in Grafana has been updated with a new design and an improved structure to make it easier for you to access the data you need. With this update, you&rsquo;ll be able to quickly navigate between features, giving you full visibility into the health of your systems.</p>
+<p>The new navigation is gradually rolling out to all users on Grafana Cloud. If you’re using Grafana Open Source and Enterprise, you can enable this feature using the <code>topnav</code> <a href="../../setup-grafana/configure-grafana/#feature_toggles">feature toggle</a>.</p>
+<blockquote>
+<p><strong>Note:</strong> The Grafana documentation has not yet been updated to reflect changes to the navigation.</p></blockquote>
+<blockquote>
+<p><strong>Note:</strong> Plugin developers should refer to <a href="/developers/plugin-tools/migration-guides/update-from-grafana-versions/migrate-9_3_x-to-9_4_x#new-navigation-layout-is-supported">the migration guide</a> to upgrade their plugins to work seamlessly with the new navigation layout.</p></blockquote>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/navigation-9-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/navigation-9-4.png"data-srcset="/media/docs/grafana/navigation-9-4.png?w=320 320w, /media/docs/grafana/navigation-9-4.png?w=550 550w, /media/docs/grafana/navigation-9-4.png?w=750 750w, /media/docs/grafana/navigation-9-4.png?w=900 900w, /media/docs/grafana/navigation-9-4.png?w=1040 1040w, /media/docs/grafana/navigation-9-4.png?w=1240 1240w, /media/docs/grafana/navigation-9-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana new navigation"width="1000"height="624"title="Grafana new navigation"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/navigation-9-4.png"
+            alt="Grafana new navigation"width="1000"height="624"title="Grafana new navigation"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana new navigation</figcaption></a></figure>
+<h2 id="dashboards-and-visualizations">Dashboards and visualizations</h2>
+<p>We&rsquo;ve made the following changes to dashboards and visualizations. Learn more about dashboards in our <a href="../../dashboards/">dashboards documentation</a>.</p>
+<h3 id="dashboard-panel-redesign">Dashboard panel redesign</h3>
+<p><em>Available to preview using the <code>newPanelChromeUI</code> <a href="../../setup-grafana/configure-grafana/#feature_toggles">feature toggle</a> in all editions of Grafana</em>.</p>
+<p>Dashboard panels contain a lot of information, some of which is difficult to discover or access from the dashboard. With our redesigned panels, we&rsquo;ve improved accessibility and made it easier to understand the status of a panel by adding and moving key elements.</p>
+<p>We’ve rethought the panel information architecture, added additional interaction points, and reduced visual clutter. To start, we’ve improved the support of panels without a header, made a distinction between details set by you and data-induced information, and then included all essential components in the header of the panel. All of these are laid out from left to right in a row, so there are no overlapping, unusable components.</p>
+<p>Grafana’s new panel is available only for React-based panels; no Angular-based panels are redesigned. For example, Angular-based panel will still have the old Graph and Table visualizations.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-panel-header-redesign-whats-new-9-4.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Panel header redesign</figcaption></figure>
+</div>
+<p>However, we have more planned: we’re going to make even more improvements to the accessibility of panels and improvements to panels without a header.</p>
+<h3 id="new-data-source-connection-page-in-dashboards-and-explore">New data source connection page in Dashboards and Explore</h3>
+<p><em>Available to preview using the <code>datasourceOnboarding</code> <a href="../../setup-grafana/configure-grafana/#feature_toggles">feature toggle</a>.</em></p>
+<p>When you start your journey to create a dashboard or explore your data, but you don&rsquo;t have a data source connected yet, you’ll be shown a page that guides you to set up a first connection.</p>
+<p>Administrators can choose between selecting one of the most popular data sources or viewing the entire list. Editors are guided to contact their administrator to configure data sources. In both cases, there&rsquo;s also an option to continue without setting up a data source and to use sample data instead.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png"data-srcset="/media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png?w=320 320w, /media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png?w=550 550w, /media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png?w=750 750w, /media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png?w=900 900w, /media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png?w=1040 1040w, /media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png?w=1240 1240w, /media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Admin view of data source connection page on dashboard creation"width="713"height="330"title="Admin view of data source connection page on dashboard creation"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-datasource-connection-onboarding-whats-new-9-4.png"
+            alt="Admin view of data source connection page on dashboard creation"width="713"height="330"title="Admin view of data source connection page on dashboard creation"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Admin view of data source connection page on dashboard creation</figcaption></a></figure>
+<h3 id="log-details-redesign">Log details redesign</h3>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>We&rsquo;ve updated the <strong>Details</strong> section of a log line. Previously some of the interactions, such as filtering, showing statistics, or toggling the visibility were split across <strong>Labels</strong> and <strong>Detected fields</strong>. With the recent changes those two sections are combined and the interactions are available for all fields.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/logs/log-details-whats-new-9-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/logs/log-details-whats-new-9-4.png"data-srcset="/static/img/logs/log-details-whats-new-9-4.png?w=320 320w, /static/img/logs/log-details-whats-new-9-4.png?w=550 550w, /static/img/logs/log-details-whats-new-9-4.png?w=750 750w, /static/img/logs/log-details-whats-new-9-4.png?w=900 900w, /static/img/logs/log-details-whats-new-9-4.png?w=1040 1040w, /static/img/logs/log-details-whats-new-9-4.png?w=1240 1240w, /static/img/logs/log-details-whats-new-9-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Log details redesign with interactions"width="2096"height="1020"title="Log details redesign with interactions"/>
+        <noscript>
+          <img
+            src="/static/img/logs/log-details-whats-new-9-4.png"
+            alt="Log details redesign with interactions"width="2096"height="1020"title="Log details redesign with interactions"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Log details redesign with interactions</figcaption></a></figure>
+<p>Learn more about viewing logs in our <a href="../../panels-visualizations/visualizations/logs/">Logs panel documentation</a>.</p>
+<h3 id="loki-datasource-query-validation">Loki datasource query validation</h3>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>We added support to validate queries and visually display errors as a query is being written, without having to execute it to receive this feedback. This feature supports single and multi-line queries, with and without variables.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png"data-srcset="/media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png?w=320 320w, /media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png?w=550 550w, /media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png?w=750 750w, /media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png?w=900 900w, /media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png?w=1040 1040w, /media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png?w=1240 1240w, /media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Loki query validation"width="1008"height="206"title="Loki query validation"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/logs-loki-query-validation-whats-new-9-4.png"
+            alt="Loki query validation"width="1008"height="206"title="Loki query validation"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Loki query validation</figcaption></a></figure>
+<p>Learn more about viewing logs in our <a href="../../panels-visualizations/visualizations/logs/">Logs panel documentation</a>.</p>
+<h3 id="loki-logs-sample-in-explore">Loki logs sample in Explore</h3>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>For Loki metric queries in Explore, you can now see the sample of log lines that contributed to the displayed results. To see these logs, click on the collapsed <strong>Logs sample</strong> panel under your graph or table panel. If you want to interact with your log lines or modify the log query, click on the &ldquo;Open logs in split view&rdquo; button and the log query will be executed in the split view.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/logs-sample-whats-new-9-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/logs-sample-whats-new-9-4.png"data-srcset="/media/docs/grafana/logs-sample-whats-new-9-4.png?w=320 320w, /media/docs/grafana/logs-sample-whats-new-9-4.png?w=550 550w, /media/docs/grafana/logs-sample-whats-new-9-4.png?w=750 750w, /media/docs/grafana/logs-sample-whats-new-9-4.png?w=900 900w, /media/docs/grafana/logs-sample-whats-new-9-4.png?w=1040 1040w, /media/docs/grafana/logs-sample-whats-new-9-4.png?w=1240 1240w, /media/docs/grafana/logs-sample-whats-new-9-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Logs sample in Explore"width="3016"height="1728"title="Logs sample in Explore"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/logs-sample-whats-new-9-4.png"
+            alt="Logs sample in Explore"width="3016"height="1728"title="Logs sample in Explore"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Logs sample in Explore</figcaption></a></figure>
+<h2 id="canvas-panel">Canvas panel</h2>
+<p><em>Available in <strong>beta</strong> in all editions of Grafana</em></p>
+<p>Canvas is a new panel that combines the power of Grafana with the flexibility of custom elements. Canvas visualizations are extensible form-built panels that allow you to explicitly place elements within static and dynamic layouts. This empowers you to design custom visualizations and overlay data in ways that aren’t possible with standard Grafana panels, all within Grafana’s UI. If you’ve used popular UI and web design tools, then designing Canvas panels will feel very familiar.</p>
+<p>In Grafana v9.4, we have added the ability to create connections (arrows). Connections enable you to connect elements together to create more complex visualizations. We also added support for data links and a brand new server element. To learn more about the Canvas panel, refer to <a href="../../panels-visualizations/visualizations/canvas/">Canvas</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/canvas-connections-9-4-0.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Canvas panel connections</figcaption></figure>
+</div>
+<h2 id="auth-and-security">Auth and security</h2>
+<p><em>All auth updates are generally available in all editions of Grafana.</em></p>
+<p>We&rsquo;ve made the following changes to authentication and security.</p>
+<h3 id="service-account-expiration-dates">Service account expiration dates</h3>
+<p>We have added a configuration option that enables you to require an expiration date limit for all newly created service account tokens.</p>
+<p>This change will not affect existing tokens. However, newly created tokens will require an expiration date that doesn&rsquo;t exceed the configuration option <code>token_expiration_day_limit</code>. This option is disabled by default.</p>
+<p>Learn more about service accounts in our <a href="../../administration/service-accounts/">Service account documentation</a>.</p>
+<h3 id="oauth-providers-setting-for-skip-org-role-sync">OAuth providers setting for skip org role sync</h3>
+<p>While Grafana integrates with many different auth providers, we have received requests for a feature that enables you to bypass organization role synchronization for individual providers rather than for all configured providers. This option is now available for users who want to be able to use Grafana to manage their org roles.</p>
+<p>This option enables you to skip synchronization from your configured OAuth provider specifically in the auth provider section under <code>skip_org_role_sync</code>. Previously users could only do this for certain providers using the <code>oauth_skip_org_role_sync_update</code> option, but this would include all of the configured providers.</p>
+<p>Learn more about Oauth in our <a href="../../setup-grafana/configure-security/configure-authentication/generic-oauth/">Oauth configuration guide</a>.</p>
+<h3 id="rbac-support-for-grafana-oncall-plugin">RBAC support for Grafana OnCall plugin</h3>
+<p>We&rsquo;re rolling out RBAC support to Grafana plugins, with Grafana OnCall being the first plugin to fully support RBAC.
+Previously, Grafana OnCall relied on the Grafana basic roles (for example, Viewer, Editor, and Admin) for authorization within the plugin.</p>
+<p>Before RBAC support in Grafana OnCall, it was only possible to allow your organization&rsquo;s users to either view everything, edit everything, or be an admin (which allowed edit access plus a few additional behaviors). With this new functionality, organizations will be able to harness fine-grained access control within Grafana OnCall.</p>
+<p>For example, you can assign a Viewer basic role to a user in your organization (users must still have a basic role assigned) and also assign them the new Grafana OnCall RBAC role of <strong>Schedules Editor</strong>. This assignment enables the user to view everything in Grafana OnCall, and edit OnCall schedules.</p>
+<p>Learn more about role-based access control in our <a href="../../administration/roles-and-permissions/access-control/">RBAC docs</a>.</p>
+<h3 id="saml-auto-login">SAML auto login</h3>
+<p>We&rsquo;ve added auto-login support for SAML authentication, which you can turn on with the <code>auto_login</code> configuration option. We also
+have a unified configuration style among all authentication providers. Instead of using
+<code>oauth_auto_login</code>, use the new <code>auto_login</code> option to enable automatic login for specific OAuth providers.</p>
+<p>Learn more about SAML setup in our <a href="../../setup-grafana/configure-security/configure-authentication/saml/">SAML configuration guide</a>.</p>
+<h2 id="auditing-and-usage-insights-support-for-loki-multi-tenancy">Auditing and Usage Insights: Support for Loki multi-tenancy</h2>
+<p><em>This feature is available for Enterprise customers</em></p>
+<p>This feature adds support to push analytics events and auditing logs to Loki with multi-tenancy mode, by specifying a tenant id. Learn more about <a href="../../setup-grafana/configure-security/audit-grafana/">auditing</a> and <a href="../../setup-grafana/configure-security/export-logs/">usage insights</a> in our docs.</p>
+<h2 id="reporting-zoom-in-and-out-on-your-dashboard-in-a-report-pdf">Reporting: Zoom in and out on your dashboard in a report PDF</h2>
+<p><em>This feature is available for Enterprise customers</em></p>
+<p>Zoom is a new feature for reports that allows you to change the dimension of the panels of the PDF document. It enables you to zoom out to show more columns in a table, or zoom in to enlarge panels.
+You can modify the scale factor for each report in the report editor when you share the PDF directly from the dashboard page.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/FormatReportScheduler9.4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/FormatReportScheduler9.4.png"data-srcset="/media/docs/grafana/FormatReportScheduler9.4.png?w=320 320w, /media/docs/grafana/FormatReportScheduler9.4.png?w=550 550w, /media/docs/grafana/FormatReportScheduler9.4.png?w=750 750w, /media/docs/grafana/FormatReportScheduler9.4.png?w=900 900w, /media/docs/grafana/FormatReportScheduler9.4.png?w=1040 1040w, /media/docs/grafana/FormatReportScheduler9.4.png?w=1240 1240w, /media/docs/grafana/FormatReportScheduler9.4.png?w=1920 1920w"
+          data-sizes="auto"alt="Scale factor feature in Report format page"width="1597"height="1031"title="Scale factor feature in Report format page"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/FormatReportScheduler9.4.png"
+            alt="Scale factor feature in Report format page"width="1597"height="1031"title="Scale factor feature in Report format page"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Scale factor feature in Report format page</figcaption></a></figure>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/FormatReportShare9.4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/FormatReportShare9.4.png"data-srcset="/media/docs/grafana/FormatReportShare9.4.png?w=320 320w, /media/docs/grafana/FormatReportShare9.4.png?w=550 550w, /media/docs/grafana/FormatReportShare9.4.png?w=750 750w, /media/docs/grafana/FormatReportShare9.4.png?w=900 900w, /media/docs/grafana/FormatReportShare9.4.png?w=1040 1040w, /media/docs/grafana/FormatReportShare9.4.png?w=1240 1240w, /media/docs/grafana/FormatReportShare9.4.png?w=1920 1920w"
+          data-sizes="auto"alt="Scale factor feature in Share functionality"width="860"height="527"title="Scale factor feature in Share functionality"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/FormatReportShare9.4.png"
+            alt="Scale factor feature in Share functionality"width="860"height="527"title="Scale factor feature in Share functionality"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Scale factor feature in Share functionality</figcaption></a></figure>
+<p>Learn more about reporting in our <a href="../../dashboards/create-reports/">documentation</a></p>
+<h2 id="alerting">Alerting</h2>
+<p>We&rsquo;ve made major improvements to Grafana Alerts, from new contact points and search options to improved workflows between Alerting and OnCall. For all the details, refer to our <a href="../../alerting/">Alerting documentation</a>.</p>
+<h3 id="alerting-alert-rules">Alerting: alert rules</h3>
+<p>We&rsquo;ve made the following changes to alert rules.</p>
+<h4 id="declare-incidents-from-firing-alerts">Declare incidents from firing alerts</h4>
+<p>Declare an incident from a firing alert, streamlining the alert to incident workflow.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/declare-incident.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/declare-incident.png"data-srcset="/media/docs/alerting/declare-incident.png?w=320 320w, /media/docs/alerting/declare-incident.png?w=550 550w, /media/docs/alerting/declare-incident.png?w=750 750w, /media/docs/alerting/declare-incident.png?w=900 900w, /media/docs/alerting/declare-incident.png?w=1040 1040w, /media/docs/alerting/declare-incident.png?w=1240 1240w, /media/docs/alerting/declare-incident.png?w=1920 1920w"
+          data-sizes="auto"alt="Declare incidents from firing alerts"width="918"height="386"title="Declare incidents from firing alerts"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/declare-incident.png"
+            alt="Declare incidents from firing alerts"width="918"height="386"title="Declare incidents from firing alerts"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Declare incidents from firing alerts</figcaption></a></figure>
+<h4 id="copy-alert-rules-and-notification-templates">Copy alert rules and notification templates</h4>
+<p>To help you reuse existing alert rules or templates, make copies of alert rules from the Alert rule list view and templates from the Contact points page.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/copy-alert-rules.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/copy-alert-rules.png"data-srcset="/media/docs/alerting/copy-alert-rules.png?w=320 320w, /media/docs/alerting/copy-alert-rules.png?w=550 550w, /media/docs/alerting/copy-alert-rules.png?w=750 750w, /media/docs/alerting/copy-alert-rules.png?w=900 900w, /media/docs/alerting/copy-alert-rules.png?w=1040 1040w, /media/docs/alerting/copy-alert-rules.png?w=1240 1240w, /media/docs/alerting/copy-alert-rules.png?w=1920 1920w"
+          data-sizes="auto"alt="Copy alert rules and notification templates"width="1226"height="154"title="Copy alert rules and notification templates"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/copy-alert-rules.png"
+            alt="Copy alert rules and notification templates"width="1226"height="154"title="Copy alert rules and notification templates"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Copy alert rules and notification templates</figcaption></a></figure>
+<h4 id="view-query-definitions-for-provisioned-alerts">View query definitions for provisioned alerts</h4>
+<p>View read-only query definitions for provisioned alerts from the Alert rule details page. Check quickly if your alert rule queries are correct, without diving into your &ldquo;as-code&rdquo; repository for rule definitions.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/view-query-definitions.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/view-query-definitions.png"data-srcset="/media/docs/alerting/view-query-definitions.png?w=320 320w, /media/docs/alerting/view-query-definitions.png?w=550 550w, /media/docs/alerting/view-query-definitions.png?w=750 750w, /media/docs/alerting/view-query-definitions.png?w=900 900w, /media/docs/alerting/view-query-definitions.png?w=1040 1040w, /media/docs/alerting/view-query-definitions.png?w=1240 1240w, /media/docs/alerting/view-query-definitions.png?w=1920 1920w"
+          data-sizes="auto"alt="View query definitions for provisioned alerts"width="1228"height="962"title="View query definitions for provisioned alerts"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/view-query-definitions.png"
+            alt="View query definitions for provisioned alerts"width="1228"height="962"title="View query definitions for provisioned alerts"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">View query definitions for provisioned alerts</figcaption></a></figure>
+<h4 id="export-alert-rules-to-use-in-the-provisioning-api-or-files">Export alert rules to use in the provisioning API or files</h4>
+<p>Create and tune an alert rule in the UI, then export to YAML or JSON, and use it in the provisioning API or files. You can also export an entire rule group to review or use. This is supported in both the UI and provisioning API.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/export-alert-rules.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/export-alert-rules.png"data-srcset="/media/docs/alerting/export-alert-rules.png?w=320 320w, /media/docs/alerting/export-alert-rules.png?w=550 550w, /media/docs/alerting/export-alert-rules.png?w=750 750w, /media/docs/alerting/export-alert-rules.png?w=900 900w, /media/docs/alerting/export-alert-rules.png?w=1040 1040w, /media/docs/alerting/export-alert-rules.png?w=1240 1240w, /media/docs/alerting/export-alert-rules.png?w=1920 1920w"
+          data-sizes="auto"alt="Export alert rules"width="1200"height="374"title="Export alert rules"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/export-alert-rules.png"
+            alt="Export alert rules"width="1200"height="374"title="Export alert rules"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Export alert rules</figcaption></a></figure>
+<h4 id="pause-alert-rule-evaluation">Pause alert rule evaluation</h4>
+<p>Pause alert rule evaluation to prevent noisy alerting while tuning your alerts. Pausing stops alert rule evaluation and does not create any alert instances. This is different to mute timings, which stop notifications from being delivered, but still allow for alert rule evaluation and the creation of alert instances.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/pause-alerts.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/pause-alerts.png"data-srcset="/media/docs/alerting/pause-alerts.png?w=320 320w, /media/docs/alerting/pause-alerts.png?w=550 550w, /media/docs/alerting/pause-alerts.png?w=750 750w, /media/docs/alerting/pause-alerts.png?w=900 900w, /media/docs/alerting/pause-alerts.png?w=1040 1040w, /media/docs/alerting/pause-alerts.png?w=1240 1240w, /media/docs/alerting/pause-alerts.png?w=1920 1920w"
+          data-sizes="auto"alt="Pause alert rule evaluations"width="956"height="530"title="Pause alert rule evaluations"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/pause-alerts.png"
+            alt="Pause alert rule evaluations"width="956"height="530"title="Pause alert rule evaluations"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Pause alert rule evaluations</figcaption></a></figure>
+<h4 id="view-an-alerts-evaluation-interval-in-alert-group-view">View an alert&rsquo;s evaluation interval in Alert Group view</h4>
+<p>View the evaluation interval more easily from the grouped view on the Alert list page. The view now also always displays recording and normal alert rules and highlights alert rule status in different colors.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/view-evaluation-interval.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/view-evaluation-interval.png"data-srcset="/media/docs/alerting/view-evaluation-interval.png?w=320 320w, /media/docs/alerting/view-evaluation-interval.png?w=550 550w, /media/docs/alerting/view-evaluation-interval.png?w=750 750w, /media/docs/alerting/view-evaluation-interval.png?w=900 900w, /media/docs/alerting/view-evaluation-interval.png?w=1040 1040w, /media/docs/alerting/view-evaluation-interval.png?w=1240 1240w, /media/docs/alerting/view-evaluation-interval.png?w=1920 1920w"
+          data-sizes="auto"alt="View evaluation interval on the Group view"width="1214"height="516"title="View evaluation interval on the Group view"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/view-evaluation-interval.png"
+            alt="View evaluation interval on the Group view"width="1214"height="516"title="View evaluation interval on the Group view"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">View evaluation interval on the Group view</figcaption></a></figure>
+<h4 id="improved-search-for-your-alert-rules">Improved search for your alert rules</h4>
+<p>When managing large volumes of alerts, use extended alert rule search capabilities to filter folders, evaluation groups, and rules. Additionally, you can filter alert rules by their properties like labels, state, type, and health.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/search-improvements.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/search-improvements.png"data-srcset="/media/docs/alerting/search-improvements.png?w=320 320w, /media/docs/alerting/search-improvements.png?w=550 550w, /media/docs/alerting/search-improvements.png?w=750 750w, /media/docs/alerting/search-improvements.png?w=900 900w, /media/docs/alerting/search-improvements.png?w=1040 1040w, /media/docs/alerting/search-improvements.png?w=1240 1240w, /media/docs/alerting/search-improvements.png?w=1920 1920w"
+          data-sizes="auto"alt="Improved search for your alert rules"width="924"height="332"title="Improved search for your alert rules"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/search-improvements.png"
+            alt="Improved search for your alert rules"width="924"height="332"title="Improved search for your alert rules"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Improved search for your alert rules</figcaption></a></figure>
+<h4 id="adjust-the-amount-and-resolution-of-data-used-in-your-alerting-queries">Adjust the amount and resolution of data used in your alerting queries</h4>
+<p>Lower costs and improve performance by adjusting the maximum number of data points returned from your alerting queries.</p>
+<h4 id="edit-alert-rule-evaluation-interval">Edit alert rule evaluation interval</h4>
+<p>Simplifies editing the evaluation interval for an alert rule within a new group. You no longer have to save the alert rule and group before editing the evaluation interval.</p>
+<h3 id="alerting-contact-points">Alerting: contact points</h3>
+<p>We&rsquo;ve made the following changes to alert contact points.</p>
+<h4 id="view-grafana-oncall-contact-point">View Grafana OnCall contact point</h4>
+<p>Connecting your OnCall workflows just got easier. OnCall has been added as a contact point to simplify the integration between alert notifications and your OnCall implementation.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/on-call-contact-point.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/on-call-contact-point.png"data-srcset="/media/docs/alerting/on-call-contact-point.png?w=320 320w, /media/docs/alerting/on-call-contact-point.png?w=550 550w, /media/docs/alerting/on-call-contact-point.png?w=750 750w, /media/docs/alerting/on-call-contact-point.png?w=900 900w, /media/docs/alerting/on-call-contact-point.png?w=1040 1040w, /media/docs/alerting/on-call-contact-point.png?w=1240 1240w, /media/docs/alerting/on-call-contact-point.png?w=1920 1920w"
+          data-sizes="auto"alt="View Grafana OnCall contact point"width="994"height="862"title="View Grafana OnCall contact point"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/on-call-contact-point.png"
+            alt="View Grafana OnCall contact point"width="994"height="862"title="View Grafana OnCall contact point"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">View Grafana OnCall contact point</figcaption></a></figure>
+<h3 id="alert-email-templating">Alert email templating</h3>
+<p>We&rsquo;ve improved the design and functionality of email templates to make template creation much easier and more customizable. The email template framework utilizes MJML to define and compile the final email HTML output. Sprig functions in the email templates provide more customizable template functions.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/alerting/alert-templates-whats-new-v9.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/alerting/alert-templates-whats-new-v9.3.png"data-srcset="/static/img/docs/alerting/alert-templates-whats-new-v9.3.png?w=320 320w, /static/img/docs/alerting/alert-templates-whats-new-v9.3.png?w=550 550w, /static/img/docs/alerting/alert-templates-whats-new-v9.3.png?w=750 750w, /static/img/docs/alerting/alert-templates-whats-new-v9.3.png?w=900 900w, /static/img/docs/alerting/alert-templates-whats-new-v9.3.png?w=1040 1040w, /static/img/docs/alerting/alert-templates-whats-new-v9.3.png?w=1240 1240w, /static/img/docs/alerting/alert-templates-whats-new-v9.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Email template redesign"width="400"height="411"title="Email template redesign"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/alert-templates-whats-new-v9.3.png"
+            alt="Email template redesign"width="400"height="411"title="Email template redesign"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Email template redesign</figcaption></a></figure>
+<h4 id="add-support-for-discord-as-a-contact-point-receiver">Add support for Discord as a contact point receiver</h4>
+<p>We&rsquo;ve added Discord as a contact point receiver for Grafana Cloud alert rules.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/support-discord.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/support-discord.png"data-srcset="/media/docs/alerting/support-discord.png?w=320 320w, /media/docs/alerting/support-discord.png?w=550 550w, /media/docs/alerting/support-discord.png?w=750 750w, /media/docs/alerting/support-discord.png?w=900 900w, /media/docs/alerting/support-discord.png?w=1040 1040w, /media/docs/alerting/support-discord.png?w=1240 1240w, /media/docs/alerting/support-discord.png?w=1920 1920w"
+          data-sizes="auto"alt="Add support for Discord"width="1084"height="576"title="Add support for Discord"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/support-discord.png"
+            alt="Add support for Discord"width="1084"height="576"title="Add support for Discord"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Add support for Discord</figcaption></a></figure>
+<h3 id="alerting-administration">Alerting: administration</h3>
+<p>We&rsquo;ve made the following changes to alert administration.</p>
+<h4 id="alerting-landing-page">Alerting landing page</h4>
+<p>Introduces a new landing page that helps you get started quickly with Alerting. It also provides you with at a glance information on how Alerting works and a video to introduce you to key concepts.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/landing-page.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/landing-page.png"data-srcset="/media/docs/alerting/landing-page.png?w=320 320w, /media/docs/alerting/landing-page.png?w=550 550w, /media/docs/alerting/landing-page.png?w=750 750w, /media/docs/alerting/landing-page.png?w=900 900w, /media/docs/alerting/landing-page.png?w=1040 1040w, /media/docs/alerting/landing-page.png?w=1240 1240w, /media/docs/alerting/landing-page.png?w=1920 1920w"
+          data-sizes="auto"alt="Alerting landing page"width="1224"height="860"title="Alerting landing page"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/landing-page.png"
+            alt="Alerting landing page"width="1224"height="860"title="Alerting landing page"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Alerting landing page</figcaption></a></figure>
+<h4 id="compatibility-with-aws-aurora">Compatibility with AWS Aurora</h4>
+<p>Grafana Alerting is now compatible with AWS Aurora, but does not provide technical support for it.</p>
+<h2 id="enterprise-datasources">Enterprise Datasources</h2>
+<p>We&rsquo;ve made improvements to all <a href="../../introduction/grafana-enterprise/#enterprise-data-sources">Enterprise Datasources</a>, fixing small bugs, and updating libraries. We&rsquo;ve also added many new features and support for additional APIs. Refer to each datasource&rsquo;s documentation and the change log for additional information.</p>
+<h3 id="datadog-datasource">DataDog Datasource</h3>
+<p>We&rsquo;ve added support for many new query types, including: SLO/SLI Values, RUM data, Events, and monitor group status.</p>
+<h3 id="dynatrace-datasource">Dynatrace Datasource</h3>
+<p>We&rsquo;ve updated the Metric Selector to be faster and added support for filtering by management zone. We&rsquo;ve also added support for Log Queries and querying the Dynatrace audit log.</p>
+<h3 id="gitlab-datasource">GitLab Datasource</h3>
+<p>We&rsquo;ve added support for many new query types, including: Audit events, Users, Merge request approvals, Field tags, Environments, and Pipelines.</p>
+<h3 id="honeycomb-datasource">Honeycomb Datasource</h3>
+<p>We&rsquo;ve added support for derived columns and Honeycomb Environments.</p>
+<h3 id="newrelic-datasource">NewRelic Datasource</h3>
+<p>We&rsquo;ve added support for trace search, log search, and support for NRQL histogram queries.</p>
+<h3 id="salesforce-datasource">Salesforce Datasource</h3>
+<p>We&rsquo;ve added support for JWT authentication.</p>
+<h3 id="snowflake-datasource">Snowflake Datasource</h3>
+<p>We&rsquo;ve added support for custom session parameters.</p>
+<h2 id="postgres-mysql-and-mssql-data-sources">Postgres, MySQL, and MSSQL data sources</h2>
+<p>The <code>database</code> property is now under the <code>jsonData</code> key in the data source configuration. This change is backward compatible, and existing configurations will continue to work.</p>
+<h2 id="before-you-upgrade">Before you upgrade</h2>
+<p>There are no known breaking changes associated with this version of Grafana.</p>
+<!-- TODO: Add content -->

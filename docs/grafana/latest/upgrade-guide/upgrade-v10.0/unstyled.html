@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<h1 id="upgrade-to-grafana-v100">Upgrade to Grafana v10.0</h1>
+
+
+<div data-shared="upgrade/intro.md">
+            <p>We recommend that you upgrade Grafana often to stay current with the latest fixes and enhancements.
+Because Grafana upgrades are backward compatible, the upgrade process is straightforward, and dashboards and graphs will not change.</p>
+<p>In addition to common tasks you should complete for all versions of Grafana, there might be additional upgrade tasks to complete for a version.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>There might be breaking changes in some releases. We outline these changes in the 
+    <a href="/docs/grafana/latest/whatsnew/">What&rsquo;s New </a> document for most releases or a separate 
+    <a href="/docs/grafana/latest/breaking-changes/">Breaking changes</a> document for releases with many breaking changes.</p></blockquote></div>
+
+<p>For versions of Grafana prior to v9.2, we published additional information in the 
+    <a href="/docs/grafana/latest/release-notes/">Release Notes</a>.</p>
+<p>When available, we list all changes with links to pull requests or issues in the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Changelog</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When possible, we recommend that you test the Grafana upgrade process in a test or development environment.</p></blockquote></div>
+
+</div>
+
+        
+
+
+<div data-shared="back-up/back-up-grafana.md">
+            
+
+<h2 id="back-up-grafana">Back up Grafana</h2>
+<p>This topic explains how to back up a local Grafana deployment, including configuration, plugin data, and the Grafana database.</p>
+<h3 id="back-up-the-grafana-configuration-file">Back up the Grafana configuration file</h3>
+<p>Copy Grafana configuration files that you might have modified in your Grafana deployment to a backup directory.</p>
+<p>The Grafana configuration files are located in the following directories:</p>
+<ul>
+<li>Default configuration: <code>$WORKING_DIR/defaults.ini</code> (Don&rsquo;t change this file)</li>
+<li>Custom configuration: <code>$WORKING_DIR/custom.ini</code></li>
+</ul>
+<p>For more information on where to find configuration files, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">Configuration file location</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you installed Grafana using the <code>deb</code> or <code>rpm</code> packages, then your configuration file is located at
+<code>/etc/grafana/grafana.ini</code>. This path is specified in the Grafana <code>init.d</code> script using <code>--config</code> file parameter.</p></blockquote></div>
+
+<h3 id="back-up-plugin-data">Back up plugin data</h3>
+<p>Installing plugins in Grafana creates a folder for each plugin with its associated files and data. Copy all files and folders recursively from this location to your backup repository.</p>
+<p>The Grafana plugin files are located in the following directories:</p>
+<ul>
+<li>Default location for plugins in a binary or source installation: <code>$WORKING_DIR/data/plugins</code></li>
+<li>Default location for plugins in a <code>deb</code> or <code>rpm</code> package: <code>/var/lib/grafana/plugins</code>. This path is specified in the Grafana init.d script using <code>--config</code> file parameter.</li>
+</ul>
+<h3 id="back-up-the-grafana-database">Back up the Grafana database</h3>
+<p>We recommend that you back up your Grafana database so that you can roll back to a previous version, if required.</p>
+<h4 id="sqlite">SQLite</h4>
+<p>The default Grafana database is SQLite, which stores its data in a single file on disk. To back up this file, copy it to your backup repository.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To ensure data integrity, shut down your Grafana service before backing up the SQLite database.</p></blockquote></div>
+
+<p>The SQLite database file is located in one of the following directories:</p>
+<ul>
+<li>Default location for SQLite data in a binary or source installation: <code>$WORKING_DIR/data/grafana.db</code></li>
+<li>Default location for SQLite data in a <code>deb</code> or <code>rpm</code> package: <code>/var/lib/grafana/grafana.db</code>. This path is specified in the Grafana
+init.d script using <code>--config</code> file parameter.</li>
+</ul>
+<h4 id="mysql">MySQL</h4>
+<p>To back up or restore a MySQL Grafana database, run the following commands:</p>
+<pre>backup:
+&gt; mysqldump -u root -p[root_password] [grafana] &gt; grafana_backup.sql
+
+restore:
+&gt; mysql -u root -p grafana &lt; grafana_backup.sql</pre>
+<h4 id="postgres">Postgres</h4>
+<p>To back up or restore a Postgres Grafana database, run the following commands:</p>
+<pre>backup:
+&gt; pg_dump grafana &gt; grafana_backup
+
+restore:
+&gt; psql grafana &lt; grafana_backup</pre>
+
+  </div>
+
+        
+
+
+<div data-shared="upgrade/upgrade-common-tasks.md">
+            <h2 id="upgrade-grafana">Upgrade Grafana</h2>
+<p>The following sections provide instructions for how to upgrade Grafana based on your installation method. For more information on where to find configuration files, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">Configuration file location</a>.</p>
+<h3 id="debian">Debian</h3>
+<p>To upgrade Grafana installed from a Debian package (<code>.deb</code>), complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download?platform=linux">Download</a> the latest version of Grafana.</p>
+</li>
+<li>
+<p>Run the following <code>dpkg -i</code> command.</p>
+<pre>wget &lt;debian package url&gt;
+sudo apt-get install -y adduser
+sudo dpkg -i grafana_&lt;version&gt;_amd64.deb</pre>
+</li>
+</ol>
+<h3 id="apt-repository">APT repository</h3>
+<p>To upgrade Grafana installed from the Grafana Labs APT repository, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p>Run the following commands:</p>
+<pre>sudo apt-get update
+sudo apt-get upgrade</pre>
+</li>
+</ol>
+<p>Grafana automatically updates when you run <code>apt-get upgrade</code>.</p>
+<h3 id="binary-tar-file">Binary .tar file</h3>
+<p>To upgrade Grafana installed from the binary <code>.tar.gz</code> package, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to the custom configuration file, <code>custom.ini</code> or <code>grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download">Download</a> the binary <code>.tar.gz</code> package.</p>
+</li>
+<li>
+<p>Extract the downloaded package and overwrite the existing files.</p>
+</li>
+</ol>
+<h3 id="rpm-or-yum">RPM or YUM</h3>
+<p>To upgrade Grafana installed using RPM or YUM complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/grafana.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p>Perform one of the following steps based on your installation.</p>
+<ul>
+<li>
+<p>If you <a href="/grafana/download">downloaded an RPM package</a> to install Grafana, then complete the steps documented in 
+    <a href="/docs/grafana/latest/setup-grafana/installation/redhat-rhel-fedora/">Install Grafana on Red Hat, RHEL, or Fedora</a> or 
+    <a href="/docs/grafana/latest//setup-grafana/installation/suse-opensuse/">Install Grafana on SUSE or openSUSE</a> to upgrade Grafana.</p>
+</li>
+<li>
+<p>If you used the Grafana YUM repository, run the following command:</p>
+<pre>sudo yum update grafana</pre>
+</li>
+<li>
+<p>If you installed Grafana on openSUSE or SUSE, run the following command:</p>
+<pre>sudo zypper update</pre>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="docker">Docker</h3>
+<p>To upgrade Grafana running in a Docker container, complete the following steps:</p>
+<ol>
+<li>
+<p>Use Grafana 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#override-configuration-with-environment-variables">environment variables</a> to save your custom configurations; this is the recommended method. Alternatively, you can view your configuration files manually by accessing the deployed container.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p>Run a commands similar to the following commands.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This is an example. The parameters you enter depend on how you configured your Grafana container.</p></blockquote></div>
+
+<pre>docker pull grafana/grafana
+docker stop my-grafana-container
+docker rm my-grafana-container
+docker run -d --name=my-grafana-container --restart=always -v /var/lib/grafana:/var/lib/grafana grafana/grafana</pre>
+</li>
+</ol>
+<h3 id="windows">Windows</h3>
+<p>To upgrade Grafana installed on Windows, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to a file named <code>&lt;grafana_install_dir&gt;/conf/custom.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download">Download</a> the Windows binary package.</p>
+</li>
+<li>
+<p>Extract the contents of the package to the location in which you installed Grafana.</p>
+<p>You can overwrite existing files and folders, when prompted.</p>
+</li>
+</ol>
+<h3 id="mac">Mac</h3>
+<p>To upgrade Grafana installed on Mac, complete the following steps:</p>
+<ol>
+<li>
+<p>In your current installation of Grafana, save your custom configuration changes to the custom configuration file, <code>custom.ini</code>.</p>
+<p>This enables you to upgrade Grafana without the risk of losing your configuration changes.</p>
+</li>
+<li>
+<p><a href="/grafana/download">Download</a> the Mac binary package.</p>
+</li>
+<li>
+<p>Extract the contents of the package to the location in which you installed Grafana.</p>
+<p>You can overwrite existing files and folders, when prompted.</p>
+</li>
+</ol>
+<h2 id="update-grafana-plugins">Update Grafana plugins</h2>
+<p>After you upgrade Grafana, we recommend that you update all plugins because a new version of Grafana
+can make older plugins stop working properly.</p>
+<p>Run the following command to update plugins:</p>
+<pre>grafana cli plugins update-all</pre>
+</div>
+
+        
+<h2 id="technical-notes">Technical notes</h2>
+<h3 id="role-based-access-control-changes">Role-based access control changes</h3>
+<!-- Vardan Torosyan -->
+<p>Role-based access control (RBAC) is now always enabled and we&rsquo;ve removed the option to disable it.</p>
+<p>No action is required.</p>
+<p>However, if you decide to <strong>downgrade</strong> for any reason and <strong>disable RBAC</strong>, you&rsquo;ll need to run through the following guide before upgrading again.</p>
+<p>The aforementioned sequence of actions (upgrade, downgrade, disable RBAC, upgrade again) causes legacy access control and role-based access control systems to be out of sync.
+As a side effect, permissions for some Grafana resources, like dashboards, might be lost.
+To prevent that from happening, before you upgrade Grafana back again, please take the following steps:</p>
+<ol>
+<li>Stop Grafana.</li>
+<li>In your database, run the following SQL queries:</li>
+</ol>
+<pre>DELETE
+FROM builtin_role
+where role_id IN (SELECT id
+                  FROM role
+                  WHERE name LIKE &#39;managed:%&#39;);
+
+DELETE
+FROM team_role
+where role_id IN (SELECT id
+                  FROM role
+                  WHERE name LIKE &#39;managed:%&#39;);
+
+DELETE
+FROM user_role
+where role_id IN (SELECT id
+                  FROM role
+                  WHERE name LIKE &#39;managed:%&#39;);
+
+DELETE
+FROM permission
+where role_id IN (SELECT id
+                  FROM role
+                  WHERE name LIKE &#39;managed:%&#39;);
+
+DELETE
+FROM role
+WHERE name LIKE &#39;managed:%&#39;;
+
+DELETE
+FROM migration_log
+WHERE migration_id IN (&#39;teams permissions migration&#39;,
+                       &#39;dashboard permissions&#39;,
+                       &#39;dashboard permissions uid scopes&#39;,
+                       &#39;data source permissions&#39;,
+                       &#39;data source uid permissions&#39;,
+                       &#39;managed permissions migration&#39;,
+                       &#39;managed folder permissions alert actions repeated migration&#39;,
+                       &#39;managed permissions migration enterprise&#39;);</pre>
+<ol start="3">
+<li>Start Grafana again.</li>
+</ol>
+<h3 id="case-insensitive-usernames-and-email-addresses">Case-insensitive usernames and email addresses</h3>
+<!-- Vardan Torosyan -->
+<p>Usernames and email addresses are now treated as case-insensitive in Grafana. If you&rsquo;re not using MySQL as a database, potential user identity conflicts may arise when users try to log in.
+We recommend you resolve any potential conflicts in advance by using the <a href="/blog/2022/12/12/guide-to-using-the-new-grafana-cli-user-identity-conflict-tool-in-grafana-9.3/">Grafana CLI tool for managing user conflicts</a>.</p>
+<h3 id="dashboard-previews-removal">Dashboard previews removal</h3>
+<!-- Artur Wierzbicki -->
+<p>We&rsquo;ve removed the Dashboard previews feature introduced behind a feature flag in Grafana version 9.0.</p>
+<p>No action is required.</p>
+<p>The <code>dashboardPreviews</code> feature flag is no longer available and can be safely removed from the Grafana server configuration.</p>

@@ -1,0 +1,6 @@
+Contact: mailto:security@grafana.com
+Expires: 2026-06-10T11:37:00.000Z
+Encryption: https://keyserver.ubuntu.com/pks/lookup?search=F988+7BEA+027A+049F+AE8E+5CAA+D125+8932+BE24+C5CA&fingerprint=on&op=index
+Acknowledgments: /security/hall-of-fame/
+Preferred-Languages: en
+Policy: /legal/report-a-security-issue/

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<h1 id="get-started-with-grafana-and-influxdb">Get started with Grafana and InfluxDB</h1>
+
+
+<div data-shared="influxdb/intro.md">
+            <p><a href="https://www.influxdata.com/products/" target="_blank" rel="noopener noreferrer">InfluxDB</a> is an open-source time series database (TSDB) developed by <a href="https://www.influxdata.com/" target="_blank" rel="noopener noreferrer">InfluxData</a>. It is optimized for fast, high-availability storage and retrieval of time series data in fields such as operations monitoring, application metrics, IoT sensor data, and real-time analytics.</p>
+</div>
+
+        
+<h4 id="get-influxdb">Get InfluxDB</h4>
+<p>You can <a href="https://portal.influxdata.com/downloads/" target="_blank" rel="noopener noreferrer">download InfluxDB</a> and install it locally or you can sign up for <a href="https://www.influxdata.com/products/influxdb-cloud/" target="_blank" rel="noopener noreferrer">InfluxDB Cloud</a>. Windows installers are not available for some versions of InfluxDB.</p>
+<h4 id="install-other-influxdb-software">Install other InfluxDB software</h4>
+<p><a href="https://docs.influxdata.com/telegraf/v1.18/introduction/installation/" target="_blank" rel="noopener noreferrer">Install Telegraf</a>. This tool is an agent that helps you get metrics into InfluxDB. For more information, refer to <a href="https://docs.influxdata.com/telegraf/v1.18/" target="_blank" rel="noopener noreferrer">Telegraf documentation</a>.</p>
+<p>If you chose to use InfluxDB Cloud, then you should <a href="https://portal.influxdata.com/downloads/" target="_blank" rel="noopener noreferrer">download and install the InfluxDB Cloud CLI</a>. This tool allows you to send command line instructions to your cloud account. For more information, refer to <a href="https://docs.influxdata.com/influxdb/cloud/write-data/developer-tools/influx-cli/" target="_blank" rel="noopener noreferrer">Influx CLI documentation</a>.</p>
+<h4 id="get-data-into-influxdb">Get data into InfluxDB</h4>
+<p>If you downloaded and installed InfluxDB on your local machine, then use the <a href="https://docs.influxdata.com/influxdb/v2.0/write-data/#quick-start-for-influxdb-oss" target="_blank" rel="noopener noreferrer">Quick Start</a> feature to visualize InfluxDB metrics.</p>
+<p>If you are using the cloud account, then the wizards will guide you through the initial process. For more information, refer to <a href="https://docs.influxdata.com/influxdb/cloud/write-data/no-code/use-telegraf/#configure-telegraf" target="_blank" rel="noopener noreferrer">Configure Telegraf</a>.</p>
+<h5 id="note-for-windows-users">Note for Windows users:</h5>
+<p>Windows users might need to make additional adjustments. Look for special instructions in the InfluxData documentation and <a href="https://www.influxdata.com/blog/using-telegraf-on-windows/" target="_blank" rel="noopener noreferrer">Using Telegraf on Windows</a> blog post. The regular system monitoring template in InfluxDB Cloud is not compatible with Windows. Windows users who use InfluxDB Cloud to monitor their system will need to use the <a href="https://github.com/influxdata/community-templates/tree/master/windows_system" target="_blank" rel="noopener noreferrer">Windows System Monitoring Template</a>.</p>
+<h4 id="add-your-influxdb-data-source-to-grafana">Add your InfluxDB data source to Grafana</h4>
+<p>You can have more than one InfluxDB data source defined in Grafana.</p>
+<ol>
+<li>Follow the general instructions to <a href="../../datasources/#add-a-data-source">add a data source</a>.</li>
+<li>Decide if you will use InfluxQL or Flux as your query language.
+<ul>
+<li><a href="../../datasources/influxdb/#configure-the-data-source">Configure the data source</a> for your chosen query language.
+Each query language has its own unique data source settings.</li>
+<li>For querying features specific to each language, see the data source&rsquo;s <a href="../../datasources/influxdb/query-editor/">query editor documentation</a>.</li>
+</ul>
+</li>
+</ol>
+<h5 id="influxdb-guides">InfluxDB guides</h5>
+<p>InfluxDB publishes guidance for connecting different versions of their product to Grafana.</p>
+<ul>
+<li><strong>InfluxDB OSS or Enterprise 1.8+.</strong> To turn on Flux, refer to <a href="https://docs.influxdata.com/influxdb/v1.8/administration/config/#flux-enabled-false." target="_blank" rel="noopener noreferrer">Configure InfluxDB</a>. Select your InfluxDB version in the upper right corner.</li>
+<li><strong>InfluxDB OSS or Enterprise 2.x.</strong> Refer to <a href="https://docs.influxdata.com/influxdb/v2.0/tools/grafana/" target="_blank" rel="noopener noreferrer">Use Grafana with InfluxDB</a>. Select your InfluxDB version in the upper right corner.</li>
+<li><strong>InfluxDB Cloud.</strong> Refer to <a href="https://docs.influxdata.com/influxdb/cloud/tools/grafana/" target="_blank" rel="noopener noreferrer">Use Grafana with InfluxDB Cloud</a>.</li>
+</ul>
+<h5 id="important-tips">Important tips</h5>
+<ul>
+<li>Make sure your Grafana token has read access. If it doesn&rsquo;t, then you&rsquo;ll get an authentication error and be unable to connect Grafana to InfluxDB.</li>
+<li>Avoid apostrophes and other non-standard characters in bucket and token names.</li>
+<li>If the text name of the organization or bucket doesn&rsquo;t work, then try the ID number.</li>
+<li>If you change your bucket name in InfluxDB, then you must also change it in Grafana and your Telegraf .conf file as well.</li>
+</ul>
+<h4 id="add-a-query">Add a query</h4>
+<p>This step varies depending on the query language that you selected when you set up your data source in Grafana.</p>
+<h5 id="influxql-query-language">InfluxQL query language</h5>
+<p>In the query editor, click <strong>select measurement</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/influxdb/influxql-query-7-5.png"
+  alt="InfluxQL query" width="528"
+     height="418"/></p>
+<p>Grafana displays a list of possible series. Click one to select it, and Grafana graphs any available data. If there is no data to display, then try another selection or check your data source.</p>
+<h5 id="flux-query-language">Flux query language</h5>
+<p>Create a simple Flux query.</p>
+<ol>
+<li><a href="../../dashboards/build-dashboards/create-dashboard/">Add a panel</a>.</li>
+<li>In the query editor, select your InfluxDB-Flux data source. For more information, refer to <a href="../../panels-visualizations/query-transform-data/">Queries</a>.</li>
+<li>Select the <strong>Table</strong> visualization.</li>
+<li>In the query editor text field, enter <code>buckets()</code> and then click outside of the query editor.</li>
+</ol>
+<p>This generic query returns a list of buckets.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/influxdb/flux-query-7-5.png"
+  alt="Flux query" width="700"
+     height="273"/></p>
+<p>You can also create Flux queries in the InfluxDB Explore view.</p>
+<ol>
+<li>
+<p>In your browser, log in to the InfluxDB native UI (OSS is typically something like http://localhost:8086 or for InfluxDB Cloud use: <a href="https://cloud2.influxdata.com" target="_blank" rel="noopener noreferrer">https://cloud2.influxdata.com</a>).</p>
+</li>
+<li>
+<p>Click <strong>Explore</strong> to open the Data Explorer.</p>
+</li>
+<li>
+<p>The InfluxDB Data Explorer provides two mechanisms for creating Flux queries: a graphical query editor and a script editor. Using the graphical query editor, <a href="https://docs.influxdata.com/influxdb/cloud/query-data/execute-queries/data-explorer/" target="_blank" rel="noopener noreferrer">create a query</a>. It will look something like this:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/influxdb/influx-explore-query-7-5.png"
+  alt="InfluxDB Explore query" width="1600"
+     height="814"/></p>
+</li>
+<li>
+<p>Click <strong>Script Editor</strong> to view the text of the query, and then copy all the lines of your Flux code, which will look something like this:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/influxdb/explore-query-text-7-5.png"
+  alt="InfluxDB Explore Script Editor" width="546"
+     height="185"/></p>
+</li>
+<li>
+<p>In Grafana, <a href="../../dashboards/build-dashboards/create-dashboard/">add a panel</a> and then paste your Flux code into the query editor.</p>
+</li>
+<li>
+<p>Click <strong>Apply</strong>. Your new panel should be visible with data from your Flux query.</p>
+</li>
+</ol>
+<h4 id="check-influxdb-metrics-in-grafana-explore">Check InfluxDB metrics in Grafana Explore</h4>
+<p>In your Grafana instance, go to the <a href="../../explore/">Explore</a> view and build queries to experiment with the metrics you want to monitor. Here you can also debug issues related to collecting metrics.</p>
+<h4 id="start-building-dashboards">Start building dashboards</h4>
+<p>There you go! Use Explore and Data Explorer to experiment with your data, and add the queries that you like to your dashboard as panels. Have fun!</p>
+<p>Here are some resources to learn more:</p>
+<ul>
+<li>Grafana documentation: <a href="../../datasources/influxdb/">InfluxDB data source</a></li>
+<li>InfluxDB documentation: <a href="https://docs.influxdata.com/influxdb/v1.8/flux/flux-vs-influxql/" target="_blank" rel="noopener noreferrer">Comparison of Flux vs InfluxQL</a></li>
+</ul>

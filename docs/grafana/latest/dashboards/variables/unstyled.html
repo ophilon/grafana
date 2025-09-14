@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<h1 id="variables">Variables</h1>
+<p>A variable is a placeholder for a value.
+When you change the value, the element using the variable will change to reflect the new value.</p>
+<p>Variables are displayed as drop-down lists (or in some cases text fields) at the top of the dashboard.
+These drop-down lists make it easy to update the variable value and thus change the data being displayed in your dashboard.</p>
+<p>For example, if you needed to monitor several servers, you <em>could</em> make a dashboard for each server.
+Or you could create one dashboard and use panels with variables like this one, where you can change the server using the variable selector:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-selected-variables-v12.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-selected-variables-v12.png"data-srcset="/media/docs/grafana/dashboards/screenshot-selected-variables-v12.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-selected-variables-v12.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-selected-variables-v12.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-selected-variables-v12.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-selected-variables-v12.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-selected-variables-v12.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-selected-variables-v12.png?w=1920 1920w"
+          data-sizes="auto"alt="Variable drop-down open and two values selected"width="1594"height="870"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-selected-variables-v12.png"
+            alt="Variable drop-down open and two values selected"width="1594"height="870"/>
+        </noscript></div></a></figure>
+<p>Variables allow you to create more interactive dashboards.
+Instead of hard-coding things like server, application, and sensor names in your metric queries, you can use variables in their place.
+They&rsquo;re useful for administrators who want to allow Grafana viewers to adjust visualizations without giving them full editing permissions.</p>
+<p>Using variables also allows you to single-source dashboards.
+If you have multiple identical data sources or servers, you can make one dashboard and use variables to change what you are viewing.
+This simplifies maintenance and upkeep enormously.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=mMUJ3iwIYwc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>You can use variables in:</p>
+<ul>
+<li>Data source queries</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/#configure-repeating-panels">Panel repeating options</a></li>
+<li>
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/">Dashboard and panel links</a></li>
+<li>Titles</li>
+<li>Descriptions</li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/">Transformations</a></li>
+</ul>
+<p>To see variable settings, navigate to <strong>Dashboard Settings &gt; Variables</strong>.
+Click a variable in the list to see its settings.</p>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/goto/B9Xog68Hg?orgId=1" target="_blank" rel="noopener noreferrer">Templating - Interactive dashboard</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/goto/B9Xog68Hg?orgId=1">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="templates">Template variables</h2>
+<p>A <em>template</em> is any query that contains a variable.
+Queries with text that starts with <code>$</code> are templates.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In our documentation and in the application, we typically simply refer to a <em>template query</em> as a <em>query</em>, but we often use the terms <em>variable</em> and <em>template variable</em> interchangeably.</p></blockquote></div>
+
+<p>For example, if you were administering a dashboard to monitor several servers, it could have panels that use template queries like this one:</p>
+<pre>groupByNode(movingAverage(apps.$app.$server.counters.requests.count, 10), 2, &#39;sum&#39;)</pre>
+<p>The following image shows a panel in edit mode using the query:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-template-query-v12.1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-template-query-v12.1.png"data-srcset="/media/docs/grafana/dashboards/screenshot-template-query-v12.1.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-template-query-v12.1.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-template-query-v12.1.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-template-query-v12.1.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-template-query-v12.1.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-template-query-v12.1.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-template-query-v12.1.png?w=1920 1920w"
+          data-sizes="auto"alt="A panel using a template query"width="2488"height="1342"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-template-query-v12.1.png"
+            alt="A panel using a template query"width="2488"height="1342"/>
+        </noscript></div></a></figure>
+<h3 id="variables-in-urls">Variables in URLs</h3>
+<p>Variable values are always synced to the URL using <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/#query-parameters">query parameter syntax</a>, <code>var-&lt;varname&gt;=value</code>.
+For example:</p>
+<pre>https://play.grafana.org/d/HYaGDGIMk/templating-global-variables-and-interpolation?orgId=1&amp;from=now-6h&amp;to=now&amp;timezone=utc&amp;var-Server=CCC&amp;var-MyCustomDashboardVariable=Hello%20World%21</pre>
+<p>In the preceding example, the variables and values are <code>var-Server=CCC</code> and <code>var-MyCustomDashboardVariable=Hello%20World%21</code>.</p>
+<h2 id="additional-examples">Additional examples</h2>
+<p>The following dashboards in Grafana Play provide examples of template variables:</p>
+<ul>
+<li><a href="https://play.grafana.org/goto/yfZOReUNR?orgId=1" target="_blank" rel="noopener noreferrer">Templating - Repeated panels</a> - Using query variables to control how many panels appear in a dashboard.</li>
+<li><a href="https://play.grafana.org/d/testdata-nested-variables-drilldown/" target="_blank" rel="noopener noreferrer">Templating - Nested Variables Drilldown</a> - Demonstrates how changing one variable value can change the values available in a nested variable.</li>
+<li><a href="https://play.grafana.org/d/HYaGDGIMk/" target="_blank" rel="noopener noreferrer">Templating - Global variables and interpolation</a> - Shows you how the syntax for Grafana variables works.</li>
+</ul>
+<h2 id="next-steps">Next steps</h2>
+<p>The following topics describe how to add and manage variables in your dashboards:</p>
+<ul><li>
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add variables</a></li><li>
+    <a href="/docs/grafana/latest/dashboards/variables/inspect-variable/">Manage and inspect variables</a></li><li>
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">Variable syntax</a></li></ul>

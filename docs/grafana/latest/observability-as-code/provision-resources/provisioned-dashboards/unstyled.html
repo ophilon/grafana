@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<h1 id="work-with-provisioned-dashboards">Work with provisioned dashboards</h1>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Git Sync and File path provisioning an <a href="/docs/release-life-cycle/">experimental feature</a> introduced in Grafana v12 for open source and Enterprise editions. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. Enable the <code>provisioning</code> and <code>kubernetesDashboards</code> feature toggles in Grafana. These features aren&rsquo;t available publicly in Grafana Cloud yet. Only the cloud-hosted version of GitHub (GitHub.com) is supported at this time. GitHub Enterprise is not yet compatible.</p>
+<p>Sign up for Grafana Cloud Git Sync early access using <a href="https://forms.gle/WKkR3EVMcbqsNnkD9" target="_blank" rel="noopener noreferrer">this form</a>.</p></blockquote></div>
+
+<p>Using Provisioning, you can choose to store your dashboard JSON files in either GitHub repositories using Git Sync or a local file path.</p>
+<p>For more information, refer to the 
+    <a href="/docs/grafana/latest/dashboards/">Dashboards</a> documentation.</p>
+<h2 id="provisioning-methods">Provisioning methods</h2>
+<p>Dashboards and folders synchronized using Git Sync or a local file path are referred to as &ldquo;provisioned&rdquo; resources.</p>
+<p>Of the two experimental options, Git Sync is the recommended method for provisioning your dashboards.
+You can synchronize any new dashboards and changes to existing dashboards to your configured GitHub repository.
+If you push a change in the repository, those changes are mirrored in your Grafana instance.
+For more information on configuring Git Sync, refer to 
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/intro-git-sync/">Set up Git Sync</a>.</p>
+<h3 id="local-path-provisioning">Local path provisioning</h3>
+<p>Using the local path provisioning makes files from a specified path available within Grafana.
+These provisioned resources can only be modified in the local files and not within Grafana.
+Any changes made in the configured local path are updated in Grafana.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/file-path-setup/">Set up file provisioning</a> to learn more about the version of local file provisioning in Grafana 12.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The experimental local path provisioning using <strong>Administration</strong> &gt; <strong>Provisioning</strong> will replace the file provisioning methods Grafana uses for referencing local file.</p>
+<p>For production systems, use the established methods for provisioning file systems in Grafana.
+Refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#provision-folders-structure-from-filesystem-to-grafana">Provision Grafana</a> for more information.</p></blockquote></div>
+
+<h2 id="manage-dashboards-provisioned-with-git-sync">Manage dashboards provisioned with Git Sync</h2>
+<p>Using Git Sync, you can manage your dashboards in the UI and synchronize them with a GitHub repository.</p>
+<p>Git Sync changes the behavior in Grafana for dashboards that are saved in Git Sync:</p>
+<ul>
+<li>Dashboards saved in your repository or local folder configured with Git Sync appear in a provisioned folder in Grafana.</li>
+<li>Any dashboard folders saved with Git Sync have a <strong>Provisioned</strong> label in the UI.</li>
+<li>Any changes to a provisioned resources have to be saved to the repository by opening a pull request or committing directly to the <code>main</code> branch.</li>
+</ul>
+<p>You can set a single folder, or multiple folders to a different repository, with up to 10 connections.</p>
+<h3 id="git-workflow-with-dashboards">Git workflow with dashboards</h3>
+<p>By default, Git version control uses a branch-based workflow for changes. This means that you can:</p>
+<ul>
+<li>Commit changes to an existing branch (such as <code>main</code>) or save them to a new branch in your GitHub repository.</li>
+<li>Use pull requests to review changes to dashboards.</li>
+<li>Preview the changes before merging.</li>
+</ul>
+<p>To learn more about Git, refer to <a href="https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control" target="_blank" rel="noopener noreferrer">Getting Started - About Version Control</a> of the <a href="https://git-scm.com/book/en/v2" target="_blank" rel="noopener noreferrer">Pro Git book</a> in the official Git documentation.</p>
+<h3 id="add-and-save-a-new-dashboard">Add and save a new dashboard</h3>
+<p>When you create a new dashboard in a provisioned folder associated with a GitHub repository, you follow the same process you use for any new dashboard.
+Refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">Create a dashboard</a> for more information.</p>
+<p>After you create the dashboard, the steps are similar to <a href="#save-dashboard-changes-to-github">Save dashboard changes to GitHub</a>.</p>
+<ol>
+<li>Select <strong>Save</strong> to preserve the new dashboard.</li>
+<li>Enter a title for the dashboard and a description.</li>
+<li>Select the provisioned folder from the <strong>Folder</strong> drop-down list.</li>
+<li>In <strong>Path</strong>, provide the path for your repository, ending in a JSON or YAML file.</li>
+<li>For <strong>Workflow</strong>, select <strong>Push to main</strong> to make a Git commit directly to the repository or <strong>Push to a new branch</strong> to create a pull request.
+<ul>
+<li><strong>Branch</strong>: Specify the branch name in GitHub (for example, main). This option only appears if you select <strong>Push to a new branch</strong>.</li>
+</ul>
+</li>
+<li>Select <strong>Save</strong>.</li>
+</ol>
+<h3 id="save-dashboard-changes-to-github">Save dashboard changes to GitHub</h3>
+<p>When you edit a provisioned resource, you are prompted to save or discard those changes.
+Saving changes requires opening a pull request in your GitHub repository.</p>
+<ol>
+<li>
+<p>Select <strong>Edit</strong> to update a provisioned dashboard. Make your desired changes.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>On the <strong>Provisioned dashboard</strong> panel, choose the options you want to use:</p>
+<ul>
+<li><strong>Update default refresh value</strong>: Check this box to make the current refresh the new default.</li>
+<li><strong>Update default variable values</strong>: Check this box to make the current values the new default.</li>
+<li><strong>Path</strong>: Provide the path for your repository, ending in a JSON or YAML file.</li>
+<li><strong>Workflow:</strong> Select <strong>Push to main</strong> to make a Git commit directly to the repository or <strong>Push to a new branch</strong> to create a pull request.</li>
+<li><strong>Branch</strong>: Specify the branch name in GitHub (for example, main). This option only appears if you select <strong>Push to a new branch</strong>.</li>
+<li><strong>Comment</strong>: Add a comment describing your changes.</li>
+</ul>
+</li>
+<li>
+<p>Optional: Select the <strong>Changes</strong> tab to view the differences between the updates you made and the original resource.</p>
+</li>
+<li>
+<p>Select <strong>Save</strong>.</p>
+</li>
+<li>
+<p>If you chose <strong>Push to a new branch</strong>, select <strong>Open a pull request in GitHub</strong> to open a new PR to your repository. GitHub opens with your dashboard’s code as the contents of the PR.</p>
+</li>
+<li>
+<p>Follow your usual GitHub workflow to save and merge the PR to your repository.</p>
+</li>
+</ol>
+<h3 id="remove-dashboards">Remove dashboards</h3>
+<p>You can remove a provisioned dashboard by deleting the dashboard from the repository.</p>
+<p>Grafana updates when the changes from the GitHub repository sync.</p>
+<h3 id="tips">Tips</h3>
+<ul>
+<li>Use GitHub pull requests for changes to maintain review processes.</li>
+<li>Provide clear commit messages describing your changes.</li>
+<li>Regularly sync your repository to keep Grafana up to date.</li>
+<li>Review the <strong>Events</strong> tab to monitor sync status.</li>
+</ul>
+<h2 id="manage-dashboards-provisioned-with-file-provisioning">Manage dashboards provisioned with file provisioning</h2>
+<p>To update any resources in the local path, you need to edit the files directly and then save them locally.
+These changes are synchronized to Grafana.
+However, you can&rsquo;t create, edit, or delete these resources using the Grafana UI.</p>
+<p>For more information, refer to 
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/">How it works</a>.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/file-path-setup/">Set up file provisioning</a> for configuration instructions.</p>

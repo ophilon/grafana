@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<h1 id="configure-slack-for-alerting">Configure Slack for Alerting</h1>
+<p>Use the Grafana Alerting - Slack integration to send Slack notifications when your alerts are firing.</p>
+<p>There are two ways of integrating Slack into Grafana Alerting.</p>
+<ol>
+<li>
+<p>Use a <a href="https://api.slack.com/authentication/token-types" target="_blank" rel="noopener noreferrer">Slack API token</a></p>
+<p>Enable your app to access the Slack API. If, for example, you are interested in more granular control over permissions, or your project is expected to regularly scale, resulting in new channels being created, this is the best option.</p>
+</li>
+<li>
+<p>Use a <a href="https://api.slack.com/messaging/webhooks" target="_blank" rel="noopener noreferrer">Webhook URL</a></p>
+<p>Webhooks is the simpler way to post messages into Slack. Slack automatically creates a bot user with all the necessary permissions to post messages to one particular channel of your choice.</p>
+</li>
+</ol>
+<p>Note that you can only setup one Slack channel per contact point.</p>
+<p>You can customize the <code>title</code> and <code>body</code> of the Slack message using 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>; however, you cannot modify its visual appearance with custom blocks.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<h3 id="slack-api-token">Slack API Token</h3>
+<p>If you are using a Slack API Token, complete the following steps.</p>
+<ol>
+<li>
+<p>Follow steps 1 and 2 of the <a href="https://api.slack.com/start/quickstart" target="_blank" rel="noopener noreferrer">Slack API Quickstart</a>.</p>
+</li>
+<li>
+<p>Add the <a href="https://api.slack.com/scopes/chat:write.public" target="_blank" rel="noopener noreferrer">chat:write.public</a> scope to give your app the ability to post in all public channels without joining.</p>
+</li>
+<li>
+<p>In OAuth Tokens for Your Workspace, copy the Bot User OAuth Token.</p>
+</li>
+<li>
+<p>Open your Slack workplace.</p>
+</li>
+<li>
+<p>Right click the channel you want to receive notifications in.</p>
+</li>
+<li>
+<p>Click View channel details.</p>
+</li>
+<li>
+<p>Scroll down and copy the Channel ID.</p>
+<p>Note that while going through these steps, Slack may prompt you to Reinstall your app in order for the changes to take effect.</p>
+</li>
+</ol>
+<h3 id="webhook-url">Webhook URL</h3>
+<p>If you are using a Webhook URL, follow steps 1 and 5 in the <a href="https://api.slack.com/start/quickstart" target="_blank" rel="noopener noreferrer">Slack API Quickstart</a>, and copy the Slack app Webhook URL. You need this when setting up your contact point integration in Grafana Alerting.</p>
+<h2 id="procedure">Procedure</h2>
+<p>To create your Slack integration in Grafana Alerting, complete the following steps.</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>Enter a contact point name.</p>
+</li>
+<li>
+<p>From the Integration list, select Slack.</p>
+</li>
+<li>
+<p>If you are using a Slack API token:</p>
+<ul>
+<li>In the <strong>Recipient</strong> field, copy in the channel ID.</li>
+<li>In the <strong>Token</strong> field, copy in the Bot User OAuth Token that starts with “xoxb-”.</li>
+</ul>
+</li>
+<li>
+<p>If you are using a Webhook URL, in the <strong>Webhook</strong> field, copy in your Slack app Webhook URL.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong> to check that your integration works.</p>
+<p>** For Grafana Alertmanager only.**</p>
+</li>
+<li>
+<p>Click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>The Slack contact point is ready to receive alert notifications.</p>
+<p>To add this contact point to your alert, complete the following steps.</p>
+<ol>
+<li>In Grafana, navigate to <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Edit or create a new alert rule.</li>
+<li>Scroll down to the <strong>Configure labels and notifications</strong> section.</li>
+<li>Under Notifications click <strong>Select contact point</strong>.</li>
+<li>From the drop-down menu, select the previously created contact point.</li>
+<li><strong>Click Save rule and exit</strong>.</li>
+</ol>

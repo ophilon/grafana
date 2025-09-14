@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<h1 id="use-dashboards">Use dashboards</h1>
+<p>This topic provides an overview of dashboard features and shortcuts, and describes how to use dashboard search.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=vTiIkdDwT-0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="dashboard-feature-overview">Dashboard feature overview</h2>
+<p>The dashboard user interface provides a number of features that you can use to customize the presentation of your data.</p>
+<p>The following image and descriptions highlight all dashboard features.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-dashboard-annotated-v11.3-2.png"
+  alt="An annotated image of a dashboard" width="2774"
+     height="1248"/></p>
+<ol>
+<li><strong>Dashboard folder</strong> - When you click the dashboard folder name, you can search for other dashboards contained in the folder and perform other 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/">folder management tasks</a>.</li>
+<li><strong>Dashboard title</strong> - You can create your own dashboard titles or have Grafana create them for you using 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/#set-up-generative-ai-features-for-dashboards">generative AI features</a>.</li>
+<li><strong>Kiosk mode</strong> - Click to display the dashboard on a large screen such as a TV or a kiosk. Kiosk mode hides the main menu, navbar, and dashboard controls. Learn more about kiosk mode in our <a href="/blog/2019/05/02/grafana-tutorial-how-to-create-kiosks-to-display-dashboards-on-a-tv/">How to Create Kiosks to Display Dashboards on a TV blog post</a>. Press <code>Esc</code> to leave kiosk mode.</li>
+<li><strong>Mark as favorite</strong> - Mark the dashboard as one of your favorites so it&rsquo;s included in your list of <strong>Starred</strong> dashboards in the main menu.</li>
+<li><strong>Public label</strong> - When you 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">share a dashboard externally</a>, it&rsquo;s marked with the <strong>Public</strong> label.</li>
+<li><strong>Dashboard insights</strong> - Click to view analytics about your dashboard including information about users, activity, query counts. Learn more about 
+    <a href="/docs/grafana/latest/dashboards/assess-dashboard-usage/">dashboard analytics</a>.</li>
+<li><strong>Edit</strong> - Click to leave view-only mode and enter edit mode, where you can make changes directly to the dashboard and access dashboard settings, as well as several panel editing functions.</li>
+<li><strong>Export</strong> - Access 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/#export-dashboards">dashboard exporting</a> options.</li>
+<li><strong>Share dashboard</strong> - Access several 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/">dashboard sharing</a> options.</li>
+<li><strong>Variables</strong> - Use 
+    <a href="/docs/grafana/latest/dashboards/variables/">variables</a>, including ad hoc filters, to create more interactive and dynamic dashboards.</li>
+<li><strong>Dashboard links</strong> - Link to other dashboards, panels, and external websites. Learn more about 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/">dashboard links</a>.</li>
+<li><strong>Current dashboard time range and time picker</strong> - Click to select <a href="#relative-time-range">relative time range</a> options and set custom <a href="#absolute-time-range">absolute time ranges</a>.
+<ul>
+<li>You can change the <strong>Timezone</strong> and <strong>Fiscal year</strong> settings from the time range controls by clicking the <strong>Change time settings</strong> button.</li>
+<li>Time settings are saved on a per-dashboard basis.</li>
+</ul>
+</li>
+<li><strong>Time range zoom out</strong> - Click to zoom out the time range. Learn more about how to use <a href="#common-time-range-controls">common time range controls</a>.</li>
+<li><strong>Refresh dashboard</strong> - Click to immediately trigger queries and refresh dashboard data.</li>
+<li><strong>Auto refresh control</strong> - Click to select a dashboard auto refresh time interval.</li>
+<li><strong>Dashboard row</strong> - A dashboard row is a logical divider within a dashboard that groups panels together.
+<ul>
+<li>Rows can be collapsed or expanded allowing you to hide parts of the dashboard.</li>
+<li>Panels inside a collapsed row do not issue queries.</li>
+<li>Use 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/#configure-repeating-rows">repeating rows</a> to dynamically create rows based on a template variable.</li>
+</ul>
+</li>
+<li><strong>Dashboard panel</strong> - The 
+    <a href="/docs/grafana/latest/panels-visualizations/panel-overview/">panel</a> is the primary building block of a dashboard.</li>
+<li><strong>Panel legend</strong> - Change series colors as well as y-axis and series visibility directly from the legend.</li>
+</ol>
+<h2 id="keyboard-shortcuts">Keyboard shortcuts</h2>
+<p>Grafana has a number of keyboard shortcuts available. Press <code>?</code> on your keyboard to display all keyboard shortcuts available in your version of Grafana.</p>
+<ul>
+<li><code>Ctrl+S</code>: Saves the current dashboard.</li>
+<li><code>f</code>: Opens the dashboard finder / search.</li>
+<li><code>d+k</code>: Toggle kiosk mode (hides the menu).</li>
+<li><code>d+e</code>: Expand all rows.</li>
+<li><code>d+s</code>: Dashboard settings.</li>
+<li><code>Ctrl+K</code>: Opens the command palette.</li>
+<li><code>Esc</code>: Exits panel when in full screen view or edit mode. Also returns you to the dashboard from dashboard settings.</li>
+</ul>
+<p><strong>Focused panel</strong></p>
+<p>By hovering over a panel with the mouse you can use some shortcuts that will target that panel.</p>
+<ul>
+<li><code>e</code>: Toggle panel edit view</li>
+<li><code>v</code>: Toggle panel full screen view</li>
+<li><code>pu</code>: Open share panel link configuration</li>
+<li><code>pe</code>: Open share panel embed configuration</li>
+<li><code>ps</code>: Open share panel snapshot configuration</li>
+<li><code>pd</code>: Duplicate panel</li>
+<li><code>pr</code>: Remove panel</li>
+</ul>
+<h2 id="set-dashboard-time-range">Set dashboard time range</h2>
+<p>Grafana provides several ways to manage the time ranges of the data being visualized, for dashboard, panels and also for alerting.</p>
+<p>This section describes supported time units and relative ranges, the common time controls, dashboard-wide time settings, and panel-specific time settings.</p>
+<h3 id="time-units-and-relative-ranges">Time units and relative ranges</h3>
+<p>Grafana supports the following time units: <code>s (seconds)</code>, <code>m (minutes)</code>, <code>h (hours)</code>, <code>d (days)</code>, <code>w (weeks)</code>, <code>M (months)</code>, <code>Q (quarters)</code> and <code>y (years)</code>.</p>
+<p>The minus operator enables you to step back in time, relative to the current date and time, or <code>now</code>. If you want to display the full period of the unit (day, week, month, etc&hellip;), append <code>/&lt;time unit&gt;</code> to the end. To view fiscal periods, use <code>fQ (fiscal quarter)</code> and <code>fy (fiscal year)</code> time units.</p>
+<p>The plus operator enables you to step forward in time, relative to now. For example, you can use this feature to look at predicted data in the future.</p>
+<p>The following table provides example relative ranges:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Example relative range</th>
+          <th>From:</th>
+          <th>To:</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Last 5 minutes</td>
+          <td><code>now-5m</code></td>
+          <td><code>now</code></td>
+      </tr>
+      <tr>
+          <td>The day so far</td>
+          <td><code>now/d</code></td>
+          <td><code>now</code></td>
+      </tr>
+      <tr>
+          <td>This week</td>
+          <td><code>now/w</code></td>
+          <td><code>now/w</code></td>
+      </tr>
+      <tr>
+          <td>This week so far</td>
+          <td><code>now/w</code></td>
+          <td><code>now</code></td>
+      </tr>
+      <tr>
+          <td>This month</td>
+          <td><code>now/M</code></td>
+          <td><code>now/M</code></td>
+      </tr>
+      <tr>
+          <td>This month so far</td>
+          <td><code>now/M</code></td>
+          <td><code>now</code></td>
+      </tr>
+      <tr>
+          <td>Previous Month</td>
+          <td><code>now-1M/M</code></td>
+          <td><code>now-1M/M</code></td>
+      </tr>
+      <tr>
+          <td>This year so far</td>
+          <td><code>now/Y</code></td>
+          <td><code>now</code></td>
+      </tr>
+      <tr>
+          <td>This Year</td>
+          <td><code>now/Y</code></td>
+          <td><code>now/Y</code></td>
+      </tr>
+      <tr>
+          <td>Previous fiscal year</td>
+          <td><code>now-1y/fy</code></td>
+          <td><code>now-1y/fy</code></td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Alerting does not support the following syntaxes at this time:</p>
+<ul>
+<li>now+n for future timestamps.</li>
+<li>now-1n/n for &ldquo;start of n until end of n&rdquo; because this is an absolute timestamp.</li>
+</ul></blockquote></div>
+
+<h3 id="common-time-range-controls">Common time range controls</h3>
+<p>The dashboard and panel time controls have a common UI.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-common-time-controls-11.2.png"
+  alt="Common time controls" width="356"
+     height="35"/></p>
+<p>The following sections define common time range controls.</p>
+<h4 id="current-time-range">Current time range</h4>
+<p>The current time range, also called the <em>time picker</em>, shows the time range currently displayed in the dashboard or panel you are viewing.</p>
+<p>Hover your cursor over the field to see the exact time stamps in the range and their source (such as the local browser).</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-time-picker-11.2.png"
+  alt="Time picker" width="173"
+     height="138"/></p>
+<p>Click the current time range to change it. You can change the current time using a <em>relative time range</em>, such as the last 15 minutes, or an <em>absolute time range</em>, such as <code>2020-05-14 00:00:00 to 2020-05-15 23:59:59</code>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-current-time-range-11.2.png"
+  alt="Current time range" width="557"
+     height="473"/></p>
+<h4 id="relative-time-range">Relative time range</h4>
+<p>Select the relative time range from the <strong>Relative time ranges</strong> list. You can filter the list using the input field at the top. Some examples of time ranges include:</p>
+<ul>
+<li>Last 30 minutes</li>
+<li>Last 12 hours</li>
+<li>Last 7 days</li>
+<li>Last 2 years</li>
+<li>Yesterday</li>
+<li>Day before yesterday</li>
+<li>This day last week</li>
+<li>Today so far</li>
+<li>This week so far</li>
+<li>This month so far</li>
+</ul>
+<h4 id="absolute-time-range">Absolute time range</h4>
+<p>You can set an absolute time range in the following ways:</p>
+<ul>
+<li>Type values into the <strong>From</strong> and <strong>To</strong> fields. You can type exact time values or relative values, such as <code>now-24h</code>, and then click <strong>Apply time range</strong>.</li>
+<li>Click in the <strong>From</strong> or <strong>To</strong> field. Grafana displays a calendar. Click the day or days you want to use as the current time range and then click <strong>Apply time range</strong>.</li>
+</ul>
+<p>This section also displays recently used absolute ranges.</p>
+<h4 id="semi-relative-time-range">Semi-relative time range</h4>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Alerting does not support semi-relative time ranges.</p></blockquote></div>
+
+<p>You can also use the absolute time range settings to set a semi-relative time range. Semi-relative time range dashboards are useful when you need to monitor the progress of something over time, but you also want to see the entire history from a starting point.</p>
+<p>Set a semi-relative time range by setting the start time to an absolute timestamp and the end time to a “now” that is relative to the current time. For example:</p>
+<p><strong>Start time:</strong> <code>2023-05-01 00:00:00</code></p>
+<p><strong>End time:</strong> <code>now</code></p>
+<p>If you wanted to track the progress of something during business hours, you could set a time range that covers the current day, but starting at 8am, like so:</p>
+<p><strong>Start time:</strong> <code>now/d+8h</code></p>
+<p><strong>End time:</strong> <code>now</code></p>
+<p>This is equivalent to the <strong>Today so far</strong> time range preset, but it starts at 8:00am instead of 12:00am by appending +8h to the periodic start time.</p>
+<p>Using a semi-relative time range, as time progresses, your dashboard will automatically and progressively zoom out to show more history and fewer details. At the same rate, as high data resolution decreases, historical trends over the entire time period will become more clear.</p>
+<h4 id="copy-and-paste-time-range">Copy and paste time range</h4>
+<p>You can copy and paste the time range from a dashboard to <strong>Explore</strong> and vice versa, or from one dashboard to another.
+Click the <strong>Copy time range to clipboard</strong> icon to copy the current time range to the clipboard. Then paste the time range into <strong>Explore</strong> or another dashboard.</p>
+<img class="no-shadow" src="/media/docs/grafana/dashboards/screenshot-copy-paste-time-range.png" max-width="900">
+<p>You can also copy and paste a time range using the keyboard shortcuts <code>t+c</code> and <code>t+v</code> respectively.</p>
+<h4 id="zoom-out-cmdz-or-ctrlz">Zoom out (Cmd+Z or Ctrl+Z)</h4>
+<p>Click the <strong>Zoom out</strong> icon to view a larger time range in the dashboard or panel visualization.</p>
+<h4 id="zoom-in-only-applicable-to-graph-visualizations">Zoom in (only applicable to graph visualizations)</h4>
+<p>Click and drag to select the time range in the visualization that you want to view.</p>
+<h4 id="refresh-dashboard">Refresh dashboard</h4>
+<p>Click the <strong>Refresh dashboard</strong> icon to immediately run every query on the dashboard and refresh the visualizations. Grafana cancels any pending requests when you trigger a refresh.</p>
+<p>By default, Grafana does not automatically refresh the dashboard. Queries run on their own schedule according to the panel settings. However, if you want to regularly refresh the dashboard, click the down arrow next to the <strong>Refresh dashboard</strong> icon, and then select a refresh interval.</p>
+<p>Selecting the <strong>Auto</strong> interval schedules a refresh based on the query time range and browser window width. Short time ranges update frequently, while longer ones update infrequently. There is no need to refresh more often then the pixels available to draw any updates.</p>
+<h3 id="control-the-time-range-using-a-url">Control the time range using a URL</h3>
+
+
+<div data-shared="dashboards/time-range-URLs.md">
+            <p>You can control the time range of a dashboard by providing the following query parameters in the dashboard URL:</p>
+<ul>
+<li><code>from</code> - Defines the lower limit of the time range, specified in ms, epoch, or relative time.</li>
+<li><code>to</code> - Defines the upper limit of the time range, specified in ms, epoch, or relative time.</li>
+<li><code>time</code> and <code>time.window</code> - Defines a time range from <code>time-time.window/2</code> to <code>time+time.window/2</code>. Both parameters should be specified in <code>ms</code>. For example <code>?time=1500000000000&amp;time.window=10000</code> results in a 10-second time range from 1499999995000 to 1500000005000`.</li>
+<li><code>timezone</code> - Defines the time zone. For example <code>timezone=Europe/Madrid</code>.</li>
+</ul>
+<p>Since these aren&rsquo;t variables, they don&rsquo;t require the <code>var-</code> prefix.</p>
+<p>The following example shows a dashboard with the time range of the last five minutes:</p>
+<pre>https://${your-domain}/path/to/your/dashboard?from=now-5m&amp;to=now</pre>
+</div>
+
+        
+<h2 id="filter-dashboard-data">Filter dashboard data</h2>
+<p>Once you&rsquo;ve 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#add-ad-hoc-filters">added an ad hoc filter</a> in the dashboard settings, you can create label/value filter pairs on the dashboard.
+These filters are applied to all metric queries that use the specified data source and to all panels on the dashboard.</p>
+<p>To filter dashboard data, follow these steps:</p>
+<ol>
+<li>
+<p>On the dashboard, click in the filter field.</p>
+</li>
+<li>
+<p>Select a label, operator, and value.</p>
+<p>To add multiple values for one label, choose one of the multi-select operators, <strong>One of</strong> (<code>=|</code>) or <strong>Not one of</strong> (<code>!=|</code>). These operators only appear if the filter data source supports it.</p>
+</li>
+<li>
+<p>Repeat this process as needed until you have all the filters you need.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-adhoc-filters-v11.3.png"
+  alt="Ad hoc filters" width="567"
+     height="40"/></p>
+</li>
+</ol>
+<h3 id="edit-or-delete-filters">Edit or delete filters</h3>
+<p>To edit or delete filters, follow these steps:</p>
+<ol>
+<li>On the dashboard, click anywhere on the filter you want to change.</li>
+<li>Do one of the following:
+<ul>
+<li>
+<p>To edit the operator or value of a filter, click anywhere on the filter and update it.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-edit-filters-v11.3.png"
+  alt="Editing an ad hoc filter" width="528"
+     height="137"/></p>
+</li>
+<li>
+<p>To change the filter label, you must delete the filter and create a new one.</p>
+</li>
+<li>
+<p>To delete a filter, click the <strong>X</strong> next to it.</p>
+</li>
+</ul>
+</li>
+</ol>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<h1 id="grafana-dashboard-best-practices">Grafana dashboard best practices</h1>
+<p>This section provides information about best practices for intermediate Grafana administrators and users about how to build and maintain Grafana dashboards.</p>
+<p>For more information about the different kinds of dashboards you can create, refer to <a href="/blog/2022/06/06/grafana-dashboards-a-complete-guide-to-all-the-different-types-you-can-build/?pg=webinar-getting-started-with-grafana-dashboard-design-amer&amp;plcmt=related-content-1">Grafana dashboards: A complete guide to all the different types you can build</a>.</p>
+<h2 id="common-observability-strategies">Common observability strategies</h2>
+<p>When you have a lot to monitor, like a server farm, you need a strategy to decide what is important enough to monitor. This page describes several common methods for choosing what to monitor.</p>
+<p>A logical strategy allows you to make uniform dashboards and scale your observability platform more easily.</p>
+<h3 id="guidelines-for-usage">Guidelines for usage</h3>
+<ul>
+<li>The USE method tells you how happy your machines are, the RED method tells you how happy your users are.</li>
+<li>USE reports on causes of issues.</li>
+<li>RED reports on user experience and is more likely to report symptoms of problems.</li>
+<li>The best practice of alerting is to alert on symptoms rather than causes, so alerting should be done on RED dashboards.</li>
+</ul>
+<h3 id="use-method">USE method</h3>
+<p>USE stands for:</p>
+<ul>
+<li><strong>Utilization -</strong> Percent time the resource is busy, such as node CPU usage</li>
+<li><strong>Saturation -</strong> Amount of work a resource has to do, often queue length or node load</li>
+<li><strong>Errors -</strong> Count of error events</li>
+</ul>
+<p>This method is best for hardware resources in infrastructure, such as CPU, memory, and network devices. For more information, refer to <a href="http://www.brendangregg.com/usemethod.html" target="_blank" rel="noopener noreferrer">The USE Method</a>.</p>
+<h3 id="red-method">RED method</h3>
+<p>RED stands for:</p>
+<ul>
+<li><strong>Rate -</strong> Requests per second</li>
+<li><strong>Errors -</strong> Number of requests that are failing</li>
+<li><strong>Duration -</strong> Amount of time these requests take, distribution of latency measurements</li>
+</ul>
+<p>This method is most applicable to services, especially a microservices environment. For each of your services, instrument the code to expose these metrics for each component. RED dashboards are good for alerting and SLAs. A well-designed RED dashboard is a proxy for user experience.</p>
+<p>For more information, refer to Tom Wilkie&rsquo;s blog post <a href="/blog/2018/08/02/the-red-method-how-to-instrument-your-services">The RED method: How to instrument your services</a>.</p>
+<h3 id="the-four-golden-signals">The Four Golden Signals</h3>
+<p>According to the <a href="https://landing.google.com/sre/sre-book/chapters/monitoring-distributed-systems/#xref_monitoring_golden-signals" target="_blank" rel="noopener noreferrer">Google SRE handbook</a>, if you can only measure four metrics of your user-facing system, focus on these four.</p>
+<p>This method is similar to the RED method, but it includes saturation.</p>
+<ul>
+<li><strong>Latency -</strong> Time taken to serve a request</li>
+<li><strong>Traffic -</strong> How much demand is placed on your system</li>
+<li><strong>Errors -</strong> Rate of requests that are failing</li>
+<li><strong>Saturation -</strong> How &ldquo;full&rdquo; your system is</li>
+</ul>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/000000109/" target="_blank" rel="noopener noreferrer">The Four Golden Signals</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/000000109/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="dashboard-management-maturity-model">Dashboard management maturity model</h2>
+<p><em>Dashboard management maturity</em> refers to how well-designed and efficient your dashboard ecosystem is. It&rsquo;s recommended that you periodically review your dashboard setup to gauge where you are and how you can improve.</p>
+<p>Broadly speaking, dashboard maturity can be defined as low, medium, or high.</p>
+<p>Much of the content for this topic was taken from the KubeCon 2019 talk <a href="https://www.youtube.com/watch?v=YE2aQFiMGfY" target="_blank" rel="noopener noreferrer">Fool-Proof Kubernetes Dashboards for Sleep-Deprived Oncalls</a>.</p>
+<h3 id="low---default-state">Low - default state</h3>
+<p>At this stage, you have no coherent dashboard management strategy. Almost everyone starts here.</p>
+<p>How can you tell you are here?</p>
+<ul>
+<li>Everyone can modify your dashboards.</li>
+<li>Lots of copied dashboards, little to no dashboard reuse.</li>
+<li>One-off dashboards that hang around forever.</li>
+<li>No version control (dashboard JSON in version control).</li>
+<li>Lots of browsing for dashboards, searching for the right dashboard. This means lots of wasted time trying to find the dashboard you need.</li>
+<li>Not having any alerts to direct you to the right dashboard.</li>
+</ul>
+<h3 id="medium---methodical-dashboards">Medium - methodical dashboards</h3>
+<p>At this stage, you are starting to manage your dashboard use with methodical dashboards. You might have laid out a strategy, but there are some things you could improve.</p>
+<p>How can you tell you are here?</p>
+<ul>
+<li>
+<p>Prevent sprawl by using template variables. For example, you don&rsquo;t need a separate dashboard for each node, you can use query variables. Even better, you can make the data source a template variable too, so you can reuse the same dashboard across different clusters and monitoring backends.</p>
+<p>Refer to the list of 
+    <a href="/docs/grafana/latest/dashboards/variables/#examples-of-templates-and-variables">Variable examples</a> if you want some ideas.</p>
+</li>
+<li>
+<p>Methodical dashboards according to an <a href="#common-observability-strategies">observability strategy</a>.</p>
+</li>
+<li>
+<p>Hierarchical dashboards with drill-downs to the next level.</p>
+<figure
+      class="figure-wrapper figure-wrapper__lightbox w-100p float-right"
+      style="max-width: 100%;"
+      itemprop="associatedMedia"
+      itemscope=""
+      itemtype="http://schema.org/ImageObject"
+    ><a
+          class="lightbox-link captioned"
+          href="/static/img/docs/best-practices/drill-down-example.png"
+          itemprop="contentUrl"
+        ><div class="img-wrapper w-100p h-auto"><img
+            class="lazyload mb-0"
+            data-src="/static/img/docs/best-practices/drill-down-example.png"data-srcset="/static/img/docs/best-practices/drill-down-example.png?w=320 320w, /static/img/docs/best-practices/drill-down-example.png?w=550 550w, /static/img/docs/best-practices/drill-down-example.png?w=750 750w, /static/img/docs/best-practices/drill-down-example.png?w=900 900w, /static/img/docs/best-practices/drill-down-example.png?w=1040 1040w, /static/img/docs/best-practices/drill-down-example.png?w=1240 1240w, /static/img/docs/best-practices/drill-down-example.png?w=1920 1920w"
+            data-sizes="auto"alt="Example of using drill-down"width="1508"height="916"title="Example of using drill-down"/>
+          <noscript>
+            <img
+              src="/static/img/docs/best-practices/drill-down-example.png"
+              alt="Example of using drill-down"width="1508"height="916"title="Example of using drill-down"class="float-right"/>
+          </noscript></div><figcaption class="w-100p caption text-gray-13  ">Example of using drill-down</figcaption></a></figure>
+</li>
+<li>
+<p>Dashboard design reflects service hierarchies. The example shown below uses the RED method (request and error rate on the left, latency duration on the right) with one row per service. The row order reflects the data flow.</p>
+<figure
+      class="figure-wrapper figure-wrapper__lightbox w-100p float-right"
+      style="max-width: 100%;"
+      itemprop="associatedMedia"
+      itemscope=""
+      itemtype="http://schema.org/ImageObject"
+    ><a
+          class="lightbox-link captioned"
+          href="/static/img/docs/best-practices/service-hierarchy-example.png"
+          itemprop="contentUrl"
+        ><div class="img-wrapper w-100p h-auto"><img
+            class="lazyload mb-0"
+            data-src="/static/img/docs/best-practices/service-hierarchy-example.png"data-srcset="/static/img/docs/best-practices/service-hierarchy-example.png?w=320 320w, /static/img/docs/best-practices/service-hierarchy-example.png?w=550 550w, /static/img/docs/best-practices/service-hierarchy-example.png?w=750 750w, /static/img/docs/best-practices/service-hierarchy-example.png?w=900 900w, /static/img/docs/best-practices/service-hierarchy-example.png?w=1040 1040w, /static/img/docs/best-practices/service-hierarchy-example.png?w=1240 1240w, /static/img/docs/best-practices/service-hierarchy-example.png?w=1920 1920w"
+            data-sizes="auto"alt="Example of a service hierarchy"width="1502"height="1562"title="Example of a service hierarchy"/>
+          <noscript>
+            <img
+              src="/static/img/docs/best-practices/service-hierarchy-example.png"
+              alt="Example of a service hierarchy"width="1502"height="1562"title="Example of a service hierarchy"class="float-right"/>
+          </noscript></div><figcaption class="w-100p caption text-gray-13  ">Example of a service hierarchy</figcaption></a></figure>
+</li>
+<li>
+<p>Compare like to like: split service dashboards when the magnitude differs. Make sure aggregated metrics don&rsquo;t drown out important information.</p>
+</li>
+<li>
+<p>Expressive charts with meaningful use of color and normalizing axes where you can.</p>
+<ul>
+<li>Example of meaningful color: Blue means it&rsquo;s good, red means it&rsquo;s bad. 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Thresholds</a> can help with that.</li>
+<li>Example of normalizing axes: When comparing CPU usage, measure by percentage rather than raw number, because machines can have a different number of cores. Normalizing CPU usage by the number of cores reduces cognitive load because the viewer can trust that at 100% all cores are being used, without having to know the number of CPUs.</li>
+</ul>
+</li>
+<li>
+<p>Directed browsing cuts down on &ldquo;guessing.&rdquo;</p>
+<ul>
+<li>Template variables make it harder to &ldquo;just browse&rdquo; randomly or aimlessly.</li>
+<li>Most dashboards should be linked to by alerts.</li>
+<li>Browsing is directed with links. For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/">Manage dashboard links</a>.</li>
+</ul>
+</li>
+<li>
+<p>Version-controlled dashboard JSON.</p>
+</li>
+</ul>
+<h3 id="high---optimized-use">High - optimized use</h3>
+<p>At this stage, you have optimized your dashboard management use with a consistent and thoughtful strategy. It requires maintenance, but the results are worth it.</p>
+<ul>
+<li>Actively reducing sprawl.
+<ul>
+<li>Regularly review existing dashboards to make sure they are still relevant.</li>
+<li>Only approved dashboards added to master dashboard list.</li>
+<li>Tracking dashboard use. If you&rsquo;re an Enterprise user, you can take advantage of 
+    <a href="/docs/grafana/latest/dashboards/assess-dashboard-usage/">Usage insights</a>.</li>
+</ul>
+</li>
+<li>Consistency by design.</li>
+<li>Use scripting libraries to generate dashboards, ensure consistency in pattern and style.
+<ul>
+<li>grafonnet (Jsonnet)</li>
+<li>grafanalib (Python)</li>
+</ul>
+</li>
+<li>No editing in the browser. Dashboard viewers change views with variables.</li>
+<li>Browsing for dashboards is the exception, not the rule.</li>
+<li>Perform experimentation and testing in a separate Grafana instance dedicated to that purpose, not your production instance. When a dashboard in the test environment is proven useful, then add that dashboard to your main Grafana instance.</li>
+</ul>
+<h2 id="best-practices-for-creating-dashboards">Best practices for creating dashboards</h2>
+<p>This page outlines some best practices to follow when creating Grafana dashboards.</p>
+<h3 id="before-you-begin">Before you begin</h3>
+<p>Here are some principles to consider before you create a dashboard.</p>
+<h4 id="a-dashboard-should-tell-a-story-or-answer-a-question">A dashboard should tell a story or answer a question</h4>
+<p>What story are you trying to tell with your dashboard? Try to create a logical progression of data, such as large to small or general to specific. What is the goal for this dashboard? (Hint: If the dashboard doesn&rsquo;t have a goal, then ask yourself if you really need the dashboard.)</p>
+<p>Keep your graphs simple and focused on answering the question that you are asking. For example, if your question is &ldquo;which servers are in trouble?&rdquo;, then maybe you don&rsquo;t need to show all the server data. Just show data for the ones in trouble.</p>
+<h4 id="dashboards-should-reduce-cognitive-load-not-add-to-it">Dashboards should reduce cognitive load, not add to it</h4>
+<!-- vale Grafana.GoogleWill = NO -->
+<p><em>Cognitive load</em> is basically how hard you need to think about something in order to figure it out. Make your dashboard easy to interpret. Other users and future you (when you&rsquo;re trying to figure out what broke at 2 AM) will appreciate it.</p>
+<p>Ask yourself:</p>
+<ul>
+<li>Can I tell what exactly each graph represents? Is it obvious, or do I have to think about it?</li>
+<li>If I show this to someone else, how long will it take them to figure it out? Will they get lost?</li>
+</ul>
+<!-- vale Grafana.GoogleWill = YES -->
+<h4 id="have-a-monitoring-strategy">Have a monitoring strategy</h4>
+<p>It&rsquo;s easy to make new dashboards. It&rsquo;s harder to optimize dashboard creation and adhere to a plan, but it&rsquo;s worth it. This strategy should govern both your overall dashboard scheme and enforce consistency in individual dashboard design.</p>
+<p>Refer to <a href="#common-observability-strategies">Common observability strategies</a> and <a href="#dashboard-management-maturity-model">Dashboard management maturity levels</a> for more information.</p>
+<h4 id="write-it-down">Write it down</h4>
+<p>Once you have a strategy or design guidelines, write them down to help maintain consistency over time. Check out this <a href="https://wikitech.wikimedia.org/wiki/Performance/Runbook/Grafana_best_practices" target="_blank" rel="noopener noreferrer">Wikimedia runbook example</a>.</p>
+<h3 id="best-practices-to-follow">Best practices to follow</h3>
+<ul>
+<li>When creating a new dashboard, make sure it has a meaningful name.
+<ul>
+<li>If you are creating a dashboard to play or experiment, then put the word <code>TEST</code> or <code>TMP</code> in the name.</li>
+<li>Consider including your name or initials in the dashboard name or as a tag so that people know who owns the dashboard.</li>
+<li>Remove temporary experiment dashboards when you are done with them.</li>
+</ul>
+</li>
+<li>If you create many related dashboards, think about how to cross-reference them for easy navigation. Refer to <a href="#best-practices-for-managing-dashboards">Best practices for managing dashboards</a> for more information.</li>
+<li>Grafana retrieves data from a data source. A basic understanding of 
+    <a href="/docs/grafana/latest/datasources/">data sources</a> in general and your specific is important.</li>
+<li>Avoid unnecessary dashboard refreshing to reduce the load on the network or backend. For example, if your data changes every hour, then you don&rsquo;t need to set the dashboard refresh rate to 30 seconds.</li>
+<li>Use the left and right Y-axes when displaying time series with different units or ranges.</li>
+<li>Add documentation to dashboards and panels.
+<ul>
+<li>To add documentation to a dashboard, add a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/text/">Text panel visualization</a> to the dashboard. Record things like the purpose of the dashboard, useful resource links, and any instructions users might need to interact with the dashboard. Check out this <a href="https://grafana.wikimedia.org/d/000000066/resourceloader?orgId=1" target="_blank" rel="noopener noreferrer">Wikimedia example</a>.</li>
+<li>To add documentation to a panel, edit the panel settings and add a description. Any text you add appears if you hover your cursor over the small <code>i</code> in the top left corner of the panel.</li>
+</ul>
+</li>
+<li>Reuse your dashboards and enforce consistency by using 
+    <a href="/docs/grafana/latest/dashboards/variables/">templates and variables</a>.</li>
+<li>Be careful with stacking graph data. The visualizations can be misleading, and hide important data. It&rsquo;s recommended that you turn it off in most cases.</li>
+</ul>
+<h2 id="best-practices-for-managing-dashboards">Best practices for managing dashboards</h2>
+<p>This page outlines some best practices to follow when managing Grafana dashboards.</p>
+<h3 id="before-you-begin-1">Before you begin</h3>
+<p>Here are some principles to consider before you start managing dashboards.</p>
+<h4 id="strategic-observability">Strategic observability</h4>
+<p>There are several <a href="#common-observability-strategies">common observability strategies</a>. You should research them and decide whether one of them works for you or if you want to come up with your own. Either way, have a plan, write it down, and stick to it.</p>
+<p>Adapt your strategy to changing needs as necessary.</p>
+<h4 id="maturity-level">Maturity level</h4>
+<p>What is your dashboard maturity level? Analyze your current dashboard setup and compare it to the <a href="#dashboard-management-maturity-model">Dashboard management maturity model</a>. Understanding where you are can help you decide how to get to where you want to be.</p>
+<h3 id="best-practices-to-follow-1">Best practices to follow</h3>
+<ul>
+<li>Avoid dashboard sprawl, meaning the uncontrolled growth of dashboards. Dashboard sprawl negatively affects time to find the right dashboard. Duplicating dashboards and changing &ldquo;one thing&rdquo; (worse: keeping original tags) is the easiest kind of sprawl.
+<ul>
+<li>Periodically review the dashboards and remove unnecessary ones.</li>
+<li>If you create a temporary dashboard, perhaps to test something, prefix the name with <code>TEST:</code>. Delete the dashboard when you are finished.</li>
+</ul>
+</li>
+<li>Copying dashboards with no significant changes is not a good idea.
+<ul>
+<li>You miss out on updates to the original dashboard, such as documentation changes, bug fixes, or additions to metrics.</li>
+<li>In many cases copies are being made to simply customize the view by setting template parameters. This should instead be done by maintaining a link to the master dashboard and customizing the view with 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/#data-link-variables">URL parameters</a>.</li>
+</ul>
+</li>
+<li>When you must copy a dashboard, clearly rename it and <em>do not</em> copy the dashboard tags. Tags are important metadata for dashboards that are used during search. Copying tags can result in false matches.</li>
+<li>Maintain a dashboard of dashboards or cross-reference dashboards. This can be done in several ways:
+<ul>
+<li>Create dashboard links, panel, or data links. Links can go to other dashboards or to external systems. For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/">Manage dashboard links</a>.</li>
+<li>Add a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/dashboard-list/">Dashboard list panel</a>. You can then customize what you see by doing tag or folder searches.</li>
+<li>Add a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/text/">Text panel</a> and use markdown to customize the display.</li>
+</ul>
+</li>
+</ul>

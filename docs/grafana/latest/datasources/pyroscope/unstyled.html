@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<h1 id="grafana-pyroscope-data-source">Grafana Pyroscope data source</h1>
+<p>Grafana Pyroscope is a horizontally scalable, highly available, multi-tenant, OSS, continuous profiling aggregation system.
+Add a Pyroscope data source to query your profiles in 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<p>Refer to 
+    <a href="/docs/pyroscope/latest/introduction/">Introduction to Pyroscope</a> to understand profiling and Pyroscope.</p>
+<p>To use profiling data, you should:</p>
+<ul>
+<li>
+    <a href="/docs/pyroscope/latest/configure-client/">Configure your application to send profiles</a></li>
+<li><a href="./configure-pyroscope-data-source/">Configure the Grafana Pyroscope data source</a>.</li>
+<li><a href="./query-profile-data/">View and query profiling data using Profiles Drilldown or the query editor </a></li>
+</ul>
+<h2 id="continuous-profiling">Continuous profiling</h2>
+<p>While code profiling has been a long-standing practice, continuous profiling represents a modern and more advanced approach to performance monitoring.</p>
+<p>This technique adds two critical dimensions to traditional profiles:</p>
+<dl>
+<dt>Time</dt>
+<dd>Profiling data is collected <em>continuously</em>, providing a time-centric view that allows querying performance data from any point in the past.</dd>
+<dt>Metadata</dt>
+<dd>Profiles are enriched with metadata, adding contextual depth to the performance data.</dd>
+</dl>
+<p>These dimensions, coupled with the detailed nature of performance profiles, make continuous profiling a uniquely valuable tool.</p>
+<h3 id="flame-graphs">Flame graphs</h3>
+<!-- vale Grafana.We = NO -->
+<p>Flame graphs help you visualize resource allocation and performance bottlenecks, and you even get suggested recommendations and performance fixes via AI-driven flame graph analysis, as well as line-level insights from our GitHub integration.</p>
+<!-- vale Grafana.We = YES -->
+<p>On views with a flame graph, you can use <strong>Explain flame graph</strong> to provide an AI flame graph analysis that explains the performance bottleneck, root cause, and recommended fix.
+For more information, refer to <a href="/docs/grafana-cloud/monitor-applications/profiles/flamegraph-ai/">Flame graph AI</a>.</p>
+<h2 id="integrate-profiles-into-dashboards">Integrate profiles into dashboards</h2>
+<p>Using the Pyroscope data source, you can integrate profiles into your dashboards.
+For example, you can embed flame graphs using the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">flame graph panel</a>.</p>
+<p>In this case, the screenshot shows memory profiles alongside panels for logs and metrics to be able to debug out of memory (OOM) errors alongside the associated logs and metrics.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/pyroscope/grafana-pyroscope-dashboard-2023-11-30.png"
+  alt="dashboard" width="1919"
+     height="936"/></p>
+<h2 id="visualize-traces-and-profiles-data-using-traces-to-profiles">Visualize traces and profiles data using Traces to profiles</h2>
+<p>You can link profile and tracing data using your Pyroscope data source with the Tempo data source.
+To learn more about how profiles and tracing can work together, refer to <a href="./profiling-and-tracing/">Profiling and tracing synergies</a>.</p>
+<p>Combined traces and profiles let you see granular line-level detail when available for a trace span. This allows you pinpoint the exact function that&rsquo;s causing a bottleneck in your application as well as a specific request.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/pyroscope/pyroscope-trace-profiler-view-2023-11-30.png"
+  alt="trace-profiler-view" width="1421"
+     height="652"/></p>
+<p>For more information, refer to the 
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/">Traces to profile section</a> and 
+    <a href="/docs/pyroscope/latest/configure-client/trace-span-profiles/">Link tracing and profiling with span profiles</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=AG8VzfFMLxo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="provision-the-pyroscope-data-source">Provision the Pyroscope data source</h2>
+<p>You can modify the Grafana configuration files to provision the Pyroscope data source.
+To learn more, and to view the available provisioning settings, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#datasources">provisioning documentation</a>.</p>
+<p>Here is an example configuration:</p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Grafana Pyroscope
+    type: grafana-pyroscope-datasource
+    url: http://localhost:4040
+    jsonData:
+      minStep: &#39;15s&#39;</pre>

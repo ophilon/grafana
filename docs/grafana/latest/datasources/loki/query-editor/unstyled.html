@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<h1 id="loki-query-editor">Loki query editor</h1>
+<p>The Loki data source&rsquo;s query editor helps you create <a href="#create-a-log-query">log</a> and <a href="#create-a-metric-query">metric</a> queries that use Loki&rsquo;s query language, <a href="/docs/loki/latest/logql/">LogQL</a>.</p>
+<p>For general documentation on querying data sources in Grafana, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<h2 id="choose-a-query-editing-mode">Choose a query editing mode</h2>
+<p>The Loki query editor has two modes:</p>
+<ul>
+<li><a href="#builder-mode">Builder mode</a>, which provides a visual query designer.</li>
+<li><a href="#code-mode">Code mode</a>, which provides a feature-rich editor for writing queries.</li>
+</ul>
+<p>To switch between the editor modes, select the corresponding <strong>Builder</strong> and <strong>Code</strong> tabs.</p>
+<p>To run a query, select <strong>Run queries</strong> located at the top of the editor.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To run Loki queries in 
+    <a href="/docs/grafana/latest/explore/">Explore</a>, select <strong>Run query</strong>.</p></blockquote></div>
+
+<p>Each mode is synchronized, so you can switch between them without losing your work, although there are some limitations. Builder mode doesn&rsquo;t support some complex queries.
+When you switch from Code mode to Builder mode with such a query, the editor displays a warning message that explains how you might lose parts of the query if you continue.
+You can then decide whether you still want to switch to Builder mode.</p>
+<p>You can also augment queries by using <a href="../template-variables/">template variables</a>.</p>
+<h2 id="toolbar-elements">Toolbar elements</h2>
+<p>The query editor toolbar contains the following elements:</p>
+<ul>
+<li><strong>Kick start your query</strong> - Click to see a list of queries that help you quickly get started creating LogQL queries. You can then continue to complete your query.</li>
+</ul>
+<p>These include:</p>
+<ul>
+<li>Log query starters</li>
+<li>Metric query starters</li>
+</ul>
+<p>Click the arrow next to each to see available query options.</p>
+<ul>
+<li><strong>Label browser</strong> - Use the Loki label browser to navigate through your labels and values, and build queries.</li>
+</ul>
+<p>To navigate Loki and build a query:</p>
+<ol>
+<li>
+<p>Choose labels to locate.</p>
+</li>
+<li>
+<p>Search for the values of your selected labels.</p>
+<p>The search field supports fuzzy search, and the label browser also supports faceting to list only possible label combinations.</p>
+</li>
+<li>
+<p>Select the <strong>Show logs</strong> button to display log lines based on the selected labels, or select the <strong>Show logs rate</strong> button to show the rate based on metrics such as requests per second. Additionally, you can validate the selector by clicking the <strong>Validate selector</strong> button. Click <strong>Clear</strong> to start from the beginning.</p>
+</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/explore/Loki_label_browser.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/explore/Loki_label_browser.png"data-srcset="/static/img/docs/explore/Loki_label_browser.png?w=320 320w, /static/img/docs/explore/Loki_label_browser.png?w=550 550w, /static/img/docs/explore/Loki_label_browser.png?w=750 750w, /static/img/docs/explore/Loki_label_browser.png?w=900 900w, /static/img/docs/explore/Loki_label_browser.png?w=1040 1040w, /static/img/docs/explore/Loki_label_browser.png?w=1240 1240w, /static/img/docs/explore/Loki_label_browser.png?w=1920 1920w"
+          data-sizes="auto"alt="The Loki label browser"width="1628"height="589"title="The Loki label browser"/>
+        <noscript>
+          <img
+            src="/static/img/docs/explore/Loki_label_browser.png"
+            alt="The Loki label browser"width="1628"height="589"title="The Loki label browser"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">The Loki label browser</figcaption></a></figure>
+<ul>
+<li><strong>Explain query</strong> - Toggle to display a step-by-step explanation of all query components and operations.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/prometheus/explain-results.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/prometheus/explain-results.png"data-srcset="/static/img/docs/prometheus/explain-results.png?w=320 320w, /static/img/docs/prometheus/explain-results.png?w=550 550w, /static/img/docs/prometheus/explain-results.png?w=750 750w, /static/img/docs/prometheus/explain-results.png?w=900 900w, /static/img/docs/prometheus/explain-results.png?w=1040 1040w, /static/img/docs/prometheus/explain-results.png?w=1240 1240w, /static/img/docs/prometheus/explain-results.png?w=1920 1920w"
+          data-sizes="auto"alt="Explain results"width="1673"height="366"title="Explain results"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/explain-results.png"
+            alt="Explain results"width="1673"height="366"title="Explain results"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Explain results</figcaption></a></figure>
+<ul>
+<li><strong>Builder/Code</strong> - Click the corresponding <strong>Builder</strong> or <strong>Code</strong> tab on the toolbar to select an editor mode.</li>
+</ul>
+<h2 id="builder-mode">Builder mode</h2>
+<p>Builder mode helps you build queries using a visual interface without needing to manually enter LogQL. This option is best for users who have limited or no previous experience working with Loki and LogQL.</p>
+<h3 id="label-filters">Label filters</h3>
+<p>Select labels and their values from the dropdown list.
+When you select a label, Grafana retrieves available values from the server.</p>
+<p>Use the <code>+</code> button to add a label and the <code>x</code> button to remove a label. You can add multiple labels.</p>
+<p>Select comparison operators from the following options:</p>
+<ul>
+<li><code>=</code> - equal to</li>
+<li><code>!=</code> - is not equal</li>
+<li><code>=~</code> - matches regex</li>
+<li><code>!~</code> - does not match regex</li>
+</ul>
+<p>Select values by using the dropdown, which displays all possible values based on the label selected.</p>
+<h3 id="operations">Operations</h3>
+<p>Select the <code>+ Operations</code> button to add operations to your query.
+The query editor groups operations into related sections, and you can type while the operations dropdown is open to search and filter the list.</p>
+<p>The query editor displays a query&rsquo;s operations as boxes in the operations section.
+Each operation&rsquo;s header displays its name, and additional action buttons appear when you hover your cursor over the header:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Button</th>
+          <th>Action</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v95/loki_operation_replace.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v95/loki_operation_replace.png"data-srcset="/static/img/docs/v95/loki_operation_replace.png?w=320 320w, /static/img/docs/v95/loki_operation_replace.png?w=550 550w, /static/img/docs/v95/loki_operation_replace.png?w=750 750w, /static/img/docs/v95/loki_operation_replace.png?w=900 900w, /static/img/docs/v95/loki_operation_replace.png?w=1040 1040w, /static/img/docs/v95/loki_operation_replace.png?w=1240 1240w, /static/img/docs/v95/loki_operation_replace.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="154"height="164"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v95/loki_operation_replace.png"
+            alt=""width="154"height="164"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure></td>
+          <td>Replaces the operation with different operation of the same type.</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v95/loki_operation_description.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v95/loki_operation_description.png"data-srcset="/static/img/docs/v95/loki_operation_description.png?w=320 320w, /static/img/docs/v95/loki_operation_description.png?w=550 550w, /static/img/docs/v95/loki_operation_description.png?w=750 750w, /static/img/docs/v95/loki_operation_description.png?w=900 900w, /static/img/docs/v95/loki_operation_description.png?w=1040 1040w, /static/img/docs/v95/loki_operation_description.png?w=1240 1240w, /static/img/docs/v95/loki_operation_description.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="149"height="157"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v95/loki_operation_description.png"
+            alt=""width="149"height="157"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure></td>
+          <td>Opens the operation&rsquo;s description tooltip.</td>
+      </tr>
+      <tr>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 30px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v95/loki_operation_remove.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v95/loki_operation_remove.png"data-srcset="/static/img/docs/v95/loki_operation_remove.png?w=320 320w, /static/img/docs/v95/loki_operation_remove.png?w=550 550w, /static/img/docs/v95/loki_operation_remove.png?w=750 750w, /static/img/docs/v95/loki_operation_remove.png?w=900 900w, /static/img/docs/v95/loki_operation_remove.png?w=1040 1040w, /static/img/docs/v95/loki_operation_remove.png?w=1240 1240w, /static/img/docs/v95/loki_operation_remove.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="151"height="160"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v95/loki_operation_remove.png"
+            alt=""width="151"height="160"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure></td>
+          <td>Removes the operation.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The query editor groups operations into the following sections:</p>
+<ul>
+<li>Aggregations - see <a href="/docs/loki/latest/logql/metric_queries/#built-in-aggregation-operators">Built-in aggregation operators</a></li>
+<li>Range functions - see <a href="/docs/loki/latest/logql/metric_queries/#range-vector-aggregation">Range Vector aggregation</a></li>
+<li>Formats - see <a href="/docs/loki/latest/logql/log_queries/#log-queries">Log queries</a></li>
+<li>Binary operations - see <a href="/docs/loki/latest/logql/#binary-operators">Binary operators</a></li>
+<li>Label filters - see <a href="/docs/loki/latest/logql/log_queries/#label-filter-expression">Label filter expression</a></li>
+<li>Line filters - see <a href="/docs/loki/latest/logql/log_queries/#label-filter-expression">Line filter expression</a></li>
+</ul>
+<p>Some operations make sense only when used in a specific order. If adding an operation would result in nonsensical query, the query editor adds the operation to the correct place.
+To re-order operations manually, drag the operation box by its name and drop it into the desired place. For additional information see <a href="/docs/loki/latest/logql/#order-of-operations">Order of operations</a>.</p>
+<h3 id="hints">Hints</h3>
+<p>In same cases the query editor can detect which operations would be most appropriate for a selected log stream. In such cases it will show a hint next to the <code>+ Operations</code> button. Click on the hint to add the operations to your query.</p>
+<h2 id="code-mode">Code mode</h2>
+<p>In <strong>Code mode</strong>, you can write complex queries using a text editor with autocompletion feature, syntax highlighting, and query validation.
+It also contains a <a href="#label-browser">label browser</a> to further help you write queries.</p>
+<p>For more information about Loki&rsquo;s query language, refer to the <a href="/docs/loki/latest/logql/">Loki documentation</a>.</p>
+<h3 id="use-autocompletion">Use autocompletion</h3>
+<p>Code mode&rsquo;s autocompletion feature works automatically while typing.</p>
+<p>The query editor can autocomplete static functions, aggregations, and keywords, and also dynamic items like labels.
+The autocompletion dropdown includes documentation for the suggested items where available.</p>
+<h2 id="options">Options</h2>
+<p>The following options are the same for both <strong>Builder</strong> and <strong>Code</strong> mode:</p>
+<ul>
+<li>
+<p><strong>Legend</strong> - Controls the time series name, using a name or pattern. For example, <code>{{hostname}}</code> is replaced with the label value for the label <code>hostname</code>.</p>
+</li>
+<li>
+<p><strong>Type</strong> - Selects the query type to run. The <code>instant</code> type queries against a single point in time. We use the &ldquo;To&rdquo; time from the time range. The <code>range</code> type queries over the selected range of time.</p>
+</li>
+<li>
+<p><strong>Line limit</strong> -Defines the upper limit for the number of log lines returned by a query. The default is <code>1000</code></p>
+</li>
+<li>
+<p><strong>Direction</strong> - Determines the search order. <strong>Backward</strong> is a backward search starting at the end of the time range. <strong>Forward</strong> is a forward search starting at the beginning of the time range. The default is <strong>Backward</strong></p>
+</li>
+<li>
+<p><strong>Step</strong> Sets the step parameter of Loki metrics queries. The default value equals to the value of <code>$__auto</code> variable, which is calculated using the time range and the width of the graph (the number of pixels).</p>
+</li>
+</ul>
+<h2 id="create-a-log-query">Create a log query</h2>
+<p>Loki log queries return the contents of the log lines.
+You can query and display log data from Loki via 
+    <a href="/docs/grafana/latest/explore/">Explore</a>, and with the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/logs/">Logs panel</a> in dashboards.</p>
+<p>To display the results of a log query, select the Loki data source, then enter a LogQL query.</p>
+<p>For more information about log queries and LogQL, refer to the <a href="/docs/loki/latest/logql/log_queries/">Loki log queries documentation</a>.</p>
+<h3 id="show-log-context">Show log context</h3>
+<p>In Explore, you can can retrieve the context surrounding your log results by clicking the <code>Show Context</code> button. You&rsquo;ll be able to investigate the logs from the same log stream that came before and after the log message you&rsquo;re interested in.</p>
+<p>The initial log context query is created from all labels defining the stream for the selected log line. You can use the log context query editor to widen the search by removing one or more of the label filters from log stream. Additionally, if you used a parser in your original query, you can refine your search by using extracted labels filters.</p>
+<p>To reduce the repetition of selecting and removing the same labels when examining multiple log context windows, Grafana stores your selected labels and applies them to each open context window. This lets you seamlessly navigate through various log context windows without having to reapply your filters.</p>
+<p>To reset filters and use the initial log context query, click the <code>Revert to initial query</code> button next to the query preview.</p>
+<h3 id="tail-live-logs">Tail live logs</h3>
+<p>Loki supports live tailing of logs in real-time in 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<p>Live tailing relies on two Websocket connections: one between the browser and Grafana server, and another between the Grafana server and Loki server.</p>
+<p>To start tailing logs click the <strong>Live</strong> button in the top right corner of the Explore view.
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 80px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v95/loki_tailing.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v95/loki_tailing.png"data-srcset="/static/img/docs/v95/loki_tailing.png?w=320 320w, /static/img/docs/v95/loki_tailing.png?w=550 550w, /static/img/docs/v95/loki_tailing.png?w=750 750w, /static/img/docs/v95/loki_tailing.png?w=900 900w, /static/img/docs/v95/loki_tailing.png?w=1040 1040w, /static/img/docs/v95/loki_tailing.png?w=1240 1240w, /static/img/docs/v95/loki_tailing.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="151"height="71"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v95/loki_tailing.png"
+            alt=""width="151"height="71"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure></p>
+<h4 id="proxying-examples">Proxying examples</h4>
+<p>If you use reverse proxies, configure them accordingly to use live tailing:</p>
+<p><strong>Using Apache2 for proxying between the browser and the Grafana server:</strong></p>
+<pre>ProxyPassMatch &#34;^/(api/datasources/proxy/\d+/loki/api/v1/tail)&#34; &#34;ws://127.0.0.1:3000/$1&#34;</pre>
+<p><strong>Using NGINX:</strong></p>
+<p>This example provides a basic NGINX proxy configuration.
+It assumes that the Grafana server is available at <code>http://localhost:3000/</code>, the Loki server is running locally without proxy, and your external site uses HTTPS.
+If you also host Loki behind an NGINX proxy, repeat the following configuration for Loki.</p>
+<p>In the <code>http</code> section of NGINX configuration, add the following map definition:</p>
+<pre>  map $http_upgrade $connection_upgrade {
+    default upgrade;
+    &#39;&#39; close;
+  }</pre>
+<p>In your <code>server</code> section, add the following configuration:</p>
+<pre>  location ~ /(api/datasources/proxy/\d+/loki/api/v1/tail) {
+      proxy_pass          http://localhost:3000$request_uri;
+      proxy_set_header    Host              $host;
+      proxy_set_header    X-Real-IP         $remote_addr;
+      proxy_set_header    X-Forwarded-for   $proxy_add_x_forwarded_for;
+      proxy_set_header    X-Forwarded-Proto &#34;https&#34;;
+      proxy_set_header    Connection        $connection_upgrade;
+      proxy_set_header    Upgrade           $http_upgrade;
+  }
+
+  location / {
+      proxy_pass          http://localhost:3000/;
+      proxy_set_header    Host              $host;
+      proxy_set_header    X-Real-IP         $remote_addr;
+      proxy_set_header    X-Forwarded-for   $proxy_add_x_forwarded_for;
+      proxy_set_header    X-Forwarded-Proto &#34;https&#34;;
+  }</pre>
+<h2 id="create-a-metric-query">Create a metric query</h2>
+<p>You can use LogQL to wrap a log query with functions that create metrics from your logs.</p>
+<p>For more information about metric queries, refer to the <a href="/docs/loki/latest/logql/metric_queries/">Loki metric queries documentation</a>.</p>
+<h2 id="apply-annotations">Apply annotations</h2>
+<p>
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/">Annotations</a> overlay rich event information on top of graphs.
+You can add annotation queries in the Dashboard menu&rsquo;s Annotations view.</p>
+<p>You can only use log queries as a source for annotations.
+Grafana automatically uses log content as annotation text and your log stream labels as tags.
+You don&rsquo;t need to create any additional mapping.</p>

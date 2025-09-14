@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<h1 id="influxdb-template-variables">InfluxDB template variables</h1>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables. Grafana displays these variables in drop-down select boxes at the top of the dashboard to help you change the data displayed in your dashboard. Grafana refers to such variables as template variables.</p>
+<p>For additional information using variables and templates, refer to the following documentation:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/dashboards/variables/">Variables</a></li>
+<li>
+    <a href="/docs/grafana/latest/dashboards/variables/">Templates</a></li>
+<li>
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a></li>
+<li>
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#variable-best-practices">Variable best practices</a></li>
+</ul>
+<h2 id="use-query-variables">Use query variables</h2>
+<p>By adding a query template variable, you can write an InfluxDB metadata exploration query. These queries return results such as measurement names, key names, and key values.</p>
+<p>For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#add-a-query-variable">Add a query variable</a>.</p>
+<p>To create a variable containing all values for the <code>hostname</code> tag, use the following query format in the <strong>Query</strong> variable:</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;hostname&#34;</pre>
+<h2 id="chain-or-nest-variables">Chain or nest variables</h2>
+<p>You can also create nested variables, sometimes called 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#chained-variables">chained variables</a>.</p>
+<p>For example, if you have a variable named <code>region</code>, you can configure the <code>hosts</code> variable to display only hosts from the selected region using the following query:</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;hostname&#34;  WHERE region = &#39;$region&#39;</pre>
+<p>You can also fetch key names for a given measurement:</p>
+<pre>SHOW TAG KEYS [FROM &lt;measurement_name&gt;]</pre>
+<p>If you have a variable containing key names, you can use it in a <strong>GROUP BY</strong> clause. This allows you to adjust the grouping by selecting from the variable list at the top of the dashboard</p>
+<h2 id="use-ad-hoc-filters">Use ad hoc filters</h2>
+<p>InfluxDB supports the <strong>Ad hoc filters</strong> variable type. This variable type allows you to define multiple key/value filters, which Grafana then automatically applies to all your InfluxDB queries.</p>
+<p>For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#add-ad-hoc-filters">Add ad hoc filters</a>.</p>
+<h2 id="choose-a-variable-syntax">Choose a variable syntax</h2>
+<p>The InfluxDB data source supports two variable syntaxes for use in the <strong>Query</strong> field:</p>
+<ul>
+<li>
+<p><code>$&lt;varname&gt;</code> - This syntax is easy to read and write but does not allow you to use a variable in the middle of a word or expression.</p>
+<pre>SELECT mean(&#34;value&#34;) FROM &#34;logins&#34; WHERE &#34;hostname&#34; =~ /^$host$/ AND $timeFilter GROUP BY time($__interval), &#34;hostname&#34;</pre>
+</li>
+<li>
+<p><code>${varname}</code> - Use this syntax when you want to interpolate a variable in the middle of an expression.</p>
+<pre>SELECT mean(&#34;value&#34;) FROM &#34;logins&#34; WHERE &#34;hostname&#34; =~ /^[[host]]$/ AND $timeFilter GROUP BY time($__interval), &#34;hostname&#34;</pre>
+</li>
+</ul>
+<p>When you enable the <strong>Multi-value</strong> or <strong>Include all value</strong> options, Grafana converts the labels from plain text to a regex-compatible string, so you must use <code>=~</code> instead of <code>=</code>.</p>
+<h3 id="templated-dashboard-example">Templated dashboard example</h3>
+<p>To view an example of a templated dashboard, refer to this <a href="https://play.grafana.org/d/f62a0410-5abb-4dd8-9dfc-caddfc3e2ffd/eccb2445-b0a2-5e83-8e0f-6d5ea53ad575" target="_blank" rel="noopener noreferrer">InfluxDB example dashboard</a>.</p>

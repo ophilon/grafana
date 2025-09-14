@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<h1 id="configure-a-data-source-socks5-connection-proxy">Configure a data source SOCKS5 connection proxy</h1>
+<p>Grafana provides support for proxying data source connections through a Secure Socks5 Tunnel. This enables you to securely connect to data sources hosted in a different network than Grafana.</p>
+<p>To make use of this functionality, you need to deploy a socks5 proxy server that supports TLS on a machine exposed to the public internet within the same network as your data source. From there, Grafana establishes a mutually trusted connection from Grafana to the Proxy. Then the Proxy can proxy the Grafana connection to your private server without exposing your data sources to the public internet.</p>
+<h2 id="known-limitations">Known limitations</h2>
+<ul>
+<li>You can configure only one socks5 proxy per Grafana instance</li>
+<li>All built-in core data sources are compatible, but not all external data sources are. For a list of supported data sources, refer to <a href="/docs/grafana-cloud/data-configuration/configure-private-datasource-connect/#known-limitations">private data source connect</a>.</li>
+</ul>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To complete this task, you must first deploy a socks proxy server that supports TLS, is publicly accessible, and is hosted within the same network as the data source.</p>
+<h2 id="steps">Steps</h2>
+<ol>
+<li>
+<p>For Grafana to send data source connections to the socks5 server, use the following table to configure the <code>secure_socks_datasource_proxy</code> section of the <code>config.ini</code>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>enabled</code></td>
+          <td>Enable this feature in Grafana</td>
+          <td>true</td>
+      </tr>
+      <tr>
+          <td><code>root_ca_cert</code></td>
+          <td>The file path of the root ca cert</td>
+          <td>/etc/ca.crt</td>
+      </tr>
+      <tr>
+          <td><code>client_key</code></td>
+          <td>The file path of the client private key</td>
+          <td>/etc/client.key</td>
+      </tr>
+      <tr>
+          <td><code>client_cert</code></td>
+          <td>The file path of the client public key</td>
+          <td>/etc/client.crt</td>
+      </tr>
+      <tr>
+          <td><code>server_name</code></td>
+          <td>The domain name of the proxy, used for SNI</td>
+          <td>proxy.grafana.svc.cluster.local</td>
+      </tr>
+      <tr>
+          <td><code>proxy_address</code></td>
+          <td>The address of the proxy</td>
+          <td>localhost:9090</td>
+      </tr>
+      <tr>
+          <td><code>allow_insecure</code></td>
+          <td>Disable TLS in the socks proxy</td>
+          <td>false</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p>Set up a data source and configure it to send data source connections through the proxy.</p>
+<p>To configure your data sources to send connections through the proxy, <code>enableSecureSocksProxy=true</code> must be specified in the data source json. You can do this in the <a href="../../../developers/http_api/data_source/">API</a> or use <a href="../../../administration/provisioning/#data-sources">file based provisioning</a>.</p>
+<p>Additionally, you can set the socks5 username and password by adding <code>secureSocksProxyUsername</code> in the data source json and <code>secureSocksProxyPassword</code> in the secure data source json.</p>
+</li>
+</ol>

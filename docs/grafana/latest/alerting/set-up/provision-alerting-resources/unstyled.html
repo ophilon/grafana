@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<h1 id="provision-alerting-resources">Provision Alerting resources</h1>
+<p>Alerting infrastructure is often complex, with many pieces of the pipeline that often live in different places. Scaling this across multiple teams and organizations is an especially challenging task. Importing and exporting (or provisioning) your alerting resources in Grafana Alerting makes this process easier by enabling you to create, manage, and maintain your alerting data in a way that best suits your organization.</p>
+<p>You can import alert rules, contact points, notification policies, mute timings, and templates.</p>
+<p>You cannot edit imported alerting resources in the Grafana UI in the same way as alerting resources that were not imported. You can only edit imported contact points, notification policies, templates, and mute timings in the source where they were created. For example, if you manage your alerting resources using files from disk, you cannot edit the data in Terraform or from within Grafana.</p>
+<h2 id="import-alerting-resources">Import alerting resources</h2>
+<p>Choose from the options below to import (or provision) your Grafana Alerting resources.</p>
+<ol>
+<li>
+<p>
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Use configuration files to provision your alerting resources</a>, such as alert rules and contact points, through files on disk.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><ul>
+<li>You cannot edit provisioned resources from files in the Grafana UI.</li>
+<li>Provisioning with configuration files is not available in Grafana Cloud.</li>
+</ul></blockquote></div>
+
+</li>
+<li>
+<p>Use 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/terraform-provisioning/">Terraform to provision alerting resources</a>.</p>
+</li>
+<li>
+<p>Use the 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/http-api-provisioning/">Alerting provisioning HTTP API</a> to manage alerting resources.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The Alerting provisioning HTTP API can be used to create, modify, and delete resources for Grafana-managed alerts.</p>
+<p>To manage resources related to data source-managed alerts, including recording rules, use the Mimir or Cortex tool.</p>
+<p>The JSON output from the majority of Alerting HTTP endpoints isn&rsquo;t compatible for provisioning via configuration files.</p>
+<p>If you need the alerting resources for file provisioning, use 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/export-alerting-resources/#export-api-endpoints">Export Alerting endpoints</a> to return or download them in provisioning format.</p></blockquote></div>
+
+</li>
+</ol>
+<h2 id="export-alerting-resources">Export alerting resources</h2>
+<p>You can export both manually created and provisioned alerting resources. You can also edit and export an alert rule without applying the changes.</p>
+<p>For detailed instructions on the various export options, refer to 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/export-alerting-resources/">Export alerting resources</a>.</p>
+<h2 id="view-provisioned-alerting-resources">View provisioned alerting resources</h2>
+<p>To view your provisioned resources in Grafana, complete the following steps.</p>
+<ol>
+<li>Open your Grafana instance.</li>
+<li>Navigate to Alerting.</li>
+<li>Click an alerting resource folder, for example, Alert rules.</li>
+</ol>
+<p>Provisioned resources are labeled <strong>Provisioned</strong>, so that it is clear that they were not created manually.</p>

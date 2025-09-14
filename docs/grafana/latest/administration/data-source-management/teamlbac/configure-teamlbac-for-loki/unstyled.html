@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<h1 id="configure-lbac-for-data-sources-for-loki-data-source-on-grafana-cloud">Configure LBAC for data sources for Loki data source on Grafana Cloud</h1>
+<p>LBAC for data sources is available on Grafana Cloud using a new Loki data source with basic authentication configured. A new data source can be created as described in <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/configure-teamlbac-for-loki/#task-1-lbac-configuration-for-new-loki-data-source">LBAC Configuration for New Loki Data Source</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>Be sure that you have the permission setup to create a Loki tenant in Grafana Cloud</li>
+<li>Be sure that you have admin data source permissions for Grafana.</li>
+</ul>
+<h3 id="permissions">Permissions</h3>
+<p>We recommend that you remove all permissions for roles and teams that are not required to access the data source. This will help to ensure that only the required teams have access to the data source. The recommended permissions are <code>Admin</code> permission and only add the teams <code>Query</code> permissions that you want to add LBAC for data sources rules for.</p>
+<h2 id="task-1-lbac-configuration-for-new-loki-data-source">Task 1: LBAC Configuration for New Loki Data Source</h2>
+<ol>
+<li>Access Loki data sources details for your stack through grafana.com</li>
+<li>Copy Loki details and create a CAP
+<ul>
+<li>Copy the details of your Loki setup.</li>
+<li>Create a Cloud Access Policy (CAP) for the Loki data source in grafana.com.</li>
+<li>Ensure the CAP includes <code>logs:read</code> permissions.</li>
+<li>Ensure the CAP does not include <code>labels</code> rules.</li>
+</ul>
+</li>
+<li>Create a new Loki data source
+<ul>
+<li>In Grafana, proceed to add a new data source and select Loki as the type.</li>
+</ul>
+</li>
+<li>Navigate back to the Loki data source
+<ul>
+<li>Set up the Loki data source using basic authentication. Use the userID as the username. Use the generated CAP token as the password.</li>
+<li>Save and connect.</li>
+</ul>
+</li>
+<li>Navigate to data source permissions
+<ul>
+<li>Go to the permissions tab of the newly created Loki data source. Here, you&rsquo;ll find the LBAC for data sources rules section.</li>
+</ul>
+</li>
+</ol>
+<p>For more information on how to setup LBAC for data sources rules for a Loki data source, refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/create-teamlbac-rules/">Create LBAC for data sources rules for the Loki data source</a>.</p>

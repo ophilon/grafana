@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<h1 id="elasticsearch-data-source">Elasticsearch data source</h1>
+<p>Elasticsearch is a search and analytics engine used for a variety of use cases.
+You can create many types of queries to visualize logs or metrics stored in Elasticsearch, and annotate graphs with log events stored in Elasticsearch.</p>
+<p>The following will help you get started working with Elasticsearch and Grafana:</p>
+<ul>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/elasticsearch-intro.html" target="_blank" rel="noopener noreferrer">What is Elasticsearch?</a></li>
+<li><a href="/docs/grafana/latest/datasources/elasticsearch/configure-elasticsearch-data-source/">Configure the Elasticsearch data source</a></li>
+<li><a href="query-editor/">Elasticsearch query editor</a></li>
+<li><a href="template-variables/">Elasticsearch template variables</a></li>
+</ul>
+<h2 id="supported-elasticsearch-versions">Supported Elasticsearch versions</h2>
+<p>This data source supports these versions of Elasticsearch:</p>
+<ul>
+<li>v7.17+</li>
+<li>v8.x</li>
+</ul>
+<p>Our maintenance policy for Elasticsearch data source is aligned with the <a href="https://www.elastic.co/support/eol" target="_blank" rel="noopener noreferrer">Elastic Product End of Life Dates</a> and we ensure proper functionality for supported versions. If you are using an Elasticsearch with version that is past its end-of-life (EOL), you can still execute queries, but you will receive a notification in the query builder indicating that the version of Elasticsearch you are using is no longer supported. It&rsquo;s important to note that in such cases, we do not guarantee the correctness of the functionality, and we will not be addressing any related issues.</p>
+<h2 id="provision-the-data-source">Provision the data source</h2>
+<p>You can define and configure the data source in YAML files as part of Grafana&rsquo;s provisioning system.
+For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The previously used <code>database</code> field has now been <a href="https://github.com/grafana/grafana/pull/58647" target="_blank" rel="noopener noreferrer">deprecated</a>.
+You should now use the <code>index</code> field in <code>jsonData</code> to store the index name.
+Please see the examples below.</p></blockquote></div>
+
+<h3 id="provisioning-examples">Provisioning examples</h3>
+<p><strong>Basic provisioning</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Elastic
+    type: elasticsearch
+    access: proxy
+    url: http://localhost:9200
+    jsonData:
+      index: &#39;[metrics-]YYYY.MM.DD&#39;
+      interval: Daily
+      timeField: &#39;@timestamp&#39;</pre>
+<p><strong>Provision for logs</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: elasticsearch-v7-filebeat
+    type: elasticsearch
+    access: proxy
+    url: http://localhost:9200
+    jsonData:
+      index: &#39;[filebeat-]YYYY.MM.DD&#39;
+      interval: Daily
+      timeField: &#39;@timestamp&#39;
+      logMessageField: message
+      logLevelField: fields.level
+      dataLinks:
+        - datasourceUid: my_jaeger_uid # Target UID needs to be known
+          field: traceID
+          url: &#39;$${__value.raw}&#39; # Careful about the double &#34;$$&#34; because of env var expansion</pre>
+<h2 id="configure-amazon-elasticsearch-service">Configure Amazon Elasticsearch Service</h2>
+<p>If you use Amazon Elasticsearch Service, you can use Grafana&rsquo;s Elasticsearch data source to visualize data from it.</p>
+<p>If you use an AWS Identity and Access Management (IAM) policy to control access to your Amazon Elasticsearch Service domain, you must use AWS Signature Version 4 (AWS SigV4) to sign all requests to that domain.</p>
+<p>For details on AWS SigV4, refer to the <a href="https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html" target="_blank" rel="noopener noreferrer">AWS documentation</a>.</p>
+<h3 id="aws-signature-version-4-authentication">AWS Signature Version 4 authentication</h3>
+<p>To sign requests to your Amazon Elasticsearch Service domain, you can enable SigV4 in Grafana&rsquo;s 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#sigv4_auth_enabled">configuration</a>.</p>
+<p>Once AWS SigV4 is enabled, you can configure it on the Elasticsearch data source configuration page.
+For more information about AWS authentication options, refer to <a href="../aws-cloudwatch/aws-authentication/">AWS authentication</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v73/elasticsearch-sigv4-config-editor.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v73/elasticsearch-sigv4-config-editor.png"data-srcset="/static/img/docs/v73/elasticsearch-sigv4-config-editor.png?w=320 320w, /static/img/docs/v73/elasticsearch-sigv4-config-editor.png?w=550 550w, /static/img/docs/v73/elasticsearch-sigv4-config-editor.png?w=750 750w, /static/img/docs/v73/elasticsearch-sigv4-config-editor.png?w=900 900w, /static/img/docs/v73/elasticsearch-sigv4-config-editor.png?w=1040 1040w, /static/img/docs/v73/elasticsearch-sigv4-config-editor.png?w=1240 1240w, /static/img/docs/v73/elasticsearch-sigv4-config-editor.png?w=1920 1920w"
+          data-sizes="auto"alt="SigV4 configuration for AWS Elasticsearch Service"width="759"height="886"title="SigV4 configuration for AWS Elasticsearch Service"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v73/elasticsearch-sigv4-config-editor.png"
+            alt="SigV4 configuration for AWS Elasticsearch Service"width="759"height="886"title="SigV4 configuration for AWS Elasticsearch Service"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">SigV4 configuration for AWS Elasticsearch Service</figcaption></a></figure>
+<h2 id="query-the-data-source">Query the data source</h2>
+<p>You can select multiple metrics and group by multiple terms or filters when using the Elasticsearch query editor.</p>
+<p>For details, see the <a href="query-editor/">query editor documentation</a>.</p>
+<h2 id="use-template-variables">Use template variables</h2>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For details, see the <a href="template-variables/">template variables documentation</a>.</p>

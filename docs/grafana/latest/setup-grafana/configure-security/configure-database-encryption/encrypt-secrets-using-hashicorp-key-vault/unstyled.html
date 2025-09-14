@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<h1 id="encrypt-database-secrets-using-hashicorp-vault">Encrypt database secrets using Hashicorp Vault</h1>
+<p>You can use an encryption key from Hashicorp Vault to encrypt secrets in the Grafana database.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>Permissions to manage Hashicorp Vault to enable secrets engines and issue tokens.</li>
+<li>Access to the Grafana <a href="../../../configure-grafana/#configuration-file-location">configuration</a> file</li>
+</ul>
+<ol>
+<li>
+<p><a href="https://www.vaultproject.io/docs/secrets/transit#setup" target="_blank" rel="noopener noreferrer">Enable the transit secrets engine</a> in Hashicorp Vault.</p>
+</li>
+<li>
+<p><a href="https://www.vaultproject.io/docs/secrets/transit#setup" target="_blank" rel="noopener noreferrer">Create a named encryption key</a>.</p>
+</li>
+<li>
+<p><a href="https://learn.hashicorp.com/tutorials/vault/tokens#periodic-service-tokens" target="_blank" rel="noopener noreferrer">Create a periodic service token</a>.</p>
+</li>
+<li>
+<p>From within Grafana, turn on envelope encryption.</p>
+</li>
+<li>
+<p>Add your Hashicorp Vault details to the Grafana configuration file; depending on your operating system, is usually named <code>grafana.ini</code>:
+<br><br>a. Add a new section to the configuration file, with a name in the format of <code>[security.encryption.hashicorpvault.&lt;KEY-NAME&gt;]</code>, where <code>&lt;KEY-NAME&gt;</code> is any name that uniquely identifies this key among other provider keys.
+<br><br>b. Fill in the section with the following values:
+<br></p>
+<ul>
+<li><code>token</code>: a periodic service token used to authenticate within Hashicorp Vault.</li>
+<li><code>url</code>: URL of the Hashicorp Vault server.</li>
+<li><code>transit_engine_path</code>: mount point of the transit engine.</li>
+<li><code>key_ring</code>: name of the encryption key.</li>
+<li><code>token_renewal_interval</code>: specifies how often to renew token; should be less than the <code>period</code> value of a periodic service token.</li>
+</ul>
+<p>An example of a Hashicorp Vault provider section in the <code>grafana.ini</code> file is as follows:</p>
+<pre># Example of Hashicorp Vault provider setup
+;[security.encryption.hashicorpvault.example-encryption-key]
+# Token used to authenticate within Vault. We suggest to use periodic tokens: more on token types https://www.vaultproject.io/docs/concepts/tokens#service-tokens
+;token =
+# Location of the Hashicorp Vault server
+;url = http://localhost:8200
+# Mount point of the transit secret engine
+;transit_engine_path = transit
+# Key ring name
+;key_ring = grafana-encryption-key
+# Specifies how often to check if a token needs to be renewed, should be less than a token&#39;s period value
+token_renewal_interval = 5m</pre>
+</li>
+<li>
+<p>Update the <code>[security]</code> section of the <code>grafana.ini</code> configuration file with the new Encryption Provider key that you created:</p>
+<pre>[security]
+# previous encryption key, used for legacy alerts, decrypting existing secrets or used as default provider when external providers are not configured
+secret_key = AaaaAaaa
+# encryption provider key in the format &lt;PROVIDER&gt;.&lt;KEY-NAME&gt;
+encryption_provider = hashicorpvault.example-encryption-key
+# list of configured key providers, space separated
+available_encryption_providers = hashicorpvault.example-encryption-key</pre>
+</li>
+<li>
+<p><a href="/docs/grafana/latest/installation/restart-grafana/">Restart Grafana</a>.</p>
+</li>
+<li>
+<p>(Optional) From the command line and the root directory of Grafana Enterprise, re-encrypt all of the secrets within the Grafana database with the new key using the following command:</p>
+<p><code>grafana cli admin secrets-migration re-encrypt</code></p>
+<p>If you do not re-encrypt existing secrets, then they will remain encrypted by the previous encryption key. Users will still be able to access them.</p>
+<p><strong>&gt; Note:</strong> This process could take a few minutes to complete, depending on the number of secrets (such as data sources) in your database. Users might experience errors while this process is running, and alert notifications might not be sent.</p>
+<p><strong>&gt; Note:</strong> If you are updating this encryption key during the initial setup of Grafana before any data sources or dashboards have been created, then this step is not necessary because there are no secrets in Grafana to migrate.</p>
+</li>
+</ol>

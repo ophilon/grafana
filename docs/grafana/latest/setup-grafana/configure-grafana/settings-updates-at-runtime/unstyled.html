@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<h1 id="settings-updates-at-runtime">Settings updates at runtime</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This functionality is deprecated and will be removed in a future release. For configuring SAML authentication, please use the new <a href="../../../developers/http_api/sso-settings/">SSO settings API</a>.</p></blockquote></div>
+
+<p>By updating settings at runtime, you can update Grafana settings without needing to restart the Grafana server.</p>
+<p>Updates that happen at runtime are stored in the database and override
+<a href="../">settings from other sources</a>
+(arguments, environment variables, settings file, etc). Therefore, every time a specific setting key is removed at runtime,
+the value used for that key is the inherited one from the other sources in the reverse order of precedence
+(<code>arguments &gt; environment variables &gt; settings file</code>). When no value is provided through any of these options, then the value used will be the application default</p>
+<p>Currently, <strong>it only supports updates on the <code>auth.saml</code> section.</strong></p>
+<h2 id="update-settings-via-the-api">Update settings via the API</h2>
+<p>You can update settings through the <a href="../../../developers/http_api/admin/#update-settings">Admin API</a>.</p>
+<p>When you submit a settings update via API, Grafana verifies if the given settings updates are allowed and valid. If they are, then Grafana stores the settings in the database and reloads
+Grafana services with no need to restart the instance.</p>
+<p>So, the payload of a <code>PUT</code> request to the update settings endpoint (<code>/api/admin/settings</code>)
+should contain (either one or both):</p>
+<ul>
+<li>An <code>updates</code> map with a key, and a value per section you want to set.</li>
+<li>A <code>removals</code> list with keys per section you want to unset.</li>
+</ul>
+<p>For example, if you provide the following <code>updates</code>:</p>
+<pre>{
+  &#34;updates&#34;: {
+    &#34;auth.saml&#34;: {
+      &#34;enabled&#34;: &#34;true&#34;,
+      &#34;single_logout&#34;: &#34;false&#34;
+    }
+  }
+}</pre>
+<p>it would enable SAML and disable single logouts. And, if you provide the following <code>removals</code>:</p>
+<pre>{
+  &#34;removals&#34;: {
+    &#34;auth.saml&#34;: [&#34;allow_idp_initiated&#34;]
+  }
+}</pre>
+<p>it would remove the key/value setting identified by <code>allow_idp_initiated</code> within the <code>auth.saml</code>.
+So, the SAML service would be reloaded and that value would be inherited for either (settings <code>.ini</code> file,
+environment variable, command line arguments or any other accepted mechanism to provide configuration).</p>
+<p>Therefore, the complete HTTP payload would looks like:</p>
+<pre>{
+  &#34;updates&#34;: {
+    &#34;auth.saml&#34;: {
+      &#34;enabled&#34;: &#34;true&#34;,
+      &#34;single_logout&#34;: &#34;false&#34;
+    }
+  },
+  &#34;removals&#34;: {
+    &#34;auth.saml&#34;: [&#34;allow_idp_initiated&#34;]
+  }
+}</pre>
+<p>In case any of these settings cannot be overridden nor valid, it would return an error and these settings
+won&rsquo;t be persisted into the database.</p>
+<h2 id="background-job-high-availability-set-ups">Background job (high availability set-ups)</h2>
+<p>Grafana Enterprise has a built-in scheduled background job that looks into the database every minute for
+settings updates. If there are updates, it reloads the Grafana services affected by the detected changes.</p>
+<p>The background job synchronizes settings between instances in a highly available set-up. So, after you perform some changes through the
+HTTP API, then the other instances are synchronized through the database and the background job.</p>
+<h2 id="control-access-with-role-based-access-control">Control access with role-based access control</h2>
+<p>If you have <a href="../../../administration/roles-and-permissions/access-control/">role-based access control</a> enabled, you can control who can read or update settings.
+Refer to the <a href="../../../developers/http_api/admin/#update-settings">Admin API</a> for more information.</p>

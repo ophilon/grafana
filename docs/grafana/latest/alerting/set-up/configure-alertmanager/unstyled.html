@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<h1 id="configure-alertmanagers">Configure Alertmanagers</h1>
+<p>Grafana Alerting is based on the architecture of the Prometheus alerting system. Grafana sends firing and resolved alerts to an Alertmanager, which is responsible for 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/">handling notifications</a>. This architecture decouples alert rule evaluation from notification handling, improving scalability.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alerting-alertmanager-architecture.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alerting-alertmanager-architecture.png"data-srcset="/media/docs/alerting/alerting-alertmanager-architecture.png?w=320 320w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=550 550w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=750 750w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=900 900w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1040 1040w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1240 1240w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1920 1920w"
+          data-sizes="auto"alt="A diagram with the alert generator and alert manager architecture"width="669"height="240"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-alertmanager-architecture.png"
+            alt="A diagram with the alert generator and alert manager architecture"width="669"height="240"/>
+        </noscript></div></a></figure>
+<p>Grafana includes a built-in <strong>Grafana Alertmanager</strong> to handle notifications. This guide shows you how to:</p>
+<ul>
+<li>Use different <a href="#types-of-alertmanagers-in-grafana">types of Alertmanagers</a> with Grafana</li>
+<li><a href="#add-an-alertmanager">Add other Alertmanager</a> and <a href="#enable-an-alertmanager-to-receive-grafana-managed-alerts">enable it to receive all Grafana-managed alerts</a></li>
+<li>Use an <a href="/">Alertmanager as a contact point</a> to route specific alerts</li>
+</ul>
+<h2 id="alertmanager-resources">Alertmanager resources</h2>
+<p>It’s important to note that each Alertmanager manages its own independent alerting resources, such as:</p>
+<ul>
+<li>Contact points and notification templates</li>
+<li>Notification policies and mute timings</li>
+<li>Silences</li>
+<li>Active notifications</li>
+</ul>
+<p>Use the <code>Choose Alertmanager</code> dropdown on these pages to switch between Alertmanagers and view or manage their resources.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alerting-choose-alertmanager.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alerting-choose-alertmanager.png"data-srcset="/media/docs/alerting/alerting-choose-alertmanager.png?w=320 320w, /media/docs/alerting/alerting-choose-alertmanager.png?w=550 550w, /media/docs/alerting/alerting-choose-alertmanager.png?w=750 750w, /media/docs/alerting/alerting-choose-alertmanager.png?w=900 900w, /media/docs/alerting/alerting-choose-alertmanager.png?w=1040 1040w, /media/docs/alerting/alerting-choose-alertmanager.png?w=1240 1240w, /media/docs/alerting/alerting-choose-alertmanager.png?w=1920 1920w"
+          data-sizes="auto"alt="A screenshot choosing an Alertmanager in the notification policies UI"width="950"height="117"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-choose-alertmanager.png"
+            alt="A screenshot choosing an Alertmanager in the notification policies UI"width="950"height="117"/>
+        </noscript></div></a></figure>
+<h2 id="types-of-alertmanagers-in-grafana">Types of Alertmanagers in Grafana</h2>
+<p>Grafana can be configured to handle alert notifications using various Alertmanagers.</p>
+<ul>
+<li>
+<p><strong>Grafana Alertmanager</strong>: Grafana includes a built-in Alertmanager that extends the <a href="https://prometheus.io/docs/alerting/latest/alertmanager/" target="_blank" rel="noopener noreferrer">Prometheus Alertmanager</a>. This is the default Alertmanager and is referred to as &ldquo;Grafana&rdquo; in the user interface. It can only handle Grafana-managed alerts.</p>
+</li>
+<li>
+<p><strong>Cloud Alertmanager</strong>: Each Grafana Cloud instance comes preconfigured with an additional Alertmanager (<code>grafanacloud-STACK_NAME-ngalertmanager</code>) from the Mimir (Prometheus) instance running in the Grafana Cloud Stack.</p>
+<p>The Cloud Alertmanager is available exclusively in Grafana Cloud and can handle both Grafana-managed and data source-managed alerts.</p>
+</li>
+<li>
+<p><strong>Other Alertmanagers</strong>: Grafana Alerting also supports sending alerts to other Alertmanagers, such as the <a href="https://prometheus.io/docs/alerting/latest/alertmanager/" target="_blank" rel="noopener noreferrer">Prometheus Alertmanager</a>, which can handle both Grafana-managed and data source-managed alerts.</p>
+</li>
+</ul>
+<p>Grafana Alerting supports using a combination of Alertmanagers and can <a href="#enable-an-alertmanager-to-receive-grafana-managed-alerts">enable other Alertmanagers to receive Grafana-managed alerts</a>. The decision often depends on your alerting setup and where your alerts are generated.</p>
+<p>For example, if you already have an Alertmanager running in your on-premises or cloud infrastructure to handle Prometheus alerts, you can forward Grafana-managed alerts to the same Alertmanager for unified notification handling.</p>
+<h2 id="add-an-alertmanager">Add an Alertmanager</h2>
+<p>Alertmanagers should be configured as data sources using Grafana Configuration from the main Grafana navigation menu. To add an Alertmanager, complete the following steps.</p>
+
+
+<div data-shared="alerts/add-alertmanager-ds.md">
+            <ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>Alertmanager</code> in the search bar.</p>
+</li>
+<li>
+<p>Click <strong>Alertmanager</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+<li>
+<p>Set the data source&rsquo;s basic configuration options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Name</strong></td>
+          <td>Sets the name you use to refer to the data source</td>
+      </tr>
+      <tr>
+          <td><strong>Default</strong></td>
+          <td>Sets whether the data source is pre-selected for new panels and queries</td>
+      </tr>
+      <tr>
+          <td><strong>Alertmanager Implementation</strong></td>
+          <td>Alertmanager implementation. <strong>Mimir</strong>, <strong>Cortex,</strong> and <strong>Prometheus</strong> are supported</td>
+      </tr>
+      <tr>
+          <td><strong>Receive Grafana Alerts</strong></td>
+          <td>When enabled, the Alertmanager can receive Grafana-managed alerts. <strong>Important:</strong> This works only if receiving alerts is enabled for the Alertmanager in the Grafana Alerting Settings page</td>
+      </tr>
+      <tr>
+          <td><strong>HTTP URL</strong></td>
+          <td>Sets the HTTP protocol, IP, and port of your Alertmanager instance, such as <code>https://alertmanager.example.org:9093</code></td>
+      </tr>
+      <tr>
+          <td><strong>Access</strong></td>
+          <td>Only <strong>Server</strong> access mode is functional</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ol>
+</div>
+
+        
+<p>For provisioning instructions, refer to the 
+    <a href="/docs/grafana/latest/datasources/alertmanager/">Alertmanager data source documentation</a>.</p>
+<p>After adding an Alertmanager, you can use the Grafana Alerting UI to manage notification policies, contact points, silences, and other alerting resources from within Grafana.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When using Prometheus, you can manage silences in the Grafana Alerting UI. However, other Alertmanager resources such as contact points, notification policies, and templates are read-only because the Prometheus Alertmanager HTTP API does not support updates for these resources.</p></blockquote></div>
+
+<p>When using multiple Alertmanagers, use the <code>Choose Alertmanager</code> dropdown to switch between Alertmanagers.</p>
+<h2 id="enable-an-alertmanager-to-receive-grafana-managed-alerts">Enable an Alertmanager to receive Grafana-managed alerts</h2>
+<p>After enabling <strong>Receive Grafana Alerts</strong> in the Data Source Settings, you must also configure the Alertmanager in the Alerting Settings page. Grafana supports enabling one or multiple Alertmanagers to receive all generated Grafana-managed alerts.</p>
+<ol>
+<li>In the left-side menu, click <strong>Alerts &amp; IRM</strong> and then <strong>Alerting</strong>.</li>
+<li>Click <strong>Settings</strong> to view the list of configured Alertmanagers.</li>
+<li>For the selected Alertmanager, click the <strong>Enable/Disable</strong> button to toggle receiving Grafana-managed alerts. When activated, the Alertmanager displays <code>Receiving Grafana-managed alerts</code>.</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/grafana-alerting-settings.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/grafana-alerting-settings.png"data-srcset="/media/docs/alerting/grafana-alerting-settings.png?w=320 320w, /media/docs/alerting/grafana-alerting-settings.png?w=550 550w, /media/docs/alerting/grafana-alerting-settings.png?w=750 750w, /media/docs/alerting/grafana-alerting-settings.png?w=900 900w, /media/docs/alerting/grafana-alerting-settings.png?w=1040 1040w, /media/docs/alerting/grafana-alerting-settings.png?w=1240 1240w, /media/docs/alerting/grafana-alerting-settings.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana Alerting Settings page"width="2648"height="962"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/grafana-alerting-settings.png"
+            alt="Grafana Alerting Settings page"width="2648"height="962"/>
+        </noscript></div></a></figure>
+<p>All Grafana-managed alerts are forwarded to Alertmanagers marked as <code>Receiving Grafana-managed alerts</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana Alerting does not support forwarding Grafana-managed alerts to the AlertManager in Amazon Managed Service for Prometheus. For more details, refer to <a href="https://github.com/grafana/grafana/issues/64064" target="_blank" rel="noopener noreferrer">this GitHub issue</a>.</p></blockquote></div>
+
+<h2 id="use-an-alertmanager-as-a-contact-point-to-receive-specific-alerts">Use an Alertmanager as a contact point to receive specific alerts</h2>
+<p>The previous instructions enable sending <strong>all</strong> Grafana-managed alerts to an Alertmanager.</p>
+<p>To send <strong>specific</strong> alerts to an Alertmanager, configure the Alertmanager as a contact point. You can then assign this contact point to notification policies or individual alert rules.</p>
+<p>For detailed instructions, refer to:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-alertmanager/">Alertmanager contact point</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/#configure-notifications">Configure Grafana-managed alert rules</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-notification-policy/">Configure notification policies</a></li>
+</ul>
+<h2 id="manage-alertmanager-configurations">Manage Alertmanager configurations</h2>
+<p>On the Settings page, you can also manage your Alertmanager configurations.</p>
+<ul>
+<li>Manage version snapshots for the built-in Alertmanager, which allows administrators to roll back unintentional changes or mistakes in the Alertmanager configuration.</li>
+<li>Compare the historical snapshot with the latest configuration to see which changes were made.</li>
+</ul>

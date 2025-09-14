@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<h2 id="introduction">Introduction</h2>
+<p>The Raspberry Pi is a tiny, affordable, yet capable computer that can run a range of different applications. Even Grafana!</p>
+<p>Many people are running Grafana on Raspberry Pi as a way to monitor their home, for things like indoor temperature, humidity, or energy usage.</p>
+<p>In this tutorial, you&rsquo;ll:</p>
+<ul>
+<li>Set up a Raspberry Pi using a version of Raspberry Pi OS (previously called &ldquo;Raspbian&rdquo;) that does not require you to connect a keyboard or monitor (this is often called &ldquo;headless&rdquo;).</li>
+<li>Install Grafana on your Raspberry Pi.</li>
+</ul>
+<div class="prerequisite-section" style="">
+	<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Raspberry Pi</li>
+<li>SD card</li>
+</ul>
+</div>
+<h2 id="set-up-your-raspberry-pi">Set up your Raspberry Pi</h2>
+<p>Before we can install Grafana, you first need to set up your Raspberry Pi.</p>
+<p>For this tutorial, you&rsquo;ll configure your Raspberry Pi to be <em>headless</em>. This means you don&rsquo;t need to connect a monitor, keyboard, or mouse to your Raspberry Pi. All configuration is done from your regular computer.</p>
+<h4 id="download-and-install-raspberry-pi-imager">Download and install Raspberry Pi Imager</h4>
+<p>Before we get started, you need to download and install the <a href="https://www.raspberrypi.org/software/" target="_blank" rel="noopener noreferrer">Raspberry Pi Imager</a>.</p>
+<p>We&rsquo;ll use the Raspberry Pi Imager to flash the operating system image to the SD card. You download the imager directly from the official Raspberry Pi website and it&rsquo;s available for Ubuntu Linux, macOS, and Windows.</p>
+<p>Follow the directions on the website to download and install the imager.</p>
+<h4 id="install-raspberry-pi-os">Install Raspberry Pi OS</h4>
+<p>Now it&rsquo;s time to install Raspberry Pi OS.</p>
+<ol>
+<li>Insert the SD card into your regular computer from which you plan to install Raspberry Pi OS.</li>
+<li>Run the Raspberry Pi Imager that you downloaded and installed.</li>
+<li>To select an operating system, click <strong>Choose OS</strong> in the imager. You will be shown a list of available options.</li>
+<li>From the list, select <strong>Raspberry Pi OS (other)</strong> and then select <strong>Raspberry Pi OS Lite</strong>, which is a Debian-based operating system for the Raspberry Pi. Since you&rsquo;re going to run a headless Raspberry Pi, you won&rsquo;t need the desktop dependencies.</li>
+<li>To select where you want to put the operating system image, click <strong>Choose Storage</strong> in the imager and then select the SD card you already inserted into your computer.</li>
+<li>The final step in the imager to click <strong>Write</strong>. When you do, the imager will write the Raspberry Pi OS Lite image to the SD card and verify that it has been written correctly.</li>
+<li>Eject the SD card from your computer, and insert it again.</li>
+</ol>
+<p>While you <em>could</em> fire up the Raspberry Pi now, we don&rsquo;t yet have any way of accessing it.</p>
+<ol>
+<li>
+<p>Create an empty file called <code>ssh</code> in the boot directory. This enables SSH so that you can log in remotely.</p>
+<p>The next step is only required if you want the Raspberry Pi to connect to your wireless network. Otherwise, connect the it to your network by using a network cable.</p>
+</li>
+<li>
+<p><strong>(Optional)</strong> Create a file called <code>wpa_supplicant.conf</code> in the boot directory:</p>
+<pre>ctrl_interface=/var/run/wpa_supplicant
+update_config=1
+country=&lt;Insert 2 letter ISO 3166-1 country code here&gt;
+
+network={
+ ssid=&#34;&lt;Name of your WiFi&gt;&#34;
+ psk=&#34;&lt;Password for your WiFi&gt;&#34;
+}</pre>
+</li>
+</ol>
+<p>All the necessary files are now on the SD card. Let&rsquo;s start up the Raspberry Pi.</p>
+<ol>
+<li>Eject the SD card and insert it into the SD card slot on the Raspberry Pi.</li>
+<li>Connect the power cable and make sure the LED lights are on.</li>
+<li>Find the IP address of the Raspberry Pi. Usually you can find the address in the control panel for your WiFi router.</li>
+</ol>
+<h4 id="connect-remotely-via-ssh">Connect remotely via SSH</h4>
+<ol>
+<li>
+<p>Open up your terminal and enter the following command:</p>
+<pre>ssh pi@&lt;ip address&gt;</pre>
+</li>
+<li>
+<p>SSH warns you that the authenticity of the host can&rsquo;t be established. Type &ldquo;yes&rdquo; to continue connecting.</p>
+</li>
+<li>
+<p>When asked for a password, enter the default password: <code>raspberry</code>.</p>
+</li>
+<li>
+<p>Once you&rsquo;re logged in, change the default password:</p>
+<pre>passwd</pre>
+</li>
+</ol>
+<p>Congratulations! You&rsquo;ve now got a tiny Linux machine running that you can hide in a closet and access from your normal workstation.</p>
+<h2 id="install-grafana">Install Grafana</h2>
+<p>Now that you&rsquo;ve got the Raspberry Pi up and running, the next step is to install Grafana.</p>
+<ol>
+<li>
+<p>Add the APT key used to authenticate packages:</p>
+<pre>sudo mkdir -p /etc/apt/keyrings/
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg &gt; /dev/null</pre>
+</li>
+<li>
+<p>Add the Grafana APT repository:</p>
+<pre>echo &#34;deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main&#34; | sudo tee /etc/apt/sources.list.d/grafana.list</pre>
+</li>
+<li>
+<p>Install Grafana:</p>
+<pre>sudo apt-get update
+sudo apt-get install -y grafana</pre>
+</li>
+</ol>
+<p>Grafana is now installed, but not yet running. To make sure Grafana starts up even if the Raspberry Pi is restarted, we need to enable and start the Grafana Systemctl service.</p>
+<ol>
+<li>
+<p>Enable the Grafana server:</p>
+<pre>sudo /bin/systemctl enable grafana-server</pre>
+</li>
+<li>
+<p>Start the Grafana server:</p>
+<pre>sudo /bin/systemctl start grafana-server</pre>
+<p>Grafana is now running on the machine and is accessible from any device on the local network.</p>
+</li>
+<li>
+<p>Open a browser and go to <code>http://&lt;ip address&gt;:3000</code>, where the IP address is the address that you used to connect to the Raspberry Pi earlier. You&rsquo;re greeted with the Grafana login page.</p>
+</li>
+<li>
+<p>Log in to Grafana with the default username <code>admin</code>, and the default password <code>admin</code>.</p>
+</li>
+<li>
+<p>Change the password for the admin user when asked.</p>
+</li>
+</ol>
+<p>Congratulations, Grafana is now running on your Raspberry Pi. If the Raspberry Pi is ever restarted or turned off, Grafana will start up whenever the machine regains power.</p>
+<h2 id="summary">Summary</h2>
+<p>If you want to use Grafana without having to go through a full installation process, check out <a href="/products/cloud/">Grafana Cloud</a>, which is designed to get users up and running quickly and easily. Grafana Cloud offers a forever free plan that is genuinely useful for hobbyists, testing, and small teams.</p>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="https://www.raspberrypi.org/documentation/" target="_blank" rel="noopener noreferrer">Raspberry Pi Documentation</a></li>
+</ul>

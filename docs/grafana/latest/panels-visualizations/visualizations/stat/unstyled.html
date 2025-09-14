@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<h1 id="stat">Stat</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This visualization replaces the Singlestat visualization, which was deprecated in Grafana 7.0 and removed in Grafana 8.0.</p></blockquote></div>
+
+<p>A stat visualization displays your data in single values of interest—such as the latest or current value of a series—with an optional graph sparkline. A graph sparkline, which is only available in stat visualizations, is a small time-series graph shown in the background of each value in the visualization.</p>
+<p>For example, if you&rsquo;re monitoring the utilization of various services, you can use a stat visualization to show their latest usage:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-stat-visualization-v11.3.png"
+  alt="A stat panel showing latest usage of various services" width="698"
+     height="297"/></p>
+<p>Use a stat visualization when you need to:</p>
+<ul>
+<li>Monitor key metrics at a glance, such as the latest health of your application, number of high priority bugs in your application, or total number of sales.</li>
+<li>Display aggregated data, such as the average response time of your services.</li>
+<li>Highlight values above your normal thresholds to quickly identify if any metrics are outside your expected range.</li>
+</ul>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/Zb3f4veGk/" target="_blank" rel="noopener noreferrer">Stat Visualizations in Grafana</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/Zb3f4veGk/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="configure-a-stat-visualization">Configure a stat visualization</h2>
+<p>Once you&rsquo;ve 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">created a dashboard</a>, the following video shows you how to configure a stat visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=yNRnLyVntUw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>Alternatively, refer to this blog post on <a href="/blog/2023/10/18/how-to-easily-retrieve-values-from-a-range-in-grafana-using-a-stat-panel/">how to easily retrieve values from a range in Grafana using a stat visualization</a>.</p>
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>The stat visualization supports a variety of formats for displaying data. Supported formats include:</p>
+<ul>
+<li><strong>Single values</strong> - The most common format and can be numerical, strings, or boolean values.</li>
+<li><strong>Time-series data</strong> - 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a> can be applied to your time-series data to display single values over a specified time range.</li>
+</ul>
+<h3 id="examples">Examples</h3>
+<p>The following tables are examples of the type of data you need for a stat visualization and how it should be formatted.</p>
+<h4 id="single-numerical-values">Single numerical values</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Number of high priority bugs</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>80</td>
+      </tr>
+      <tr>
+          <td>52</td>
+      </tr>
+      <tr>
+          <td>59</td>
+      </tr>
+      <tr>
+          <td>40</td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is visualized as follows, with the last value displayed, along with a sparkline and <a href="#value-options">percentage change</a>:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-stat-single-value-v11.3.png"
+  alt="A stat panel showing the latest number of high priority bugs" width="545"
+     height="260"/></p>
+<h4 id="time-series-data">Time-series data</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Cellar</th>
+          <th>Living room</th>
+          <th>Porch</th>
+          <th>Bedroom</th>
+          <th>Guest room</th>
+          <th>Kitchen</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2024-03-20 06:34:40</td>
+          <td>12.3</td>
+          <td>18.3</td>
+          <td>18.8</td>
+          <td>15.9</td>
+          <td>9.29</td>
+          <td>9.61</td>
+      </tr>
+      <tr>
+          <td>2024-03-20 06:41:40</td>
+          <td>16.8</td>
+          <td>17.1</td>
+          <td>21.5</td>
+          <td>14.1</td>
+          <td>10.5</td>
+          <td>17.5</td>
+      </tr>
+      <tr>
+          <td>2024-03-20 06:48:40</td>
+          <td>16.7</td>
+          <td>18.0</td>
+          <td>21.0</td>
+          <td>9.51</td>
+          <td>13.6</td>
+          <td>20.1</td>
+      </tr>
+      <tr>
+          <td>2024-03-20 06:55:40</td>
+          <td>14.3</td>
+          <td>18.7</td>
+          <td>16.5</td>
+          <td>9.11</td>
+          <td>14.8</td>
+          <td>12.5</td>
+      </tr>
+      <tr>
+          <td>2024-03-20 07:02:40</td>
+          <td>12.8</td>
+          <td>15.2</td>
+          <td>21.1</td>
+          <td>15.6</td>
+          <td>7.98</td>
+          <td>13.0</td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is visualized as follows, with the mean value displayed for each room, along with the room name, sparkline, and unit of measurement:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-stat-multiple-values-v11.3.png"
+  alt="A stat panel showing some statistics for each room in square meters" width="698"
+     height="295"/></p>
+<p>By default, a stat displays one of the following:</p>
+<ul>
+<li>Just the value for a single series or field.</li>
+<li>Both the value and name for multiple series or fields.</li>
+</ul>
+<p>You can use the <a href="#text-mode"><strong>Text mode</strong></a> to control how the text is displayed.</p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="value-options">Value options</h3>
+<p>Use the following options to refine how your visualization displays its values:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Show</td>
+          <td>Display a single value per column or series, or show values for each row. Choose from: <ul><li><strong>Calculate</strong> - Display a calculated value based on all rows.</li><li><strong>All values</strong> - Show a separate stat for every row. If you select this option, then you can also limit the number of rows to display.</li></td>
+      </tr>
+      <tr>
+          <td>Calculation</td>
+          <td>This option is displayed when you select <strong>Calculate</strong> as your <strong>Show</strong> option. Select a reducer function that Grafana will use to reduce many fields to a single value. For a list of available calculations, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a>.</td>
+      </tr>
+      <tr>
+          <td>Limit</td>
+          <td>This option is displayed when you select <strong>All values</strong> as your <strong>Show</strong> option. Set the maximum number of rows to display. Default is 5,000.</td>
+      </tr>
+      <tr>
+          <td>Fields</td>
+          <td>Select the fields displayed in the visualization.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="stat-styles">Stat styles</h3>
+<p>The stat visualization automatically adjusts the layout depending on available width and height in the dashboard, but you can also use the following options to further style the visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Orientation</td>
+          <td>Select a stacking direction. Choose from: <ul><li><strong>Auto</strong> - Grafana selects the ideal orientation.</li><li><strong>Horizontal</strong> - Bars stretch horizontally, left to right.</li><li><strong>Vertical</strong> - Bars stretch vertically, top to bottom.</li></ul></td>
+      </tr>
+      <tr>
+          <td><a href="#text-mode">Text mode</a></td>
+          <td>You can use the <strong>Text mode</strong> option to control what text the visualization renders. If the value is not important, only the name and color is, then change the <strong>Text mode</strong> to <strong>Name</strong>. The value will still be used to determine color and is displayed in a tooltip.</td>
+      </tr>
+      <tr>
+          <td><a href="#wide-layout">Wide layout</a></td>
+          <td>Set whether wide layout is enabled or not. Wide layout is enabled by default. This option is only applicable when <strong>Text mode</strong> is set to <strong>Value and name</strong>.</td>
+      </tr>
+      <tr>
+          <td>Color mode</td>
+          <td>Select a color mode. Choose from: <ul><li><strong>None</strong> - No color applied to the value.</li><li><strong>Value</strong> - Applies color to the value and graph area.</li><li><strong>Background Gradient</strong> - Applies color to the value, graph area, and background, with a slight background gradient.</li><li><strong>Background Solid</strong> - Applies color to the value, graph area, and background, with a solid background color.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Graph mode</td>
+          <td>Select a graph sparkline mode. Choose from: <ul><li><strong>None</strong> - Hides the graph sparkline and only shows the value.</li><li><strong>Area</strong> - Shows the graph sparkline below the value. This requires that your query returns a time column.</li></ul> The graph sparkline is automatically hidden if the panel becomes too small.</td>
+      </tr>
+      <tr>
+          <td>Text alignment</td>
+          <td>Select an alignment mode. Choose from: <ul><li><strong>Auto</strong> - If only a single value is shown (no repeat), then the value is centered. If multiple series or rows are shown, then the value is left-aligned.</li><li><strong>Center</strong> - Stat value is centered.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Show percent change</td>
+          <td>Set whether percent change is displayed or not. Disabled by default. This option is applicable when the <strong>Show</strong> setting, under <strong>Value options</strong>, is set to <strong>Calculate</strong>.</td>
+      </tr>
+      <tr>
+          <td>Percent change color mode</td>
+          <td>This option is only displayed when <strong>Show percent change</strong> is enabled. Choose from: <ul><li><strong>Standard</strong> - Green if the percent change is positive, red if the percent change is negative.</li><li><strong>Inverted</strong> - Red if the percent change is positive, green if the percent change is negative.</li><li><strong>Same as Value</strong> - Use the same color as the value.</li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="text-mode">Text mode</h4>
+<p>You can use the Text mode option to control what text the visualization renders. If the value is not important, only the name and color is, then change the <strong>Text mode</strong> to <strong>Name</strong>. The value will still be used to determine color and is displayed in a tooltip.</p>
+<ul>
+<li><strong>Auto</strong> - If the data contains multiple series or fields, show both name and value.</li>
+<li><strong>Value</strong> - Show only value, never name. Name is displayed in the hover tooltip instead.</li>
+<li><strong>Value and name</strong> - Always show value and name.</li>
+<li><strong>Name</strong> - Show name instead of value. Value is displayed in the hover tooltip.</li>
+<li><strong>None</strong> - Show nothing (empty). Name and value are displayed in the hover tooltip.</li>
+</ul>
+<h4 id="wide-layout">Wide layout</h4>
+<p>Set whether wide layout is enabled or not. Wide layout is enabled by default.</p>
+<ul>
+<li><strong>On</strong> - Wide layout is enabled.</li>
+<li><strong>Off</strong> - Wide layout is disabled.</li>
+</ul>
+<p>This option is only applicable when <strong>Text mode</strong> is set to <strong>Value and name</strong>. When wide layout is enabled, the value and name are displayed side-by-side with the value on the right, if the panel is wide enough. When wide layout is disabled, the value is always rendered underneath the name.</p>
+<h3 id="text-size">Text size</h3>
+<p>Adjust the sizes of the gauge text.</p>
+<ul>
+<li><strong>Title</strong> - Enter a numeric value for the gauge title size.</li>
+<li><strong>Value</strong> - Enter a numeric value for the gauge value size.</li>
+</ul>
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-1.md">
+            <p>Data links allow you to link to other panels, dashboards, and external resources while maintaining the context of the source panel.
+You can create links that include the series name or even the value under the cursor.
+To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Actions are not supported for this visualization.</p></blockquote></div>
+
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+</ul>
+<p>Data links for this visualization don&rsquo;t include the <strong>One click</strong> switch, however, if there&rsquo;s only one data link configured, that data link has single-click functionality.
+If multiple data links are configured, then clicking the visualization opens a menu that displays all the data links.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-2.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

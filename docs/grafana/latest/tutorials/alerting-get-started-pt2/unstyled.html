@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<!-- INTERACTIVE page intro.md START -->
+<p>This tutorial is a continuation of the <a href="http://www.grafana.com/tutorials/alerting-get-started/" target="_blank" rel="noopener noreferrer">Grafana Alerting - Create and receive your first alert</a> tutorial.</p>
+<p>In this guide, we dig into more complex yet equally fundamental elements of Grafana Alerting: <strong>alert instances</strong> and <strong>notification policies</strong>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=nI-_MEnFBQs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>After introducing each component, you will learn how to:</p>
+<ul>
+<li>Configure an alert rule that returns more than one alert instance</li>
+<li>Create notification policies that route firing alert instances to different contact points</li>
+<li>Use labels to match alert instances and notification policies</li>
+</ul>
+<p>Learning about alert instances and notification policies is useful if you have more than one contact point in your organization, or if your alert rule returns a number of metrics that you want to handle separately by routing each alert instance to a specific contact point. The tutorial will introduce each concept, followed by how to apply both concepts in a real-world scenario.</p>
+<!-- INTERACTIVE page intro.md END -->
+<!-- INTERACTIVE page step1.md START -->
+<!-- INTERACTIVE ignore START -->
+
+<h2 id="before-you-begin">Before you begin</h2>
+<p>There are different ways you can follow along with this tutorial.</p>
+<ul>
+<li>
+<p><strong>Grafana Cloud</strong></p>
+<ul>
+<li>As a Grafana Cloud user, you don&rsquo;t have to install anything. <a href="http://www.grafana.com/auth/sign-up/create-user" target="_blank" rel="noopener noreferrer">Create your free account</a>.</li>
+</ul>
+<p>Continue to <a href="#alert-instances">Alert instances</a>.</p>
+</li>
+<li>
+<p><strong>Interactive learning environment</strong></p>
+<ul>
+<li>Alternatively, you can try out this example in our interactive learning environment: <a href="https://killercoda.com/grafana-labs/course/grafana/alerting-get-started-pt2/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting - Alert routing</a>. It&rsquo;s a fully configured environment with all the dependencies already installed.</li>
+</ul>
+</li>
+<li>
+<p><strong>Grafana OSS</strong></p>
+<ul>
+<li>
+<p>If you opt to run a Grafana stack locally, ensure you have the following applications installed:</p>
+</li>
+<li>
+<p><a href="https://docs.docker.com/get-docker/" target="_blank" rel="noopener noreferrer">Docker Compose</a> (included in Docker for Desktop for macOS and Windows)</p>
+</li>
+<li>
+<p><a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer">Git</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="set-up-the-grafana-stack-oss-users">Set up the Grafana stack (OSS users)</h3>
+<!-- INTERACTIVE ignore END -->
+<p>To demonstrate the observation of data using the Grafana stack, download and run the following files.</p>
+<ol>
+<li>
+<p>Clone the <a href="https://www.github.com/grafana/tutorial-environment" target="_blank" rel="noopener noreferrer">tutorial environment repository</a>.</p>
+<!-- INTERACTIVE exec START -->
+<pre>git clone https://github.com/grafana/tutorial-environment.git</pre>
+<!-- INTERACTIVE exec END -->
+</li>
+<li>
+<p>Change to the directory where you cloned the repository:</p>
+<!-- INTERACTIVE exec START -->
+<pre>cd tutorial-environment</pre>
+<!-- INTERACTIVE exec END -->
+</li>
+<li>
+<p>Run the Grafana stack:</p>
+<!-- INTERACTIVE ignore START -->
+<pre>docker compose up -d</pre>
+<!-- INTERACTIVE ignore END -->
+
+<p>The first time you run <code>docker compose up -d</code>, Docker downloads all the necessary resources for the tutorial. This might take a few minutes, depending on your internet connection.</p>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you already have Grafana, Loki, or Prometheus running on your system, you might see errors, because the Docker image is trying to use ports that your local installations are already using. If this is the case, stop the services, then run the command again.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+</li>
+</ol>
+<!-- INTERACTIVE page step1.md END -->
+<!-- INTERACTIVE page step2.md START -->
+<h2 id="alert-instances">Alert instances</h2>
+<p>An <a href="/docs/grafana/latest/alerting/fundamentals/#alert-instances">alert instance</a> is an event that matches a metric returned by an alert rule query.</p>
+<p>Let&rsquo;s consider a scenario where you&rsquo;re monitoring website traffic using Grafana. You&rsquo;ve set up an alert rule to trigger an alert instance if the number of page views exceeds a certain threshold (more than <code>1000</code> page views) within a specific time period, say, over the past <code>5</code> minutes.</p>
+<p>If the query returns more than one time-series, each time-series represents a different metric or aspect being monitored. In this case, the alert rule is applied individually to each time-series.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alert-instance-flow.jpg"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alert-instance-flow.jpg"data-srcset="/media/docs/alerting/alert-instance-flow.jpg?w=320 320w, /media/docs/alerting/alert-instance-flow.jpg?w=550 550w, /media/docs/alerting/alert-instance-flow.jpg?w=750 750w, /media/docs/alerting/alert-instance-flow.jpg?w=900 900w, /media/docs/alerting/alert-instance-flow.jpg?w=1040 1040w, /media/docs/alerting/alert-instance-flow.jpg?w=1240 1240w, /media/docs/alerting/alert-instance-flow.jpg?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot displaying alert instances in the context of an alert rule, highlighting the specific alerts triggered by the rule and their respective statuses"width="2727"height="2112"title="Alert Instances in the Context of an Alert Rule"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-instance-flow.jpg"
+            alt="Screenshot displaying alert instances in the context of an alert rule, highlighting the specific alerts triggered by the rule and their respective statuses"width="2727"height="2112"title="Alert Instances in the Context of an Alert Rule"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Alert Instances in the Context of an Alert Rule</figcaption></a></figure>
+<p>In this scenario, each time-series is evaluated independently against the alert rule. It results in the creation of an alert instance for each time-series. The time-series corresponding to the desktop page views meets the threshold and, therefore, results in an alert instance in <strong>Firing</strong> state for which an alert notification is sent. The mobile alert instance state remains <strong>Normal</strong>.</p>
+<!-- INTERACTIVE page step2.md END -->
+<!-- INTERACTIVE page step3.md START -->
+<h2 id="notification-policies">Notification policies</h2>
+<p><a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">Notification policies</a> route alerts to different communication channels, reducing alert noise and providing control over when and how alerts are sent. For example, you might use notification policies to ensure that critical alerts about server downtime are sent immediately to the on-call engineer. Another use case could be routing performance alerts to the development team for review and action.</p>
+<p>Key Characteristics:</p>
+<ul>
+<li>Route alert notifications by matching alerts and policies with labels</li>
+<li>Manage when to send notifications</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/get-started-notification-policy-tree-combo.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/get-started-notification-policy-tree-combo.png"data-srcset="/media/docs/alerting/get-started-notification-policy-tree-combo.png?w=320 320w, /media/docs/alerting/get-started-notification-policy-tree-combo.png?w=550 550w, /media/docs/alerting/get-started-notification-policy-tree-combo.png?w=750 750w, /media/docs/alerting/get-started-notification-policy-tree-combo.png?w=900 900w, /media/docs/alerting/get-started-notification-policy-tree-combo.png?w=1040 1040w, /media/docs/alerting/get-started-notification-policy-tree-combo.png?w=1240 1240w, /media/docs/alerting/get-started-notification-policy-tree-combo.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot illustrating the routing of alerts with notification policies, including the configuration and flow of alerts through different notification channels"width="1065"height="448"title="Routing of alerts with notification policies"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/get-started-notification-policy-tree-combo.png"
+            alt="Screenshot illustrating the routing of alerts with notification policies, including the configuration and flow of alerts through different notification channels"width="1065"height="448"title="Routing of alerts with notification policies"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Routing of alerts with notification policies</figcaption></a></figure>
+<p>In the above diagram, alert instances and notification policies are matched by labels. For instance, the label <code>team=operations</code> matches the alert instance “<strong>Pod stuck in CrashLoop</strong>” and “<strong>Disk Usage -80%</strong>” to child policies that send alert notifications to a particular contact point (<a href="mailto:operations@grafana.com">operations@grafana.com</a>).</p>
+<!-- INTERACTIVE page step3.md END -->
+<!-- INTERACTIVE page step4.md START -->
+<h2 id="create-notification-policies">Create notification policies</h2>
+<p>Create a notification policy if you want to handle metrics returned by alert rules separately by routing each alert instance to a specific contact point.</p>
+<!-- INTERACTIVE ignore START -->
+<ol>
+<li>
+<p>In your browser, <strong>sign in</strong> to your Grafana Cloud account.</p>
+<p>OSS and interactive learning environment users: To log in, navigate to <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a>, where Grafana should be running.</p>
+</li>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM &gt; Alerting &gt; Notification policies</strong>.</p>
+</li>
+<li>
+<p>In the Default policy, click <strong>+ New child policy</strong>.</p>
+</li>
+<li>
+<p>In the field <strong>Label</strong> enter <code>device</code>, and in the field <strong>Value</strong> enter <code>desktop</code>.</p>
+</li>
+<li>
+<p>From the <strong>Contact point</strong> drop-down, choose <strong>Webhook</strong>.
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you don’t have any contact points, add a <a href="/tutorials/alerting-get-started/#create-a-contact-point">Contact point</a>.</p></blockquote></div>
+</p>
+</li>
+<li>
+<p>Enable Continue matching:</p>
+<p>Turn on <strong>Continue matching subsequent sibling nodes</strong> so the evaluation continues even after one or more labels (i.e. <code>device</code> label) match.</p>
+</li>
+<li>
+<p>Click <strong>Save Policy</strong>.</p>
+<p>This new child policy routes alerts that match the label <code>device=desktop</code> to the Webhook contact point.</p>
+</li>
+<li>
+<p><strong>Repeat the steps above to create a second child policy</strong> to match another alert instance. For labels use: <code>device=mobile</code>. Use the Webhook integration for the contact point. Alternatively, experiment by using a different Webhook endpoint or a <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/#supported-contact-point-integrations">different integration</a>.</p>
+</li>
+</ol>
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page step4.md END -->
+<!-- INTERACTIVE page step5.md START -->
+<h2 id="create-an-alert-rule-that-returns-alert-instances">Create an alert rule that returns alert instances</h2>
+<p>The alert rule that you are about to create is meant to monitor web traffic page views. The objective is to explore what an alert instance is and how to leverage routing individual alert instances by using label matchers and notification policies.</p>
+   <!-- INTERACTIVE page step5.md END -->
+   <!-- INTERACTIVE page step6.md START -->
+<h3 id="create-an-alert-rule">Create an alert rule</h3>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM &gt; Alerting &gt; Alert rules</strong>.</li>
+<li>Click <strong>+ New alert rule</strong>.</li>
+</ol>
+<h3 id="enter-an-alert-rule-name">Enter an alert rule name</h3>
+<p>Make it short and descriptive as this will appear in your alert notification. For instance, <code>web-traffic</code>.</p>
+<h3 id="define-query-and-alert-condition">Define query and alert condition</h3>
+<p>In this section, we use the default options for Grafana-managed alert rule creation. The default options let us define the query, a expression (used to manipulate the data &ndash; the <code>WHEN</code> field in the UI), and the condition that must be met for the alert to be triggered (in default mode is the threshold).</p>
+<p>Grafana includes a <a href="/docs/grafana/latest/datasources/testdata/">test data source</a> that creates simulated time series data. This data source is included in the demo environment for this tutorial. If you&rsquo;re working in Grafana Cloud or your own local Grafana instance, you can add the data source through the <strong>Connections</strong> menu.</p>
+<ol>
+<li>
+<p>Select <strong>TestData</strong> data source from the drop-down menu.</p>
+</li>
+<li>
+<p>From <strong>Scenario</strong> select <strong>CSV Content</strong>.</p>
+</li>
+<li>
+<p>Copy in the following CSV data:</p>
+<pre>device,views
+desktop,1200
+mobile,900</pre>
+<p>The above CSV data simulates a data source returning multiple time series, each leading to the creation of an alert instance for that specific time series. Note that the data returned matches the example in the <a href="#alert-instances">Alert instance</a> section.</p>
+</li>
+<li>
+<p>In the <strong>Alert condition</strong> section:</p>
+<ul>
+<li>Keep <code>Last</code> as the value for the reducer function (<code>WHEN</code>), and <code>IS ABOVE 1000</code> as the threshold value. This is the value above which the alert rule should trigger.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Preview alert rule condition</strong> to run the queries.</p>
+</li>
+</ol>
+<p>It should return two series.<code>desktop</code> in Firing state, and <code>mobile</code> in Normal state. The values <code>1</code>, and <code>0</code> mean that the condition is either <code>true</code> or <code>false</code>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/firing-instances.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/firing-instances.png"data-srcset="/media/docs/alerting/firing-instances.png?w=320 320w, /media/docs/alerting/firing-instances.png?w=550 550w, /media/docs/alerting/firing-instances.png?w=750 750w, /media/docs/alerting/firing-instances.png?w=900 900w, /media/docs/alerting/firing-instances.png?w=1040 1040w, /media/docs/alerting/firing-instances.png?w=1240 1240w, /media/docs/alerting/firing-instances.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot showing a preview of a query in Grafana that returns two alert instances, including the query results and relevant alert details"width="874"height="1371"title="Preview of a query returning two alert instances in Grafana."/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/firing-instances.png"
+            alt="Screenshot showing a preview of a query in Grafana that returns two alert instances, including the query results and relevant alert details"width="874"height="1371"title="Preview of a query returning two alert instances in Grafana."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Preview of a query returning two alert instances in Grafana.</figcaption></a></figure>
+<!-- INTERACTIVE page step6.md END -->
+<!-- INTERACTIVE page step7.md START -->
+<h3 id="add-folders-and-labels">Add folders and labels</h3>
+<ol>
+<li>In <strong>Folder</strong>, click <strong>+ New folder</strong> and enter a name. For example: <code>web-traffic-alerts</code> . This folder contains our alert rules.</li>
+</ol>
+<h3 id="set-evaluation-behavior">Set evaluation behavior</h3>
+<p>In the <a href="/docs/grafana/next/alerting/fundamentals/alert-rule-evaluation/">life cycle</a> of alert instances, when an alert condition (threshold) is not met, the alert instance state is <strong>Normal</strong>. Similarly, when the condition is breached (for longer than the pending period, which in this tutorial will be 0), the alert instance state switches back to <strong>Alerting</strong>, which means that the alert rule state is <strong>Firing</strong>, and a notification is sent.</p>
+<p>To set up evaluation behavior:</p>
+<ol>
+<li>In the <strong>Evaluation group and interval</strong>, enter a name. For example:  <code>1m-evaluation</code>.</li>
+<li>Choose an <strong>Evaluation interval</strong> (how often the alert will be evaluated). Choose <code>1m</code>.</li>
+<li>Set the <strong>pending period</strong> to <code>0s</code> (zero seconds), so the alert rule fires the moment the condition is met.</li>
+<li>Set <strong>Keep firing for</strong> to, <code>0s</code>, so the alert stops firing immediately after the condition is no longer true.</li>
+</ol>
+<h3 id="configure-notifications">Configure notifications</h3>
+<p>In this section, you can select how you want to route your alert instances. Since we want to route by notification policy, we need to ensure that the labels match the alert instance.</p>
+<ol>
+<li>
+<p>Toggle the <strong>Advanced options</strong> button to display matching Notification policies.</p>
+</li>
+<li>
+<p>Click <strong>Preview routing</strong>. Based on the existing labels, you should see a preview of what policies are matching with the alerts. There should be two alert instances matching the labels that were previously setup in each notification policy: <code>device=desktop</code>, <code>device=mobile</code>.</p>
+<p>These <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#label-types">types of labels</a> are generated by the data source query and they can be leveraged to match our notification policies without needing to manually add them to the alert rule.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/get-started-alert-instace-routing-prev.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/get-started-alert-instace-routing-prev.png"data-srcset="/media/docs/alerting/get-started-alert-instace-routing-prev.png?w=320 320w, /media/docs/alerting/get-started-alert-instace-routing-prev.png?w=550 550w, /media/docs/alerting/get-started-alert-instace-routing-prev.png?w=750 750w, /media/docs/alerting/get-started-alert-instace-routing-prev.png?w=900 900w, /media/docs/alerting/get-started-alert-instace-routing-prev.png?w=1040 1040w, /media/docs/alerting/get-started-alert-instace-routing-prev.png?w=1240 1240w, /media/docs/alerting/get-started-alert-instace-routing-prev.png?w=1920 1920w"
+             data-sizes="auto"alt="Screenshot showing a routing preview of matched notification policies, detailing how alerts are matched and routed to specific notification channels"width="1114"height="171"title="Routing preview of matched notification policies"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/get-started-alert-instace-routing-prev.png"
+               alt="Screenshot showing a routing preview of matched notification policies, detailing how alerts are matched and routed to specific notification channels"width="1114"height="171"title="Routing preview of matched notification policies"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Routing preview of matched notification policies</figcaption></a></figure>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Even if both labels match the policies, only the alert instance in Firing state produces an alert notification.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+</li>
+<li>
+<p>Click <strong>Save rule and exit</strong>.</p>
+</li>
+</ol>
+<p>Now that we have set up the alert rule, it’s time to check the alert notification.</p>
+<!-- INTERACTIVE page step7.md END -->
+<!-- INTERACTIVE page step8.md START -->
+<h2 id="receive-alert-notifications">Receive alert notifications</h2>
+<p>Now that the alert rule has been configured, you should receive alert <a href="/docs/grafana/next/alerting/fundamentals/alert-rule-evaluation/state-and-health/#notifications">notifications</a> in the contact point whenever the alert triggers and gets resolved. In our example, each alert instance should be routed separately as we configured labels to match notification policies. Once the evaluation interval has concluded (1m), you should receive an alert notification in the Webhook endpoint.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/get-started-webhook-alert-isntance.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/get-started-webhook-alert-isntance.png"data-srcset="/media/docs/alerting/get-started-webhook-alert-isntance.png?w=320 320w, /media/docs/alerting/get-started-webhook-alert-isntance.png?w=550 550w, /media/docs/alerting/get-started-webhook-alert-isntance.png?w=750 750w, /media/docs/alerting/get-started-webhook-alert-isntance.png?w=900 900w, /media/docs/alerting/get-started-webhook-alert-isntance.png?w=1040 1040w, /media/docs/alerting/get-started-webhook-alert-isntance.png?w=1240 1240w, /media/docs/alerting/get-started-webhook-alert-isntance.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot showing the exploration of alert notification details in a webhook endpoint, displaying the content and structure of the alert payload received by the endpoint"width="1018"height="526"title="Exploring alert notification details in webhook endpoint"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/get-started-webhook-alert-isntance.png"
+            alt="Screenshot showing the exploration of alert notification details in a webhook endpoint, displaying the content and structure of the alert payload received by the endpoint"width="1018"height="526"title="Exploring alert notification details in webhook endpoint"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Exploring alert notification details in webhook endpoint</figcaption></a></figure>
+<p>The alert notification details show that the alert instance corresponding to the website views from desktop devices was correctly routed through the notification policy to the Webhook contact point. The notification also shows that the instance is in <strong>Firing</strong> state, as well as it includes the label <code>device=desktop</code>, which makes the routing of the alert instance possible.</p>
+<p>Feel free to change the CSV data in the alert rule to trigger the routing of the alert instance that matches the label <code>device=mobile</code>.</p>
+<!-- INTERACTIVE page step8.md END -->
+<!-- INTERACTIVE page finish.md START -->
+<h2 id="summary">Summary</h2>
+<p>In this tutorial, you have learned how Grafana Alerting can route individual alert instances using the labels generated by the data-source query and match these labels with notification policies, which in turn routes alert notifications to specific contact points.</p>
+<p>If you run into any problems, you are welcome to post questions in our <a href="https://community.grafana.com/" target="_blank" rel="noopener noreferrer">Grafana Community forum</a>.</p>
+<h2 id="learn-more-in-grafana-alerting-group-alert-notifications">Learn more in <a href="http://www.grafana.com/tutorials/alerting-get-started-pt3/" target="_blank" rel="noopener noreferrer">Grafana Alerting: Group alert notifications</a></h2>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>In <a href="http://www.grafana.com/tutorials/alerting-get-started-pt3/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting: Group alert notifications</a> you learn how to group alert notifications effectively.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page finish.md END -->

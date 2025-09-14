@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<h1 id="data-source-permissions-api">Data Source Permissions API</h1>
+<blockquote>
+<p>The Data Source Permissions is only available in Grafana Enterprise. Read more about <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a>.</p></blockquote>
+<blockquote>
+<p>If you are running Grafana Enterprise, for some endpoints you&rsquo;ll need to have specific permissions. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a> for more information.</p></blockquote>
+<p>This API can be used to list, add and remove permissions for a data source.</p>
+<p>Permissions can be set for a user, team, service account or a basic role (Admin, Editor, Viewer).</p>
+<h2 id="get-permissions-for-a-data-source">Get permissions for a data source</h2>
+<p><code>GET /api/access-control/datasources/:uid</code></p>
+<p>Gets all existing permissions for the data source with the given <code>uid</code>.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#data-source-permissions-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>datasources.permissions:read</td>
+          <td>datasources:*<br>datasources:uid:*<br>datasources:uid:my_datasource (single data source)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>GET /api/access-control/datasources/my_datasource HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 551
+
+[
+    {
+        &#34;id&#34;: 1,
+        &#34;roleName&#34;: &#34;fixed:datasources:reader&#34;,
+        &#34;isManaged&#34;: false,
+        &#34;isInherited&#34;: false,
+        &#34;isServiceAccount&#34;: false,
+        &#34;userId&#34;: 1,
+        &#34;userLogin&#34;: &#34;admin_user&#34;,
+        &#34;userAvatarUrl&#34;: &#34;/avatar/admin_user&#34;,
+        &#34;actions&#34;: [
+            &#34;datasources:read&#34;,
+            &#34;datasources:query&#34;,
+            &#34;datasources:read&#34;,
+            &#34;datasources:query&#34;,
+            &#34;datasources:write&#34;,
+            &#34;datasources:delete&#34;
+        ],
+        &#34;permission&#34;: &#34;Edit&#34;
+    },
+    {
+        &#34;id&#34;: 2,
+        &#34;roleName&#34;: &#34;managed:teams:1:permissions&#34;,
+        &#34;isManaged&#34;: true,
+        &#34;isInherited&#34;: false,
+        &#34;isServiceAccount&#34;: false,
+        &#34;team&#34;: &#34;A team&#34;,
+        &#34;teamId&#34;: 1,
+        &#34;teamAvatarUrl&#34;: &#34;/avatar/523d70c8551046f441727d690431858c&#34;,
+        &#34;actions&#34;: [
+            &#34;datasources:read&#34;,
+            &#34;datasources:query&#34;
+        ],
+        &#34;permission&#34;: &#34;Query&#34;
+    },
+    {
+        &#34;id&#34;: 3,
+        &#34;roleName&#34;: &#34;basic:admin&#34;,
+        &#34;isManaged&#34;: false,
+        &#34;isInherited&#34;: false,
+        &#34;isServiceAccount&#34;: false,
+        &#34;builtInRole&#34;: &#34;Admin&#34;,
+        &#34;actions&#34;: [
+            &#34;datasources:query&#34;,
+            &#34;datasources:read&#34;,
+            &#34;datasources:write&#34;,
+            &#34;datasources:delete&#34;
+        ],
+        &#34;permission&#34;: &#34;Edit&#34;
+    },
+]</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> - Ok</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>403</strong> - Access denied</li>
+<li><strong>500</strong> - Internal error</li>
+</ul>
+<h2 id="add-or-revoke-access-to-a-data-source-for-a-user">Add or revoke access to a data source for a user</h2>
+<p><code>POST /api/access-control/datasources/:uid/users/:id</code></p>
+<p>Sets user permission for the data source with the given <code>uid</code>.</p>
+<p>To add a permission, set the <code>permission</code> field to either <code>Query</code>, <code>Edit</code>, or <code>Admin</code>.
+To remove a permission, set the <code>permission</code> field to an empty string.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#data-source-permissions-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>datasources.permissions:write</td>
+          <td>datasources:*<br>datasources:uid:*<br>datasources:uid:my_datasource (single data source)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples-1">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/access-control/datasources/my_datasource/users/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;permission&#34;: &#34;Query&#34;,
+}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 35
+
+{&#34;message&#34;: &#34;Permission updated&#34;}</pre>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/access-control/datasources/my_datasource/users/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;permission&#34;: &#34;&#34;,
+}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 35
+
+{&#34;message&#34;: &#34;Permission removed&#34;}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> - Ok</li>
+<li><strong>400</strong> - Permission cannot be added, see response body for details</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>403</strong> - Access denied</li>
+</ul>
+<h2 id="add-or-revoke-access-to-a-data-source-for-a-team">Add or revoke access to a data source for a team</h2>
+<p><code>POST /api/access-control/datasources/:uid/teams/:id</code></p>
+<p>Sets team permission for the data source with the given <code>uid</code>.</p>
+<p>To add a permission, set the <code>permission</code> field to either <code>Query</code>, <code>Edit</code>, or <code>Admin</code>.
+To remove a permission, set the <code>permission</code> field to an empty string.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#data-source-permissions-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>datasources.permissions:write</td>
+          <td>datasources:*<br>datasources:uid:*<br>datasources:uid:my_datasource (single data source)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples-2">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/access-control/datasources/my_datasource/teams/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;permission&#34;: &#34;Edit&#34;,
+}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 35
+
+{&#34;message&#34;: &#34;Permission updated&#34;}</pre>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/access-control/datasources/my_datasource/teams/1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;permission&#34;: &#34;&#34;,
+}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 35
+
+{&#34;message&#34;: &#34;Permission removed&#34;}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> - Ok</li>
+<li><strong>400</strong> - Permission cannot be added, see response body for details</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>403</strong> - Access denied</li>
+</ul>
+<h2 id="add-or-revoke-access-to-a-data-source-for-a-basic-role">Add or revoke access to a data source for a basic role</h2>
+<p><code>POST /api/access-control/datasources/:uid/builtInRoles/:builtinRoleName</code></p>
+<p>Sets permission for the data source with the given <code>uid</code> to all users who have the specified basic role.</p>
+<p>You can set permissions for the following basic roles: <code>Admin</code>, <code>Editor</code>, <code>Viewer</code>.</p>
+<p>To add a permission, set the <code>permission</code> field to either <code>Query</code>, <code>Edit</code>, or <code>Admin</code>.
+To remove a permission, set the <code>permission</code> field to an empty string.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#data-source-permissions-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>datasources.permissions:write</td>
+          <td>datasources:*<br>datasources:uid:*<br>datasources:uid:my_datasource (single data source)</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="examples-3">Examples</h3>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/access-control/datasources/my_datasource/builtInRoles/Admin
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;permission&#34;: &#34;Edit&#34;,
+}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 35
+
+{&#34;message&#34;: &#34;Permission updated&#34;}</pre>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/access-control/datasources/my_datasource/builtInRoles/Viewer
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;permission&#34;: &#34;&#34;,
+}</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200 OK
+Content-Type: application/json; charset=UTF-8
+Content-Length: 35
+
+{&#34;message&#34;: &#34;Permission removed&#34;}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> - Ok</li>
+<li><strong>400</strong> - Permission cannot be added, see response body for details</li>
+<li><strong>401</strong> - Unauthorized</li>
+<li><strong>403</strong> - Access denied</li>
+</ul>

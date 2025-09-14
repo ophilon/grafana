@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<h1 id="layout"><code>layout</code></h1>
+<p>There are four layout options offering two types of panel control:</p>
+<p><strong>Panel layout options</strong></p>
+<p>These options control the size and position of panels:</p>
+<ul>
+<li><a href="#gridlayoutkind">GridLayoutKind</a> - Corresponds to the <strong>Custom</strong> option in the UI. You define panel size and panel positions using x- and y- settings.</li>
+<li><a href="#autogridlayoutkind">AutoGridLayoutKind</a> - Corresponds to the <strong>Auto grid</strong> option in the UI. Panel size and position are automatically set based on column and row parameters.</li>
+</ul>
+<p><strong>Panel grouping options</strong></p>
+<p>These options control the grouping of panels:</p>
+<ul>
+<li><a href="#rowslayoutkind">RowsLayoutKind</a> - Groups panels into rows.</li>
+<li><a href="#tabslayoutkind">TabsLayoutKind</a> - Groups panels into tabs.</li>
+</ul>
+<h2 id="gridlayoutkind"><code>GridLayoutKind</code></h2>
+<p>The grid layout allows you to manually size and position grid items by setting the height, width, x, and y of each item.
+This layout corresponds to the <strong>Custom</strong> option in the UI.</p>
+<p>Following is the JSON for a default grid layout, a grid layout item, and a grid layout row:</p>
+<pre>    &#34;kind&#34;: &#34;GridLayout&#34;,
+    &#34;spec&#34;: {
+      &#34;items&#34;: [
+        {
+          &#34;kind&#34;: &#34;GridLayoutItem&#34;,
+          &#34;spec&#34;: {
+            &#34;element&#34;: {...},
+            &#34;height&#34;: 0,
+            &#34;width&#34;: 0,
+            &#34;x&#34;: 0,
+            &#34;y&#34;: 0
+          }
+        },
+        {
+          &#34;kind&#34;: &#34;GridLayoutRow&#34;,
+          &#34;spec&#34;: {
+            &#34;collapsed&#34;: false,
+            &#34;elements&#34;: [],
+            &#34;title&#34;: &#34;&#34;,
+            &#34;y&#34;: 0
+          }
+        },
+      ]
+    }</pre>
+<p><code>GridLayoutKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;GridLayout&rdquo;</li>
+<li>spec: GridLayoutSpec
+<ul>
+<li>items: GridLayoutItemKind<code> or GridLayoutRowKind</code>
+<ul>
+<li>GridLayoutItemKind
+<ul>
+<li>kind: &ldquo;GridLayoutItem&rdquo;</li>
+<li>spec: <a href="#gridlayoutitemspec">GridLayoutItemSpec</a></li>
+</ul>
+</li>
+<li>GridLayoutRowKind
+<ul>
+<li>kind: &ldquo;GridLayoutRow&rdquo;</li>
+<li>spec: <a href="#gridlayoutrowspec">GridLayoutRowSpec</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="gridlayoutitemspec"><code>GridLayoutItemSpec</code></h3>
+<p>The following table explains the usage of the grid layout item JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>x</td>
+          <td>integer. Position of the item x-axis.</td>
+      </tr>
+      <tr>
+          <td>y</td>
+          <td>integer. Position of the item y-axis.</td>
+      </tr>
+      <tr>
+          <td>width</td>
+          <td>Width of the item in pixels.</td>
+      </tr>
+      <tr>
+          <td>height</td>
+          <td>Height of the item in pixels.</td>
+      </tr>
+      <tr>
+          <td>element</td>
+          <td><code>ElementReference</code>. Reference to a 
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/panel-schema/"><code>PanelKind</code></a> from <code>dashboard.spec.elements</code> expressed as JSON Schema reference.</td>
+      </tr>
+      <tr>
+          <td>repeat?</td>
+          <td><a href="#repeatoptions">RepeatOptions</a>. Configured repeat options, if any</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="repeatoptions"><code>RepeatOptions</code></h4>
+<p>The following table explains the usage of the repeat option JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>mode</td>
+          <td><code>RepeatMode</code> - &ldquo;variable&rdquo;</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>direction?</td>
+          <td>Options are <code>h</code> for horizontal and <code>v</code> for vertical.</td>
+      </tr>
+      <tr>
+          <td>maxPerRow?</td>
+          <td>integer</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="gridlayoutrowspec"><code>GridLayoutRowSpec</code></h3>
+<p>The following table explains the usage of the grid layout row JSON fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>y</td>
+          <td>integer. Position of the row y-axis</td>
+      </tr>
+      <tr>
+          <td>collapsed</td>
+          <td>bool. Whether or not the row is collapsed</td>
+      </tr>
+      <tr>
+          <td>title</td>
+          <td>Row title</td>
+      </tr>
+      <tr>
+          <td>elements</td>
+          <td><a href="#gridlayoutitemspec"><code>[...GridLayoutItemKind]</code></a>. Grid items in the row will have their y value be relative to the row&rsquo;s y value. This means a panel positioned at <code>y: 0</code> in a row with <code>y: 10</code> will be positioned at <code>y: 11</code> (row header has a height of 1) in the dashboard.</td>
+      </tr>
+      <tr>
+          <td>repeat?</td>
+          <td><a href="#rowrepeatoptions">RowRepeatOptions</a> Configured row repeat options, if any</p></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="rowrepeatoptions"><code>RowRepeatOptions</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>mode</td>
+          <td><code>RepeatMode</code> - &ldquo;variable&rdquo;</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="autogridlayoutkind"><code>AutoGridLayoutKind</code></h2>
+<p>With an auto grid, Grafana sizes and positions your panels for the best fit based on the column and row constraints that you set.
+This layout corresponds to the <strong>Auto grid</strong> option in the UI.</p>
+<p>Following is the JSON for a default auto grid layout and a grid layout item:</p>
+<!-- prettier-ignore-end -->
+<pre>    &#34;kind&#34;: &#34;AutoGridLayout&#34;,
+    &#34;spec&#34;: {
+      &#34;columnWidthMode&#34;: &#34;standard&#34;,
+      &#34;fillScreen&#34;: false,
+      &#34;items&#34;: [
+        {
+          &#34;kind&#34;: &#34;AutoGridLayoutItem&#34;,
+          &#34;spec&#34;: {
+            &#34;element&#34;: {...},
+          }
+        }
+      ],
+      &#34;maxColumnCount&#34;: 3,
+      &#34;rowHeightMode&#34;: &#34;standard&#34;
+    }</pre>
+<p><code>AutoGridLayoutKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;AutoGridLayout&rdquo;</li>
+<li>spec: <a href="#autogridlayoutspec">AutoGridLayoutSpec</a></li>
+</ul>
+<h3 id="autogridlayoutspec"><code>AutoGridLayoutSpec</code></h3>
+<p>The following table explains the usage of the auto grid layout JSON fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>maxColumnCount?</td>
+          <td>number. Default is <code>3</code>.</td>
+      </tr>
+      <tr>
+          <td>columnWidthMode</td>
+          <td>Options are: <code>narrow</code>, <code>standard</code>, <code>wide</code>, and <code>custom</code>. Default is <code>standard</code>.</td>
+      </tr>
+      <tr>
+          <td>columnWidth?</td>
+          <td>number</td>
+      </tr>
+      <tr>
+          <td>rowHeightMode</td>
+          <td>Options are: <code>short</code>, <code>standard</code>, <code>tall</code>, and <code>custom</code>. Default is <code>standard</code>.</td>
+      </tr>
+      <tr>
+          <td>rowHeight?</td>
+          <td>number</td>
+      </tr>
+      <tr>
+          <td>fillScreen?</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>items</td>
+          <td><code>AutoGridLayoutItemKind</code>. Consists of:<ul><li>kind: &ldquo;AutoGridLayoutItem&rdquo;</li><li>spec: <a href="#autogridlayoutitemspec">AutoGridLayoutItemSpec</a></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="autogridlayoutitemspec"><code>AutoGridLayoutItemSpec</code></h4>
+<p>The following table explains the usage of the auto grid layout item JSON fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>element</td>
+          <td><code>ElementReference</code>. Reference to a 
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/panel-schema/"><code>PanelKind</code></a> from <code>dashboard.spec.elements</code> expressed as JSON Schema reference.</td>
+      </tr>
+      <tr>
+          <td>repeat?</td>
+          <td><a href="#autogridrepeatoptions">AutoGridRepeatOptions</a>. Configured repeat options, if any.</td>
+      </tr>
+      <tr>
+          <td>conditionalRendering?</td>
+          <td><code>ConditionalRenderingGroupKind</code>. Rules for hiding or showing panels, if any. Consists of:<ul><li>kind: &ldquo;ConditionalRenderingGroup&rdquo;</li><li>spec: <a href="#conditionalrenderinggroupspec">ConditionalRenderingGroupSpec</a></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h5 id="autogridrepeatoptions"><code>AutoGridRepeatOptions</code></h5>
+<p>The following table explains the usage of the auto grid repeat option JSON fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>mode</td>
+          <td><code>RepeatMode</code> - &ldquo;variable&rdquo;</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td>String</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="conditionalrenderinggroupspec"><code>ConditionalRenderingGroupSpec</code></h5>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>visibility</td>
+          <td>Options are <code>show</code> and <code>hide</code></td>
+      </tr>
+      <tr>
+          <td>condition</td>
+          <td>Options are <code>and</code> and <code>or</code></td>
+      </tr>
+      <tr>
+          <td>items</td>
+          <td>Options are:<ul><li>ConditionalRenderingVariableKind<ul><li>kind: &ldquo;ConditionalRenderingVariable&rdquo;</li><li>spec: <a href="#conditionalrenderingvariablespec">ConditionalRenderingVariableSpec</a></li></ul></li><li>ConditionalRenderingDataKind<ul><li>kind: &ldquo;ConditionalRenderingData&rdquo;</li><li>spec: <a href="#conditionalrenderingdataspec">ConditionalRenderingDataSpec</a></li></ul></li><li>ConditionalRenderingTimeRangeSizeKind<ul><li>kind: &ldquo;ConditionalRenderingTimeRangeSize&rdquo;</li><li>spec: <a href="#conditionalrenderingtimerangesizespec">ConditionalRenderingTimeRangeSizeSpec</a></li></ul></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h6 id="conditionalrenderingvariablespec"><code>ConditionalRenderingVariableSpec</code></h6>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>variable</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>operator</td>
+          <td>Options are <code>equals</code> and <code>notEquals</code></td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h6 id="conditionalrenderingdataspec"><code>ConditionalRenderingDataSpec</code></h6>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>value</td>
+          <td>bool</td>
+      </tr>
+  </tbody>
+</table>
+<h6 id="conditionalrenderingtimerangesizespec"><code>ConditionalRenderingTimeRangeSizeSpec</code></h6>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>value</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="rowslayoutkind"><code>RowsLayoutKind</code></h2>
+<p>The <code>RowsLayoutKind</code> is one of two options that you can use to group panels.
+You can nest any other kind of layout inside a layout row.
+Rows can also be nested in auto grids or tabs.</p>
+<p>Following is the JSON for a default rows layout row:</p>
+<pre>    &#34;kind&#34;: &#34;RowsLayout&#34;,
+    &#34;spec&#34;: {
+      &#34;rows&#34;: [
+        {
+          &#34;kind&#34;: &#34;RowsLayoutRow&#34;,
+          &#34;spec&#34;: {
+            &#34;layout&#34;: {
+              &#34;kind&#34;: &#34;GridLayout&#34;, // Can also be AutoGridLayout or TabsLayout
+              &#34;spec&#34;: {...}
+            },
+            &#34;title&#34;: &#34;&#34;
+          }
+        }
+      ]
+    }</pre>
+<p><code>RowsLayoutKind</code> consists of:</p>
+<ul>
+<li>kind: RowsLayout</li>
+<li>spec: RowsLayoutSpec
+<ul>
+<li>rows: RowsLayoutRowKind
+<ul>
+<li>kind: RowsLayoutRow</li>
+<li>spec: <a href="#rowslayoutrowspec">RowsLayoutRowSpec</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="rowslayoutrowspec"><code>RowsLayoutRowSpec</code></h3>
+<p>The following table explains the usage of the rows layout row JSON fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>title?</td>
+          <td>Title of the row.</td>
+      </tr>
+      <tr>
+          <td>collapse</td>
+          <td>bool. Whether or not the row is collapsed.</td>
+      </tr>
+      <tr>
+          <td>hideHeader?</td>
+          <td>bool. Whether the row header is hidden or shown.</td>
+      </tr>
+      <tr>
+          <td>fullScreen?</td>
+          <td>bool. Whether or not the row takes up the full screen.</td>
+      </tr>
+      <tr>
+          <td>conditionalRendering?</td>
+          <td><code>ConditionalRenderingGroupKind</code>. Rules for hiding or showing rows, if any. Consists of:<ul><li>kind: &ldquo;ConditionalRenderingGroup&rdquo;</li><li>spec: <a href="#conditionalrenderinggroupspec">ConditionalRenderingGroupSpec</a></li></ul></td>
+      </tr>
+      <tr>
+          <td>repeat?</td>
+          <td><a href="#rowrepeatoptions">RowRepeatOptions</a>. Configured repeat options, if any.</td>
+      </tr>
+      <tr>
+          <td>layout</td>
+          <td>Supported layouts are:<ul><li><a href="#gridlayoutkind">GridLayoutKind</a></li><li><a href="#rowslayoutkind">RowsLayoutKind</a></li><li><a href="#autogridlayoutkind">AutoGridLayoutKind</a></li><li><a href="#tabslayoutkind">TabsLayoutKind</a></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h2 id="tabslayoutkind"><code>TabsLayoutKind</code></h2>
+<p>The <code>TabsLayoutKind</code> is one of two options that you can use to group panels.
+You can nest any other kind of layout inside a tab.
+Tabs can also be nested in auto grids or rows.</p>
+<p>Following is the JSON for a default tabs layout tab and a tab:</p>
+<pre>    &#34;kind&#34;: &#34;TabsLayout&#34;,
+    &#34;spec&#34;: {
+      &#34;tabs&#34;: [
+        {
+          &#34;kind&#34;: &#34;TabsLayoutTab&#34;,
+          &#34;spec&#34;: {
+            &#34;layout&#34;: {
+              &#34;kind&#34;: &#34;GridLayout&#34;, // Can also be AutoGridLayout or RowsLayout
+              &#34;spec&#34;: {...}
+            },
+            &#34;title&#34;: &#34;New tab&#34;
+          }
+        }
+      ]
+    }</pre>
+<p><code>TabsLayoutKind</code> consists of:</p>
+<ul>
+<li>kind: TabsLayout
+<ul>
+<li>spec: TabsLayoutSpec
+<ul>
+<li>tabs: TabsLayoutTabKind
+<ul>
+<li>kind: TabsLayoutTab</li>
+<li>spec: <a href="#tabslayouttabspec">TabsLayoutTabSpec</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="tabslayouttabspec"><code>TabsLayoutTabSpec</code></h3>
+<p>The following table explains the usage of the tabs layout tab JSON fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>title?</td>
+          <td>The title of the tab.</td>
+      </tr>
+      <tr>
+          <td>layout</td>
+          <td>Supported layouts are:<ul><li><a href="#gridlayoutkind">GridLayoutKind</a></li><li><a href="#rowslayoutkind">RowsLayoutKind</a></li><li><a href="#autogridlayoutkind">AutoGridLayoutKind</a></li><li><a href="#tabslayoutkind">TabsLayoutKind</a></li></ul></td>
+      </tr>
+      <tr>
+          <td>conditionalRendering?</td>
+          <td><code>ConditionalRenderingGroupKind</code>. Rules for hiding or showing panels, if any. Consists of:<ul><li>kind: &ldquo;ConditionalRenderingGroup&rdquo;</li><li>spec: <a href="#conditionalrenderinggroupspec">ConditionalRenderingGroupSpec</a></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->

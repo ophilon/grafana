@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<h1 id="configure-pagerduty-for-alerting">Configure PagerDuty for Alerting</h1>
+<p>Use the Grafana Alerting - PagerDuty integration to receive notifications in PagerDuty when your alerts are firing.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To set up PagerDuty for integration with Grafana Alerting, you need to create a <a href="https://www.pagerduty.com/" target="_blank" rel="noopener noreferrer">PagerDuty</a> account. There are several set up steps to perform within PagerDuty before you set up the integration in Grafana Alerting.</p>
+<h3 id="create-a-service">Create a Service</h3>
+<p>In PagerDuty, a service represents a component, microservice, or infrastructure element that a team oversees, manages, and monitors.</p>
+<ol>
+<li>
+<p>Refer to <a href="https://support.pagerduty.com/docs/services-and-integrations#create-a-service" target="_blank" rel="noopener noreferrer">PagerDuty’s services and integrations guide</a>.</p>
+</li>
+<li>
+<p>Follow steps 1 to 5 under <strong>Create a Service</strong>.</p>
+</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In step 5, choose <strong>Create a service without an integration</strong>.</p></blockquote></div>
+
+<h3 id="obtain-a-pagerduty-integration-key">Obtain a PagerDuty integration key</h3>
+<ol>
+<li>Once the service is created, click <strong>Integrations</strong> within the Service options.</li>
+<li>Click <strong>+ Add an integration</strong>.</li>
+<li>Select <strong>Events API V2</strong>.</li>
+<li>Click <strong>Add</strong>.</li>
+<li>Click the drop-down arrow to display the integration details.</li>
+<li>Copy the <strong>Integration Key</strong>.</li>
+</ol>
+<h2 id="procedure">Procedure</h2>
+<p>To create your PagerDuty integration in Grafana Alerting, complete the following steps.</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>Enter a contact point name.</p>
+</li>
+<li>
+<p>From the Integration list, select <strong>PagerDuty</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Integration Key</strong> field, copy in your integration key.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong> to check that your integration works.</p>
+<p>** For Grafana Alertmanager only.**</p>
+<p>An incident should display in the Service’s Activity tab in PagerDuty.</p>
+</li>
+<li>
+<p>Click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>The PagerDuty contact point is ready to receive alert notifications.</p>
+<p>To add this contact point to your alert, complete the following steps.</p>
+<ol>
+<li>In Grafana, navigate to <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Edit or create a new alert rule.</li>
+<li>Scroll down to the <strong>Configure labels and notifications</strong> section.</li>
+<li>Under Notifications click <strong>Select contact point</strong>.</li>
+<li>From the drop-down menu, select the previously created contact point.</li>
+<li><strong>Click Save rule and exit</strong>.</li>
+</ol>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<h1 id="import-data-source-managed-rules-to-grafana-managed-rules">Import data source-managed rules to Grafana-managed rules</h1>
+<p>You can convert existing alert rules from data sources such as Mimir, Loki, and Prometheus into Grafana-managed alert rules. This enables you to operate and manage these rules using Grafana Alerting.</p>
+<p>This guide explains two methods for importing data source-managed rules:</p>
+<ul>
+<li>
+<p>Using the <a href="#import-rules-with-grafana-alerting">Grafana Alerting user interface</a> to import rules from connected data sources or Prometheus rule YAML files.</p>
+</li>
+<li>
+<p>Using <a href="#import-rules-with-command-line-tools">command-line tools</a> like <code>mimirtool</code> and <code>cortextool</code> to import rules from YAML files.</p>
+</li>
+</ul>
+<p>Importing rules is a safe operation: the original data source–managed rules remain intact in their original location. During import, the rules are converted into Grafana-managed rules while preserving their configuration and behavior.</p>
+<p>Choose the method that best fits your workflow. As a best practice, test and validate your import process before migrating all alert rules.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>When you use any of the import methods, data source–managed rules are copied to another folder as Grafana-managed rules.</p>
+<p>The original data source–managed rules remain intact in their original location.</p>
+<p>The copied rules are converted to Grafana-managed rules, preserving their behavior by using equivalent Grafana-managed features. The following settings are applied during the conversion:</p>
+<ul>
+<li>
+<p><strong>Unique UIDs</strong></p>
+<p>The newly created rules are assigned unique UIDs.
+If you don’t want a UID to be auto-generated, you can specify one using the <code>__grafana_alert_rule_uid__</code> label.</p>
+</li>
+<li>
+<p><strong>Query offset</strong></p>
+<p>A query offset is applied to each rule. For example, an offset of <code>1m</code> adjusts the query&rsquo;s time range to <code>To: now-1m</code>.</p>
+<p>The rule query offset is taken from the <code>query_offset</code> value in the rule group configuration. If empty, it defaults to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#rule_query_offset"><code>rule_query_offset</code> configuration setting</a>, which is <code>1m</code> by default.</p>
+</li>
+<li>
+<p><strong>Missing series evaluations to resolve</strong></p>
+<p>The 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/stale-alert-instances/#configure-missing-series-evaluations-to-resolve">Missing series evaluations to resolve</a> setting is set to <code>1</code> to replicate Prometheus’s alert eviction behavior.</p>
+</li>
+<li>
+<p><strong>Rule group labels</strong></p>
+<p>Labels defined at the rule group level are added as labels to each imported rule within the group.</p>
+</li>
+<li>
+<p><strong>Sequential evaluation</strong></p>
+<p>Imported rules are evaluated sequentially within each rule group, mirroring Prometheus behavior. This differs from native Grafana-managed alert rules, where the evaluation order is not enforced. For more details, refer to 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/">evaluation strategies</a>.</p>
+</li>
+<li>
+<p><strong>Feature compatibility</strong></p>
+<p>The rule group <code>limit</code> option and the <code>query</code> function within alert rule templates are not currently supported in Grafana-managed rules. If the <code>limit</code> option is present, the import fails. However, rules with <code>query</code> in templates are imported.</p>
+</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Rules with the label <code>__grafana_origin</code> are not included in rule imports. These rules are typically created by apps such as <strong>Kubernetes Monitoring</strong>, <strong>Synthetic Monitoring</strong>, and other <strong>Grafana plugins</strong>.</p></blockquote></div>
+
+<h2 id="import-rules-with-grafana-alerting">Import rules with Grafana Alerting</h2>
+<p>You can use the Grafana Alerting user interface to import rules from the following sources:</p>
+<ul>
+<li>Connected Mimir and Loki data sources with the ruler API enabled</li>
+<li>Prometheus YAML rule files</li>
+</ul>
+<p>Imported rules using this method are editable in the user interface. Like regular Grafana-managed rules, you can later export them for provisioning.</p>
+<h4 id="before-you-begin">Before you begin</h4>
+<p>To use Grafana Alerting to migrate rules, you need the following <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">RBAC permissions</a>:</p>
+<ul>
+<li>
+<p><strong>Alerting</strong>: <code>Rules Writer</code>, <code>Set provisioning status</code>.</p>
+</li>
+<li>
+<p><strong>Datasources</strong>: <code>Reader</code>.</p>
+</li>
+<li>
+<p><strong>Folders</strong>: <code>Creator</code>.</p>
+<p>The Folders permission is optional and only necessary if you want to create new folders for your target namespace. If your account doesn&rsquo;t have permissions to view a namespace, the tool creates a new one.</p>
+</li>
+</ul>
+<p>To convert data source-managed alert rules to Grafana managed alerts:</p>
+<ol>
+<li>
+<p>Go to <strong>Alerting &gt; Alert rules</strong>.</p>
+</li>
+<li>
+<p>Navigate to the Data source-managed alert rules section and click <strong>Import to Grafana-managed rules</strong>.</p>
+</li>
+<li>
+<p>Choose the <strong>Import source</strong> from which you want to import rules:</p>
+<ul>
+<li>Select <strong>Existing data source-managed rules</strong> to import rules from connected Mimir or Loki data sources with the ruler API enabled.</li>
+<li>Select <strong>Prometheus YAML file</strong> to import rules by uploading a Prometheus YAML rule file.</li>
+</ul>
+</li>
+<li>
+<p>In the <strong>Data source</strong> dropdown, select the data source that the imported alert rules will query.</p>
+</li>
+<li>
+<p>(Optional) In Additional settings, select a target folder or designate a new folder to import the rules into.</p>
+<p>If you import the rules into an existing folder, don&rsquo;t choose a folder with existing alert rules, as they could get overwritten.</p>
+</li>
+<li>
+<p>(Optional) Select a Namespace and/or Group to determine which rules are imported.</p>
+</li>
+<li>
+<p>(Optional) Turn on <strong>Pause imported alerting rules</strong>.</p>
+<p>Pausing stops alert rule evaluation and doesn’t create any alert instances for the newly created Grafana-managed alert rules.</p>
+</li>
+<li>
+<p>(Optional) Turn on <strong>Pause imported recording rules</strong>.</p>
+<p>Pausing stops alert rule evaluation behavior for the newly created Grafana-managed alert rules.</p>
+</li>
+<li>
+<p>(Optional) In the <strong>Target data source</strong> of the <strong>Recording rules</strong> section, you can select the data source that the imported recording rules will query. By default, it is the data source selected in the <strong>Data source</strong> dropdown.</p>
+</li>
+<li>
+<p>Click <strong>Import</strong>.</p>
+<p>A preview shows the rules that will be imported. If your target folder contains folders with the same name of the imported folders, a warning displays to inform you. You can explore the warning to see a list of folders that might be overwritten.</p>
+<p>Click <strong>Yes, import</strong> to import the rules.</p>
+</li>
+</ol>
+<h2 id="import-rules-with-command-line-tools">Import rules with command-line tools</h2>
+<p>You can also use command-line tools to import data source-managed rules as Grafana-managed rules: use <code>mimirtool</code> for Mimir and Prometheus rules, and <code>cortextool</code> for Loki rules.</p>
+<p>Both tools provide <code>rules</code> commands to import rules groups. For example:</p>
+<ul>
+<li><code>rules load</code> can import rule groups from files.</li>
+<li><code>rules sync</code> can read rule files and applies only the differences compared to existing Grafana-managed rules. This is useful for automation workflows and pipelines.</li>
+</ul>
+<p>By default, rules imported using the API or command-line tools are <strong>Provisioned</strong> and not editable in the user interface. To make them editable, enable the <a href="#x-disable-provenance">X-Disable-Provenance</a> header.</p>
+<h4 id="before-you-begin-1">Before you begin</h4>
+<p>You need to have installed <a href="/docs/mimir/latest/manage/tools/mimirtool/"><code>mimirtool</code></a> or <a href="https://github.com/grafana/cortex-tools" target="_blank" rel="noopener noreferrer"><code>cortextool</code></a> (version <code>0.11.3</code> or later).</p>
+<p>You need a service account with the following <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">RBAC permissions</a>:</p>
+<ul>
+<li><strong>Alerting</strong>: <code>Rules Reader</code>, <code>Rules Writer</code>, <code>Set provisioning status</code>.</li>
+<li><strong>Datasources</strong>: <code>Reader</code>.</li>
+<li><strong>Folders</strong>: <code>Creator</code>, <code>Reader</code>, <code>Writer</code>.</li>
+</ul>
+<p>You need to a service account token with your service account. For more details, refer to <a href="/docs/grafana/latest/administration/service-accounts/">service accounts and service account tokens</a>.</p>
+<h3 id="mimirtool">mimirtool</h3>
+<p>To convert and import them into a Grafana instance, you can use the <code>mimirtool rules load</code> command:</p>
+<pre>MIMIR_ADDRESS=&lt;GRAFANA_BASE_URL&gt;/api/convert/ \
+MIMIR_AUTH_TOKEN=&lt;SERVICE_ACCOUNT_TOKEN&gt; \
+MIMIR_TENANT_ID=1 \
+mimirtool rules load rule_file.yaml \
+  --extra-headers &#34;X-Grafana-Alerting-Datasource-UID=&lt;DATASOURCE_UID_QUERY_TARGET&gt;&#34;</pre>
+<p>This command imports Prometheus alert rules defined in <code>rule_file.yaml</code> as Grafana-managed alert rules. It&rsquo;s important to know that:</p>
+<ol>
+<li>When using the <code>&lt;GRAFANA_BASE_URL&gt;/api/convert/</code> endpoint, <code>mimirtool</code> interacts with Grafana—not with a Mimir instance. In this case, <code>MIMIR_TENANT_ID</code> must always be set to <code>1</code>.</li>
+<li>The <a href="#x-grafana-alerting-datasource-uid"><code>X-Grafana-Alerting-Datasource-UID</code> header</a> configures the data source that the imported alert rules will query. Use multiple <code>--extra-headers</code> flags to include other <a href="#optional-headers">optional headers</a>.</li>
+</ol>
+<p>Similarly, the <code>rules sync</code> command can import and update Grafana-managed alert rules.</p>
+<pre>MIMIR_ADDRESS=&lt;GRAFANA_BASE_URL&gt;/api/convert/ \
+MIMIR_AUTH_TOKEN=&lt;SERVICE_ACCOUNT_TOKEN&gt; \
+MIMIR_TENANT_ID=1 \
+mimirtool rules sync rule_file.yaml \
+  --extra-headers &#34;X-Grafana-Alerting-Datasource-UID=&lt;DATASOURCE_UID_QUERY_TARGET&gt;&#34; \
+  --concurrency 1</pre>
+<p>The <code>--concurrency</code> flag must be set to <code>1</code>, as the default value of <code>8</code> may cause API errors.</p>
+<p>This <code>sync</code> command reads rules from the file, compares them with the existing Grafana-managed rules in the instance, and applies only the differences—creating, updating, or deleting rules as needed.</p>
+<pre>## Sync Summary: 0 Groups Created, 1 Groups Updated, 0 Groups Deleted</pre>
+<p>For more information other Mimirtool commands and options, see the <a href="/docs/mimir/latest/manage/tools/mimirtool/#rules">Mimirtool documentation</a> and the <a href="/docs/mimir/latest/references/http-api/#ruler-rules:~:text=config/v1/rules-,Get%20rule%20groups%20by%20namespace,DELETE%20%3Cprometheus%2Dhttp%2Dprefix%3E/config/v1/rules/%7Bnamespace%7D,-Delete%20tenant%20configuration">Mimir HTTP Rule API documentation</a>.</p>
+<h3 id="cortextool">cortextool</h3>
+<p>For Loki alert rules, use <a href="https://github.com/grafana/cortex-tools" target="_blank" rel="noopener noreferrer"><code>cortextool</code></a> (version <code>0.11.3</code> or later) with the <code>--backend=loki</code> flag. For example:</p>
+<pre>CORTEX_ADDRESS=&lt;GRAFANA_BASE_URL&gt;/api/convert/ \
+CORTEX_AUTH_TOKEN=&lt;SERVICE_ACCOUNT_TOKEN&gt; \
+CORTEX_TENANT_ID=1 \
+cortextool rules load loki_rules.yaml \
+  --extra-headers &#34;X-Grafana-Alerting-Datasource-UID=&lt;LOKI_DATASOURCE_UID_QUERY_TARGET&gt;&#34; \
+  --backend=loki</pre>
+<h3 id="optional-headers">Optional Headers</h3>
+<p>Additional configuration headers for more granular import control include the following:</p>
+<h4 id="x-disable-provenance"><code>X-Disable-Provenance</code></h4>
+<p>When this header is set to <code>true</code>:</p>
+<ul>
+<li>The imported rules are not marked as provisioned.</li>
+<li>They can then be edited in the Grafana UI.</li>
+<li>They are excluded from the <code>GET</code> and <code>DELETE</code> operations on the <a href="#compatible-endpoints"><code>/api/convert</code> endpoints</a>.</li>
+</ul>
+<p>Do not enable this header when using the <code>rules sync</code> command, as it relies on the <code>GET</code> and <code>DELETE</code> operations to detect and update existing rules.</p>
+<h4 id="x-grafana-alerting-alert-rules-paused"><code>X-Grafana-Alerting-Alert-Rules-Paused</code></h4>
+<p>Set to <code>true</code> to import alert rules in paused state.</p>
+<h4 id="x-grafana-alerting-recording-rules-paused"><code>X-Grafana-Alerting-Recording-Rules-Paused</code></h4>
+<p>Set to <code>true</code> to import recording rules in paused state.</p>
+<h4 id="x-grafana-alerting-datasource-uid"><code>X-Grafana-Alerting-Datasource-UID</code></h4>
+<p>The UID of the data source to use for alert rule queries.</p>
+<h4 id="x-grafana-alerting-target-datasource-uid"><code>X-Grafana-Alerting-Target-Datasource-UID</code></h4>
+<p>The UID of the target data source for recording rules. If not specified, the value from <code>X-Grafana-Alerting-Datasource-UID</code> is used.</p>
+<h4 id="x-grafana-alerting-folder-uid"><code>X-Grafana-Alerting-Folder-UID</code></h4>
+<p>Enter the UID of the target destination folder for imported rules.</p>
+<h4 id="x-grafana-alerting-notification-settings"><code>X-Grafana-Alerting-Notification-Settings</code></h4>
+<p>JSON-encoded <a href="#alertrulenotificationsettings-object"><code>AlertRuleNotificationSettings</code> object</a> that allows setting the contact point for the alert rules.</p>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>AlertRuleNotificationSettings object</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h5 id="alertrulenotificationsettings-object">AlertRuleNotificationSettings object</h5>
+<p>When you set <code>X-Grafana-Alerting-Notification-Settings</code>, the header value must be a JSON-encoded object with the following keys:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>Type</th>
+          <th>Required</th>
+          <th>Example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>receiver</code></td>
+          <td><code>string</code></td>
+          <td>Yes</td>
+          <td><code>&quot;grafana-default-email&quot;</code></td>
+          <td>Name of the contact point (receiver) to which alerts are routed. Must exist in Grafana before import.</td>
+      </tr>
+      <tr>
+          <td><code>group_by</code></td>
+          <td><code>[]string</code></td>
+          <td>No</td>
+          <td><code>[&quot;alertname&quot;,&quot;grafana_folder&quot;,&quot;cluster&quot;]</code></td>
+          <td>Label set used by Alertmanager to aggregate alerts into a single notification.</td>
+      </tr>
+      <tr>
+          <td><code>group_wait</code></td>
+          <td><code>duration</code></td>
+          <td>No</td>
+          <td><code>&quot;30s&quot;</code></td>
+          <td>How long Alertmanager waits before sending the first notification for a new group.</td>
+      </tr>
+      <tr>
+          <td><code>group_interval</code></td>
+          <td><code>duration</code></td>
+          <td>No</td>
+          <td><code>&quot;5m&quot;</code></td>
+          <td>Time to wait before adding new alerts to an existing group&rsquo;s next notification.</td>
+      </tr>
+      <tr>
+          <td><code>repeat_interval</code></td>
+          <td><code>duration</code></td>
+          <td>No</td>
+          <td><code>&quot;4h&quot;</code></td>
+          <td>Minimum time before a previously-sent notification is repeated. Must not be less than <code>group_interval</code>.</td>
+      </tr>
+      <tr>
+          <td><code>mute_time_intervals</code></td>
+          <td><code>[]string</code></td>
+          <td>No</td>
+          <td><code>[&quot;maintenance&quot;]</code></td>
+          <td>One or more mute time interval names that silence alerts during those windows.</td>
+      </tr>
+      <tr>
+          <td><code>active_time_intervals</code></td>
+          <td><code>[]string</code></td>
+          <td>No</td>
+          <td><code>[&quot;maintenance&quot;]</code></td>
+          <td>List of active time interval names. Alerts are suppressed unless the current time matches one of them.</td>
+      </tr>
+  </tbody>
+</table>
+
+    </div>
+  </div>
+</div>
+
+<h3 id="compatible-endpoints">Compatible endpoints</h3>
+<p>The API endpoints listed in this section are supported in Grafana and are used by <code>mimirtool</code> and <code>cortextool</code>, as shown earlier. These endpoints are compatible with <a href="/docs/mimir/latest/references/http-api/">Mimir HTTP API</a>.</p>
+<p>In these endpoints, a &ldquo;namespace&rdquo; corresponds to a folder title in Grafana.</p>
+<p>The <code>POST</code> endpoints can be used to import data source–managed alert rules. They accept requests in both YAML and JSON. If no media type is specified, YAML is assumed.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Endpoint</th>
+          <th>Method</th>
+          <th>Summary</th>
+          <th>Mimir equivalent</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>POST</td>
+          <td><code>/convert/prometheus/config/v1/rules</code></td>
+          <td><a href="#create-or-update-multiple-rule-groups">Create or update multiple rule groups</a> across multiple namespaces. Requires <a href="#x-grafana-alerting-datasource-uid"><code>X-Grafana-Alerting-Datasource-UID</code></a>.</td>
+          <td>None</td>
+      </tr>
+      <tr>
+          <td>POST</td>
+          <td><code>/convert/prometheus/config/v1/rules/:namespaceTitle</code></td>
+          <td>Create or update a single rule group in a namespace. Requires <a href="#x-grafana-alerting-datasource-uid"><code>X-Grafana-Alerting-Datasource-UID</code></a>.</td>
+          <td><a href="/docs/mimir/latest/references/http-api/#set-rule-group">Set rule group</a></td>
+      </tr>
+  </tbody>
+</table>
+<p>The <code>GET</code> and <code>DELETE</code> endpoints work only with provisioned and imported alert rules. All <code>GET</code> endpoints support both JSON and YAML response formats based on the <code>Accept</code> header: use <code>application/json</code> for JSON responses, or <code>application/yaml</code> for YAML responses. YAML is the default format when no <code>Accept</code> header is specified.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Endpoint</th>
+          <th>Method</th>
+          <th>Summary</th>
+          <th>Mimir equivalent</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>GET</td>
+          <td><code>/convert/prometheus/config/v1/rules</code></td>
+          <td>Get all imported rule groups across all namespaces.</td>
+          <td><a href="/docs/mimir/latest/references/http-api/#list-rule-groups">List rule groups</a></td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td><code>/convert/prometheus/config/v1/rules/:namespaceTitle</code></td>
+          <td>Get imported rule groups in a specific namespace.</td>
+          <td><a href="/docs/mimir/latest/references/http-api/#get-rule-groups-by-namespace">Get rule groups by namespace</a></td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td><code>/convert/prometheus/config/v1/rules/:namespaceTitle/:group</code></td>
+          <td>Get imported rule group in a specific namespace.</td>
+          <td><a href="/docs/mimir/latest/references/http-api/#get-rule-group">Get rule group</a></td>
+      </tr>
+      <tr>
+          <td>DELETE</td>
+          <td><code>/convert/prometheus/config/v1/rules/:namespaceTitle</code></td>
+          <td>Delete all imported alert rules in a namespace.</td>
+          <td><a href="/docs/mimir/latest/references/http-api/#delete-namespace">Delete namespace</a></td>
+      </tr>
+      <tr>
+          <td>DELETE</td>
+          <td><code>/convert/prometheus/config/v1/rules/:namespaceTitle/:group</code></td>
+          <td>Delete a specific imported rule group.</td>
+          <td><a href="/docs/mimir/latest/references/http-api/#delete-rule-group">Delete rule group</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="create-or-update-multiple-rule-groups">Create or update multiple rule groups</h4>
+<pre>POST /convert/prometheus/config/v1/rules</pre>
+<p>Creates or updates multiple rule groups across multiple namespaces. This endpoint expects a request with a map of namespace titles to arrays of rule groups, and returns <code>202</code> on success.</p>
+<p>This endpoint has no Mimir equivalent and is Grafana-specific for bulk operations.</p>
+<h5 id="example-request-body">Example request body</h5>
+<pre>namespace1:
+  - name: MyGroupName1
+    rules:
+      - alert: MyAlertName1
+        expr: up == 0
+        labels:
+          severity: warning
+namespace2:
+  - name: MyGroupName2
+    rules:
+      - alert: MyAlertName2
+        expr: rate(http_requests_total[5m]) &gt; 0.1
+        labels:
+          severity: critical</pre>

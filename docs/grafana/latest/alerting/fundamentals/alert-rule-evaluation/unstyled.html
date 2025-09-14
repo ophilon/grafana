@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<h1 id="alert-rule-evaluation">Alert rule evaluation</h1>
+<p>The criteria determining when an alert rule fires are based on three settings:</p>
+<ul>
+<li>
+<p><a href="#evaluation-group">Evaluation group</a>: how frequently the alert rule is evaluated.</p>
+</li>
+<li>
+<p><a href="#pending-period">Pending period</a>: how long the condition must be met to start firing.</p>
+</li>
+<li>
+<p><a href="#pending-period">Keep firing for</a>: how long the alert continues to fire after the condition is no longer met.</p>
+<figure
+      class="figure-wrapper figure-wrapper__lightbox w-100p "
+      style="max-width: 750px;"
+      itemprop="associatedMedia"
+      itemscope=""
+      itemtype="http://schema.org/ImageObject"
+    ><a
+          class="lightbox-link captioned"
+          href="/media/docs/alerting/alert-rule-evaluation-2.png"
+          itemprop="contentUrl"
+        ><div class="img-wrapper w-100p h-auto"><img
+            class="lazyload mb-0"
+            data-src="/media/docs/alerting/alert-rule-evaluation-2.png"data-srcset="/media/docs/alerting/alert-rule-evaluation-2.png?w=320 320w, /media/docs/alerting/alert-rule-evaluation-2.png?w=550 550w, /media/docs/alerting/alert-rule-evaluation-2.png?w=750 750w, /media/docs/alerting/alert-rule-evaluation-2.png?w=900 900w, /media/docs/alerting/alert-rule-evaluation-2.png?w=1040 1040w, /media/docs/alerting/alert-rule-evaluation-2.png?w=1240 1240w, /media/docs/alerting/alert-rule-evaluation-2.png?w=1920 1920w"
+            data-sizes="auto"alt="Set the evaluation behavior of the alert rule in Grafana."width="1394"height="922"title="Set alert rule evaluation"/>
+          <noscript>
+            <img
+              src="/media/docs/alerting/alert-rule-evaluation-2.png"
+              alt="Set the evaluation behavior of the alert rule in Grafana."width="1394"height="922"title="Set alert rule evaluation"/>
+          </noscript></div><figcaption class="w-100p caption text-gray-13  ">Set alert rule evaluation</figcaption></a></figure>
+</li>
+</ul>
+<p>These settings affect how alert instances progress through their lifecycle.</p>
+<h2 id="alerting-lifecycle">Alerting lifecycle</h2>
+<p>Each alert rule can generate one or more alert instances.</p>
+<p>An alert instance transitions between these common states based on how long the alert condition remains met or not met.</p>
+<table>
+  <thead>
+      <tr>
+          <th>State</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Normal</strong></td>
+          <td>The state of an alert when the condition (threshold) is not met.</td>
+      </tr>
+      <tr>
+          <td><strong>Pending</strong></td>
+          <td>The state of an alert that has breached the threshold but for less than the <a href="#pending-period">pending period</a>.</td>
+      </tr>
+      <tr>
+          <td><strong>Alerting</strong></td>
+          <td>The state of an alert that has breached the threshold for longer than the <a href="#pending-period">pending period</a>.</td>
+      </tr>
+      <tr>
+          <td><strong>Recovering</strong></td>
+          <td>The state of a firing alert when the threshold is no longer breached, but for less than the <a href="#keep-firing-for">keep firing for</a> period.</td>
+      </tr>
+  </tbody>
+</table>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alert-rule-evaluation-basic-statediagram.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alert-rule-evaluation-basic-statediagram.png"data-srcset="/media/docs/alerting/alert-rule-evaluation-basic-statediagram.png?w=320 320w, /media/docs/alerting/alert-rule-evaluation-basic-statediagram.png?w=550 550w, /media/docs/alerting/alert-rule-evaluation-basic-statediagram.png?w=750 750w, /media/docs/alerting/alert-rule-evaluation-basic-statediagram.png?w=900 900w, /media/docs/alerting/alert-rule-evaluation-basic-statediagram.png?w=1040 1040w, /media/docs/alerting/alert-rule-evaluation-basic-statediagram.png?w=1240 1240w, /media/docs/alerting/alert-rule-evaluation-basic-statediagram.png?w=1920 1920w"
+          data-sizes="auto"alt="A diagram of the lifecyle of a firing alert instance."width="953"height="357"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-rule-evaluation-basic-statediagram.png"
+            alt="A diagram of the lifecyle of a firing alert instance."width="953"height="357"/>
+        </noscript></div></a></figure>
+<p>If an alert rule changes (except for updates to annotations, the evaluation interval, or other internal fields), its alert instances reset to the <strong>Normal</strong> state, and update accordingly during the next evaluation.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To learn about additional alert instance states, see 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/nodata-and-error-states/">No Data and Error states</a>.</p></blockquote></div>
+
+<h2 id="notification-routing">Notification routing</h2>
+<p>Alert instances are routed for 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/">notifications</a> in two scenarios:</p>
+<ol>
+<li>When they transition to the <strong>Alerting</strong> state.</li>
+<li>When they transition to <strong>Normal</strong> state and marked as <code>Resolved</code>, either from the <strong>Alerting</strong> or <strong>Recovering</strong> state.</li>
+</ol>
+<h2 id="evaluation-group">Evaluation group</h2>
+Every alert rule and recording rule is assigned to an evaluation group. Each evaluation group contains an <strong>evaluation interval</strong> that determines how frequently the rule is checked. For instance, the evaluation may occur every <code>10s</code>, <code>30s</code>, <code>1m</code>, <code>10m</code>, etc.
+
+<p>Rules can be evaluated concurrently or sequentially. For details, see 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/evaluation-within-a-group/">How rules are evaluated within a group</a>.</p>
+<h2 id="pending-period">Pending period</h2>
+<p>You can set a <strong>Pending period</strong> to prevent unnecessary notifications caused by temporary issues.</p>
+<p>When the alert condition is met, the alert instance enters the <strong>Pending</strong> state. It remains in this state until the condition has been continuously true for the entire <strong>Pending period</strong>.</p>
+<p>This ensures the condition breach is stable before the alert transitions to the <strong>Alerting</strong> state and routed for notification.</p>
+
+
+<ul>
+<li><strong>Normal</strong> -&gt; <strong>Pending</strong> -&gt; <strong>Alerting</strong><sup>*</sup></li>
+</ul>
+<p>You can also set the <strong>Pending period</strong> to zero to skip the <strong>Pending</strong> state entirely and transition to <strong>Alerting</strong> immediately.</p>
+<h2 id="keep-firing-for">Keep firing for</h2>
+<p>You can set a <strong>Keep firing for</strong> period to avoid repeated firing-resolving-firing notifications caused by flapping conditions.</p>
+<p>When the alert condition is no longer met during the <strong>Alerting</strong> state, the alert instance enters the <strong>Recovering</strong> state.</p>
+
+
+<ul>
+<li><strong>Alerting</strong> → <strong>Recovering</strong> → <strong>Normal (Resolved)</strong><sup>*</sup></li>
+<li>After the <strong>Keep firing for</strong> period elapses, the alert transitions to the <strong>Normal</strong> state and is marked as <strong>Resolved</strong>.</li>
+<li>If the alert condition is met again, the alert transitions back to the <strong>Alerting</strong> state, and no new notifications are sent.</li>
+</ul>
+<p>You can also set the <strong>Keep firing for</strong> period to zero to skip the <strong>Recovering</strong> state entirely.</p>
+<h2 id="evaluation-example">Evaluation example</h2>
+<p>Keep in mind:</p>
+<ul>
+<li>One alert rule can generate multiple alert instances—one for each series or dimension produced by the rule&rsquo;s query. Alert instances from the same alert rule may be in different states.</li>
+<li>Only alert instances in the <strong>Alerting</strong> and <strong>Normal (Resolved)</strong> state are routed for 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/">notifications</a>.</li>
+</ul>
+<p>Consider an alert rule with an <strong>evaluation interval</strong> set at every 30 seconds and a <strong>pending period</strong> of 90 seconds. The evaluation occurs as follows:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Condition</th>
+          <th>Alert instance state</th>
+          <th>Pending counter</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>00:30 (first evaluation)</td>
+          <td>Not met</td>
+          <td>Normal</td>
+          <td>-</td>
+      </tr>
+      <tr>
+          <td>01:00 (second evaluation)</td>
+          <td>Breached</td>
+          <td>Pending</td>
+          <td>0s</td>
+      </tr>
+      <tr>
+          <td>01:30 (third evaluation)</td>
+          <td>Breached</td>
+          <td>Pending</td>
+          <td>30s</td>
+      </tr>
+      <tr>
+          <td>02:00 (fourth evaluation)</td>
+          <td>Breached</td>
+          <td>Pending</td>
+          <td>60s</td>
+      </tr>
+      <tr>
+          <td>02:30 (fifth evaluation)</td>
+          <td>Breached</td>
+          <td>Alerting 📩</td>
+          <td>90s</td>
+      </tr>
+  </tbody>
+</table>
+<p>With a <strong>keep firing for</strong> period of 0 seconds, the alert instance transitions immediately from <strong>Alerting</strong> to <strong>Normal</strong>, and marked as <code>Resolved</code>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Condition</th>
+          <th>Alert instance state</th>
+          <th>Pending counter</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>03:00 (sixth evaluation)</td>
+          <td>Not met</td>
+          <td>Normal <sup>Resolved</sup> 📩</td>
+          <td>120s</td>
+      </tr>
+      <tr>
+          <td>03:30 (seventh evaluation)</td>
+          <td>Not met</td>
+          <td>Normal</td>
+          <td>150s</td>
+      </tr>
+  </tbody>
+</table>

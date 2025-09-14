@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<h1 id="add-or-remove-a-user-in-an-organization">Add or remove a user in an organization</h1>
+<p>Server administrators can add and remove users in organizations. To do this as an organization administrator, see <a href="../../manage-org-users/">Manage users in an organization</a>.</p>
+<h2 id="add-a-user-to-an-organization">Add a user to an organization</h2>
+<p>Add a user to an organization when you want the user to have access to organization resources such as dashboards, data sources, and playlists. A user must belong to at least one organization.</p>
+<p>You are required to specify an Admin role for each organization. The first user you add to an organization becomes the Admin by default. After you assign the Admin role to a user, you can add other users to an organization as either Admins, Editors, or Viewers.</p>
+<h3 id="before-you-begin">Before you begin</h3>
+<ul>
+<li><a href="../../../organization-management/#create-an-organization">Create an organization</a></li>
+<li><a href="./#add-a-user">Add a user</a> to Grafana</li>
+<li>Ensure you have <a href="../assign-remove-server-admin-privileges/">Grafana server administrator privileges</a></li>
+</ul>
+<p><strong>To add a user to an organization</strong>:</p>
+<ol>
+<li>
+<p>Sign in to Grafana as a server administrator.</p>
+</li>
+<li>
+<p>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</p>
+</li>
+<li>
+<p>Click a user.</p>
+</li>
+<li>
+<p>In the Organizations section, click <strong>Add user to organization</strong>.</p>
+</li>
+<li>
+<p>Select an organization and a role.</p>
+<p>For more information about user permissions, refer to <a href="../../../roles-and-permissions/#organization-roles">Organization roles</a>.</p>
+</li>
+<li>
+<p>Click <strong>Add to organization</strong>.</p>
+</li>
+</ol>
+<p>The next time the user signs in, they will be able to navigate to their new organization using the Switch Organizations option in the user profile menu.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you have <a href="../../../roles-and-permissions/#organization-roles">organization administrator</a> permissions and <em>not</em> <a href="../../../roles-and-permissions/#grafana-server-administrators">server administrator</a> permissions, you can still <a href="../../manage-org-users/#invite-a-user-to-join-an-organization">invite a user to join an organization</a>.</p></blockquote></div>
+
+<h2 id="remove-a-user-from-an-organization">Remove a user from an organization</h2>
+<p>Remove a user from an organization when they no longer require access to the dashboards, data sources, or alerts in that organization.</p>
+<h3 id="before-you-begin-1">Before you begin</h3>
+<ul>
+<li>Ensure you have Grafana server administrator privileges</li>
+</ul>
+<p><strong>To remove a user from an organization</strong>:</p>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+<li>Click a user.</li>
+<li>In the Organization section, click <strong>Remove from organization</strong> next to the organization from which you want to remove the user.</li>
+<li>Click <strong>Confirm removal</strong>.</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> If you have <a href="../../../roles-and-permissions/#organization-roles">organization administrator</a> permissions and <em>not</em> <a href="../../../roles-and-permissions/#grafana-server-administrators">server administrator</a> permissions, you can still <a href="../../manage-org-users/#remove-a-user-from-an-organization">remove a user from an organization</a> in the Users section of organization configuration.</p></blockquote>

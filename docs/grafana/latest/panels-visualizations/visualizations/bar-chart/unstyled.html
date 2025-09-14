@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<h1 id="bar-chart">Bar chart</h1>
+<p>A bar chart is a visual representation that uses rectangular bars, where the length of each bar represents each value.
+You can use the bar chart visualization when you want to compare values over different categories or time periods. The visualization can display the bars horizontally or vertically, and can be customized to group or stack bars for more complex data analysis.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-bar-charts-v11.3.png"
+  alt="Bar chart visualizations" width="1034"
+     height="377"/></p>
+<p>You can use the bar chart visualization if you need to show:</p>
+<ul>
+<li>Population distribution by age or location</li>
+<li>CPU usage per application</li>
+<li>Sales per division</li>
+<li>Server cost distribution</li>
+</ul>
+<h2 id="configure-a-bar-chart">Configure a bar chart</h2>
+<p>The following video shows you how to create and configure a bar chart visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=qyKE9-71KkE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/ktMs4D6Mk/" target="_blank" rel="noopener noreferrer">Grafana Bar Charts and Pie Charts</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/ktMs4D6Mk/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>To create a bar chart visualization, you need a dataset containing one string or time field (or column) and at least one numeric field, though preferably more than one to make best use of the visualization.</p>
+<p>The text or time field is used to label the bars or values in each row of data and the numeric fields are represented by proportionally sized bars.</p>
+<h3 id="example-1">Example 1</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Group</th>
+          <th>Value1</th>
+          <th>Value2</th>
+          <th>Value3</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>uno</td>
+          <td>5</td>
+          <td>3</td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-11.1-barchart-example1.png"
+  alt="Bar chart single row example" width="1200"
+     height="334"/></p>
+<p>If you have more than one text or time field, by default, the visualization uses the first one, but you can change this in the x-axis option as described in the <a href="#bar-chart-options">Bar chart options</a> section.</p>
+<h3 id="example-2">Example 2</h3>
+<p>If your dataset contains multiple rows, the visualization displays multiple bar chart groups where each group contains multiple bars representing all the numeric values for a row.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Group</th>
+          <th>Value1</th>
+          <th>Value2</th>
+          <th>Value3</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>uno</td>
+          <td>5</td>
+          <td>3</td>
+          <td>2</td>
+      </tr>
+      <tr>
+          <td>dos</td>
+          <td>10</td>
+          <td>6</td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td>tres</td>
+          <td>20</td>
+          <td>8</td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-11.1-barchart-example2.png"
+  alt="Bar chart multiple row example" width="1200"
+     height="334"/></p>
+<p>While the first field can be time-based and you can use a bar chart to plot time-series data, for large amounts of time-series data, we recommend that you use the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">time series visualization</a> and configure it to be displayed as bars.</p>
+<p>We recommend that you only use one dataset in a bar chart because using multiple datasets can result in unexpected behavior.</p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="bar-chart-options">Bar chart options</h3>
+<p>Use these options to refine your visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>X Axis</td>
+          <td>Specify which field is used for the x-axis.</td>
+      </tr>
+      <tr>
+          <td>Orientation</td>
+          <td>Choose from: <ul><li><strong>Auto</strong> - Grafana decides the bar orientation based on the panel dimensions.</li><li><strong>Horizontal</strong> - Will make the X axis the category axis.</li><li><strong>Vertical</strong> - Will make the Y axis the category axis.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Rotate x-axis tick labels</td>
+          <td>When the graph is vertically oriented, this setting rotates the labels under the bars. This setting is useful when bar chart labels are long and overlap.</td>
+      </tr>
+      <tr>
+          <td>X-axis tick label max length</td>
+          <td>Sets the maximum length of bar chart labels. Labels longer than the maximum length are truncated, and appended with <code>...</code>.</td>
+      </tr>
+      <tr>
+          <td>X-axis labels minimum spacing</td>
+          <td>Sets the minimum spacing between x-axis labels. Depending on your choice, you can select the <strong>RTL</strong> checkbox to require space from the right side. Choose from: <ul><li><strong>None</strong> - All tick marks are shown.</li><li><strong>Small</strong> - 100 px of space is required between labels.</li><li><strong>Medium</strong> - 200 px of space is required between labels.</li><li><strong>Large</strong> - 300 px of space is required between labels.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Show values</td>
+          <td>This controls whether values are shown. Values are shown on top or to the left of bars. Choose from: <ul><li><strong>Auto</strong> Values will be shown if there is space.</li><li><strong>Always</strong> Always show values.</li><li><strong>Never</strong> Never show values.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Stacking</td>
+          <td>Controls bar chart stacking. Choose from: <ul><li><strong>Off</strong>: Bars will not be stacked.</li><li><strong>Normal</strong>: Bars will be stacked on each other.</li><li><strong>Percent</strong>: Bars will be stacked on each other, and the height of each bar is the percentage of the total height of the stack.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Group width</td>
+          <td>Controls the width of groups. 1 = Max with, 0 = Min width.</td>
+      </tr>
+      <tr>
+          <td>Bar width</td>
+          <td>Controls the width of bars. 1 = Max width, 0 = Min width.</td>
+      </tr>
+      <tr>
+          <td>Bar radius</td>
+          <td>Controls the radius of the bars. Choose from: <ul><li>0 = Minimum radius</li><li>0.5 = Maximum radius</li></ul></td>
+      </tr>
+      <tr>
+          <td>Highlight full area on cover</td>
+          <td>Controls if the entire surrounding area of the bar is highlighted when you hover over the bar.</td>
+      </tr>
+      <tr>
+          <td>Color by field</td>
+          <td>Use the color value for a sibling field to color each bar value.</td>
+      </tr>
+      <tr>
+          <td>Line width</td>
+          <td>Controls line width of the bars.</td>
+      </tr>
+      <tr>
+          <td>Fill opacity</td>
+          <td>Controls the fill opacity bars.</td>
+      </tr>
+      <tr>
+          <td><a href="#gradient-mode">Gradient mode</a></td>
+          <td>Set the mode of the gradient fill. Fill gradient is based on the line color. To change the color, use the standard color scheme field option. Gradient appearance is influenced by the <strong>Fill opacity</strong> setting.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="gradient-mode">Gradient mode</h4>
+<p>Set the mode of the gradient fill. Fill gradient is based on the line color. To change the color, use the standard color scheme field option. Gradient appearance is influenced by the <strong>Fill opacity</strong> setting. Choose from:</p>
+<ul>
+<li><strong>None</strong> - No gradient fill. This is the default setting.</li>
+<li><strong>Opacity</strong> - Transparency of the gradient is calculated based on the values on the y-axis. Opacity of the fill is increasing with the values on the Y-axis.</li>
+<li><strong>Hue</strong> - Gradient color is generated based on the hue of the line color.</li>
+<li><strong>Scheme</strong> - The bar receives a gradient color defined by the <strong>Standard options &gt; Color scheme</strong> selection.
+<ul>
+<li>
+<p><strong>From thresholds</strong> - If the <strong>Color scheme</strong> selection is <strong>From thresholds (by value)</strong>, then each bar is the color of the defined threshold.</p>
+<figure
+        class="figure-wrapper figure-wrapper__lightbox w-100p "
+        style="max-width: 786px;"
+        itemprop="associatedMedia"
+        itemscope=""
+        itemtype="http://schema.org/ImageObject"
+      ><a
+            class="lightbox-link captioned"
+            href="/media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png"
+            itemprop="contentUrl"
+          ><div class="img-wrapper w-100p h-auto"><img
+              class="lazyload mb-0"
+              data-src="/media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png?w=1920 1920w"
+              data-sizes="auto"alt="Color scheme From thresholds"width="786"height="336"title="Color scheme: From thresholds"/>
+            <noscript>
+              <img
+                src="/media/docs/grafana/panels-visualizations/screenshot-colors-by-thresholds-v11.3.png"
+                alt="Color scheme From thresholds"width="786"height="336"title="Color scheme: From thresholds"/>
+            </noscript></div><figcaption class="w-100p caption text-gray-13  ">Color scheme: From thresholds</figcaption></a></figure>
+</li>
+<li>
+<p><strong>Gradient color schemes</strong> - The following image shows a bar chart with the <strong>Green-Yellow-Red (by value)</strong> color scheme option selected.</p>
+<figure
+        class="figure-wrapper figure-wrapper__lightbox w-100p "
+        style="max-width: 785px;"
+        itemprop="associatedMedia"
+        itemscope=""
+        itemtype="http://schema.org/ImageObject"
+      ><a
+            class="lightbox-link captioned"
+            href="/media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png"
+            itemprop="contentUrl"
+          ><div class="img-wrapper w-100p h-auto"><img
+              class="lazyload mb-0"
+              data-src="/media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png?w=1920 1920w"
+              data-sizes="auto"alt="Color scheme Green-Yellow-Red"width="785"height="338"title="Color scheme: Green-Yellow-Red"/>
+            <noscript>
+              <img
+                src="/media/docs/grafana/panels-visualizations/screenshot-colors-by-value-v11.3.png"
+                alt="Color scheme Green-Yellow-Red"width="785"height="338"title="Color scheme: Green-Yellow-Red"/>
+            </noscript></div><figcaption class="w-100p caption text-gray-13  ">Color scheme: Green-Yellow-Red</figcaption></a></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="tooltip-options">Tooltip options</h3>
+
+
+<div data-shared="visualizations/tooltip-options-1.md">
+            
+
+<p>Tooltip options control the information overlay that appears when you hover over data points in the visualization.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#tooltip-mode">Tooltip mode</a></td>
+          <td>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</td>
+      </tr>
+      <tr>
+          <td><a href="#values-sort-order">Values sort order</a></td>
+          <td>This option controls the order in which values are listed in a tooltip.</td>
+      </tr>
+      <tr>
+          <td>Hide zeros</td>
+          <td>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Hide zeros</strong> option is displayed. This option controls whether or not series with <code>0</code> values are shown in the list in the tooltip.</td>
+      </tr>
+      <tr>
+          <td>Max width</td>
+          <td>Set the maximum width of the tooltip box.</td>
+      </tr>
+      <tr>
+          <td>Max height</td>
+          <td>Set the maximum height of the tooltip box. The default is 600 pixels.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="tooltip-mode">Tooltip mode</h4>
+<p>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</p>
+<ul>
+<li><strong>Single</strong> - The hover tooltip shows only a single series, the one that you are hovering over on the visualization.</li>
+<li><strong>All</strong> - The hover tooltip shows all series in the visualization. Grafana highlights the series that you are hovering over in bold in the series list in the tooltip.</li>
+<li><strong>Hidden</strong> - Do not display the tooltip when you interact with the visualization.</li>
+</ul>
+<p>Use an override to hide individual series from the tooltip.</p>
+<h4 id="values-sort-order">Values sort order</h4>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Values sort order</strong> option is displayed. This option controls the order in which values are listed in a tooltip. Choose from the following:</p>
+<ul>
+<li><strong>None</strong> - Grafana automatically sorts the values displayed in a tooltip.</li>
+<li><strong>Ascending</strong> - Values in the tooltip are listed from smallest to largest.</li>
+<li><strong>Descending</strong> - Values in the tooltip are listed from largest to smallest.</li>
+</ul>
+
+  </div>
+
+        
+<h3 id="legend-options">Legend options</h3>
+
+
+<div data-shared="visualizations/legend-options-1.md">
+            <p>Legend options control the series names and statistics that appear under or to the right of the graph. For more information about the legend, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Visibility</td>
+          <td>Toggle the switch to turn the legend on or off.</td>
+      </tr>
+      <tr>
+          <td>Mode</td>
+          <td>Use these settings to define how the legend appears in your visualization. <strong>List</strong> displays the legend as a list. This is a default display mode of the legend. <strong>Table</strong> displays the legend as a table.</td>
+      </tr>
+      <tr>
+          <td>Placement</td>
+          <td>Choose where to display the legend. <strong>Bottom</strong> places the legend below the graph. <strong>Right</strong> places the legend to the right of the graph.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Control how wide the legend is when placed on the right side of the visualization. This option is only displayed if you set the legend placement to <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>Choose which of the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">standard calculations</a> to show in the legend. You can have more than one.</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+
+        
+<h3 id="text-size">Text size</h3>
+<p>Enter a <strong>Value</strong> to change the size of the text on your bar chart.</p>
+<h3 id="axis">Axis</h3>
+<p>Use the following field settings to refine how your axes display.</p>
+<p>For guidance on configuring more than one y-axis, refer to <a href="#multiple-y-axes">Multiple y-axes</a>.</p>
+<p>Some field options will not affect the visualization until you click outside of the field option box you are editing or press Enter.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Placement</td>
+          <td>Select the placement of the Y-axis. Choose from: <ul><li><strong>Auto</strong> - Grafana automatically assigns Y-axis to the series. When there are two or more series with different units, then Grafana assigns the left axis to the first unit and right to the following units.</li><li><strong>Left</strong> - Display all Y-axes on the left side.</li><li><strong>Right</strong> - Display all Y-axes on the right side.</li><li><strong>Hidden</strong> - Hide all axes. To selectively hide axes, 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/#add-a-field-override">add a field override</a> that targets specific fields.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Label</td>
+          <td>Set a Y-axis text label. If you have more than one Y-axis, then you can assign different labels with an override.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Set a fixed width of the axis. By default, Grafana dynamically calculates the width of an axis.<br></br>By setting the width of the axis, data whose axes types are different can share the same display proportions. This makes it easier to compare more than one graph’s worth of data because the axes are not shifted or stretched within visual proximity of each other.</td>
+      </tr>
+      <tr>
+          <td>Show grid lines</td>
+          <td>Set whether grid lines are displayed in the chart. Choose from: <ul><li><strong>Auto</strong> - Grafana automatically determines whether grid lines are displayed.</li><li><strong>On</strong> - Grid lines are always displayed.</li><li><strong>Off</strong> - Grid lines are never displayed</li></ul></td>
+      </tr>
+      <tr>
+          <td>Color</td>
+          <td>Choose whether the axis color is the <strong>Text</strong> or <strong>Series</strong> color.</td>
+      </tr>
+      <tr>
+          <td>Show border</td>
+          <td>Toggle the switch to hide or display the border.</td>
+      </tr>
+      <tr>
+          <td>Scale</td>
+          <td>Set how the y-axis is split. Choose from: <ul><li><strong>Linear</strong></li><li><strong>Logarithmic</strong> - Choose between log base 2 or log base 10.</li><li><strong>Symlog</strong> - Uses a symmetrical logarithmic scale. Choose between log base 2 or log base 10, allowing for negative values.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Centered zero</td>
+          <td>Set the y-axis so it&rsquo;s centered on zero.</td>
+      </tr>
+      <tr>
+          <td><a href="#soft-min-and-soft-max">Soft min and soft max</a></td>
+          <td>Set a <strong>Soft min</strong> or <strong>soft max</strong> option for better control of Y-axis limits. By default, Grafana sets the range for the Y-axis automatically based on the dataset.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="soft-min-and-soft-max">Soft min and soft max</h4>
+<p>Set a <strong>Soft min</strong> or <strong>soft max</strong> option for better control of Y-axis limits. By default, Grafana sets the range for the Y-axis automatically based on the dataset.</p>
+<p><strong>Soft min</strong> and <strong>soft max</strong> settings can prevent blips from turning into mountains when the data is mostly flat, and hard min or max derived from standard min and max field options can prevent intermittent spikes from flattening useful detail by clipping the spikes past a defined point.</p>
+<p>You can set standard min/max options to define hard limits of the Y-axis. For more information, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#max">Standard options definitions</a>.</p>
+
+
+<div data-shared="visualizations/multiple-y-axes.md">
+            
+
+<h4 id="multiple-y-axes">Multiple y-axes</h4>
+<p>In some cases, you might want to display multiple y-axes. For example, if you have a dataset showing both temperature and humidity over time, you might want to show two y-axes with different units for the two series.</p>
+<p>You can configure multiple y-axes and control where they&rsquo;re displayed in the visualization by adding field overrides. 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/#example-2-format-temperature-and-humidity">This example of a dataset that includes temperature and humidity</a> describes how you can configure that. Repeat the steps for every y-axis you wish to display.</p>
+
+  </div>
+
+        
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-2.md">
+            <p><em>Data links</em> allow you to link to other panels, dashboards, and external resources and <em>actions</em> let you trigger basic, unauthenticated, API calls.
+In both cases, you can carry out these tasks while maintaining the context of the source panel.</p>
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+<li><strong>One click</strong> - Opens the data link with a single click. Only one data link can have <strong>One click</strong> enabled at a time.</li>
+</ul>
+<p>For each action, define the following API call settings:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>A human-readable label for the action that&rsquo;s displayed in the UI.</td>
+      </tr>
+      <tr>
+          <td>Confirmation message</td>
+          <td>A descriptive prompt to confirm or cancel the action.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Select from <strong>POST</strong>, <strong>PUT</strong>, or <strong>GET</strong>.</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>The request URL.</p><p>To add a variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables.</td>
+      </tr>
+      <tr>
+          <td>Variables</td>
+          <td><strong>Key</strong> and <strong>Name</strong> pairs with a type selection. Click the <strong>+</strong> icon to add as many variables as you need. To add a variable to the request, prefix the key with <code>$</code>. You can set the values for the variables when performing an action.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td><strong>Key</strong> and <strong>Value</strong> pairs. Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Headers</td>
+          <td>Comprised of <strong>Key</strong> and <strong>Value</strong> pairs and a <strong>Content-Type</strong>.</p><p>Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select from the following: <strong>application/json</strong>, <strong>text/plain</strong>, <strong>application/XML</strong>, and <strong>application/x-www-form-urlencoded</strong>.</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>The body of the request.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-1.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+      <tr>
+          <td>Show thresholds</td>
+          <td>Choose from a variety of display options including not displaying thresholds at all.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

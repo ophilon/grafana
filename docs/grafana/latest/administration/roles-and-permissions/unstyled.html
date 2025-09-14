@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<h1 id="roles-and-permissions">Roles and permissions</h1>
+<p>A <em>user</em> is any individual who can log in to Grafana. Each user is associated with a <em>role</em> that includes <em>permissions</em>. Permissions determine the tasks a user can perform in the system. For example, the <strong>Admin</strong> role includes permissions for an administrator to create and delete users.</p>
+<p>You can assign a user one of three types of permissions:</p>
+<ul>
+<li>Grafana server administrator permissions: Manage Grafana server-wide settings and resources</li>
+<li>Organization permissions: Manage access to dashboards, alerts, plugins, teams, playlists, and other resources for an entire organization. The available roles are Viewer, Editor, and Admin.</li>
+<li>Dashboard and folder permission: Manage access to dashboards and folders</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you are running Grafana Enterprise, you can also control access to data sources and use role-based access control to grant user access to read and write permissions to specific Grafana resources. For more information about access control options available with Grafana Enterprise, refer to <a href="#grafana-enterprise-user-permissions-features">Grafana Enterprise user permissions features</a>.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For Grafana Cloud users, Grafana Support is not authorised to make org role changes. Instead, contact your org administrator.</p></blockquote></div>
+
+<h2 id="grafana-server-administrators">Grafana server administrators</h2>
+<p>A Grafana server administrator manages server-wide settings and access to resources such as organizations, users, and licenses. Grafana includes a default server administrator that you can use to manage all of Grafana, or you can divide that responsibility among other server administrators that you create.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The server administrator role does not mean that the user is also a Grafana <a href="#organization-roles">organization administrator</a>.</p></blockquote></div>
+
+<p>A server administrator can perform the following tasks:</p>
+<ul>
+<li>Manage users and permissions</li>
+<li>Create, edit, and delete organizations</li>
+<li>View server-wide settings defined in the <a href="../../setup-grafana/configure-grafana/">Configuration</a> file</li>
+<li>View Grafana server statistics, including total users and active sessions</li>
+<li>Upgrade the server to Grafana Enterprise.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The server administrator role does not exist in Grafana Cloud.</p></blockquote></div>
+
+<p>To assign or remove server administrator privileges, see <a href="../user-management/server-user-management/assign-remove-server-admin-privileges/">Server user management</a>.</p>
+<h2 id="organization-users-and-permissions">Organization users and permissions</h2>
+<p>All Grafana users belong to at least one organization. An organization is an entity that exists within your instance of Grafana.</p>
+<p>Permissions assigned to a user within an organization control the extent to which the user has access to and can update the following organization resources:</p>
+<ul>
+<li>dashboards and folders</li>
+<li>alerts</li>
+<li>playlists</li>
+<li>users within that organization</li>
+<li>data sources</li>
+<li>teams</li>
+<li>organization and team settings</li>
+<li>plugins</li>
+<li>annotations</li>
+<li>library panels</li>
+<li>service accounts</li>
+</ul>
+<p>For more information about managing organization users, see <a href="../user-management/manage-org-users/">User management</a>.</p>
+<h3 id="organization-roles">Organization roles</h3>
+<p>Organization role-based permissions are global, which means that each permission level applies to all Grafana resources within an given organization. For example, an editor can see and update <em>all</em> dashboards in an organization, unless those dashboards have been specifically restricted using <a href="../user-management/manage-dashboard-permissions/">dashboard permissions</a>.</p>
+<p>Grafana uses the following roles to control user access:</p>
+<ul>
+<li><strong>Organization administrator</strong>: Has access to all organization resources, including dashboards, users, and teams.</li>
+<li><strong>Editor</strong>: Can view and edit dashboards, folders, and playlists.</li>
+<li><strong>Viewer</strong>: Can view dashboards, playlists, and query data sources.</li>
+<li><strong>No Basic Role</strong>: Has no permissions. Permissions will be added with RBAC as needed.</li>
+</ul>
+<p>The following table lists permissions for each role.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Permission</th>
+          <th style="text-align: center">Organization administrator</th>
+          <th style="text-align: center">Editor</th>
+          <th style="text-align: center">Viewer</th>
+          <th style="text-align: center">No Basic Role</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">View dashboards</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Add, edit, delete dashboards</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Add, edit, delete folders</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">View playlists</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Add, edit, delete playlists</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Create library panels</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">View annotations</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Add, edit, delete annotations</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Access Explore</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Query data sources directly</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Add, edit, delete data sources</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Add and edit users</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Add and edit teams</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Change organizations settings</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Change team settings</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Configure application plugins</td>
+          <td style="text-align: center">yes</td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="dashboard-permissions">Dashboard permissions</h2>
+<p>When you want to extend a viewer&rsquo;s ability to edit and save dashboard changes or limit an editor&rsquo;s permission to modify a dashboard, you can assign permissions to dashboards and folders. For example, you might want a certain viewer to be able to edit a dashboard. While that user can <em>see</em> all dashboards, you can grant them access to <em>update</em> only one of them.</p>
+<blockquote>
+<p>Important: The dashboard permissions you specify override the organization permissions you assign to the user for the selected entity.</p></blockquote>
+<p>You can specify the following permissions to dashboards and folders.</p>
+<ul>
+<li><strong>Admin</strong>: Can create, edit, or delete a dashboard. Can edit or delete a folder, and create dashboards and subfolders in a folder. Administrators can also change dashboard and folder permissions.</li>
+<li><strong>Edit</strong>: Can create, edit, or delete a dashboard. Can edit or delete a folder, and create dashboards and subfolders in a folder. Editors <em>cannot</em> change folder or dashboard permissions.</li>
+<li><strong>View</strong>: Can only view dashboards and folders.</li>
+</ul>
+<blockquote>
+<p>Important: When a user creates a dashboard or a folder they are automatically granted <strong>Admin</strong> permissions for it.</p></blockquote>
+<p>For more information about assigning dashboard folder permissions, refer to <a href="../user-management/manage-dashboard-permissions/#grant-dashboard-folder-permissions">Grant dashboard folder permissions</a>.</p>
+<p>For more information about assigning dashboard permissions, refer to <a href="../user-management/manage-dashboard-permissions/#grant-dashboard-permissions">Grant dashboard permissions</a>.</p>
+<h2 id="teams-and-permissions">Teams and permissions</h2>
+<p>A team is a group of users within an organization that have common dashboard and data source permission needs. For example, instead of assigning five users access to the same dashboard, you can create a team that consists of those users and assign dashboard permissions to the team. A user can belong to multiple teams.</p>
+<p>You can assign a team member one of the following permissions:</p>
+<ul>
+<li><strong>Member</strong>: Includes the user as a member of the team. Members do not have team administrator privileges.</li>
+<li><strong>Admin</strong>: Administrators have permission to manage various aspects of the team, including team membership, permissions, and settings.</li>
+</ul>
+<p>Because teams exist inside an organization, the organization administrator can manage all teams.</p>
+<p>For details on managing teams, see <a href="../team-management/">Team management</a>.</p>
+<h2 id="grafana-enterprise-user-permissions-features">Grafana Enterprise user permissions features</h2>
+<p>While Grafana OSS includes a robust set of permissions and settings that you can use to manage user access to server and organization resources, you might find that you require additional capabilities.</p>
+<p><a href="../../introduction/grafana-enterprise/">Grafana Enterprise</a> provides the following permissions-related features:</p>
+<ul>
+<li>Data source permissions</li>
+<li>Role-based access control (RBAC)</li>
+</ul>
+<h3 id="data-source-permissions">Data source permissions</h3>
+<p>By default, a user can query any data source in an organization, even if the data source is not linked to the user&rsquo;s dashboards.</p>
+<p>Data source permissions enable you to restrict data source query permissions to specific <strong>Users</strong>, <strong>Service Accounts</strong>, and <strong>Teams</strong>. For more information about assigning data source permissions, refer to <a href="../data-source-management/#data-source-permissions/">Data source permissions</a>.</p>
+<h3 id="role-based-access-control">Role-based access control</h3>
+<p>RBAC provides you a way of granting, changing, and revoking user read and write access to Grafana resources, such as users, reports, and authentication.</p>
+<p>For more information about RBAC, refer to <a href="access-control/">Role-based access control</a>.</p>
+<h3 id="learn-more">Learn more</h3>
+<p>Want to know more? Complete the <a href="/tutorials/create-users-and-teams">Create users and teams</a> tutorial to learn how to set up users and teams.</p>

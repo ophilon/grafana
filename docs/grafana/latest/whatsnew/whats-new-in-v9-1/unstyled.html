@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v91">What&rsquo;s new in Grafana v9.1</h1>
+<p>We&rsquo;re excited to announce Grafana v9.1, with a variety of improvements that focus on Grafana&rsquo;s usability, performance, and security.
+Read on to learn about new options to share and embed dashboards, search and navigation enhancements, new panel options, and additional authentication features.
+You can also find out more about new single sign-on and role-based access control options in Grafana Enterprise, and more.
+For details, see the complete <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>.</p>
+<h2 id="oss">OSS</h2>
+<h3 id="auth-and-security">Auth and security</h3>
+<h4 id="grafana-service-accounts-are-generally-available">Grafana service accounts are generally available</h4>
+<p>Service accounts are an evolution in machine access within Grafana.
+You can create multiple API tokens per service account with independent expiration dates, and temporarily disable a service account without deleting it.
+These benefits make service accounts a more flexible way for Terraform and other apps to authenticate with Grafana.</p>
+<p>Service accounts also work with <a href="../../administration/roles-and-permissions/access-control/">role-based access control</a> in <a href="../../introduction/grafana-enterprise/">Grafana Enterprise</a>.
+You can improve security by granting service accounts specific roles to limit the functions they can perform.
+Service accounts have been in beta since Grafana v8.5.
+During that time, we&rsquo;ve improved the UI and migration path from API keys, made it possible to add service accounts to teams, and inherit team permissions.
+To learn more about service accounts, see the <a href="../../administration/service-accounts/">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/service-accounts/add-service-account-token-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/service-accounts/add-service-account-token-9-1.png"data-srcset="/static/img/docs/service-accounts/add-service-account-token-9-1.png?w=320 320w, /static/img/docs/service-accounts/add-service-account-token-9-1.png?w=550 550w, /static/img/docs/service-accounts/add-service-account-token-9-1.png?w=750 750w, /static/img/docs/service-accounts/add-service-account-token-9-1.png?w=900 900w, /static/img/docs/service-accounts/add-service-account-token-9-1.png?w=1040 1040w, /static/img/docs/service-accounts/add-service-account-token-9-1.png?w=1240 1240w, /static/img/docs/service-accounts/add-service-account-token-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Adding a service account token"width="1485"height="694"title="Adding a service account token"/>
+        <noscript>
+          <img
+            src="/static/img/docs/service-accounts/add-service-account-token-9-1.png"
+            alt="Adding a service account token"width="1485"height="694"title="Adding a service account token"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Adding a service account token</figcaption></a></figure>
+<h4 id="jwt-url-embedding">JWT URL embedding</h4>
+<p>You can now easily embed Grafana in other applications by adding a JWT token directly in the Grafana&rsquo;s URL, for example,<code>https://example.grafana.net/dashboard/uuid?aut_token=&lt;jwt_token&gt;</code>.
+When the JWT token is passed through the request URL to Grafana, Grafana validates and authenticates the token linked to a specific user, allowing access to dashboards which that user can view.
+To see JWT URL embedding in action, see the <a href="https://github.com/grafana/grafana-iframe-oauth-sample" target="_blank" rel="noopener noreferrer">sample project</a>.</p>
+<blockquote>
+<p><strong>Note:</strong> JWT URL Embedding and <code>allow_embedding</code> are not available to Grafana Cloud users. For Grafana Cloud, use 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">public dashboards</a>. To enable that, <a href="/docs/grafana-cloud/account-management/support/">open a ticket with our Support team</a>.</p></blockquote>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/dashboards/jwt-url-embedding-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/dashboards/jwt-url-embedding-9-1.png"data-srcset="/static/img/docs/dashboards/jwt-url-embedding-9-1.png?w=320 320w, /static/img/docs/dashboards/jwt-url-embedding-9-1.png?w=550 550w, /static/img/docs/dashboards/jwt-url-embedding-9-1.png?w=750 750w, /static/img/docs/dashboards/jwt-url-embedding-9-1.png?w=900 900w, /static/img/docs/dashboards/jwt-url-embedding-9-1.png?w=1040 1040w, /static/img/docs/dashboards/jwt-url-embedding-9-1.png?w=1240 1240w, /static/img/docs/dashboards/jwt-url-embedding-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="A JWT token used to embed Grafana"width="1436"height="1030"title="A JWT token used to embed Grafana"/>
+        <noscript>
+          <img
+            src="/static/img/docs/dashboards/jwt-url-embedding-9-1.png"
+            alt="A JWT token used to embed Grafana"width="1436"height="1030"title="A JWT token used to embed Grafana"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">A JWT token used to embed Grafana</figcaption></a></figure>
+<h4 id="organization-role-mapping-for-github-oauth2-authentication">Organization role mapping for GitHub OAuth2 authentication</h4>
+<p>You can now use GitHub OAuth2 to map users or teams to specific <a href="../../administration/roles-and-permissions/#organization-roles">Grafana organization roles</a> by using <code>role_attribute_path</code> configuration option.
+Grafana will use <a href="https://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> for path lookup and role mapping.
+For more information, see the <a href="../../setup-grafana/configure-security/configure-authentication/github/#map-roles">documentation</a>.</p>
+<p>Grafana Cloud users can access this feature by <a href="/profile/org#support">opening a support ticket in the Cloud Portal</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/permissions/org-role-mapping-github-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/permissions/org-role-mapping-github-9-1.png"data-srcset="/static/img/docs/permissions/org-role-mapping-github-9-1.png?w=320 320w, /static/img/docs/permissions/org-role-mapping-github-9-1.png?w=550 550w, /static/img/docs/permissions/org-role-mapping-github-9-1.png?w=750 750w, /static/img/docs/permissions/org-role-mapping-github-9-1.png?w=900 900w, /static/img/docs/permissions/org-role-mapping-github-9-1.png?w=1040 1040w, /static/img/docs/permissions/org-role-mapping-github-9-1.png?w=1240 1240w, /static/img/docs/permissions/org-role-mapping-github-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Configuring GitHub OAuth2 authentication with role mapping"width="1532"height="674"title="Configuring GitHub OAuth2 authentication with role mapping"/>
+        <noscript>
+          <img
+            src="/static/img/docs/permissions/org-role-mapping-github-9-1.png"
+            alt="Configuring GitHub OAuth2 authentication with role mapping"width="1532"height="674"title="Configuring GitHub OAuth2 authentication with role mapping"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Configuring GitHub OAuth2 authentication with role mapping</figcaption></a></figure>
+<h3 id="search-and-navigation">Search and navigation</h3>
+<h4 id="beta-panel-title-search-and-search-improvements">(Beta) Panel title search and search improvements</h4>
+<p>We&rsquo;ve improved the performance of searching by panel title.
+If a panel&rsquo;s title matches your search query, it will be displayed in the search results.
+This feature will be rolled out to Grafana Cloud users over the course of several weeks, or can be accessed by enabling the <code>panelTitleSearch</code> feature toggle.</p>
+<p>Panel title search uses our updated dashboard search approach.
+Previously, Grafana used SQL database queries to find dashboards by title.
+With the feature toggle enabled, Grafana can build an in-memory index of all dashboards.
+To learn more about search in Grafana, see the <a href="../../dashboards/use-dashboards/#dashboard-search">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/dashboards/panel-title-search-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/dashboards/panel-title-search-9-1.png"data-srcset="/static/img/docs/dashboards/panel-title-search-9-1.png?w=320 320w, /static/img/docs/dashboards/panel-title-search-9-1.png?w=550 550w, /static/img/docs/dashboards/panel-title-search-9-1.png?w=750 750w, /static/img/docs/dashboards/panel-title-search-9-1.png?w=900 900w, /static/img/docs/dashboards/panel-title-search-9-1.png?w=1040 1040w, /static/img/docs/dashboards/panel-title-search-9-1.png?w=1240 1240w, /static/img/docs/dashboards/panel-title-search-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Searching for a panel title"width="2972"height="1550"title="Searching for a panel title"/>
+        <noscript>
+          <img
+            src="/static/img/docs/dashboards/panel-title-search-9-1.png"
+            alt="Searching for a panel title"width="2972"height="1550"title="Searching for a panel title"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Searching for a panel title</figcaption></a></figure>
+<h4 id="starred-dashboards-in-the-navigation-bar">Starred dashboards in the navigation bar</h4>
+<p>As part of the upcoming improvements to Grafana&rsquo;s navigation, you can now directly access your <a href="../../dashboards/use-dashboards/">starred dashboards</a> from the navigation bar.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/dashboards/starred-dashboards-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/dashboards/starred-dashboards-9-1.png"data-srcset="/static/img/docs/dashboards/starred-dashboards-9-1.png?w=320 320w, /static/img/docs/dashboards/starred-dashboards-9-1.png?w=550 550w, /static/img/docs/dashboards/starred-dashboards-9-1.png?w=750 750w, /static/img/docs/dashboards/starred-dashboards-9-1.png?w=900 900w, /static/img/docs/dashboards/starred-dashboards-9-1.png?w=1040 1040w, /static/img/docs/dashboards/starred-dashboards-9-1.png?w=1240 1240w, /static/img/docs/dashboards/starred-dashboards-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Accessing your starred dashboards"width="1538"height="884"title="Accessing your starred dashboards"/>
+        <noscript>
+          <img
+            src="/static/img/docs/dashboards/starred-dashboards-9-1.png"
+            alt="Accessing your starred dashboards"width="1538"height="884"title="Accessing your starred dashboards"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Accessing your starred dashboards</figcaption></a></figure>
+<h3 id="panels">Panels</h3>
+<h4 id="heatmap-improvements">Heatmap improvements</h4>
+<p>The beta heatmap announced in version 9.0 is now used throughout Grafana.
+Its performance is improved, and it now supports <a href="../../fundamentals/exemplars/">exemplars</a>.
+To learn more about the heatmap panel, see the <a href="../../panels-visualizations/visualizations/heatmap/">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/panels/heatmap-panel-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/panels/heatmap-panel-9-1.png"data-srcset="/static/img/docs/panels/heatmap-panel-9-1.png?w=320 320w, /static/img/docs/panels/heatmap-panel-9-1.png?w=550 550w, /static/img/docs/panels/heatmap-panel-9-1.png?w=750 750w, /static/img/docs/panels/heatmap-panel-9-1.png?w=900 900w, /static/img/docs/panels/heatmap-panel-9-1.png?w=1040 1040w, /static/img/docs/panels/heatmap-panel-9-1.png?w=1240 1240w, /static/img/docs/panels/heatmap-panel-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="A heatmap panel"width="1200"height="613"title="A heatmap panel"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/heatmap-panel-9-1.png"
+            alt="A heatmap panel"width="1200"height="613"title="A heatmap panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">A heatmap panel</figcaption></a></figure>
+<h4 id="geomap">Geomap</h4>
+<p>You can now measure both distances and areas on Geomap visualizations by using the panel&rsquo;s new <a href="../../panels-visualizations/visualizations/geomap/#show-measure-tools">measure tools</a>.
+To learn more about the Geomap panel, see the <a href="../../panels-visualizations/visualizations/geomap/">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png"data-srcset="/static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png?w=320 320w, /static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png?w=550 550w, /static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png?w=750 750w, /static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png?w=900 900w, /static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png?w=1040 1040w, /static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png?w=1240 1240w, /static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Geomap panel measuring tool - area"width="503"height="385"title="Geomap panel measuring tool - area"/>
+        <noscript>
+          <img
+            src="/static/img/docs/geomap-panel/geomap-map-controls-measure-area-9-1-0.png"
+            alt="Geomap panel measuring tool - area"width="503"height="385"title="Geomap panel measuring tool - area"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Geomap panel measuring tool - area</figcaption></a></figure>
+<h4 id="beta-trace-to-metrics">(Beta) Trace to metrics</h4>
+<p>You can now link metrics queries to your traces.
+This feature can be accessed by enabling the <code>traceToMetrics</code> feature toggle.
+Grafana Cloud users can access this feature by <a href="/profile/org#support">opening a support ticket in the Cloud Portal</a>.</p>
+<p>In your tracing datasource configuration, select a metrics datasource, add tags, and write your queries.
+Each query appears as a link on each span.
+The configured tag values are dynamically added to your metrics queries.
+You can link to any metric you&rsquo;d like.
+Metrics for span durations, counts, and errors filtered by service or span are a great starting point.
+The metrics generator introduced in Tempo 1.4 pairs extremely well with the trace to metrics feature.
+To learn more about the metrics generator, see the <a href="/blog/2022/05/02/new-in-grafana-tempo-1.4-introducing-the-metrics-generator/">blog post</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/panels/trace-to-metrics-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/panels/trace-to-metrics-9-1.png"data-srcset="/static/img/docs/panels/trace-to-metrics-9-1.png?w=320 320w, /static/img/docs/panels/trace-to-metrics-9-1.png?w=550 550w, /static/img/docs/panels/trace-to-metrics-9-1.png?w=750 750w, /static/img/docs/panels/trace-to-metrics-9-1.png?w=900 900w, /static/img/docs/panels/trace-to-metrics-9-1.png?w=1040 1040w, /static/img/docs/panels/trace-to-metrics-9-1.png?w=1240 1240w, /static/img/docs/panels/trace-to-metrics-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Linking a trace to a metrics query"width="1532"height="878"title="Linking a trace to a metrics query"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/trace-to-metrics-9-1.png"
+            alt="Linking a trace to a metrics query"width="1532"height="878"title="Linking a trace to a metrics query"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Linking a trace to a metrics query</figcaption></a></figure>
+<h4 id="beta-apm-table">(Beta) APM table</h4>
+<p>You can now get Application Performance Management (APM) data with Grafana.
+The data is shown in a table in the Tempo datasource under the Service Graph tab.
+To access the feature, enable the <code>tempoApmTable</code> feature toggle.
+To receive the data for the APM table, you must also enable the metrics generator.</p>
+<p>Grafana Cloud users can access this feature by <a href="/profile/org#support">opening a support ticket in the Cloud Portal</a>.</p>
+<p>The APM table displays rate, errors, and duration (RED) metrics.
+To view your top five RED span metrics, use the table summary view.
+The span metrics are created using the Tempo <a href="/blog/2022/05/02/new-in-grafana-tempo-1.4-introducing-the-metrics-generator/">metrics generator</a>.</p>
+<p>We also embedded several links directly into the table.
+These links direct you to a Prometheus query to further investigate the data.
+We also provide a link from the table directly to Tempo search, making it easier for you to investigate your APM metrics.</p>
+<p>To learn more about the APM table, see the <a href="../../datasources/tempo/#apm-table">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/panels/apm-table-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/panels/apm-table-9-1.png"data-srcset="/static/img/docs/panels/apm-table-9-1.png?w=320 320w, /static/img/docs/panels/apm-table-9-1.png?w=550 550w, /static/img/docs/panels/apm-table-9-1.png?w=750 750w, /static/img/docs/panels/apm-table-9-1.png?w=900 900w, /static/img/docs/panels/apm-table-9-1.png?w=1040 1040w, /static/img/docs/panels/apm-table-9-1.png?w=1240 1240w, /static/img/docs/panels/apm-table-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="An APM table in the Explore view"width="1114"height="537"title="An APM table in the Explore view"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/apm-table-9-1.png"
+            alt="An APM table in the Explore view"width="1114"height="537"title="An APM table in the Explore view"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">An APM table in the Explore view</figcaption></a></figure>
+<h3 id="sharing">Sharing</h3>
+<h4 id="alpha-public-dashboards">(Alpha) Public dashboards</h4>
+<p>Public dashboards are available as an alpha feature that can be enabled with the <code>publicDashboards</code> feature toggle.
+Grafana Cloud users can access this feature by <a href="/profile/org#support">opening a support ticket in the Cloud Portal</a>.</p>
+<p>You can generate a link for dashboards that you&rsquo;d like to share publicly.
+Anyone with the link will be able to access that dashboard, and nothing else.</p>
+<p>The public view of a dashboard has a few restrictions:</p>
+<ul>
+<li>Arbitrary queries cannot be run against your datasources through public dashboards.
+Public dashboards can only execute the queries stored on the original dashboard.</li>
+<li>The public dashboard is displayed in a read-only kiosk view.</li>
+<li>The time range is fixed to the dashboard default time range.</li>
+</ul>
+<p>To learn more, see the 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">documentation</a>.</p>
+<h4 id="provisioning-improvements-for-grafana-alerting">Provisioning improvements for Grafana Alerting</h4>
+<p>You can provision your Grafana Alerting resources directly from disk, which is a process you might already follow for your dashboards or data sources.
+Grafana Alerting resources are provisioned once when you initially configure Grafana.</p>
+<p>Provisioning for Grafana Alerting currently supports these resources:</p>
+<ul>
+<li>Alert rules</li>
+<li>Contact points</li>
+<li>Notification policies</li>
+<li>Mute timings</li>
+<li>Text templates</li>
+</ul>
+<p>For more information, see the
+<a href="../../administration/provisioning/">provisioning documentation</a>.</p>
+<h2 id="grafana-enterprise">Grafana Enterprise</h2>
+<h3 id="sharing-and-customization">Sharing and customization</h3>
+<h4 id="reporting-improvements">Reporting improvements</h4>
+<p>Reporting is better in a few specific ways in Grafana version 9.1:</p>
+<ul>
+<li>You can save a draft of a report, in case you need to make a quick update to a dashboard or make other changes before publishing the report.</li>
+<li>Each page of a report PDF includes the dashboard&rsquo;s name, which is useful for multi-page reports.</li>
+<li>You can send the same dashboard in a report multiple times with different time ranges.
+For example, you can share last month&rsquo;s numbers as compared to the numbers for this month.
+The dashboard uses the same template variables if you attach the dashboard to a report twice.</li>
+</ul>
+<p>To learn more about reporting, see the <a href="../../dashboards/share-dashboards-panels/#reporting">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/reporting-draft-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/reporting-draft-9-1.png"data-srcset="/static/img/docs/enterprise/reporting-draft-9-1.png?w=320 320w, /static/img/docs/enterprise/reporting-draft-9-1.png?w=550 550w, /static/img/docs/enterprise/reporting-draft-9-1.png?w=750 750w, /static/img/docs/enterprise/reporting-draft-9-1.png?w=900 900w, /static/img/docs/enterprise/reporting-draft-9-1.png?w=1040 1040w, /static/img/docs/enterprise/reporting-draft-9-1.png?w=1240 1240w, /static/img/docs/enterprise/reporting-draft-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Saving a report as a draft"width="1421"height="871"title="Saving a report as a draft"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reporting-draft-9-1.png"
+            alt="Saving a report as a draft"width="1421"height="871"title="Saving a report as a draft"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Saving a report as a draft</figcaption></a></figure>
+<h4 id="beta-configure-custom-branding-in-grafanas-ui">(Beta) Configure custom branding in Grafana&rsquo;s UI</h4>
+<p>Custom branding (previously referred to as whitelabeling) lets you customize parts of Grafana&rsquo;s UI.
+You can add links to the footer to your internal documentation, guides, or support, and you can update Grafana&rsquo;s sign-in page, logo, and other graphic elements to reflect your team or company identity.</p>
+<p>Previously, you could only configure custom branding in Grafana&rsquo;s configuration files.
+Now, you can experiment with customization in Grafana&rsquo;s Admin section in the UI, or customize branding and links using the API.
+This is an early-access feature available only to self-managed customers.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/custom-branding-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/custom-branding-9-1.png"data-srcset="/static/img/docs/enterprise/custom-branding-9-1.png?w=320 320w, /static/img/docs/enterprise/custom-branding-9-1.png?w=550 550w, /static/img/docs/enterprise/custom-branding-9-1.png?w=750 750w, /static/img/docs/enterprise/custom-branding-9-1.png?w=900 900w, /static/img/docs/enterprise/custom-branding-9-1.png?w=1040 1040w, /static/img/docs/enterprise/custom-branding-9-1.png?w=1240 1240w, /static/img/docs/enterprise/custom-branding-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Configuring custom branding"width="1024"height="826"title="Configuring custom branding"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/custom-branding-9-1.png"
+            alt="Configuring custom branding"width="1024"height="826"title="Configuring custom branding"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Configuring custom branding</figcaption></a></figure>
+<h3 id="authentication-and-security">Authentication and security</h3>
+<h4 id="rbac-for-app-plugins-usage-insights-and-query-caching">RBAC for app plugins, usage insights, and query caching</h4>
+<p>As part of our continued improvements to role-based access control (RBAC), we are rolling out RBAC across all of Grafana&rsquo;s features.
+In v9.1, you can determine which users, teams, and roles can access app plugins like OnCall and Synthetics.</p>
+<blockquote>
+<p><strong>Note:</strong> You can&rsquo;t yet define view or edit roles for app plugins.
+For example, you cannot yet grant a user view-only access to OnCall.
+This definition is planned for a future release.</p></blockquote>
+<p>You can also control who can view, edit, or administer dashboard and data source usage insights, as well as data source query caching configuration.
+For more details, see the <a href="../../administration/roles-and-permissions/access-control/">RBAC documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/rbac-app-plugins-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/rbac-app-plugins-9-1.png"data-srcset="/static/img/docs/enterprise/rbac-app-plugins-9-1.png?w=320 320w, /static/img/docs/enterprise/rbac-app-plugins-9-1.png?w=550 550w, /static/img/docs/enterprise/rbac-app-plugins-9-1.png?w=750 750w, /static/img/docs/enterprise/rbac-app-plugins-9-1.png?w=900 900w, /static/img/docs/enterprise/rbac-app-plugins-9-1.png?w=1040 1040w, /static/img/docs/enterprise/rbac-app-plugins-9-1.png?w=1240 1240w, /static/img/docs/enterprise/rbac-app-plugins-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Configuring role-based-access to app plugins"width="1797"height="708"title="Configuring role-based-access to app plugins"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/rbac-app-plugins-9-1.png"
+            alt="Configuring role-based-access to app plugins"width="1797"height="708"title="Configuring role-based-access to app plugins"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Configuring role-based-access to app plugins</figcaption></a></figure>
+<h4 id="rotate-your-database-encryption-keys-using-grafanas-api">Rotate your database encryption keys using Grafana&rsquo;s API</h4>
+<p>In Grafana version 9.0, we <a href="../whats-new-in-v9-0/#envelope-encryption-is-generally-available-and-enabled-by-default">revamped</a> the method Grafana uses to encrypt secrets, like data source credentials, so that you can rotate encryption keys and integrate with a key management system like Hashicorp Vault, AWS Key Management Service, or Azure Key Vault.</p>
+<p>Now, you can rotate keys and re-encrypt secrets via API.
+This makes it easier to configure Grafana to be secure while deploying it.
+To learn more, see our guide to <a href="../../setup-grafana/configure-security/configure-database-encryption/#configure-database-encryption">configuring database encryption</a>.</p>
+<h4 id="audit-all-actions-in-grafana-using-verbose-logging">Audit all actions in Grafana using verbose logging</h4>
+<p>Auditing logs helps you manage and mitigate activity and meet compliance requirements.
+By default, Grafana emits an audit log with every action that changes something (like a user creating or updating a dashboard or updating another user&rsquo;s permissions).
+If you want to record all actions on the Grafana server, including GETs and page views, you can now turn on <code>verbose mode</code>.
+This results in more logs, but it can be useful to debug specific issues or make sure you catch everything happening in Grafana for security or compliance reasons.
+To learn more, see the <a href="../../setup-grafana/configure-grafana/enterprise-configuration/#verbose">configuration documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/verbose-audit-logs-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/verbose-audit-logs-9-1.png"data-srcset="/static/img/docs/enterprise/verbose-audit-logs-9-1.png?w=320 320w, /static/img/docs/enterprise/verbose-audit-logs-9-1.png?w=550 550w, /static/img/docs/enterprise/verbose-audit-logs-9-1.png?w=750 750w, /static/img/docs/enterprise/verbose-audit-logs-9-1.png?w=900 900w, /static/img/docs/enterprise/verbose-audit-logs-9-1.png?w=1040 1040w, /static/img/docs/enterprise/verbose-audit-logs-9-1.png?w=1240 1240w, /static/img/docs/enterprise/verbose-audit-logs-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Verbose audit logging output"width="1661"height="852"title="Verbose audit logging output"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/verbose-audit-logs-9-1.png"
+            alt="Verbose audit logging output"width="1661"height="852"title="Verbose audit logging output"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Verbose audit logging output</figcaption></a></figure>
+<h4 id="see-and-dont-edit-users-synced-from-saml-ldap-and-oauth-identity-providers">See (and don&rsquo;t edit) users synced from SAML, LDAP, and OAuth identity providers</h4>
+<p>When you synchronize users from a SAML, LDAP, or OAuth provider, some user settings, such as name and email address, are synchronized from your identity provider.
+Previously, you could edit those settings in the Grafana UI, but they would revert back.
+To make user management clearer, you can now see which settings are synchronized from your identity provider, but you cannot edit those settings.
+To learn more about authentication, see the <a href="../../setup-grafana/configure-security/configure-authentication/">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/oauth-synced-user-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/oauth-synced-user-9-1.png"data-srcset="/static/img/docs/enterprise/oauth-synced-user-9-1.png?w=320 320w, /static/img/docs/enterprise/oauth-synced-user-9-1.png?w=550 550w, /static/img/docs/enterprise/oauth-synced-user-9-1.png?w=750 750w, /static/img/docs/enterprise/oauth-synced-user-9-1.png?w=900 900w, /static/img/docs/enterprise/oauth-synced-user-9-1.png?w=1040 1040w, /static/img/docs/enterprise/oauth-synced-user-9-1.png?w=1240 1240w, /static/img/docs/enterprise/oauth-synced-user-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Non-interactive view of a user synced via OAuth"width="888"height="265"title="Non-interactive view of a user synced via OAuth"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/oauth-synced-user-9-1.png"
+            alt="Non-interactive view of a user synced via OAuth"width="888"height="265"title="Non-interactive view of a user synced via OAuth"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Non-interactive view of a user synced via OAuth</figcaption></a></figure>
+<h4 id="support-wildcards-for-ldap-groups-in-team-sync">Support wildcards for LDAP groups in team sync</h4>
+<p>Team sync lets you set up synchronization between your authentication provider&rsquo;s teams and Grafana teams.
+To leverage your existing Active Directory in an efficient way without having to create multiple teams, you can now use wildcards when configuring LDAP groups, so that multiple Active Directory groups can be added at once to a single team.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png"data-srcset="/static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png?w=320 320w, /static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png?w=550 550w, /static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png?w=750 750w, /static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png?w=900 900w, /static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png?w=1040 1040w, /static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png?w=1240 1240w, /static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png?w=1920 1920w"
+          data-sizes="auto"alt="Using wildcard mapping for team sync"width="1460"height="794"title="Using wildcard mapping for team sync"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/ldap-wildcard-teamsync-9-1.png"
+            alt="Using wildcard mapping for team sync"width="1460"height="794"title="Using wildcard mapping for team sync"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Using wildcard mapping for team sync</figcaption></a></figure>
+<h4 id="redirect-binding-support-for-azuread-saml-single-logout">Redirect binding support for AzureAD SAML Single Logout</h4>
+<p>SAML Single Logout allows users to log out from all applications associated with the current IdP (Identity Provider) session established via SAML Single Sign-On (SSO).
+To enable integration of more use cases, we have added support for an HTTP-Redirect binding for a Single Logout.</p>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<h1 id="configure-amazon-sns-notifications">Configure Amazon SNS notifications</h1>
+<p>Use the Amazon SNS integration in a contact point to send alert notifications to a SNS topic. Then, configure the SNS topic to forward notifications to distinct subscriber channels used in your SNS account.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Before you begin, ensure you have the following:</p>
+<ul>
+<li><strong>AWS SNS Topic</strong>: An SNS topic to send notifications to.</li>
+<li><strong>AWS IAM Identity with necessary access</strong>: An IAM identity (e.g. user, role) with the necessary permissions to publish messages to the SNS topic.</li>
+</ul>
+<p>For a minimal setup, refer to <a href="#example-using-an-access-key">Example using an Access Key</a>.</p>
+<h2 id="configure-amazon-sns-for-a-contact-point">Configure Amazon SNS for a contact point</h2>
+<p>To create a contact point with a SNS integration, complete the following steps.</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</li>
+<li>Click <strong>+ Add contact point</strong>.</li>
+<li>Enter a name for the contact point.</li>
+<li>From the <strong>Integration</strong> list, select <strong>AWS SNS</strong>.</li>
+<li>Set up the required <a href="#sns-settings">settings</a> for your SNS configuration.</li>
+<li>Click <strong>Save contact point</strong>.</li>
+</ol>
+<p>For more details on contact points, including how to test them and enable notifications, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a>.</p>
+<h2 id="sns-settings">SNS Settings</h2>
+<ul>
+<li><strong>The Amazon SNS API URL</strong>: (Optional) The SNS API URL, e.g., <code>https://sns.us-east-2.amazonaws.com</code>. If not specified, the SNS API URL from the SNS SDK will be used.</li>
+<li><strong>Signature Version (sigv4)</strong>: Configures AWS&rsquo;s Signature Verification 4 signing process to sign requests.
+<ul>
+<li><strong>Region</strong>: (Optional) The AWS region. If blank, the region from the default credentials chain is used.</li>
+<li><strong>Access Key</strong> : (Optional) The AWS API access key.</li>
+<li><strong>Secret Key</strong>: (Optional) The AWS API secret key.
+<blockquote>
+<p>Both <code>Access Key</code> and <code>Secret Key</code> must be provided together or left blank together.</p>
+<p>If left blank, Grafana searches for credentials using the default credentials chain, including environment variables (<code>AWS_ACCESS_KEY_ID</code> and <code>AWS_SECRET_ACCESS_KEY</code>), the shared credential file, and EC2 instance roles.</p></blockquote>
+</li>
+<li><strong>Profile</strong>: (Optional) Named AWS profile used to authenticate.</li>
+<li><strong>Role ARN</strong>: (Optional) The ARN of an AWS IAM role to assume for authentication, serving as an alternative to using AWS API keys.</li>
+</ul>
+</li>
+<li><strong>SNS topic ARN</strong>: (Optional) If you don&rsquo;t specify this value, you must specify a value for the <code>Phone number</code> or <code>Target ARN</code>. If you are using a FIFO SNS topic you should set a message group interval longer than 5 minutes to prevent messages with the same group key being deduplicated by the SNS default deduplication window.</li>
+<li><strong>Phone number</strong>: (Optional) Phone number if message is delivered via SMS in E.164 format. If you don&rsquo;t specify this value, you must specify a value for the <code>SNS topic ARN</code> or <code>Target ARN</code>.</li>
+<li><strong>Target ARN</strong>: (Optional) The mobile platform endpoint ARN if message is delivered via mobile notifications. If you don&rsquo;t specify this value, you must specify a value for the <code>SNS topic ARN</code> or <code>Phone number</code>.</li>
+<li><strong>Subject</strong>: (Optional) Customize the subject. This field supports 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a> and, by default, uses the default title template (<code>default.title</code>). It <strong>cannot be an empty string</strong>.</li>
+<li><strong>Message</strong>: (Optional) Customize the message. This field supports 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a> and, by default, uses the default message template (<code>default.message</code>).</li>
+<li><strong>Attributes</strong>: (Optional) Add any SNS message attributes.</li>
+</ul>
+<h2 id="example-using-an-access-key">Example using an Access Key</h2>
+<p>This section outlines a minimal setup to configure Amazon SNS with Alerting.</p>
+<h3 id="1-create-an-sns-topic-and-email-subscriber">1. Create an SNS Topic and Email Subscriber</h3>
+<ol>
+<li>
+<p><strong>Navigate to SNS in AWS Console</strong>:</p>
+<ul>
+<li>Go to the <a href="https://console.aws.amazon.com/sns/v3/home" target="_blank" rel="noopener noreferrer">Amazon SNS Console</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a new topic</strong>:</p>
+<ul>
+<li>On the <strong>Topics</strong> page, choose <strong>&ldquo;Create topic&rdquo;</strong>.</li>
+<li>Select <strong>&ldquo;Standard&rdquo;</strong> as the type.</li>
+<li>Enter a <strong>Name</strong> for your topic, e.g., <code>My-Topic</code>.</li>
+<li><strong>Encryption</strong>: Leave disabled for this minimal setup.</li>
+<li>Click <strong>&ldquo;Create topic&rdquo;</strong>.</li>
+</ul>
+</li>
+<li>
+<p>(Optional) <strong>Add an email subscriber to help test</strong>:</p>
+<ul>
+<li>Within your newly created topic, click on <strong>&ldquo;Create subscription&rdquo;</strong>.</li>
+<li><strong>Protocol</strong>: Choose <code>Email</code>.</li>
+<li><strong>Endpoint</strong>: Enter your email address to receive test notifications.</li>
+<li>Click <strong>&ldquo;Create subscription&rdquo;</strong>.</li>
+<li><strong>Confirm Subscription</strong>: Check your email and confirm the subscription by clicking the provided link.</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-create-an-iam-policy-user-and-access-key">2. Create an IAM Policy, User, and Access Key</h3>
+<ol>
+<li>
+<p><strong>Navigate to IAM in AWS Console</strong>:</p>
+<ul>
+<li>Go to the <a href="https://console.aws.amazon.com/iam/home" target="_blank" rel="noopener noreferrer">IAM Console</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a new policy</strong>:</p>
+<ul>
+<li>
+<p>On the <strong>Policies</strong> page, choose <strong>&ldquo;Create policy&rdquo;</strong>.</p>
+</li>
+<li>
+<p>Switch to the <strong>&ldquo;JSON&rdquo;</strong> tab and paste the following policy, replacing <code>Resource</code> with your SNS topic ARN:</p>
+<pre>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: [&#34;sns:Publish&#34;, &#34;sns:GetTopicAttributes&#34;],
+      &#34;Resource&#34;: &#34;arn:aws:sns:&lt;region&gt;:&lt;account_id&gt;:&lt;topic_name&gt;&#34;
+    }
+  ]
+}</pre>
+</li>
+<li>
+<p>Click <strong>&ldquo;Next&rdquo;</strong>, name it (e.g., <code>SNSPublishPolicy</code>), and click <strong>&ldquo;Create policy&rdquo;</strong>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a new IAM user and assign the policy</strong></p>
+<ul>
+<li>In the IAM Console, on the <strong>Users</strong> page, choose <strong>&ldquo;Create user&rdquo;</strong>.</li>
+<li>Enter a <strong>User name</strong>, e.g., <code>alerting-sns-user</code>.</li>
+<li>Click <strong>&ldquo;Next&rdquo;</strong>.</li>
+<li>In <strong>Set permissions</strong>, select <strong>&ldquo;Attach policies directly&rdquo;</strong>.</li>
+<li>Search for the policy you created earlier (<code>SNSPublishPolicy</code>) and select it.</li>
+<li>Click <strong>&ldquo;Next&rdquo;</strong> , and click <strong>&ldquo;Create user&rdquo;</strong>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create an Access Key</strong>:</p>
+<ul>
+<li>Within your newly created user, click on <strong>&ldquo;Create access key&rdquo;</strong>.</li>
+<li>Select an appropriate use-case, e.g., <code>Application running outside AWS</code>.</li>
+<li>Click <strong>&ldquo;Next&rdquo;</strong> , and click <strong>&ldquo;Create access key&rdquo;</strong>.</li>
+<li><strong>Save Credentials</strong>: Note the <strong>Access key ID</strong> and <strong>Secret access key</strong> that are required in the next step.</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-configure-the-sns-contact-point-in-grafana">3. Configure the SNS Contact Point in Grafana</h3>
+<p>Follow the steps in <a href="#configure-amazon-sns-for-a-contact-point">configure Amazon SNS for a contact point</a>, using the settings below and replacing the placeholders with the SNS and IAM values created in the previous steps.</p>
+<ul>
+<li><strong>The Amazon SNS API URL</strong>: <code>https://sns.&lt;region&gt;.amazonaws.com</code></li>
+<li><strong>Signature Version (sigv4)</strong>:
+<ul>
+<li><strong>Region</strong>: <code>&lt;region&gt;</code></li>
+<li><strong>Access Key</strong>: <code>&lt;YOUR_ACCESS_KEY&gt;</code>.</li>
+<li><strong>Secret Key</strong>: <code>&lt;YOUR_SECRET_ACCESS_KEY&gt;</code></li>
+</ul>
+</li>
+<li><strong>SNS topic ARN</strong>: <code>arn:aws:sns:&lt;region&gt;:&lt;account_id&gt;:&lt;topic_name&gt;</code></li>
+</ul>
+<p>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/#test-a-contact-point">Test the contact point</a> to ensure it&rsquo;s working, or 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/#enable-notifications-for-a-contact-point">enable notifications</a> for it.</p>
+<h2 id="additional-resources">Additional Resources</h2>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a></li>
+<li><a href="https://docs.aws.amazon.com/sns/index.html" target="_blank" rel="noopener noreferrer">Amazon SNS Documentation</a></li>
+<li><a href="https://docs.aws.amazon.com/iam/index.html" target="_blank" rel="noopener noreferrer">Amazon IAM Documentation</a></li>
+<li><a href="https://prometheus.io/docs/alerting/configuration/#sns_config" target="_blank" rel="noopener noreferrer">Prometheus Alertmanager SNS Configuration</a></li>
+</ul>

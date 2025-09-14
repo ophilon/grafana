@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<h1 id="jaeger-data-source">Jaeger data source</h1>
+<p>Grafana ships with built-in support for Jaeger, which provides open source, end-to-end distributed tracing. This topic explains configuration and queries specific to the Jaeger data source.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.
+Only users with the organization administrator role can add data sources.
+Administrators can also <a href="#provision-the-data-source">configure the data source via YAML</a> with Grafana&rsquo;s provisioning system.</p>
+<p>Once you&rsquo;ve added the data source, you can <a href="#configure-the-data-source">configure it</a> so your Grafana instance&rsquo;s users can create queries in the <a href="#query-the-data-source">query editor</a> when the users 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build dashboards</a> and use 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<p>You can also <a href="#upload-a-json-trace-file">upload a JSON trace file</a>, <a href="#link-to-a-trace-id-from-logs">link to a trace ID from logs</a>, and <a href="#link-to-a-trace-id-from-metrics">link to a trace ID from metrics</a>.</p>
+<h2 id="configure-the-data-source">Configure the data source</h2>
+<p>To configure basic settings for the data source, complete the following steps:</p>
+<ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>Jaeger</code> in the search bar.</p>
+</li>
+<li>
+<p>Select <strong>Jaeger</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+<li>
+<p>Set the data source&rsquo;s basic configuration options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Name</strong></td>
+          <td>Sets the name you use to refer to the data source in panels and queries.</td>
+      </tr>
+      <tr>
+          <td><strong>Default</strong></td>
+          <td>Defines whether this data source is pre-selected for new panels.</td>
+      </tr>
+      <tr>
+          <td><strong>URL</strong></td>
+          <td>Sets the URL of the Jaeger instance, such as <code>http://localhost:16686</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Basic Auth</strong></td>
+          <td>Enables basic authentication for the Jaeger data source.</td>
+      </tr>
+      <tr>
+          <td><strong>User</strong></td>
+          <td>Defines the user name for basic authentication.</td>
+      </tr>
+      <tr>
+          <td><strong>Password</strong></td>
+          <td>Defines the password for basic authentication.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ol>
+<p>You can also configure settings specific to the Jaeger data source. These options are described in the sections below.</p>
+<h3 id="trace-to-logs">Trace to logs</h3>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/tempo/tempo-trace-to-logs-9-4.png"
+  alt="Trace to logs settings" width="1219"
+     height="852"/></p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you use Grafana Cloud, open a <a href="/profile/org#support">support ticket in the Cloud Portal</a> to access this feature.</p></blockquote></div>
+
+<p>The <strong>Trace to logs</strong> setting configures the 
+    <a href="/docs/grafana/latest/explore/trace-integration/">trace to logs feature</a> that is available when you integrate Grafana with Jaeger.</p>
+<p>There are two ways to configure the trace to logs feature:</p>
+<ul>
+<li>Use a simplified configuration with default query, or</li>
+<li>Configure a custom query where you can use a 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">template language</a> to interpolate variables from the trace or span.</li>
+</ul>
+<h4 id="use-a-simple-configuration">Use a simple configuration</h4>
+<ol>
+<li>
+<p>Select the target data source from the drop-down list.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to see more options, including adding a data source.</p>
+</li>
+<li>
+<p>Set start and end time shift. Since the logs timestamps may not exactly match the timestamps of the spans in trace, it may be necessary to search in larger or shifted time range to find the desired logs.</p>
+</li>
+<li>
+<p>Select which tags to use in the logs query. The tags you configure must be present in the spans attributes or resources for a trace to logs span link to appear. You can optionally configure a new name for the tag. This is useful if the tag has dots in the name and the target data source does not allow dots in labels. In that case, you can, for example, remap <code>http.status</code> to <code>http_status</code>.</p>
+</li>
+<li>
+<p>Optionally, switch on the <strong>Filter by trace ID</strong> and/or <strong>Filter by span ID</strong> setting to further filter the logs if your logs consistently contain trace or span IDs.</p>
+</li>
+</ol>
+<h4 id="configure-a-custom-query">Configure a custom query</h4>
+<ol>
+<li>
+<p>Select the target data source from the drop-down list.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to see more options, including adding a data source.</p>
+</li>
+<li>
+<p>Set start and end time shift. Since the logs timestamps may not exactly match the timestamps of the spans in the trace, you may need to widen or shift the time range to find the desired logs.</p>
+</li>
+<li>
+<p>Optionally, select tags to map. These tags can be used in the custom query with <code>${__tags}</code> variable. This variable will interpolate the mapped tags as a list in an appropriate syntax for the data source and will only include the tags that were present in the span omitting those that weren&rsquo;t present. You can optionally configure a new name for the tag. This is useful in cases where the tag has dots in the name and the target data source does not allow dots in labels. For example, you can remap <code>http.status</code> to <code>http_status</code>. If you don&rsquo;t map any tags here, you can still use any tag in the query like this <code>method=&quot;${__span.tags.method}&quot;</code>.</p>
+</li>
+<li>
+<p>Skip <strong>Filter by trace ID</strong> and <strong>Filter by span ID</strong> settings as these cannot be used with a custom query.</p>
+</li>
+<li>
+<p>Switch on <strong>Use custom query</strong>.</p>
+</li>
+<li>
+<p>Specify a custom query to be used to query the logs. You can use various variables to make that query relevant for current span. The link is present only if all the variables are interpolated with non-empty values to prevent creating an invalid query.</p>
+</li>
+</ol>
+<h4 id="variables-that-can-be-used-in-a-custom-query">Variables that can be used in a custom query</h4>
+<p>To use a variable you need to wrap it in <code>${}</code>. For example: <code>${__span.name}</code>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>__tags</strong></td>
+          <td>This variable uses the tag mapping from the UI to create a label matcher string in the specific data source syntax. The variable only uses tags that are present in the span. The link is still created even if only one of those tags is present in the span. You can use this if all tags are not required for the query to be useful.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.spanId</strong></td>
+          <td>The ID of the span.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.traceId</strong></td>
+          <td>The ID of the trace.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.duration</strong></td>
+          <td>The duration of the span.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.name</strong></td>
+          <td>Name of the span.</td>
+      </tr>
+      <tr>
+          <td><strong>__span.tags</strong></td>
+          <td>Namespace for the tags in the span. To access a specific tag named <code>version</code>, you would use <code>${__span.tags.version}</code>. In case the tag contains dot, you have to access it as <code>${__span.tags[&quot;http.status&quot;]}</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>__trace.traceId</strong></td>
+          <td>The ID of the trace.</td>
+      </tr>
+      <tr>
+          <td><strong>__trace.duration</strong></td>
+          <td>The duration of the trace.</td>
+      </tr>
+      <tr>
+          <td><strong>__trace.name</strong></td>
+          <td>The name of the trace.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The following table describes the ways in which you can configure your trace to logs settings:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Data source</strong></td>
+          <td>Defines the target data source. You can select only Loki or Splunk logs data sources.</td>
+      </tr>
+      <tr>
+          <td><strong>Span start time shift</strong></td>
+          <td>Shifts the start time for the logs query, based on the span&rsquo;s start time. You can use time units, such as <code>5s</code>, <code>1m</code>, <code>3h</code>. To extend the time to the past, use a negative value. Default: <code>0</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Span end time shift</strong></td>
+          <td>Shifts the end time for the logs query, based on the span&rsquo;s end time. You can use time units. Default: <code>0</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Tags</strong></td>
+          <td>Defines the tags to use in the logs query. Default: <code>cluster</code>, <code>hostname</code>, <code>namespace</code>, <code>pod</code>, <code>service.name</code>, <code>service.namespace</code>. You can change the tag name for example to remove dots from the name if they are not allowed in the target data source. For example, map <code>http.status</code> to <code>http_status</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Filter by trace ID</strong></td>
+          <td>Toggles whether to append the trace ID to the logs query.</td>
+      </tr>
+      <tr>
+          <td><strong>Filter by span ID</strong></td>
+          <td>Toggles whether to append the span ID to the logs query.</td>
+      </tr>
+      <tr>
+          <td><strong>Use custom query</strong></td>
+          <td>Toggles use of custom query with interpolation.</td>
+      </tr>
+      <tr>
+          <td><strong>Query</strong></td>
+          <td>Input to write custom query. Use variable interpolation to customize it with variables from span.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="trace-to-metrics">Trace to metrics</h3>
+<p>The <strong>Trace to metrics</strong> setting configures the <a href="/blog/2022/08/18/new-in-grafana-9.1-trace-to-metrics-allows-users-to-navigate-from-a-trace-span-to-a-selected-data-source/">trace to metrics feature</a> available when integrating Grafana with Jaeger.</p>
+<p>To configure trace to metrics:</p>
+<ol>
+<li>
+<p>Select the target data source from the drop-down list.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to see more options, including adding a data source.</p>
+</li>
+<li>
+<p>Create any desired linked queries.</p>
+</li>
+</ol>
+<table>
+  <thead>
+      <tr>
+          <th>Setting name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Data source</strong></td>
+          <td>Defines the target data source.</td>
+      </tr>
+      <tr>
+          <td><strong>Tags</strong></td>
+          <td>Defines the tags used in linked queries. The key sets the span attribute name, and the optional value sets the corresponding metric label name. For example, you can map <code>k8s.pod</code> to <code>pod</code>. To interpolate these tags into queries, use the <code>$__tags</code> keyword.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Each linked query consists of:</p>
+<ul>
+<li><strong>Link Label:</strong> <em>(Optional)</em> Descriptive label for the linked query.</li>
+<li><strong>Query:</strong> The query ran when navigating from a trace to the metrics data source.
+Interpolate tags using the <code>$__tags</code> keyword.
+For example, when you configure the query <code>requests_total{$__tags}</code>with the tags <code>k8s.pod=pod</code> and <code>cluster</code>, the result looks like <code>requests_total{pod=&quot;nginx-554b9&quot;, cluster=&quot;us-east-1&quot;}</code>.</li>
+</ul>
+<h3 id="node-graph">Node Graph</h3>
+<p>The <strong>Node Graph</strong> setting enables the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/">Node Graph visualization</a>, which is disabled by default.</p>
+<p>Once enabled, Grafana displays the Node Graph above the trace view.</p>
+<h3 id="span-bar">Span bar</h3>
+<p>The <strong>Span bar</strong> setting helps you display additional information in the span bar row.</p>
+<p>You can choose one of three options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>None</strong></td>
+          <td>Adds nothing to the span bar row.</td>
+      </tr>
+      <tr>
+          <td><strong>Duration</strong></td>
+          <td><em>(Default)</em> Displays the span duration on the span bar row.</td>
+      </tr>
+      <tr>
+          <td><strong>Tag</strong></td>
+          <td>Displays the span tag on the span bar row. You must also specify which tag key to use to get the tag value, such as <code>component</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="provision-the-data-source">Provision the data source</h3>
+<p>You can define and configure the data source in YAML files as part of Grafana&rsquo;s provisioning system.
+For more information about provisioning and available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+<h4 id="provisioning-example">Provisioning example</h4>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Jaeger
+    type: jaeger
+    uid: EbPG8fYoz
+    url: http://localhost:16686
+    access: proxy
+    basicAuth: true
+    basicAuthUser: my_user
+    readOnly: false
+    isDefault: false
+    jsonData:
+      tracesToLogsV2:
+        # Field with an internal link pointing to a logs data source in Grafana.
+        # datasourceUid value must match the uid value of the logs data source.
+        datasourceUid: &#39;loki&#39;
+        spanStartTimeShift: &#39;1h&#39;
+        spanEndTimeShift: &#39;-1h&#39;
+        tags: [&#39;job&#39;, &#39;instance&#39;, &#39;pod&#39;, &#39;namespace&#39;]
+        filterByTraceID: false
+        filterBySpanID: false
+        customQuery: true
+        query: &#39;method=&#34;$${__span.tags.method}&#34;&#39;
+      tracesToMetrics:
+        datasourceUid: &#39;prom&#39;
+        spanStartTimeShift: &#39;1h&#39;
+        spanEndTimeShift: &#39;-1h&#39;
+        tags: [{ key: &#39;service.name&#39;, value: &#39;service&#39; }, { key: &#39;job&#39; }]
+        queries:
+          - name: &#39;Sample query&#39;
+            query: &#39;sum(rate(traces_spanmetrics_latency_bucket{$$__tags}[5m]))&#39;
+      nodeGraph:
+        enabled: true
+      traceQuery:
+        timeShiftEnabled: true
+        spanStartTimeShift: &#39;1h&#39;
+        spanEndTimeShift: &#39;-1h&#39;
+      spanBar:
+        type: &#39;None&#39;
+    secureJsonData:
+      basicAuthPassword: my_password</pre>
+<h2 id="query-the-data-source">Query the data source</h2>
+<p>You can query and display traces from Jaeger via 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<p>This topic explains configuration and queries specific to the Jaeger data source.
+For general documentation on querying data sources in Grafana, see 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<h3 id="query-by-search">Query by search</h3>
+<p><strong>To search for traces:</strong></p>
+<ol>
+<li>Select <strong>Search</strong> from the <strong>Query</strong> type selector.</li>
+<li>Fill out the search form:</li>
+</ol>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Service</strong></td>
+          <td>Returns a list of services.</td>
+      </tr>
+      <tr>
+          <td><strong>Operation</strong></td>
+          <td>Populated when you select a service with related operations. Select <code>All</code> to query all operations.</td>
+      </tr>
+      <tr>
+          <td><strong>Tags</strong></td>
+          <td>Sets tags with values in the <a href="https://brandur.org/logfmt" target="_blank" rel="noopener noreferrer">logfmt</a> format, such as <code>error=true db.statement=&quot;select * from User&quot;</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Min Duration</strong></td>
+          <td>Filters all traces with a duration higher than the set value. Possible values are <code>1.2s, 100ms, 500us</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Max Duration</strong></td>
+          <td>Filters all traces with a duration lower than the set value. Possible values are <code>1.2s, 100ms, 500us</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Limit</strong></td>
+          <td>Limits the number of traces returned.</td>
+      </tr>
+  </tbody>
+</table>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1857px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/explore/jaeger-search-form.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/explore/jaeger-search-form.png"data-srcset="/static/img/docs/explore/jaeger-search-form.png?w=320 320w, /static/img/docs/explore/jaeger-search-form.png?w=550 550w, /static/img/docs/explore/jaeger-search-form.png?w=750 750w, /static/img/docs/explore/jaeger-search-form.png?w=900 900w, /static/img/docs/explore/jaeger-search-form.png?w=1040 1040w, /static/img/docs/explore/jaeger-search-form.png?w=1240 1240w, /static/img/docs/explore/jaeger-search-form.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of the Jaeger query editor"width="1857"height="733"title="Screenshot of the Jaeger query editor"/>
+        <noscript>
+          <img
+            src="/static/img/docs/explore/jaeger-search-form.png"
+            alt="Screenshot of the Jaeger query editor"width="1857"height="733"title="Screenshot of the Jaeger query editor"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screenshot of the Jaeger query editor</figcaption></a></figure>
+<h3 id="query-by-trace-id">Query by trace ID</h3>
+<p>To query a particular trace:</p>
+<ol>
+<li>Select the <strong>TraceID</strong> query type.</li>
+<li>Enter the trace&rsquo;s ID into the <strong>Trace ID</strong> field.</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1855px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/explore/jaeger-trace-id.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/explore/jaeger-trace-id.png"data-srcset="/static/img/docs/explore/jaeger-trace-id.png?w=320 320w, /static/img/docs/explore/jaeger-trace-id.png?w=550 550w, /static/img/docs/explore/jaeger-trace-id.png?w=750 750w, /static/img/docs/explore/jaeger-trace-id.png?w=900 900w, /static/img/docs/explore/jaeger-trace-id.png?w=1040 1040w, /static/img/docs/explore/jaeger-trace-id.png?w=1240 1240w, /static/img/docs/explore/jaeger-trace-id.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of the Jaeger query editor with TraceID selected"width="1855"height="778"title="Screenshot of the Jaeger query editor with TraceID selected"/>
+        <noscript>
+          <img
+            src="/static/img/docs/explore/jaeger-trace-id.png"
+            alt="Screenshot of the Jaeger query editor with TraceID selected"width="1855"height="778"title="Screenshot of the Jaeger query editor with TraceID selected"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screenshot of the Jaeger query editor with TraceID selected</figcaption></a></figure>
+<h2 id="upload-a-json-trace-file">Upload a JSON trace file</h2>
+<p>You can upload a JSON file that contains a single trace and visualize it.
+If the file has multiple traces, Grafana visualizes its first trace.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1849px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/explore/jaeger-upload-json.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/explore/jaeger-upload-json.png"data-srcset="/static/img/docs/explore/jaeger-upload-json.png?w=320 320w, /static/img/docs/explore/jaeger-upload-json.png?w=550 550w, /static/img/docs/explore/jaeger-upload-json.png?w=750 750w, /static/img/docs/explore/jaeger-upload-json.png?w=900 900w, /static/img/docs/explore/jaeger-upload-json.png?w=1040 1040w, /static/img/docs/explore/jaeger-upload-json.png?w=1240 1240w, /static/img/docs/explore/jaeger-upload-json.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of the Jaeger data source in explore with upload selected"width="1849"height="548"title="Screenshot of the Jaeger data source in explore with upload selected"/>
+        <noscript>
+          <img
+            src="/static/img/docs/explore/jaeger-upload-json.png"
+            alt="Screenshot of the Jaeger data source in explore with upload selected"width="1849"height="548"title="Screenshot of the Jaeger data source in explore with upload selected"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screenshot of the Jaeger data source in explore with upload selected</figcaption></a></figure>
+<h3 id="trace-json-example">Trace JSON example</h3>
+<pre>{
+  &#34;data&#34;: [
+    {
+      &#34;traceID&#34;: &#34;2ee9739529395e31&#34;,
+      &#34;spans&#34;: [
+        {
+          &#34;traceID&#34;: &#34;2ee9739529395e31&#34;,
+          &#34;spanID&#34;: &#34;2ee9739529395e31&#34;,
+          &#34;flags&#34;: 1,
+          &#34;operationName&#34;: &#34;CAS&#34;,
+          &#34;references&#34;: [],
+          &#34;startTime&#34;: 1616095319593196,
+          &#34;duration&#34;: 1004,
+          &#34;tags&#34;: [
+            {
+              &#34;key&#34;: &#34;sampler.type&#34;,
+              &#34;type&#34;: &#34;string&#34;,
+              &#34;value&#34;: &#34;const&#34;
+            }
+          ],
+          &#34;logs&#34;: [],
+          &#34;processID&#34;: &#34;p1&#34;,
+          &#34;warnings&#34;: null
+        }
+      ],
+      &#34;processes&#34;: {
+        &#34;p1&#34;: {
+          &#34;serviceName&#34;: &#34;loki-all&#34;,
+          &#34;tags&#34;: [
+            {
+              &#34;key&#34;: &#34;jaeger.version&#34;,
+              &#34;type&#34;: &#34;string&#34;,
+              &#34;value&#34;: &#34;Go-2.25.0&#34;
+            }
+          ]
+        }
+      },
+      &#34;warnings&#34;: null
+    }
+  ],
+  &#34;total&#34;: 0,
+  &#34;limit&#34;: 0,
+  &#34;offset&#34;: 0,
+  &#34;errors&#34;: null
+}</pre>
+<h2 id="span-filters">Span Filters</h2>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/tempo/screenshot-grafana-tempo-span-filters-v10-1.png"
+  alt="Screenshot of span filtering" width="833"
+     height="239"/></p>
+<p>Using span filters, you can filter your spans in the trace timeline viewer. The more filters you add, the more specific are the filtered spans.</p>
+<p>You can add one or more of the following filters:</p>
+<ul>
+<li>Service name</li>
+<li>Span name</li>
+<li>Duration</li>
+<li>Tags (which include tags, process tags, and log fields)</li>
+</ul>
+<p>To only show the spans you have matched, you can press the <code>Show matches only</code> toggle.</p>
+<h2 id="link-to-a-trace-id-from-logs">Link to a trace ID from logs</h2>
+<p>You can link to Jaeger traces from logs in Loki, Elasticsearch, Splunk, and other logs data sources by configuring an internal link.</p>
+<p>To configure this feature, see the <a href="../loki/#configure-derived-fields">Derived fields</a> section of the Loki data source docs or the <a href="../elasticsearch/#data-links">Data links</a> section of the Elasticsearch or Splunk data source docs.</p>
+<h2 id="link-to-a-trace-id-from-metrics">Link to a trace ID from metrics</h2>
+<p>You can link to Jaeger traces from metrics in Prometheus data sources by configuring an exemplar.</p>
+<p>To configure this feature, see the 
+    <a href="/docs/grafana/latest/fundamentals/exemplars/">introduction to exemplars</a> documentation.</p>
+<h2 id="visualizing-the-dependency-graph">Visualizing the dependency graph</h2>
+<p>If service dependency information is available in Jaeger, it can be visualized in Grafana.
+Use the Jaeger data source with the &ldquo;Dependency Graph&rdquo; query type on a Node Graph panel for this.</p>

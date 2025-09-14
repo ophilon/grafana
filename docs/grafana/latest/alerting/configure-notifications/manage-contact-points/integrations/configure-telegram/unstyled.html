@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<h1 id="configure-telegram-for-alerting">Configure Telegram for Alerting</h1>
+<p>Use the Grafana Alerting - Telegram integration to send <a href="https://telegram.org/" target="_blank" rel="noopener noreferrer">Telegram</a> notifications when your alerts are firing.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<h3 id="telegram-limitation">Telegram limitation</h3>
+<p>Telegram messages are limited to 4096 UTF-8 characters. If you use a <code>parse_mode</code> other than <code>None</code>, truncation may result in an invalid message, causing the notification to fail.
+For longer messages, we recommend using an alternative contact method.</p>
+<h3 id="telegram-bot-api-token-and-chat-id">Telegram bot API token and chat ID</h3>
+<p>To integrate Grafana with Telegram, you need to get a Telegram <strong>bot API token</strong> and a <strong>chat ID</strong> (the ID of the Telegram chat where you want to receive the alert notifications). To complete the integration, use the browser version of Telegram.</p>
+<h3 id="set-up-your-telegram-bot">Set up your Telegram bot</h3>
+<p>Create a <a href="https://core.telegram.org/bots/api" target="_blank" rel="noopener noreferrer">Telegram bot</a>. You can associate this bot to your chats and perform different actions with it, such as receiving alerts from Grafana.</p>
+<p>To set up the bot, complete the following steps.</p>
+<ol>
+<li><strong>Open the Telegram app</strong> on your device.</li>
+<li>Find the Telegram bot named <strong>BotFather</strong>.</li>
+<li>Type or press <code>/newbot</code>.</li>
+<li>Choose a name for the bot. It must end in <strong>bot</strong> or <strong>_bot</strong>. E.g. &ldquo;my_bot&rdquo;.</li>
+<li><strong>Copy the API token</strong>.</li>
+</ol>
+<h3 id="chat-id">Chat ID</h3>
+<p>Add the bot to a group chat by following the steps below. Once the bot is added to the chat, you will be able to route your alert notifications to that group.</p>
+<ol>
+<li>
+<p>In the Telegram app, <strong>open a group or start a new one</strong>.</p>
+</li>
+<li>
+<p>Search and <strong>add the bot to the group</strong>.</p>
+</li>
+<li>
+<p>Copy the <strong>chat ID</strong> from the URL in your browser&rsquo;s address bar. It should look like this: <code>https://web.telegram.org/a/#-4266674385</code>.</p>
+<p>The chat ID is the sequence of numbers that follows the <code>#</code> symbol. For example: <code>-4266674385</code>.</p>
+</li>
+</ol>
+<h2 id="procedure">Procedure</h2>
+<p>To create your Telegram integration in Grafana Alerting, complete the following steps.</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>Enter a contact point name.</p>
+</li>
+<li>
+<p>From the Integration list, select Telegram.</p>
+</li>
+<li>
+<p>In the <strong>BOT API Token</strong> field, copy in the bot API token.</p>
+</li>
+<li>
+<p>In the <strong>Chat ID</strong> field, copy in the chat ID.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong> to check that your integration works.</p>
+<p>** For Grafana Alertmanager only.**</p>
+</li>
+<li>
+<p>Click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>The Telegram contact point is ready to receive alert notifications.</p>
+<p>To add this contact point to your alert, complete the following steps.</p>
+<ol>
+<li>In Grafana, navigate to <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Edit or create a new alert rule.</li>
+<li>Scroll down to the <strong>Configure labels and notifications</strong> section.</li>
+<li>Under Notifications click <strong>Select contact point</strong>.</li>
+<li>From the drop-down menu, select the previously created contact point.</li>
+<li><strong>Click Save rule and exit</strong>.</li>
+</ol>

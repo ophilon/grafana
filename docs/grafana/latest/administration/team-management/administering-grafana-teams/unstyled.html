@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<h1 id="administer-grafana-teams">Administer Grafana Teams</h1>
+<p>This topic describes how to administer Grafana Teams.</p>
+<h2 id="view-a-list-of-teams">View a list of Teams</h2>
+<p>See the complete list of teams in your Grafana organization.</p>
+<p>To view a list of teams:</p>
+<ol>
+<li>Sign in to Grafana as an organization administrator or a team administrator.</li>
+<li>Click the arrow next to <strong>Administration</strong> in the left-side menu, click <strong>Users and access</strong>, and select <strong>Teams</strong>.</li>
+</ol>
+<p>The role you use to sign in to Grafana determines how you see Teams lists.</p>
+<h3 id="organization-administrator-view">Organization administrator view</h3>
+<p>The following example shows a list as it appears to an <code>organization</code> administrator.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/screenshot-org-admin-team-list.png"
+  alt="Team list view for org admin" width="2410"
+     height="618"/></p>
+<h3 id="team-administrator-view">Team administrator view</h3>
+<p>The following example shows a list as it appears to a <code>team</code> administrator.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/screenshot-team-admin-team-list.png"
+  alt="Team list view for team admin" width="2412"
+     height="598"/></p>
+<h2 id="teams-best-practices">Teams best practices</h2>
+<p>Grafana recommends you use Teams to organize and manage access to Grafana’s core resources, such as dashboards and alerts. Teams is an easy organizational tool to manage, and allows flexible sharing between teams.</p>
+<p>Grafana recommends that you use Instances or Stacks to separate Teams if you want true isolation, to ensure that no information leaks between Teams. You can synchronize some resources between instances using provisioning.</p>
+<h2 id="secure-grafana-teams">Secure Grafana Teams</h2>
+<p>The most important thing to consider for securing Teams is to only grant team administrator rights to the users you trust to administer the Team.</p>

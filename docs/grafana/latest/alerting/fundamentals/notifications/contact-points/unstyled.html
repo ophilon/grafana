@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<h1 id="contact-points">Contact points</h1>
+<p>Contact points contain the configuration for sending alert notifications. You can assign a contact point either in the alert rule or notification policy options.</p>
+<p>A contact point includes one or more contact point integrations for sending alert notifications, such as:</p>
+<div class="column-list">
+  <ul>
+<li>Alertmanager</li>
+<li>Amazon SNS</li>
+<li>Cisco Webex Teams</li>
+<li>DingDing</li>
+<li>Discord</li>
+<li>Email</li>
+<li>Google Chat</li>
+<li>Grafana IRM</li>
+<li>Jira</li>
+<li>Kafka REST Proxy</li>
+<li>Line</li>
+<li>Microsoft Teams</li>
+<li>MQTT</li>
+<li>Opsgenie</li>
+<li>PagerDuty</li>
+<li>Pushover</li>
+<li>Sensu Go</li>
+<li>Slack</li>
+<li>Telegram</li>
+<li>Threema Gateway</li>
+<li>VictorOps</li>
+<li>Webhook</li>
+<li>WeCom</li>
+</ul>
+
+</div>
+<p>For example, a contact point could contain a PagerDuty integration; an email and Slack integration; or a PagerDuty integration, a Slack integration, and two email integrations. You can also configure a contact point with no integrations; in which case no notifications are sent.</p>
+<p>Each contact point integration can also define the notification message to be sent, which can use the predefined message, a custom message, or notification templates.</p>
+<p>For a complete list of supported integrations and more details about contact points, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a>.</p>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<h1 id="xy-chart">XY chart</h1>
+<p>XY charts provide a way to visualize arbitrary x and y values in a graph so that you can easily show the relationship between two variables. XY charts are typically used to create scatter plots. You can also use them to create bubble charts where field values determine the size of each bubble:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="An xy chart showing height weight distribution"width="2964"height="1050"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-xy-charts-v11.6.png"
+            alt="An xy chart showing height weight distribution"width="2964"height="1050"/>
+        </noscript></div></a></figure>
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>You can use any type of tabular data with at least two numeric fields in an xy chart. The x field can be a time field. This type of visualization doesn&rsquo;t require time data, but it can be used.</p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="xy-chart-options">XY Chart options</h3>
+<p>The following options let you control how data is displayed in an xy chart:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#series-mapping">Series mapping</a></td>
+          <td>Set how series data is mapped in the chart. Choose from: <strong>Auto</strong> and <strong>Manual</strong>. Depending on your series mapping selection, the <strong>Frame</strong>, <strong>X-field</strong>, and <strong>Y-field</strong> options differ. For information on setting these specific fields, refer to the <a href="#series-mapping">Series mapping section</a>.</td>
+      </tr>
+      <tr>
+          <td>Size field</td>
+          <td>Set which field&rsquo;s values control the size of the points in the chart. This value is relative to the min and max of all the values in the data frame. When you select this option, you can then set the <strong>Min point size</strong> and <strong>Max point size</strong> options. Required in <strong>Manual</strong> mode.</td>
+      </tr>
+      <tr>
+          <td>Color field</td>
+          <td>Set which field&rsquo;s values control the color of the points in the chart. To use the color value options under the <strong>Standard</strong> options, you must set this field. Typically, this field is used when you only have one series displayed in the chart. Required in <strong>Manual</strong> mode.</td>
+      </tr>
+      <tr>
+          <td><a href="#show">Show</a></td>
+          <td>Set how values are represented in the visualization. Choose from: <strong>Points</strong>, <strong>Lines</strong>, or <strong>Both</strong>.</td>
+      </tr>
+      <tr>
+          <td>Point size</td>
+          <td>Set the size of all points in the chart, from one to one hundred pixels in diameter. The default size is five pixels. You can set an 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">override</a> to set the pixel size by series (y-field).</td>
+      </tr>
+      <tr>
+          <td>Min/Max point size</td>
+          <td>Use these options to control the minimum or maximum point size when you&rsquo;ve set the <strong>Size field</strong> option. You can 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">override</a> these options for specific series.</td>
+      </tr>
+      <tr>
+          <td>Point shape</td>
+          <td>Set the shape of the points in the chart. Choose from:<ul><li><strong>Circle</strong> - The default setting</li><li><strong>Square</strong> </li></ul></td>
+      </tr>
+      <tr>
+          <td>Point stroke width</td>
+          <td>The width of the point stroke in pixels. The default is one pixel.</td>
+      </tr>
+      <tr>
+          <td>Fill opacity</td>
+          <td>The opacity of the point fill. The default is 50.</td>
+      </tr>
+      <tr>
+          <td><a href="#line-style">Line style</a></td>
+          <td>Set the style of the lines that connect points. Choose from: <strong>Solid</strong>, <strong>Dash</strong>, or <strong>Dots</strong>.</td>
+      </tr>
+      <tr>
+          <td>Line width</td>
+          <td>The width of the lines that connect points, in pixels.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="series-mapping">Series mapping</h4>
+<p>Set how series data is mapped in the chart. Choose from:</p>
+<ul>
+<li><strong>Auto</strong> - Automatically generates series from all available data frames (or datasets). You can filter to select only one frame.</li>
+<li><strong>Manual</strong> - Explicitly define the series by selecting from available data frames.</li>
+</ul>
+<p>Depending on your series mapping selection, the <strong>Frame</strong>, <strong>X-field</strong>, and <strong>Y-field</strong> options differ.
+These options are described in the tabs that follow:</p>
+
+
+
+
+  <div class="br-4 base-border border-color-gray-3 docs_tabs">
+    <div x-data="app_content_tabs([&#34;Auto series mapping options&#34;,&#34;Manual series mapping options&#34;], 'fed35cf986e44fc5ccb647231f2bd8d9')" x-init="init()">
+      <div class="d-flex w-100p flex-direction-row align-items-center justify-content-flex-start d-md-none">
+        <select class="docs_tabs--select w-100p base-border-bottom border-color-gray-3" @change="toggle($event.target.value)">
+          
+          
+            <option value="Auto series mapping options" :selected="active === 'Auto series mapping options'">Auto series mapping options</option>
+          
+          
+            <option value="Manual series mapping options" :selected="active === 'Manual series mapping options'">Manual series mapping options</option>
+          
+        </select> 
+      </div>
+      <nav class="docs_tabs--navigation base-border-bottom border-color-gray-3 d-none d-md-block" role="tablist" data-codetoggle="true">
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Auto series mapping options')"
+            :class="{ 'docs_tabs--label-active': active === 'Auto series mapping options' }"
+          >
+            Auto series mapping options
+          </button>
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Manual series mapping options')"
+            :class="{ 'docs_tabs--label-active': active === 'Manual series mapping options' }"
+          >
+            Manual series mapping options
+          </button>
+        
+      </nav>
+      <div class="docs_tabs--content-container">
+        
+
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Auto series mapping options' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <p>When you select <strong>Auto</strong> as your series mapping mode, the following options are preconfigured, but you can also define them yourself:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Frame</td>
+          <td>By default, an xy chart displays all data frames. You can filter to select only one frame.</td>
+      </tr>
+      <tr>
+          <td><a href="#x-field">X field</a></td>
+          <td>Select which field or fields x represents. By default, this is the first number or time field in each data frame. For an example of this in <strong>Auto</strong> mode, refer to the <a href="#x-field">X field section</a>.</td>
+      </tr>
+      <tr>
+          <td><a href="#y-field">Y field</a></td>
+          <td>After the x-field is set, by default, all the remaining number fields in the data frame are designated as the y-fields. You can use this option to explicitly choose which fields to use for y. For more information on how to use this in <strong>Auto</strong> mode, refer to the <a href="#y-field">Y field section</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+</div>
+
+
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Manual series mapping options' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <p>When you select <strong>Manual</strong> as your series mode, you can add, edit, and delete series.
+To manage a series, click the <strong>Series</strong> field; to rename the series, click the series name.</p>
+<p>In <strong>Manual</strong> mode, these fields are required:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Frame</td>
+          <td>Select your data frame or dataset. You can add as many frames as you want.</td>
+      </tr>
+      <tr>
+          <td>X field</td>
+          <td>Select which field x represents.</td>
+      </tr>
+      <tr>
+          <td>Y field</td>
+          <td>Select which field y represents.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+
+<h4 id="x-field">X field</h4>
+<p>In <strong>Auto</strong> series mapping mode, select which field or fields x represents. By default, this is the first number or time field in each data frame. For example, you enter the following CSV content:</p>
+<table>
+  <thead>
+      <tr>
+          <th>a</th>
+          <th>b</th>
+          <th>c</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>9</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>2</td>
+          <td>4</td>
+      </tr>
+  </tbody>
+</table>
+<p>In the resulting chart, the x-field is generated from the values in column &ldquo;a&rdquo; unless you define it differently.</p>
+<h4 id="y-field">Y field</h4>
+<p>In <strong>Auto</strong> series mapping mode, after the x-field is set, by default, all the remaining number fields in the data frame are designated as the y-fields.
+You can use this option to explicitly choose which fields to use for y.</p>
+<p>The series of the chart are generated from the y-fields.
+To make changes to a series in an xy chart, make 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">overrides</a> to the y-field.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Any field you use in the <strong>Size field</strong> or <strong>Color field</strong> doesn&rsquo;t generate a series.</p></blockquote></div>
+
+<p>You can also use 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">overrides</a> to exclude y-fields individually.
+To do so, add an override with the following properties for each y-field you want removed:</p>
+<ul>
+<li>Override type: <strong>Fields with name</strong></li>
+<li>Override property: <strong>Series &gt; Hide in area</strong></li>
+<li>Area: <strong>Viz</strong></li>
+</ul>
+<h4 id="show">Show</h4>
+<p>Set how values are represented in the visualization. Choose from:</p>
+<ul>
+<li><strong>Points</strong> - Display values as points. When you select this option, the <strong>Point size</strong> option is also displayed.</li>
+<li><strong>Lines</strong> - Add a line between values. When you select this option, the <a href="#line-style">Line style</a> and <strong>Line width</strong> options are also displayed.</li>
+<li><strong>Both</strong> - Display both points and lines.</li>
+</ul>
+<h4 id="line-style">Line style</h4>
+<p>Set the style of the lines that connect points. To change the color, use the standard 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">Color scheme</a> field option.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="Line style options"width="1572"height="266"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-line-style-options-v11.6.png"
+            alt="Line style options"width="1572"height="266"/>
+        </noscript></div></a></figure>
+<ul>
+<li><strong>Solid</strong> - Display a solid line. This is the default setting.</li>
+<li><strong>Dash</strong> - Display a dashed line. When you choose this option, a drop-down list is displayed where you can select the length and gap setting for the line dashes. By default, the length and gap are set to <code>10, 10</code>.</li>
+<li><strong>Dots</strong> - Display dotted lines. When you choose this option, a drop-down list is displayed where you can select dot spacing. By default, the dot spacing is set to <code>0, 10</code> (the first number represents dot length, which is always zero).</li>
+</ul>
+<h3 id="tooltip-options">Tooltip options</h3>
+<p>Tooltip options control the information overlay that appears when you hover over data points in the visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Tooltip mode</td>
+          <td>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how they behave:<ul><li><strong>Single</strong> - The hover tooltip shows only a single series, the one that you are hovering over on the visualization.</li><li><strong>Hidden</strong> - Do not display the tooltip when you interact with the visualization.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Max width</td>
+          <td>Set the maximum width of the tooltip box.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="legend-options">Legend options</h3>
+
+
+<div data-shared="visualizations/legend-options-1.md">
+            <p>Legend options control the series names and statistics that appear under or to the right of the graph. For more information about the legend, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Visibility</td>
+          <td>Toggle the switch to turn the legend on or off.</td>
+      </tr>
+      <tr>
+          <td>Mode</td>
+          <td>Use these settings to define how the legend appears in your visualization. <strong>List</strong> displays the legend as a list. This is a default display mode of the legend. <strong>Table</strong> displays the legend as a table.</td>
+      </tr>
+      <tr>
+          <td>Placement</td>
+          <td>Choose where to display the legend. <strong>Bottom</strong> places the legend below the graph. <strong>Right</strong> places the legend to the right of the graph.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Control how wide the legend is when placed on the right side of the visualization. This option is only displayed if you set the legend placement to <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>Choose which of the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">standard calculations</a> to show in the legend. You can have more than one.</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+
+        
+<h3 id="axis-options">Axis options</h3>
+
+
+<div data-shared="visualizations/axis-options-2.md">
+            <p>Options under the <strong>Axis</strong> section control how the x- and y-axes are rendered. Some options don&rsquo;t take effect until you click outside of the field option box you&rsquo;re editing. You can also press <code>Enter</code>.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#placement">Placement</a></td>
+          <td>Select the placement of the y-axis.  Choose from: <strong>Auto</strong>, <strong>Left</strong>, <strong>Right</strong>, and <strong>Hidden</strong>.</td>
+      </tr>
+      <tr>
+          <td>Label</td>
+          <td>Set a y-axis text label. If you have more than one y-axis, then you can assign different labels using an override.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Set a fixed width for the axis. By default, Grafana dynamically calculates the width of an axis.</td>
+      </tr>
+      <tr>
+          <td>Show grid lines</td>
+          <td>Set the axis grid line visibility. Choose from: <strong>Auto</strong>, <strong>On</strong>, and <strong>Off</strong>.</td>
+      </tr>
+      <tr>
+          <td>Color</td>
+          <td>Set the color of the axis. Choose from:<ul><li><strong>Text</strong> - Uses panel text color.</li><li><strong>Series</strong> - Uses the colors of the series.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Show border</td>
+          <td>Set the axis border visibility.</td>
+      </tr>
+      <tr>
+          <td><a href="#scale">Scale</a></td>
+          <td>Set the y-axis values scale. Choose from: <strong>Linear</strong>, <strong>Logarithmic</strong>, and <strong>Symlog</strong>.</td>
+      </tr>
+      <tr>
+          <td>Centered zero</td>
+          <td>Set the y-axis so it&rsquo;s centered on zero. Applies to the <strong>Linear</strong> or <strong>Symlog</strong> scale options.</td>
+      </tr>
+      <tr>
+          <td><a href="#soft-min-and-soft-max">Soft min</a></td>
+          <td>Set a soft min to better control the y-axis limits.</td>
+      </tr>
+      <tr>
+          <td><a href="#soft-min-and-soft-max">Soft max</a></td>
+          <td>Set a soft max to better control the y-axis limits.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="placement">Placement</h4>
+<p>Select the placement of the y-axis. Choose from the following:</p>
+<ul>
+<li><strong>Auto</strong> - Automatically assigns the y-axis to the series. When there are two or more series with different units, Grafana assigns the left axis to the first unit and the right axis to the units that follow.</li>
+<li><strong>Left</strong> - Display all y-axes on the left side.</li>
+<li><strong>Right</strong> - Display all y-axes on the right side.</li>
+<li><strong>Hidden</strong> - Hide all axes. To selectively hide axes, 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/#add-a-field-override">Add a field override</a> that targets specific fields.</li>
+</ul>
+<h4 id="scale">Scale</h4>
+<p>Set the y-axis values scale. Choose from:</p>
+<ul>
+<li><strong>Linear</strong> - Divides the scale into equal parts.</li>
+<li><strong>Logarithmic</strong> - Use a logarithmic scale. If you select this option, in the <strong>Log base</strong> list, choose a binary (base 2) or common (base 10) logarithmic scale.</li>
+<li><strong>Symlog</strong> - Use a symmetrical logarithmic scale. If you select this option, choose also:
+<ul>
+<li><strong>Log base</strong> - Select a binary (base 2) or common (base 10) logarithmic scale.</li>
+<li><strong>Linear threshold</strong> - Set the threshold at which the scale changes from linear to logarithmic.</li>
+</ul>
+</li>
+</ul>
+<h4 id="soft-min-and-soft-max">Soft min and soft max</h4>
+<p>Set a <strong>Soft min</strong> or <strong>soft max</strong> option for better control of y-axis limits. By default, Grafana sets the range for the y-axis automatically based on the dataset.</p>
+<p><strong>Soft min</strong> and <strong>soft max</strong> settings can prevent small variations in the data from being magnified when it&rsquo;s mostly flat. In contrast, hard min and max values help prevent obscuring useful detail in the data by clipping intermittent spikes past a specific point.</p>
+<p>To define hard limits of the y-axis, set standard min/max options. For more information, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#max">Configure standard options</a>.
+The following examples shows how this option works in a time series visualization:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-soft-min-max-v12.0.png"
+  alt="Label example" width="2198"
+     height="674"/></p>
+</div>
+
+        
+<h3 id="standard-options">Standard options</h3>
+<p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+<p>You can customize the following standard options:</p>
+<ul>
+<li><strong>Field min/max</strong> - Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</li>
+<li><strong>Color scheme</strong> - Set single or multiple colors for your entire visualization. To learn more about color schemes, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#max">Configure standard options</a>.</li>
+</ul>
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-2.md">
+            <p><em>Data links</em> allow you to link to other panels, dashboards, and external resources and <em>actions</em> let you trigger basic, unauthenticated, API calls.
+In both cases, you can carry out these tasks while maintaining the context of the source panel.</p>
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+<li><strong>One click</strong> - Opens the data link with a single click. Only one data link can have <strong>One click</strong> enabled at a time.</li>
+</ul>
+<p>For each action, define the following API call settings:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>A human-readable label for the action that&rsquo;s displayed in the UI.</td>
+      </tr>
+      <tr>
+          <td>Confirmation message</td>
+          <td>A descriptive prompt to confirm or cancel the action.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Select from <strong>POST</strong>, <strong>PUT</strong>, or <strong>GET</strong>.</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>The request URL.</p><p>To add a variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables.</td>
+      </tr>
+      <tr>
+          <td>Variables</td>
+          <td><strong>Key</strong> and <strong>Name</strong> pairs with a type selection. Click the <strong>+</strong> icon to add as many variables as you need. To add a variable to the request, prefix the key with <code>$</code>. You can set the values for the variables when performing an action.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td><strong>Key</strong> and <strong>Value</strong> pairs. Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Headers</td>
+          <td>Comprised of <strong>Key</strong> and <strong>Value</strong> pairs and a <strong>Content-Type</strong>.</p><p>Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select from the following: <strong>application/json</strong>, <strong>text/plain</strong>, <strong>application/XML</strong>, and <strong>application/x-www-form-urlencoded</strong>.</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>The body of the request.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-2.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

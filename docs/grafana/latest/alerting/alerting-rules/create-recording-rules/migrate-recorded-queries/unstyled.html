@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<h1 id="migrate-recorded-queries">Migrate recorded queries</h1>
+<p>Users can transpose their <a href="/docs/grafana/latest/administration/recorded-queries/">now-depreciated recorded queries</a> into Grafana-managed recording rules in a few easy steps. The query PromQL for each recorded query has been exposed on the recorded queries list along with the existing datasource, time range, and interval values to simplify the migration process.</p>
+<h2 id="migrate-your-recorded-queries-to-grafana-managed-alert-rules">Migrate your recorded queries to Grafana-managed alert rules</h2>
+<ol>
+<li>
+<p>Navigate to <strong>Administration</strong> -&gt; <strong>Plugins and Data</strong> -&gt; <strong>Recorded queries.</strong></p>
+</li>
+<li>
+<p>Note the data source, query PromQL, interval, and time range, and copy them somewhere accessible.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 800px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/alerting/rec-query-example.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/alerting/rec-query-example.png"data-srcset="/media/docs/alerting/rec-query-example.png?w=320 320w, /media/docs/alerting/rec-query-example.png?w=550 550w, /media/docs/alerting/rec-query-example.png?w=750 750w, /media/docs/alerting/rec-query-example.png?w=900 900w, /media/docs/alerting/rec-query-example.png?w=1040 1040w, /media/docs/alerting/rec-query-example.png?w=1240 1240w, /media/docs/alerting/rec-query-example.png?w=1920 1920w"
+             data-sizes="auto"alt="Example of relevant recorded query information"width="2754"height="726"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/rec-query-example.png"
+               alt="Example of relevant recorded query information"width="2754"height="726"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Now navigate to <strong>Alerting</strong> -&gt; <strong>Alert rules.</strong></p>
+</li>
+<li>
+<p>At the top of the Alert rules page, click <strong>More</strong> -&gt; <strong>New Grafana recording rule</strong>.</p>
+<p>Add a name for your Recording Rule and a name for the new metric that the recording rule generates.</p>
+</li>
+<li>
+<p>Select your data source and paste your ratio query PromQL into the query builder.</p>
+<p>Click <strong>Options</strong> and validate that the Time Range is the same as your recorded query.</p>
+</li>
+<li>
+<p>Select the Folder you would like the rule to be created in.</p>
+</li>
+<li>
+<p>Add any labels to the rule.</p>
+</li>
+<li>
+<p>Select or create an evaluation group. Set your evaluation group’s evaluation interval to the interval of your recorded query.</p>
+</li>
+<li>
+<p>Review your rule and click Save <strong>rule and exit</strong> when you are finished.</p>
+</li>
+<li>
+<p>Update any areas where the recorded query was referenced to use the new Grafana-managed recording rule.</p>
+</li>
+</ol>

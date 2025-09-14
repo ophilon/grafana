@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<h1 id="configure-the-postgresql-data-source">Configure the PostgreSQL data source</h1>
+<p>This document provides instructions for configuring the PostgreSQL data source and explains available configuration options. For general information on managing data sources refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/">Data source management</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>
+<p>You must have the <code>Organization administrator</code> role to configure the Postgres data source.
+Organization administrators can also <a href="#provision-the-data-source">configure the data source via YAML</a> with the Grafana provisioning system.</p>
+</li>
+<li>
+<p>Grafana comes with a built-in PostgreSQL data source plugin, eliminating the need to install a plugin.</p>
+</li>
+<li>
+<p>Familiarize yourself with your PostgreSQL security configuration and gather any necessary security certificates, client certificates, and client keys.</p>
+</li>
+<li>
+<p>Know which version of PostgreSQL you are running. You will be prompted for this information during the configuration process.</p>
+</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When adding a data source, the database user you specify should have only <code>SELECT</code> permissions on the relevant database and tables. Grafana does not validate the safety of queries, which means they can include potentially harmful SQL statements, such as <code>USE otherdb;</code> or <code>DROP TABLE user;</code>, that could be executed. To mitigate this risk, Grafana strongly recommends creating a dedicated PostgreSQL user with restricted permissions.</p></blockquote></div>
+
+<p>Example:</p>
+<pre> CREATE USER grafanareader WITH PASSWORD &#39;password&#39;;
+ GRANT USAGE ON SCHEMA schema TO grafanareader;
+ GRANT SELECT ON schema.table TO grafanareader;</pre>
+<h2 id="add-the-postgresql-data-source">Add the PostgreSQL data source</h2>
+<p>Complete the following steps to set up a new PostgreSQL data source:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu.</li>
+<li>Click <strong>Add new connection</strong></li>
+<li>Type <code>PostgreSQL</code> in the search bar.</li>
+<li>Select the <strong>PostgreSQL data source</strong>.</li>
+<li>Click <strong>Add new data source</strong> in the upper right.</li>
+</ol>
+<p>You are taken to the <strong>Settings</strong> tab where you will configure the data source.</p>
+<h2 id="postgresql-configuration-options">PostgreSQL configuration options</h2>
+<p>Following is a list of PostgreSQL configuration options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Name</td>
+          <td>Sets the name you use to refer to the data source in panels and queries. Examples: <code>PostgreSQL-DB-1</code>.</td>
+      </tr>
+      <tr>
+          <td>Default</td>
+          <td>Toggle to set this specific PostgreSQL data source as the default pre-selected data source in panels and visualizations.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Connection section:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Host URL</td>
+          <td>The IP address/hostname and optional port of your PostgreSQL instance.</td>
+      </tr>
+      <tr>
+          <td>Database name</td>
+          <td>The name of your PostgreSQL database.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Authentication section:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Username</td>
+          <td>Enter the username used to connect to your PostgreSQL database.</td>
+      </tr>
+      <tr>
+          <td>Password</td>
+          <td>Enter the password used to connect to the PostgreSQL database.</td>
+      </tr>
+      <tr>
+          <td>TLS/SSL Mode</td>
+          <td>Determines whether or with what priority a secure SSL TCP/IP connection will be negotiated with the server. When TLS/SSL Mode is disabled, TLS/SSL Method and TLS/SSL Auth Details aren’t visible options.</td>
+      </tr>
+      <tr>
+          <td>TLS/SSL Method</td>
+          <td>Determines how TLS/SSL certificates are configured.</td>
+      </tr>
+      <tr>
+          <td>- File system path</td>
+          <td>This option allows you to configure certificates by specifying paths to existing certificates on the local file system where Grafana is running. Ensure this file is readable by the user executing the Grafana process.</td>
+      </tr>
+      <tr>
+          <td>- Certificate content</td>
+          <td>This option allows you to configure certificate by specifying their content. The content is stored and encrypted in the Grafana database. When connecting to the database, the certificates are saved as files, on the local filesystem, in the Grafana data path.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>TLS/SSL Auth Details:</strong></p>
+<p>If you select the TLS/SSL Mode options <strong>require</strong>, <strong>verify-ca</strong> or <strong>verify-full</strong> and <strong>file system path</strong> the following are required:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>TLS/SSL Root Certificate</td>
+          <td>Specify the path to the root certificate file.</td>
+      </tr>
+      <tr>
+          <td>TLS/SSL Client Certificate</td>
+          <td>Specify the path to the client certificate and ensure the file is accessible to the user running the Grafana process.</td>
+      </tr>
+      <tr>
+          <td>TLS/SSL Client Key</td>
+          <td>Specify the path to the client key file and ensure the file is accessible to the user running the Grafana process.</td>
+      </tr>
+  </tbody>
+</table>
+<p>If you select the TLS/SSL Mode option <strong>require</strong> and TLS/SSL Method certificate content the following are required:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>TLS/SSL Client Certificate</td>
+          <td>Provide the client certificate.</td>
+      </tr>
+      <tr>
+          <td>TLS/SSL Client Key</td>
+          <td>Provide the client key.</td>
+      </tr>
+  </tbody>
+</table>
+<p>If you select the TLS/SSL Mode options <strong>verify-ca</strong> or <strong>verify-full</strong> with the TLS/SSL Method certificate content the following are required:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>TLS/SSL Client Certificate</td>
+          <td>Provide the client certificate.</td>
+      </tr>
+      <tr>
+          <td>TLS/SSL Root Certificate</td>
+          <td>Provide the root certificate.</td>
+      </tr>
+      <tr>
+          <td>TLS/SSL Client Key</td>
+          <td>Provide the client key.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>PostgreSQL Options:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Version</td>
+          <td>Determines which functions are available in the query builder. The default is the current version.</td>
+      </tr>
+      <tr>
+          <td>Min time interval</td>
+          <td>Defines a lower limit for the auto group by time interval. Grafana recommends aligning this setting with the data write frequency. For example, set it to <code>1m</code> if your data is written every minute. Refer to <a href="#min-time-interval">Min time interval</a> for format examples.</td>
+      </tr>
+      <tr>
+          <td>TimescaleDB</td>
+          <td>A time-series database built as a PostgreSQL extension. When enabled, Grafana uses <code>time_bucket</code> in the <code>$__timeGroup</code> macro to display TimescaleDB-specific aggregate functions in the query builder. For more information, refer to <a href="https://docs.timescale.com/timescaledb/latest/tutorials/grafana/grafana-timescalecloud/#connect-timescaledb-and-grafana" target="_blank" rel="noopener noreferrer">TimescaleDB documentation</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Connection limits:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Max open</td>
+          <td>The maximum number of open connections to the database. The default is <code>100</code>.</td>
+      </tr>
+      <tr>
+          <td>Auto max idle</td>
+          <td>Toggle to set the maximum number of idle connections to the number of maximum open connections. This setting is toggled on by default.</td>
+      </tr>
+      <tr>
+          <td>Max idle</td>
+          <td>The maximum number of connections in the idle connection pool. The default is <code>100</code>.</td>
+      </tr>
+      <tr>
+          <td>Max lifetime</td>
+          <td>The maximum amount of time in seconds a connection may be reused. The default is <code>14400</code>, or 4 hours.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Private data source connect:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Private data source connect</td>
+          <td><em>Only for Grafana Cloud users.</em> Private data source connect, or PDC, allows you to establish a private, secured connection between a Grafana Cloud instance, or stack, and data sources secured within a private network. Click the drop-down to locate the URL for PDC. For more information, refer to <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect (PDC)</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Click <strong>Manage private data source connect</strong> to be taken to your PDC connection page, where you’ll find your PDC configuration details.</p>
+<p>After you have added your PostgreSQL connection settings, click <strong>Save &amp; test</strong> to test and save the data source connection.</p>
+<h3 id="min-time-interval">Min time interval</h3>
+<p>The <strong>Min time interval</strong> setting defines a lower limit for the 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#__interval"><code>$__interval</code></a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#__interval_ms"><code>$__interval_ms</code></a> variables.</p>
+<p>This option can also be configured or overridden in the dashboard panel under the data source settings.</p>
+<p>This value must be formatted as a number followed by a valid time identifier:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Identifier</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>y</code></td>
+          <td>year</td>
+      </tr>
+      <tr>
+          <td><code>M</code></td>
+          <td>month</td>
+      </tr>
+      <tr>
+          <td><code>w</code></td>
+          <td>week</td>
+      </tr>
+      <tr>
+          <td><code>d</code></td>
+          <td>day</td>
+      </tr>
+      <tr>
+          <td><code>h</code></td>
+          <td>hour</td>
+      </tr>
+      <tr>
+          <td><code>m</code></td>
+          <td>minute</td>
+      </tr>
+      <tr>
+          <td><code>s</code></td>
+          <td>second</td>
+      </tr>
+      <tr>
+          <td><code>ms</code></td>
+          <td>millisecond</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="provision-the-data-source">Provision the data source</h2>
+<p>You can define and configure the data source in YAML files with 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">provisioning</a>.
+For more information about provisioning, and available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#datasources">Provision Grafana</a>.</p>
+<h3 id="postgresql-provisioning-example">PostgreSQL provisioning example</h3>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Postgres
+    type: postgres
+    url: localhost:5432
+    user: grafana
+    secureJsonData:
+      password: &#39;Password!&#39;
+    jsonData:
+      database: grafana
+      sslmode: &#39;disable&#39; # disable/require/verify-ca/verify-full
+      maxOpenConns: 100
+      maxIdleConns: 100
+      maxIdleConnsAuto: true
+      connMaxLifetime: 14400
+      postgresVersion: 903 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+      timescaledb: false</pre>
+<h4 id="troubleshoot-provisioning-issues">Troubleshoot provisioning issues</h4>
+<p>If you encounter metric request errors or other issues:</p>
+<ul>
+<li>Ensure that the parameters in your data source YAML file precisely match the example provided, including parameter names and the correct use of quotation marks.</li>
+<li>Verify that the database name <strong>IS NOT</strong> included in the URL.</li>
+</ul>

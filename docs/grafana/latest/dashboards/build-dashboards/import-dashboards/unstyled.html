@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<h1 id="import-dashboards">Import dashboards</h1>
+<p>You can import preconfigured dashboards into your Grafana instance or Cloud stack using the UI or the 
+    <a href="/docs/grafana/latest/developers/http_api/">HTTP API</a>.</p>
+<h2 id="import-a-dashboard">Import a dashboard</h2>
+<p>To import a dashboard, follow these steps:</p>
+<ol>
+<li>
+<p>Click <strong>Dashboards</strong> in the primary menu.</p>
+</li>
+<li>
+<p>Click <strong>New</strong> and select <strong>Import</strong> in the drop-down menu.</p>
+</li>
+<li>
+<p>Perform one of the following steps:</p>
+<ul>
+<li>Upload a dashboard JSON file.</li>
+<li>Paste a <a href="#discover-dashboards-on-grafanacom">Grafana.com dashboard</a> URL or ID into the field provided.</li>
+<li>Paste dashboard JSON text directly into the text area.</li>
+</ul>
+</li>
+<li>
+<p>(Optional) Change the dashboard name, folder, or UID, and specify metric prefixes, if the dashboard uses any.</p>
+</li>
+<li>
+<p>Select a data source, if required.</p>
+</li>
+<li>
+<p>Click <strong>Import</strong>.</p>
+</li>
+</ol>
+<h2 id="discover-dashboards-on-grafanacom">Discover dashboards on grafana.com</h2>
+<p>The <a href="/grafana/dashboards/">Dashboards page</a> on grafana.com provides you with dashboards for common server applications. Browse our library of official and community-built dashboards and import them to quickly get up and running.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1294px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-gcom-dashboards.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-gcom-dashboards.png"data-srcset="/media/docs/grafana/dashboards/screenshot-gcom-dashboards.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-gcom-dashboards.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-gcom-dashboards.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-gcom-dashboards.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-gcom-dashboards.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-gcom-dashboards.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-gcom-dashboards.png?w=1920 1920w"
+          data-sizes="auto"alt="Preconfigured dashboards on grafana.com"width="1294"height="852"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-gcom-dashboards.png"
+            alt="Preconfigured dashboards on grafana.com"width="1294"height="852"/>
+        </noscript></div></a></figure>
+<p>You can also add to this library by exporting one of your own dashboards. For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/">Share dashboards and panels</a>.</p>
+<h2 id="more-examples">More examples</h2>
+<p>Your Grafana Cloud stack comes with several default dashboards in the <strong>Grafana Cloud</strong> folder in <strong>Dashboards</strong>. If you&rsquo;re running your own installation of Grafana, you can find more example dashboards in the <code>public/dashboards/</code> directory.</p>

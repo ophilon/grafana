@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<h1 id="amazon-cloudwatch-query-editor">Amazon CloudWatch query editor</h1>
+<p>This topic explains querying specific to the CloudWatch data source.
+For general documentation on querying data sources in Grafana, see 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<h2 id="choose-a-query-editing-mode">Choose a query editing mode</h2>
+<p>The CloudWatch data source can query data from both CloudWatch metrics and CloudWatch Logs APIs, each with its own specialized query editor.</p>
+<ul>
+<li><a href="#query-cloudwatch-metrics">CloudWatch Metrics</a></li>
+<li><a href="#query-cloudwatch-logs">CloudWatch Logs</a></li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--right"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png"data-srcset="/static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png?w=320 320w, /static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png?w=550 550w, /static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png?w=750 750w, /static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png?w=900 900w, /static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png?w=1040 1040w, /static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png?w=1240 1240w, /static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png?w=1920 1920w"
+          data-sizes="auto"alt="CloudWatch API modes"width="523"height="169"title="CloudWatch API modes"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/cloudwatch-query-editor-api-modes-8.3.0.png"
+            alt="CloudWatch API modes"width="523"height="169"title="CloudWatch API modes"class="docs-image--right"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">CloudWatch API modes</figcaption></a></figure>
+<p>Select which API to query by using the query mode switch on top of the editor.</p>
+<h2 id="query-cloudwatch-metrics">Query CloudWatch metrics</h2>
+<p>You can build two types of queries with the CloudWatch query editor:</p>
+<ul>
+<li><a href="#create-a-metric-search-query">Metric Search</a></li>
+<li><a href="#create-a-metric-insights-query">Metric Query</a>, which uses the Metrics Insights feature</li>
+</ul>
+<h3 id="create-a-metric-search-query">Create a Metric Search query</h3>
+<p>To create a valid Metric Search query, specify the namespace, metric name, and at least one statistic. Dimensions are optional, but for a dimension to be considered part of the query it must have both a key and a value.</p>
+<p>If you enable <code>Match Exact</code>, you must also specify all dimensions of the metric you&rsquo;re querying so that the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/search-expression-syntax.html" target="_blank" rel="noopener noreferrer">metric schema</a> matches exactly. With <code>Match Exact</code> enabled the query only returns metrics that have the specified dimensions and no others, so dimensions that are on the metric but that are not being filtered on must be added as a wildcard (<code>*</code>) filter.
+If <code>Match Exact</code> is disabled, you can specify any number of dimensions on which you&rsquo;d like to filter. With <code>Match Exact</code> disabled the query returns any metrics that match the namespace, metric name, and all defined dimensions, whether or not they have additional dimensions.
+The data source returns up to 100 metrics matching your filter criteria.</p>
+<p>You can also augment queries by using <a href="../template-variables/">template variables</a>.</p>
+<h4 id="create-dynamic-queries-with-dimension-wildcards">Create dynamic queries with dimension wildcards</h4>
+<p>Use the asterisk (<code>*</code>) wildcard for one or more dimension values to monitor a dynamic list of metrics.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--right"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png"data-srcset="/static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png?w=320 320w, /static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png?w=550 550w, /static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png?w=750 750w, /static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png?w=900 900w, /static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png?w=1040 1040w, /static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png?w=1240 1240w, /static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png?w=1920 1920w"
+          data-sizes="auto"alt="CloudWatch dimension wildcard"width="788"height="375"title="CloudWatch dimension wildcard"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/cloudwatch-dimension-wildcard-8.3.0.png"
+            alt="CloudWatch dimension wildcard"width="788"height="375"title="CloudWatch dimension wildcard"class="docs-image--right"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">CloudWatch dimension wildcard</figcaption></a></figure>
+<p>In this example, the query returns all metrics in the namespace <code>AWS/EC2</code> with a metric name of <code>CPUUtilization</code>, and also queries ANY value for the <code>InstanceId</code> dimension.
+This can help you monitor metrics for AWS resources, like EC2 instances or containers.</p>
+<p>When an auto-scaling event creates new instances, they automatically appear in the graph without you having to track the new instance IDs.
+This capability is currently limited to retrieving up to 100 metrics.</p>
+<p>You can expand the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#navigate-the-query-tab">Query inspector</a> button and click <code>Meta Data</code> to see the search expression that&rsquo;s automatically built to support wildcards.</p>
+<p>To learn more about search expressions, refer to the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/search-expression-syntax.html" target="_blank" rel="noopener noreferrer">CloudWatch documentation</a>.
+The search expression is defined by default in such a way that the queried metrics must match the defined dimension names exactly.
+This means that in the example, the query returns only metrics with exactly one dimension containing the name &lsquo;InstanceId&rsquo;.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--right"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png"data-srcset="/static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png?w=320 320w, /static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png?w=550 550w, /static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png?w=750 750w, /static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png?w=900 900w, /static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png?w=1040 1040w, /static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png?w=1240 1240w, /static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png?w=1920 1920w"
+          data-sizes="auto"alt="CloudWatch Meta Inspector"width="928"height="161"title="CloudWatch Meta Inspector"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/cloudwatch-meta-inspector-8.3.0.png"
+            alt="CloudWatch Meta Inspector"width="928"height="161"title="CloudWatch Meta Inspector"class="docs-image--right"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">CloudWatch Meta Inspector</figcaption></a></figure>
+<p>You can disable <code>Match Exact</code> to include metrics that have other dimensions defined.
+Disabling <code>Match Exact</code> also creates a search expression even if you don&rsquo;t use wildcards. We simply search for any metric that matches at least the namespace, metric name, and all defined dimensions.</p>
+<h4 id="use-multi-value-template-variables">Use multi-value template variables</h4>
+<p>When defining dimension values based on multi-valued template variables, the data source uses a search expression to query for the matching metrics.
+This enables the use of multiple template variables in one query, and also lets you use template variables for queries that have the <code>Match Exact</code> option disabled.</p>
+<p>Search expressions are limited to 1,024 characters, so your query might fail if you have a long list of values.
+We recommend using the asterisk (<code>*</code>) wildcard instead of the <code>All</code> option to query all metrics that have any value for a certain dimension name.</p>
+<p>The use of multi-valued template variables is supported only for dimension values.
+Using multi-valued template variables for <code>Region</code>, <code>Namespace</code>, or <code>Metric Name</code> is not supported.</p>
+<h4 id="use-metric-math-expressions">Use metric math expressions</h4>
+<p>You can create new time series metrics by operating on top of CloudWatch metrics using mathematical functions.
+This includes support for arithmetic operators, unary subtraction, and other functions, and can be applied to CloudWatch metrics.
+For details on the available functions, refer to <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html" target="_blank" rel="noopener noreferrer">AWS Metric Math</a>.</p>
+<p>For example, to apply arithmetic operations to a metric, apply a unique string id to the raw metric, then use this id and apply arithmetic operations to it in the Expression field of the new metric.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you use the expression field to reference another query, like <code>queryA * 2</code>, you can&rsquo;t create an alert rule based on that query.</p></blockquote></div>
+
+<h4 id="period-macro">Period macro</h4>
+<p>If you&rsquo;re using a CloudWatch <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/search-expression-syntax.html" target="_blank" rel="noopener noreferrer"><code>SEARCH</code></a> expression, you may want to use the <code>$__period_auto</code> macro rather than specifying a period explicitly. The <code>$__period_auto</code> macro will resolve to a <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_GetMetricData.html" target="_blank" rel="noopener noreferrer">CloudWatch period</a> that is suitable for the chosen time range.</p>
+<h4 id="deep-link-grafana-panels-to-the-cloudwatch-console">Deep-link Grafana panels to the CloudWatch console</h4>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--right"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v65/cloudwatch-deep-linking.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v65/cloudwatch-deep-linking.png"data-srcset="/static/img/docs/v65/cloudwatch-deep-linking.png?w=320 320w, /static/img/docs/v65/cloudwatch-deep-linking.png?w=550 550w, /static/img/docs/v65/cloudwatch-deep-linking.png?w=750 750w, /static/img/docs/v65/cloudwatch-deep-linking.png?w=900 900w, /static/img/docs/v65/cloudwatch-deep-linking.png?w=1040 1040w, /static/img/docs/v65/cloudwatch-deep-linking.png?w=1240 1240w, /static/img/docs/v65/cloudwatch-deep-linking.png?w=1920 1920w"
+          data-sizes="auto"alt="CloudWatch deep linking"width="1000"height="420"title="CloudWatch deep linking"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v65/cloudwatch-deep-linking.png"
+            alt="CloudWatch deep linking"width="1000"height="420"title="CloudWatch deep linking"class="docs-image--right"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">CloudWatch deep linking</figcaption></a></figure>
+<p>Left-clicking a time series in the panel shows a context menu with a link to <code>View in CloudWatch console</code>.
+Clicking that link opens a new tab that takes you to the CloudWatch console and displays all metrics for that query.
+If you&rsquo;re not logged in to the CloudWatch console, the link forwards you to the login page.
+The provided link is valid for any account but displays the expected metrics only if you&rsquo;re logged in to the account that corresponds to the selected data source in Grafana.</p>
+<p>This feature is not available for metrics based on <a href="#metric-math-expressions">metric math expressions</a>.</p>
+<h3 id="create-a-metric-insights-query">Create a Metric Insights query</h3>
+<p>The Metrics Query option in the CloudWatch data source is referred to as <strong>Metric Insights</strong> in the AWS console.
+It&rsquo;s a fast, flexible, SQL-based query engine that you can use to identify trends and patterns across millions of operational metrics in real time.</p>
+<p>The metrics query editor&rsquo;s Metrics Query option has two editing modes:</p>
+<ul>
+<li><a href="#create-a-query-in-builder-mode">Builder mode</a>, which provides a visual query-building interface</li>
+<li><a href="#create-a-query-in-code-mode">Code mode</a>, which provides a code editor for writing queries</li>
+</ul>
+<h4 id="use-metric-insights-syntax">Use Metric Insights syntax</h4>
+<p>Metric Insights uses a dialect of SQL and this query syntax:</p>
+<pre>SELECT FUNCTION(MetricName)
+FROM Namespace | SCHEMA(...)
+[ WHERE labelKey OPERATOR labelValue [AND|...]]
+[ GROUP BY labelKey [, ...]]
+[ ORDER BY FUNCTION() [DESC | ASC] ]
+[ LIMIT number]</pre>
+<p>For details about the Metrics Insights syntax, refer to the <a href="https://docs.aws.amazon.com/console/cloudwatch/metricsinsights-syntax" target="_blank" rel="noopener noreferrer">AWS reference documentation</a>.</p>
+<p>For information about Metrics Insights limits, refer to the <a href="https://docs.aws.amazon.com/console/cloudwatch/metricsinsights" target="_blank" rel="noopener noreferrer">AWS feature documentation</a>.</p>
+<p>You can also augment queries by using <a href="../template-variables/">template variables</a>.</p>
+<h4 id="use-metrics-insights-keywords">Use Metrics Insights keywords</h4>
+<p>This table summarizes common Metrics Insights query keywords:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Keyword</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>FUNCTION</code></td>
+          <td>Required. Specifies the aggregate function to use, and also specifies the name of the metric to be queried. Valid values are AVG, COUNT, MAX, MIN, and SUM.</td>
+      </tr>
+      <tr>
+          <td><code>MetricName</code></td>
+          <td>Required. For example, <code>CPUUtilization</code>.</td>
+      </tr>
+      <tr>
+          <td><code>FROM</code></td>
+          <td>Required. Specifies the metric&rsquo;s source. You can specify either the metric namespace that contains the metric to be queried, or a SCHEMA table function. Namespace examples include <code>AWS/EC2</code>, <code>AWS/Lambda</code>.</td>
+      </tr>
+      <tr>
+          <td><code>SCHEMA</code></td>
+          <td>Optional. Narrows the query results to only the metrics that are an exact match, or to metrics that do not match.</td>
+      </tr>
+      <tr>
+          <td><code>WHERE</code></td>
+          <td>Optional. Filters the query results to only the metrics that match your specified expression. For example, <code>WHERE InstanceType != 'c3.4xlarge'</code>.</td>
+      </tr>
+      <tr>
+          <td><code>GROUP BY</code></td>
+          <td>Optional. Groups the query results into multiple time series. For example, <code>GROUP BY ServiceName</code>.</td>
+      </tr>
+      <tr>
+          <td><code>ORDER BY</code></td>
+          <td>Optional. Specifies the order in which time series are returned. Options are <code>ASC</code>, <code>DESC</code>.</td>
+      </tr>
+      <tr>
+          <td><code>LIMIT</code></td>
+          <td>Optional. Limits the number of time series returned.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="create-a-query-in-builder-mode">Create a query in Builder mode</h4>
+<p><strong>To create a query in Builder mode:</strong></p>
+<ol>
+<li>Browse and select a metric namespace, metric name, filter, group, and order options using information from the <a href="#metrics-insights-keywords">Metrics Insights keywords table</a>.</li>
+<li>For each of these keywords, choose from the list of possible options.</li>
+</ol>
+<p>Grafana constructs a SQL query based on your selections.</p>
+<h4 id="create-a-query-in-code-mode">Create a query in Code mode</h4>
+<p>You can also write your SQL query directly in a code editor by using Code mode.</p>
+<p>The code editor has a built-in autocomplete feature that suggests keywords, aggregations, namespaces, metrics, labels, and label values.
+The suggestions appear after typing a space, comma, or dollar (<code>$</code>) character, or the keyboard combination <key>CTRL</key>+<key>Space</key>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--right"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/cloudwatch-code-editor-autocomplete-8.3.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/cloudwatch-code-editor-autocomplete-8.3.0.png"alt="Code editor autocomplete"title="Code editor autocomplete"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/cloudwatch-code-editor-autocomplete-8.3.0.png"
+            alt="Code editor autocomplete"title="Code editor autocomplete"class="docs-image--right"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Code editor autocomplete</figcaption></a></figure>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Template variables in the code editor can interfere with autocompletion.</p></blockquote></div>
+
+<p>To run the query, click <strong>Run query</strong> above the code editor.</p>
+<h3 id="common-query-editor-fields">Common query editor fields</h3>
+<p>Three fields located at the bottom of the metrics query editor are common to both Metric Search and Metric Query editors.</p>
+<h4 id="id">Id</h4>
+<p>The GetMetricData API requires that all queries have a unique ID. Use this field to specify an ID of choice. The ID can include numbers, letters, and underscore, and must start with a lowercase letter. If no ID is specified, grafana will generate an ID using the following pattern <code>query[refId of the current query row]</code>, such as <code>queryA</code> for the first query row in the panel editor.</p>
+<p>The ID can be used to reference queries in Metric Math expressions.</p>
+<h4 id="period">Period</h4>
+<p>A period is the length of time associated with a specific Amazon CloudWatch statistic. Periods are defined in numbers of seconds, and valid values for period are 1, 5, 10, 30, or any multiple of 60.</p>
+<p>If the period field is left blank or set to <code>auto</code>, then it calculates automatically based on the time range and <a href="https://aws.amazon.com/about-aws/whats-new/2016/11/cloudwatch-extends-metrics-retention-and-new-user-interface/" target="_blank" rel="noopener noreferrer">cloudwatch&rsquo;s retention policy</a>. The formula used is <code>time range in seconds / 2000</code>, and then it snaps to the next higher value in an array of predefined periods <code>[60, 300, 900, 3600, 21600, 86400]</code> after removing periods based on retention. By clicking <code>Show Query Preview</code> in the query editor, you can see what period Grafana used.</p>
+<h4 id="label">Label</h4>
+<p>The label field allows you to override the default name of the metric legend using CloudWatch dynamic labels. If you&rsquo;re using a time-based dynamic label such as <code>${MIN_MAX_TIME_RANGE}</code>, then the legend value is derived from the current timezone specified in the time range picker. To see the full list of label patterns and the dynamic label limitations, refer to the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/graph-dynamic-labels.html" target="_blank" rel="noopener noreferrer">CloudWatch dynamic labels</a> documentation.</p>
+<blockquote>
+<p><strong>Alias pattern deprecation:</strong> Since Grafana v10.0, the alias field has been deprecated and replaced by dynamic
+labels.
+Any existing alias pattern is migrated upon upgrade to a corresponding dynamic label pattern.
+For details on this change, refer to <a href="https://github.com/grafana/grafana/issues/48434" target="_blank" rel="noopener noreferrer">issue #48434</a>.</p></blockquote>
+<h2 id="query-cloudwatch-logs">Query CloudWatch Logs</h2>
+<p>The logs query editor helps you write CloudWatch Logs Query Language queries across defined regions and log groups.
+It supports querying CloudWatch logs with Logs Insights Query Language, OpenSearch PPL and OpenSearch SQL.</p>
+<h3 id="create-a-cloudwatch-logs-query">Create a CloudWatch Logs query</h3>
+<ol>
+<li>
+<p>Select the query language you would like to use in the Query Language dropdown.</p>
+</li>
+<li>
+<p>Select the region and up to 20 log groups to query.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Region and log groups are mandatory fields when querying with Logs Insights QL and OpenSearch PPL. Log group selection is not necessary when querying with OpenSearch SQL. However, selecting log groups simplifies writing logs queries by populating syntax suggestions with discovered log group fields.</p></blockquote></div>
+
+</li>
+<li>
+<p>Use the main input area to write your logs query. AWS CloudWatch only supports a subset of OpenSearch SQL and PPL commands. To find out more about the syntax supported, consult <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html" target="_blank" rel="noopener noreferrer">Amazon CloudWatch Logs documentation</a></p>
+<h4 id="querying-log-groups-with-opensearch-sql">Querying Log groups with OpenSearch SQL</h4>
+<p>When querying log groups with OpenSearch SQL, the log group identifier or ARN <em>must</em> be explicitly stated in the <code>FROM</code> clause:</p>
+<pre>SELECT window.start, COUNT(*) AS exceptionCount
+FROM `log_group`
+WHERE `@message` LIKE &#39;%Exception%&#39;</pre>
+<p>or, when querying multiple log groups:</p>
+<pre>SELECT window.start, COUNT(*) AS exceptionCount
+FROM `logGroups( logGroupIdentifier: [&#39;LogGroup1&#39;, &#39;LogGroup2&#39;])`
+WHERE `@message` LIKE &#39;%Exception%&#39;</pre>
+</li>
+</ol>
+<p>You can also write queries returning time series data by using the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_Insights-Visualizing-Log-Data.html" target="_blank" rel="noopener noreferrer"><code>stats</code> command</a>.
+When making <code>stats</code> queries in 
+    <a href="/docs/grafana/latest/explore/">Explore</a>, make sure you are in Metrics Explore mode.</p>
+<h2 id="cross-account-observability">Cross-account observability</h2>
+<p>The CloudWatch plugin allows monitoring and troubleshooting applications that span multiple accounts within a region. Using cross-account observability, you can seamlessly search, visualize, and analyze metrics and logs without worrying about account boundaries.</p>
+<h3 id="get-started">Get started</h3>
+<p>To enable cross-account observability, complete the following steps:</p>
+<ol>
+<li>
+<p>Go to the <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html" target="_blank" rel="noopener noreferrer">Amazon CloudWatch docs</a> and follow the instructions on enabling cross-account observability.</p>
+</li>
+<li>
+<p>Add <a href="../#cross-account-observability-permissions">two API actions</a> to the IAM policy attached to the role/user running the plugin.</p>
+</li>
+</ol>
+<p>Cross-account querying is available in the plugin through the <strong>Logs</strong>, <strong>Metric search</strong>, and <strong>Metric Insights</strong> modes.
+After you have it configured, you&rsquo;ll see a <strong>Monitoring account</strong> badge in the query editor header.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png"data-srcset="/static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png?w=320 320w, /static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png?w=550 550w, /static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png?w=750 750w, /static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png?w=900 900w, /static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png?w=1040 1040w, /static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png?w=1240 1240w, /static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Monitoring account badge"width="929"height="81"title="Monitoring account badge"/>
+        <noscript>
+          <img
+            src="/static/img/docs/cloudwatch/cloudwatch-monitoring-badge-9.3.0.png"
+            alt="Monitoring account badge"width="929"height="81"title="Monitoring account badge"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Monitoring account badge</figcaption></a></figure>
+<h3 id="metrics-editor">Metrics editor</h3>
+<p>When you select the <code>Builder</code> mode within the Metric search editor, a new Account field displays. Use the Account field to specify which of the linked accounts to target for the given query. By default, the <code>All</code> option is specified, which will target all linked accounts.</p>
+<p>While in <code>Code</code> mode, you can specify any math expression. If the Monitoring account badge displays in the query editor header, all <code>SEARCH</code> expressions entered in this field will be cross-account by default. You can limit the search to one or a set of accounts, as documented in the <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html" target="_blank" rel="noopener noreferrer">AWS documentation</a>.</p>
+<h3 id="logs-editor">Logs editor</h3>
+<p>The Log group selector allows you to specify what log groups to target in the logs query. If the Monitoring account badge is displayed in the query editor header, it is possible to search and select log groups across multiple accounts. You can use the Account field in the Log Group Selector to filter Log Groups by Account. If you have many log groups and do not see the log group you&rsquo;d like to select in the selector, use the prefix search to narrow down the possible log groups.</p>
+<h3 id="deep-link-grafana-panels-to-the-cloudwatch-console-1">Deep-link Grafana panels to the CloudWatch console</h3>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--right"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v70/cloudwatch-logs-deep-linking.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v70/cloudwatch-logs-deep-linking.png"data-srcset="/static/img/docs/v70/cloudwatch-logs-deep-linking.png?w=320 320w, /static/img/docs/v70/cloudwatch-logs-deep-linking.png?w=550 550w, /static/img/docs/v70/cloudwatch-logs-deep-linking.png?w=750 750w, /static/img/docs/v70/cloudwatch-logs-deep-linking.png?w=900 900w, /static/img/docs/v70/cloudwatch-logs-deep-linking.png?w=1040 1040w, /static/img/docs/v70/cloudwatch-logs-deep-linking.png?w=1240 1240w, /static/img/docs/v70/cloudwatch-logs-deep-linking.png?w=1920 1920w"
+          data-sizes="auto"alt="CloudWatch Logs deep linking"width="858"height="82"title="CloudWatch Logs deep linking"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v70/cloudwatch-logs-deep-linking.png"
+            alt="CloudWatch Logs deep linking"width="858"height="82"title="CloudWatch Logs deep linking"class="docs-image--right"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">CloudWatch Logs deep linking</figcaption></a></figure>
+<p>To view your query in the CloudWatch Logs Insights console, click the <code>CloudWatch Logs Insights</code> button next to the query editor.
+If you&rsquo;re not logged in to the CloudWatch console, the link forwards you to the login page.</p>
+<p>The provided link is valid for any account, but displays the expected metrics only if you&rsquo;re logged in to the account that corresponds to the selected data source in Grafana.</p>

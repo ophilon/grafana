@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<!-- INTERACTIVE page intro.md START -->
+<p>In this tutorial, we walk you through the process of setting up your first alert in just a few minutes. You&rsquo;ll witness your alert in action with real-time data, as well as sending alert notifications.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=YVhKNbQNNss" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>In this tutorial you will:</p>
+<ul>
+<li>Create a contact point.</li>
+<li>Set up an alert rule.</li>
+<li>Receive firing and resolved alert notifications in a public webhook.</li>
+</ul>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>After you have completed Part 1, don’t forget to explore the advanced but essential alerting topics in <a href="http://www.grafana.com/tutorials/alerting-get-started-pt2/" target="_blank" rel="noopener noreferrer">Multi-dimensional alerts and how to route them</a>.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page intro.md END -->
+<!-- INTERACTIVE page step1.md START -->
+<!-- INTERACTIVE ignore START -->
+<h2 id="before-you-begin">Before you begin</h2>
+<p>There are different ways you can follow along with this tutorial.</p>
+<ul>
+<li>
+<p><strong>Grafana Cloud</strong></p>
+<ul>
+<li>As a Grafana Cloud user, you don&rsquo;t have to install anything. <a href="http://www.grafana.com/auth/sign-up/create-user" target="_blank" rel="noopener noreferrer">Create your free account</a>.</li>
+</ul>
+<p>Continue to <a href="#create-a-contact-point">Create a contact point</a>.</p>
+</li>
+<li>
+<p><strong>Interactive learning environment</strong></p>
+<ul>
+<li>Alternatively, you can <a href="https://killercoda.com/grafana-labs/course/grafana/alerting-get-started/" target="_blank" rel="noopener noreferrer">try out this example in our interactive learning environment</a>. It&rsquo;s a fully configured environment with all the dependencies already installed.</li>
+</ul>
+</li>
+<li>
+<p><strong>Grafana OSS</strong></p>
+<ul>
+<li>
+<p>If you opt to run a Grafana stack locally, ensure you have the following applications installed:</p>
+</li>
+<li>
+<p><a href="https://docs.docker.com/get-docker/" target="_blank" rel="noopener noreferrer">Docker Compose</a> (included in Docker for Desktop for macOS and Windows)</p>
+</li>
+<li>
+<p><a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer">Git</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="set-up-the-grafana-stack-oss-users">Set up the Grafana stack (OSS users)</h3>
+<!-- INTERACTIVE ignore END -->
+<p>To demonstrate the observation of data using the Grafana stack, download and run the following files.</p>
+<ol>
+<li>
+<p>Clone the <a href="https://www.github.com/grafana/tutorial-environment" target="_blank" rel="noopener noreferrer">tutorial environment repository</a>.</p>
+<!-- INTERACTIVE exec START -->
+<pre>git clone https://github.com/grafana/tutorial-environment.git</pre>
+<!-- INTERACTIVE exec END -->
+</li>
+<li>
+<p>Change to the directory where you cloned the repository:</p>
+<!-- INTERACTIVE exec START -->
+<pre>cd tutorial-environment</pre>
+<!-- INTERACTIVE exec END -->
+</li>
+<li>
+<p>Run the Grafana stack:</p>
+<!-- INTERACTIVE ignore START -->
+<pre>docker compose up -d</pre>
+<!-- INTERACTIVE ignore END -->
+
+<p>The first time you run <code>docker compose up -d</code>, Docker downloads all the necessary resources for the tutorial. This might take a few minutes, depending on your internet connection.</p>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you already have Grafana, Loki, or Prometheus running on your system, you might see errors, because the Docker image is trying to use ports that your local installations are already using. If this is the case, stop the services, then run the command again.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+</li>
+</ol>
+<!-- INTERACTIVE page step1.md END -->
+<!-- INTERACTIVE page step2.md START -->
+<h2 id="create-a-contact-point">Create a contact point</h2>
+<p>Besides being an open-source observability tool, Grafana has its own built-in alerting service. This means that you can receive notifications whenever there is an event of interest in your data, and even see these events graphed in your visualizations.</p>
+<p>In this step, we set up a new contact point. This contact point uses the <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/">webhook integration</a>. In order to make this work, we also need an endpoint for our webhook integration to receive the alert. We can use <a href="https://webhook.site/" target="_blank" rel="noopener noreferrer">Webhook.site</a> to quickly set up that test endpoint. This way we can make sure that our alert is actually sending a notification somewhere.</p>
+<ol>
+<li>
+<p>In your browser, <strong>sign in</strong> to your Grafana Cloud account.</p>
+<p>OSS users: To log in, navigate to <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a>, where Grafana is running.</p>
+</li>
+<li>
+<p>In another tab, go to <a href="https://webhook.site/" target="_blank" rel="noopener noreferrer">Webhook.site</a>.</p>
+</li>
+<li>
+<p>Copy Your unique URL.</p>
+</li>
+</ol>
+<p>Your webhook endpoint is now waiting for the first request.</p>
+<p>Next, let&rsquo;s configure a contact point in Grafana&rsquo;s Alerting UI to send notifications to our webhook endpoint.</p>
+<ol>
+<li>
+<p>Return to Grafana. In Grafana&rsquo;s sidebar, hover over the <strong>Alerting</strong> (bell) icon and then click <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Create contact point</strong>.</p>
+</li>
+<li>
+<p>In <strong>Name</strong>, write <strong>Webhook</strong>.</p>
+</li>
+<li>
+<p>In <strong>Integration</strong>, choose <strong>Webhook</strong>.</p>
+</li>
+<li>
+<p>In <strong>URL</strong>, paste the endpoint to your webhook endpoint.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong>, and then click <strong>Send test notification</strong> to send a test alert to your webhook endpoint.</p>
+</li>
+<li>
+<p>Navigate back to <em>Webhook.site</em>. On the left side, there&rsquo;s now a <code>POST /</code> entry. Click it to see what information Grafana sent.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/alerting-webhook-detail.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/alerting-webhook-detail.png"data-srcset="/media/docs/alerting/alerting-webhook-detail.png?w=320 320w, /media/docs/alerting/alerting-webhook-detail.png?w=550 550w, /media/docs/alerting/alerting-webhook-detail.png?w=750 750w, /media/docs/alerting/alerting-webhook-detail.png?w=900 900w, /media/docs/alerting/alerting-webhook-detail.png?w=1040 1040w, /media/docs/alerting/alerting-webhook-detail.png?w=1240 1240w, /media/docs/alerting/alerting-webhook-detail.png?w=1920 1920w"
+             data-sizes="auto"alt="A POST entry in Webhook.site"width="1446"height="359"title="A POST entry in Webhook.site"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/alerting-webhook-detail.png"
+               alt="A POST entry in Webhook.site"width="1446"height="359"title="A POST entry in Webhook.site"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">A POST entry in Webhook.site</figcaption></a></figure>
+</li>
+<li>
+<p>Return to Grafana and click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<p>We have created a dummy Webhook endpoint and created a new Alerting contact point in Grafana. Now, we can create an alert rule and link it to this new integration.</p>
+<!-- INTERACTIVE page step2.md END -->
+<!-- INTERACTIVE page step3.md START -->
+<h2 id="create-an-alert">Create an alert</h2>
+<p>Next, we establish an <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/">alert rule</a> within Grafana Alerting to notify us whenever alert rules are triggered and resolved.</p>
+<ol>
+<li>
+<p>In Grafana, navigate to <strong>Alerts &amp; IRM &gt; Alerting &gt; Alert rules</strong>. Click on <strong>+ New alert rule</strong>.</p>
+</li>
+<li>
+<p>Enter alert rule name for your alert rule. Make it short and descriptive as this appears in your alert notification. For instance, <strong>database-metrics</strong></p>
+</li>
+</ol>
+<h3 id="define-query-and-alert-condition">Define query and alert condition</h3>
+<p>In this section, we use the default options for Grafana-managed alert rule creation. The default options let us define the query, a expression (used to manipulate the data &ndash; the <code>WHEN</code> field in the UI), and the condition that must be met for the alert to be triggered (in default mode is the threshold).</p>
+<p>Grafana includes a <a href="/docs/grafana/latest/datasources/testdata/">test data source</a> that creates simulated time series data. This data source is included in the demo environment for this tutorial. If you&rsquo;re working in Grafana Cloud or your own local Grafana instance, you can add the data source through the <strong>Connections</strong> menu.</p>
+<ol>
+<li>
+<p>Select the <strong>TestData</strong> data source from the drop-down menu.</p>
+</li>
+<li>
+<p>In the <strong>Alert condition</strong> section:</p>
+<ul>
+<li>Keep <strong>Random Walk</strong> as the <em>Scenario</em>.</li>
+<li>Keep <code>Last</code> as the value for the reducer function (<code>WHEN</code>), and <code>IS ABOVE 0</code> as the threshold value. This is the value above which the alert rule should trigger.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Preview alert rule condition</strong> to run the query.</p>
+<p>It should return random time series data. The alert rule state should be <code>Firing</code>.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1200px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/random-walk-firing-alert-rule.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/random-walk-firing-alert-rule.png"data-srcset="/media/docs/alerting/random-walk-firing-alert-rule.png?w=320 320w, /media/docs/alerting/random-walk-firing-alert-rule.png?w=550 550w, /media/docs/alerting/random-walk-firing-alert-rule.png?w=750 750w, /media/docs/alerting/random-walk-firing-alert-rule.png?w=900 900w, /media/docs/alerting/random-walk-firing-alert-rule.png?w=1040 1040w, /media/docs/alerting/random-walk-firing-alert-rule.png?w=1240 1240w, /media/docs/alerting/random-walk-firing-alert-rule.png?w=1920 1920w"
+             data-sizes="auto"alt="A preview of a firing alert"width="1096"height="277"title="A preview of a firing alert"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/random-walk-firing-alert-rule.png"
+               alt="A preview of a firing alert"width="1096"height="277"title="A preview of a firing alert"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">A preview of a firing alert</figcaption></a></figure>
+</li>
+</ol>
+<h3 id="add-folders-and-labels">Add folders and labels</h3>
+<ol>
+<li>In <strong>Folder</strong>, click <strong>+ New folder</strong> and enter a name. For example: <code>metric-alerts</code> . This folder contains our alert rules.</li>
+</ol>
+<h3 id="set-evaluation-behavior">Set evaluation behavior</h3>
+<p>The <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/rule-evaluation/">alert rule evaluation</a> defines the conditions under which an alert rule triggers, based on the following settings:</p>
+<ul>
+<li><strong>Evaluation group</strong>: every alert rule is assigned to an evaluation group. You can assign the alert rule to an existing evaluation group or create a new one.</li>
+<li><strong>Evaluation interval</strong>: determines how frequently the alert rule is checked. For instance, the evaluation may occur every 10s, 30s, 1m, 10m, etc.</li>
+<li><strong>Pending period</strong>: how long the condition must be met to trigger the alert rule.</li>
+<li><strong>Keep firing for</strong>: defines how long an alert should remain in the Firing state after the alert condition stops being true. During this time, the alert enters a <em>Recovering</em> state, suppressing additional notifications but keeping the alert active. It helps prevent alert flapping, where alerts rapidly switch between firing and resolved due to noisy or unstable metrics.</li>
+</ul>
+<p>To set up the evaluation:</p>
+<ol>
+<li>In the <strong>Evaluation group and interval</strong>, enter a name. For example: <code>1m-evaluation</code>.</li>
+<li>Choose an <strong>Evaluation interval</strong> (how often the alert are evaluated).
+For example, every <code>1m</code> (1 minute).</li>
+<li>Set the <strong>pending period</strong> to, <code>0s</code> (zero seconds), so the alert rule fires the moment the condition is met.</li>
+<li>Set <strong>Keep firing for</strong> to, <code>0s</code>, so the alert stops firing immediately after the condition is no longer true. Use this when you want alerts to be resolved as soon as the system is healthy again.</li>
+</ol>
+<h3 id="configure-notifications">Configure notifications</h3>
+<p>Choose the contact point where you want to receive your alert notifications.</p>
+<ol>
+<li>Under <strong>Contact point</strong>, select <strong>Webhook</strong> from the drop-down menu.</li>
+<li>Click <strong>Save rule and exit</strong> at the top right corner.</li>
+</ol>
+<!-- INTERACTIVE page step3.md END -->
+<!-- INTERACTIVE page step4.md START -->
+<h2 id="trigger-and-resolve-an-alert">Trigger and resolve an alert</h2>
+<p>Now that the alert rule has been configured, you should receive alert <a href="/docs/grafana/next/alerting/fundamentals/alert-rule-evaluation/state-and-health/#notifications">notifications</a> in the contact point whenever alerts trigger and get resolved.</p>
+<h3 id="trigger-an-alert">Trigger an alert</h3>
+<p>Since the alert rule that you have created has been configured to always fire, once the evaluation interval has concluded, you should receive an alert notification in the Webhook endpoint.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alerting-webhook-firing-alert.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alerting-webhook-firing-alert.png"data-srcset="/media/docs/alerting/alerting-webhook-firing-alert.png?w=320 320w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=550 550w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=750 750w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=900 900w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=1040 1040w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=1240 1240w, /media/docs/alerting/alerting-webhook-firing-alert.png?w=1920 1920w"
+          data-sizes="auto"alt="Firing alert notification details"width="921"height="694"title="Firing alert notification details"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-webhook-firing-alert.png"
+            alt="Firing alert notification details"width="921"height="694"title="Firing alert notification details"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Firing alert notification details</figcaption></a></figure>
+<p>The alert notification details show that the alert rule state is Firing , and it includes the value that made the rule trigger by exceeding the threshold of the alert rule condition. The notification also includes links to see the alert rule details, and another link to add a <a href="/docs/grafana/next/alerting/configure-notifications/create-silence/">Silence</a> to it.</p>
+<h3 id="resolve-an-alert">Resolve an alert</h3>
+<p>To see how a resolved alert notification looks like, you can modify the current alert rule threshold.</p>
+<p>To edit the Alert rule:</p>
+<ol>
+<li><strong>Navigate to Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Click on the metric-alerts folder to display the alert that you created earlier</li>
+<li>Click the <strong>edit</strong> button on the right hand side of the screen</li>
+<li>Increment the Threshold expression to 1.</li>
+<li>Click <strong>Save rule and exit</strong>.</li>
+</ol>
+<p>By incrementing the threshold, the condition is no longer met, and after the evaluation interval has concluded (1 minute approx.), you should receive an alert notification with status <strong>“Resolved”</strong>.</p>
+<!-- INTERACTIVE page step4.md END -->
+<!-- INTERACTIVE page finish.md START -->
+<h2 id="learn-more-in-grafana-alerting-multi-dimensional-alerts-and-how-to-route-them">Learn more in <a href="http://www.grafana.com/tutorials/alerting-get-started-pt2/" target="_blank" rel="noopener noreferrer">Grafana Alerting: Multi-dimensional alerts and how to route them</a></h2>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>In <a href="http://www.grafana.com/tutorials/alerting-get-started-pt2/" target="_blank" rel="noopener noreferrer">Grafana Alerting: Multi-dimensional alerts and how to route them</a> you&rsquo;ll learn to use alert instances and route notifications by labels to contacts</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page finish.md END -->

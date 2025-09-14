@@ -1,0 +1,8 @@
+[{
+  "file": "docs/grafana/latest/administration/data-source-management/teamlbac/_index.md",
+	"name": "label-based-access-control-lbac-for-data-sources",
+	"permalink" : "/docs/grafana/latest/administration/data-source-management/teamlbac/",
+	"relpermalink" : "/docs/grafana/latest/administration/data-source-management/teamlbac/",
+	"params": {"ads":{"toc":{"id":"cloud_first_1","location":"docs_toc"}},"description":"Label based data access for Teams","draft":false,"iscjklanguage":false,"keywords":["grafana","loki","mimir","lbac"],"labels":{"products":["enterprise","cloud"]},"layout":"page","loki_version":"latest","meta_image_generate":true,"oncall_version":"latest","outputs":[{"mediaType":"text/html","path":"","baseName":"index","rel":"canonical","protocol":"","isPlainText":false,"isHTML":true,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":true,"weight":10},{"mediaType":"application/json","path":"","baseName":"index","rel":"alternate","protocol":"","isPlainText":true,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"unstyled","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0}],"pyroscope_version":"latest","section_title":"Documentation","section_title_singular":"Documentation","tempo_version":"latest","title":"Label Based Access Control (LBAC) for data sources","weight":100},
+	"uniqueid": "1d87512176ac73096299daae30e0e40d",
+}]

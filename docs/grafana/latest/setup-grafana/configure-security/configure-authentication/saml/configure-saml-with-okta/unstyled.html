@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<h1 id="configure-saml-okta">Configure SAML Okta</h1>
+<p>Grafana supports user authentication through Okta, which is useful when you want your users to access Grafana using single sign on. This guide will follow you through the steps of configuring SAML authentication in Grafana with <a href="https://okta.com/" target="_blank" rel="noopener noreferrer">Okta</a>. You need to be an admin in your Okta organization to access Admin Console and create SAML integration. You also need permissions to edit Grafana configuration file and restart Grafana server.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>To configure SAML integration with Okta, create an app integration inside the Okta organization first. <a href="https://help.okta.com/en/prod/Content/Topics/Apps/apps-overview-add-apps.htm" target="_blank" rel="noopener noreferrer">Add app integration in Okta</a></li>
+<li>Ensure you have permission to administer SAML authentication. For more information about roles and permissions in Grafana, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/">Roles and permissions</a>.</li>
+</ul>
+<h2 id="set-up-saml-with-okta">Set up SAML with Okta</h2>
+<ol>
+<li>
+<p>Log in to the <a href="https://login.okta.com/" target="_blank" rel="noopener noreferrer">Okta portal</a>.</p>
+</li>
+<li>
+<p>Go to the Admin Console in your Okta organization by clicking <strong>Admin</strong> in the upper-right corner. If you are in the Developer Console, then click <strong>Developer Console</strong> in the upper-left corner and then click <strong>Classic UI</strong> to switch over to the Admin Console.</p>
+</li>
+<li>
+<p>In the Admin Console, navigate to <strong>Applications</strong> &gt; <strong>Applications</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Create App Integration</strong> to start the Application Integration Wizard.</p>
+</li>
+<li>
+<p>Choose <strong>SAML 2.0</strong> as the <strong>Sign-in method</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Create</strong>.</p>
+</li>
+<li>
+<p>On the <strong>General Settings</strong> tab, enter a name for your Grafana integration. You can also upload a logo.</p>
+</li>
+<li>
+<p>On the <strong>Configure SAML</strong> tab, enter the SAML information related to your Grafana instance:</p>
+<ul>
+<li>
+<p>In the <strong>Single sign on URL</strong> field, use the <code>/saml/acs</code> endpoint URL of your Grafana instance, for example, <code>https://grafana.example.com/saml/acs</code>.</p>
+</li>
+<li>
+<p>In the <strong>Audience URI (SP Entity ID)</strong> field, use the <code>/saml/metadata</code> endpoint URL, by default it is the <code>/saml/metadata</code> endpoint of your Grafana instance (for example <code>https://example.grafana.com/saml/metadata</code>). This could be configured differently, but the value here must match the <code>entity_id</code> setting of the SAML settings of Grafana.</p>
+</li>
+<li>
+<p>Leave the default values for <strong>Name ID format</strong> and <strong>Application username</strong>.
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you plan to enable SAML Single Logout, consider setting the <strong>Name ID format</strong> to <code>EmailAddress</code> or <code>Persistent</code>. This must match the <code>name_id_format</code> setting of the Grafana instance.</p></blockquote></div>
+</p>
+</li>
+<li>
+<p>In the <strong>ATTRIBUTE STATEMENTS (REQUIRED)</strong> section, enter the SAML attributes to be shared with Grafana. The attribute names in Okta need to match exactly what is defined within Grafana, for example:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Attribute name (in Grafana)</th>
+          <th>Name and value (in Okta profile)</th>
+          <th>Grafana configuration (under <code>auth.saml</code>)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Login</td>
+          <td>Login - <code>user.login</code></td>
+          <td><code>assertion_attribute_login = Login</code></td>
+      </tr>
+      <tr>
+          <td>Email</td>
+          <td>Email - <code>user.email</code></td>
+          <td><code>assertion_attribute_email = Email</code></td>
+      </tr>
+      <tr>
+          <td>DisplayName</td>
+          <td>DisplayName - <code>user.firstName + &quot; &quot; + user.lastName</code></td>
+          <td><code>assertion_attribute_name = DisplayName</code></td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p>In the <strong>GROUP ATTRIBUTE STATEMENTS (OPTIONAL)</strong> section, enter a group attribute name (for example, <code>Group</code>, ensure it matches the <code>asssertion_attribute_groups</code> setting in Grafana) and set filter to <code>Matches regex .*</code> to return all user groups.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Next</strong>.</p>
+</li>
+<li>
+<p>On the final Feedback tab, fill out the form and then click <strong>Finish</strong>.</p>
+</li>
+</ol>
+<h2 id="configure-saml-assertions-when-using-scim-provisioning">Configure SAML assertions when using SCIM provisioning</h2>
+<p>In order to verify the logged in user is the same user that was provisioned through Okta, you need to include the same <code>externalId</code> in the SAML assertion by mapping the SAML assertion <code>assertion_attribute_external_id</code>.</p>
+<ol>
+<li>Open your Okta application.</li>
+<li>Select the SAML single sign-on configuration.</li>
+<li>Edit the <code>Attributes &amp; Claims</code> section.</li>
+<li>Add a new claim with the following settings:
+<ul>
+<li>Name: <code>userUID</code></li>
+</ul>
+</li>
+</ol>
+<h3 id="example-configuration">Example configuration</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Attribute name (in Grafana)</th>
+          <th>Name and value (in Okta profile)</th>
+          <th>Grafana default configuration (under <code>auth.saml</code>)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>userUID</td>
+          <td>userUID - <code>user.getInternalProperty(&quot;id&quot;)</code></td>
+          <td><code>assertion_attribute_login = userUID</code></td>
+      </tr>
+  </tbody>
+</table>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<h1 id="configure-value-mappings">Configure value mappings</h1>
+<p>In addition to field overrides, value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For example, the mapping applied in the following image causes the visualization to display the text <code>Cold</code>, <code>Good</code>, and <code>Hot</code> in blue, green, and red for ranges of temperatures rather than actual temperature values. Using value mappings this way can make data faster and easier to understand and interpret.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-value-mappings-v10.4.png"
+  alt="Value mappings applied to a gauge visualization" width="1066"
+     height="470"/></p>
+<p>Value mappings bypass unit formatting set in the <strong>Standard options</strong> section of panel editor, like color or number of decimal places displayed. When value mappings are present in a panel, Grafana displays a summary of them in the <strong>Value mappings</strong> section of the editor panel.</p>
+<h2 id="supported-visualizations">Supported visualizations</h2>
+<p>You can configure value mappings for the following visualizations:</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-gauge/">Bar gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Canvas</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/gauge/">Gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/">Geomap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">Histogram</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/pie-chart/">Pie chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/">Stat</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a></li>
+</ul>
+
+</div>
+<h2 id="types-of-value-mappings">Types of value mappings</h2>
+<p>Grafana supports the following value mapping types:</p>
+<h3 id="value">Value</h3>
+<p>A <strong>Value</strong> mapping maps specific values to text and a color. For example, you can configure a mapping so that all instances of the value <code>10</code> appear as <strong>Perfection!</strong> rather than the number. Use <strong>Value</strong> mapping when you want to format a single value.
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-map-value-v10.4.png"
+  alt="The value 10 mapped to the text Perfection!" width="978"
+     height="114"/></p>
+<h3 id="range">Range</h3>
+<p>A <strong>Range</strong> mapping maps numerical ranges to text and a color. For example, if a value is within a certain range, you can configure a range value mapping to display <strong>Low</strong> or <strong>High</strong> rather than the number. Use <strong>Range</strong> mapping when you want to format multiple, continuous values.
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-map-range-v10.4.png"
+  alt="Ranges of numbers mapped to the text Low and High with colors yellow and red" width="978"
+     height="151"/></p>
+<h3 id="regex">Regex</h3>
+<p>A <strong>Regex</strong> mapping maps regular expressions to text and a color. For example, if a value is <code>www.example.com</code>, you can configure a regular expression value mapping so that Grafana displays <strong>www</strong> and truncates the domain. Use the <strong>Regex</strong> mapping when you want to format the text and color of a regular expression value.
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-map-regex-v10.4.png"
+  alt="A regular expression used to truncate full URLs to the text wwww" width="979"
+     height="115"/></p>
+<h3 id="special">Special</h3>
+<p>A <strong>Special</strong> mapping maps special values like <code>Null</code>, <code>NaN</code> (not a number), and boolean values like <code>true</code> and <code>false</code> to text and color. For example, you can configure a special value mapping so that <code>null</code> values appear as <strong>N/A</strong>. Use the <strong>Special</strong> mapping when you want to format uncommon, boolean, or empty values.
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-map-special-v10.4.png"
+  alt="The value null mapped to the text N/A" width="979"
+     height="105"/></p>
+<h2 id="examples">Examples</h2>
+<p>Refer to the following examples to learn more about value mapping.</p>
+<h3 id="time-series-example">Time series example</h3>
+<p>The following image shows a time series visualization with value mappings. Value mapping colors aren&rsquo;t applied to this visualization, but the display text is shown on the axis.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/value-mappings/value-mappings-summary-example-8-0.png"
+  alt="Value mappings time series example" width="1000"
+     height="339"/></p>
+<h3 id="stat-example">Stat example</h3>
+<p>The following image shows a stat visualization with value mappings and text colors applied. You can hide the sparkline so it doesn&rsquo;t interfere with the values.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/value-mappings/value-mappings-stat-example-8-0.png"
+  alt="Value mappings stat example" width="1158"
+     height="445"/></p>
+<h3 id="bar-gauge-example">Bar gauge example</h3>
+<p>The following image shows a bar gauge visualization with value mappings. Note that the value mapping colors are applied to the text, but not to the gauges.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/value-mappings/value-mappings-bar-gauge-example-8-0.png"
+  alt="Value mappings bar gauge example" width="1000"
+     height="275"/></p>
+<h3 id="table-example">Table example</h3>
+<p>The following image shows a table visualization with value mappings. If you want value mapping colors displayed on the table, then set the cell display mode to <strong>Color text</strong> or <strong>Color background</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/value-mappings/value-mappings-table-example-8-0.png"
+  alt="Value mappings table example" width="1163"
+     height="384"/></p>
+<h2 id="add-a-value-mapping">Add a value mapping</h2>
+<ol>
+<li>
+<p>Navigate to the panel you want to update.</p>
+</li>
+<li>
+<p>Hover over any part of the panel you want to work on to display the menu on the top right corner.</p>
+</li>
+<li>
+<p>Click the menu and select <strong>Edit</strong>.</p>
+</li>
+<li>
+<p>Scroll to the <strong>Value mappings</strong> section and expand it.</p>
+</li>
+<li>
+<p>Click <strong>Add value mappings</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Add a new mapping</strong> and then select one of the following:</p>
+<ul>
+<li><strong>Value</strong> - Enter a single value to match.</li>
+<li><strong>Range</strong> - Enter the beginning and ending values of a range to match.</li>
+<li><strong>Regex</strong> - Enter a regular expression pattern to match.</li>
+<li><strong>Special</strong> - Select a special value to match.</li>
+</ul>
+</li>
+<li>
+<p>(Optional) Enter display text.</p>
+</li>
+<li>
+<p>(Optional) Set the color.</p>
+</li>
+<li>
+<p>(Optional) Set an icon (canvas visualizations only).</p>
+</li>
+<li>
+<p>Click <strong>Update</strong> to save the value mapping.</p>
+</li>
+</ol>
+<p>After you&rsquo;ve added a mapping, the <strong>Edit value mappings</strong> button replaces the <strong>Add value mappings</strong> button. Click the edit button to add or update mappings.</p>
+<ol>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</li>
+</ol>

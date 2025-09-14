@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<h1 id="allow-plugin-backend-communication">Allow plugin backend communication</h1>
+<p>By default, you can only communicate with plugin backends remotely.</p>
+<p>However, you can configure your Grafana instance to let the frontends of installed plugins to directly communicate with the backends of other plugins installed locally. You can use this configuration to, for example, enable a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">canvas panel</a> to call an application resource API that is permitted by the <code>actions_allow_post_url</code> option.</p>
+<h2 id="integrate-your-plugins">Integrate your plugins</h2>
+<p>To enable backend communication between plugins, set the plugins you want to communicate with. In your configuration file (<code>grafana.ini</code> or <code>custom.ini</code> depending on your operating system), remove the semicolon to enable and then set the following configuration option:</p>
+<pre>  actions_allow_post_url=</pre>
+<p>This is a comma-separated list that uses glob matching.</p>
+<ul>
+<li>To allow access to all plugins that have a backend, use:</li>
+</ul>
+<pre>actions_allow_post_url=/api/plugins/*</pre>
+<ul>
+<li>To access the backend of only one plugin, use:</li>
+</ul>
+<pre>actions_allow_post_url=/api/plugins/&lt;GRAFANA_SPECIAL_APP&gt;</pre>

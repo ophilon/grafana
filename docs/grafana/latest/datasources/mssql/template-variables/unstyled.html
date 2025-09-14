@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<h1 id="microsoft-sql-server-template-variables">Microsoft SQL Server template variables</h1>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana displays these variables in drop-down select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as <strong>template variables</strong>.</p>
+<p>For general information on using variables in Grafana, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add variables</a>.</p>
+<p>For an introduction to templating and template variables, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a>.</p>
+<h2 id="query-variable">Query variable</h2>
+<p>A query variable in Grafana dynamically retrieves values from your data source using a query. With a query variable, you can write a SQL query that returns values such as measurement names, key names, or key values that are shown in a drop-down select box.</p>
+<p>For example, the following query returns all values from the <code>hostname</code> column:</p>
+<pre>SELECT hostname FROM host</pre>
+<p>A query can return multiple columns, and Grafana automatically generates a list using the values from those columns. For example, the following query returns values from both the <code>hostname</code> and <code>hostname2</code> columns, which are included in the variable&rsquo;s drop-down list.</p>
+<pre>SELECT [host].[hostname], [other_host].[hostname2] FROM host JOIN other_host ON [host].[city] = [other_host].[city]</pre>
+<p>You can also create a key/value variable using a query that returns two columns named <code>__text</code> and <code>__value</code>.</p>
+<ul>
+<li>
+<p>The <code>__text</code> column defines the label shown in the drop-down.</p>
+</li>
+<li>
+<p>The <code>__value</code> column defines the value passed to panel queries.</p>
+</li>
+</ul>
+<p>This is useful when you want to display a user-friendly label (like a hostname) but use a different underlying value (like an ID).</p>
+<p>Note that the values in the <code>_text</code> column should be unique. If there are duplicates, Grafana uses only the first matching entry.</p>
+<pre>SELECT hostname __text, id __value FROM host</pre>
+<p>You can also create nested variables, where one variable depends on the value of another. For example, if you have a variable named <code>region</code>, you can configure a <code>hosts</code> variable to only show hosts from the selected region. If <code>region</code> is a multi-value variable, use the <code>IN</code> operator instead of <code>=</code> to match against multiple selected values.</p>
+<pre>SELECT hostname FROM host WHERE region IN ($region)</pre>
+<h2 id="use-variables-in-queries">Use variables in queries</h2>
+<p>Grafana automatically quotes template variable values only when the template variable is a <code>multi-value</code>.</p>
+<p>When using a multi-value variable, use the <code>IN</code> comparison operator instead of <code>=</code> to match against multiple values.</p>
+<p>Grafana supports two syntaxes for using variables in queries:</p>
+<ul>
+<li><strong><code>$&lt;varname&gt;</code> syntax</strong></li>
+</ul>
+<p>Example with a template variable named <code>hostname</code>:</p>
+<pre>SELECT
+  atimestamp time,
+  aint value
+FROM table
+WHERE $__timeFilter(atimestamp) and hostname in($hostname)
+ORDER BY atimestamp</pre>
+<ul>
+<li><strong><code>[[varname]]</code> syntax</strong></li>
+</ul>
+<p>Example with a template variable named <code>hostname</code>:</p>
+<pre>SELECT
+  atimestamp as time,
+  aint as value
+FROM table
+WHERE $__timeFilter(atimestamp) and hostname in([[hostname]])
+ORDER BY atimestamp</pre>
+<h3 id="disable-quoting-for-multi-value-variables">Disable quoting for multi-value variables</h3>
+<p>By default, Grafana formats multi-value variables as a quoted, comma-separated string. For example, if <code>server01</code> and <code>server02</code> are selected, the result will be <code>'server01'</code>, <code>'server02'</code>. To disable quoting, use the <code>csv</code> formatting option for variables:</p>
+<pre>${servers:csv}</pre>
+<p>This outputs the values as an unquoted comma-separated list.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/#advanced-variable-format-options">Advanced variable format options</a> for additional information.</p>

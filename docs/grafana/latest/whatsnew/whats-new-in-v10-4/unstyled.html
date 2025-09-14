@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v104">What’s new in Grafana v10.4</h1>
+<p>Welcome to Grafana 10.4! This minor release contains some notable improvements in its own right, as well as early previews of functionality we intend to turn on by default in Grafana v11. Read on to learn about a quicker way to set up alert notifications, an all-new UI for configuring single sign-on, and improvements to our Canvas, Geomap, and Table panels.</p>
+<p>For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>. For the specific steps we recommend when you upgrade to v10.4, check out our 
+    <a href="/docs/grafana/latest/upgrade-guide/upgrade-v10.4/">Upgrade Guide</a>.</p>
+<!-- Template below
+
+## Feature
+<!-- Name of contributor -->
+<!--_[Generally available | Available in private/public preview | Experimental] in Grafana [Open Source, Enterprise, all editions of Grafana, some combination of self-managed and Cloud]_
+Description. Include an overview of the feature and problem it solves, and where to learn more (like a link to the docs).
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use full URLs for links. When linking to versioned docs, replace the version with the version interpolation placeholder (for example, &lt;GRAFANA_VERSION&gt;, &lt;TEMPO_VERSION&gt;, &lt;MIMIR_VERSION&gt;) so the system can determine the correct set of docs to point to. For example, &ldquo;/docs/grafana/latest/administration/&rdquo; becomes &ldquo;/docs/grafana/&lt;GRAFANA_VERSION&gt;/administration/&rdquo;.</p></blockquote></div>
+
+
+<!--Add an image, GIF or video  as below-->
+<!--<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards/WidgetVizSplit.png"data-srcset="/media/docs/grafana/dashboards/WidgetVizSplit.png?w=320 320w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=550 550w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=750 750w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=900 900w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1040 1040w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1240 1240w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1920 1920w"
+          data-sizes="auto"alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+            alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">DESCRIPTIVE CAPTION</figcaption></a></figure>
+
+<!--Learn how to upload images here: /docs/writers-toolkit/write/image-guidelines/#where-to-store-media-assets-->
+<!---->
+<h2 id="dashboards-and-visualizations">Dashboards and visualizations</h2>
+<h3 id="angularjs-plugin-warnings-in-dashboards">AngularJS plugin warnings in dashboards</h3>
+<!-- #grafana-deprecate-angularjs-->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>AngularJS support in Grafana was deprecated in v9 and will be turned off by default in Grafana v11. When this happens, any plugin which depended on AngularJS will not load, and dashboard panels will be unable to show data.</p>
+<p>To help you understand where you may be impacted, Grafana now displays a warning banner in any dashboard with a dependency on an AngularJS plugin. Additionally, warning icons are present in any panel where the panel plugin or underlying data source plugin has an AngularJS dependency.</p>
+<p>This complements the existing warnings already present on the <strong>Plugins</strong> page under the administration menu.</p>
+<p>In addition, you can use our <a href="https://github.com/grafana/detect-angular-dashboards" target="_blank" rel="noopener noreferrer">detect-angular-dashboards</a> open source tool, which can be run against any Grafana instance to generate a report listing all dashboards that have a dependency on an AngularJS plugin, as well as which plugins are in use. This tool also supports the detection of <a href="/legal/plugins/">private plugins</a> that are dependent on AngularJS, however this particular feature requires Grafana v10.1.0 or higher.</p>
+<p>Use the aforementioned tooling and warnings to plan migrations to React based <a href="/docs/grafana/latest/panels-visualizations/">visualizations</a> and <a href="/docs/grafana/latest/datasources/">data sources</a> included in Grafana or from the <a href="/grafana/plugins/">Grafana plugins catalog</a>.</p>
+<p>To learn more, refer to the 
+    <a href="/docs/grafana/latest/developers/angular_deprecation/">Angular support deprecation</a>, which includes 
+    <a href="/docs/grafana/latest/developers/angular_deprecation/angular-plugins/">recommended alternative plugins</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=XlEVs6g8dC8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/developers/angular_deprecation/">Documentation</a></p>
+<h3 id="data-visualization-quality-of-life-improvements">Data visualization quality of life improvements</h3>
+<!-- Nathan Marrs -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>We’ve made a number of small improvements to the data visualization experience in Grafana.</p>
+<h4 id="geomap-geojson-layer-now-supports-styling">Geomap geojson layer now supports styling</h4>
+<p>You can now visualize geojson styles such as polygons, point color/size, and line strings. To learn more, 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/#geojson-layer">refer to the documentation</a>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/screenshot-grafana-10-4-geomap-geojson-styling-support.png"
+  alt="Geomap marker symbol alignment" width="1577"
+     height="880"/></p>
+<h4 id="canvas-elements-now-support-snapping-and-aligning">Canvas elements now support snapping and aligning</h4>
+<p>You can precisely place elements in a canvas with ease as elements now snap into place and align with one another.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-10-4-canvas-element-snapping.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Canvas element snapping and alignment</figcaption></figure>
+</div>
+<h4 id="view-data-links-inline-in-table-visualizations">View data links inline in table visualizations</h4>
+<p>You can now view your data links inline to help you keep your tables visually streamlined.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/gif-grafana-10-4-table-inline-datalink.gif"
+  alt="Table inline datalink support" width="988"
+     height="576"/></p>
+<h3 id="create-subtables-in-table-visualizations-with-group-to-nested-tables">Create subtables in table visualizations with Group to nested tables</h3>
+<!-- Nathan Marrs -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>You can now create subtables out of your data using the new <strong>Group to nested tables</strong> transformation. To use this feature, enable the <code>groupToNestedTableTransformation</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/#preview-feature-toggles">feature toggle</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-10-4-table-group-to-nested-table-transformation.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Group to nested tables transformation</figcaption></figure>
+</div>
+<h3 id="set-library-panel-permissions-with-rbac">Set library panel permissions with RBAC</h3>
+<!-- #grafana-dashboards -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>We&rsquo;ve added the option to manage library panel permissions through role-based access control (RBAC). With this feature, you can choose who can create, edit, and read library panels. RBAC provides a standardized way of granting, changing, and revoking access when it comes to viewing and modifying Grafana resources, such as dashboards, reports, and administrative settings.</p>
+<p>
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-library-panels/">Documentation</a></p>
+<h3 id="tooltip-improvements">Tooltip improvements</h3>
+<!--Adela Almasan-->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>We’ve made a number of small improvements to the way tooltips work in Grafana. To try out the new tooltips, enable the <code>newVizTooltips</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a>.</p>
+<p><strong>Copy on click support</strong></p>
+<p>You can now copy the content from within a tooltip by clicking on the text.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/gif-grafana-10-4-tooltip%e2%80%93copy.gif"
+  alt="Tooltip" width="1056"
+     height="552"/></p>
+<p><strong>Scrollable content</strong></p>
+<p>You can now scroll the content of a tooltip, which allows you to view long lists. This is currently supported in the time series, candlestick, and trend visualizations. We&rsquo;ll add more improvements to the scrolling functionality in a future version.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/gif-grafana-10-4-tooltip-content-scroll.gif"
+  alt="Tooltip" width="1056"
+     height="646"/></p>
+<p><strong>Added tooltip options for candlestick visualization</strong></p>
+<p>The default tooltip options are now also visible in candlestick visualizations.</p>
+<p><strong>Hover proximity option in time series</strong></p>
+<p>We&rsquo;ve added a tooltip hover proximity limit option (in pixels), which makes it possible to reduce the number of hovered-over data points under the cursor when two datasets are not aligned in time.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/gif-grafana-10-4-hover-proximity.gif"
+  alt="Time Series hover proximity" width="1136"
+     height="490"/></p>
+<h2 id="return-to-previous">Return to previous</h2>
+<!-- #grafana-frontend-platform-->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>When you&rsquo;re browsing Grafana - for example, exploring the dashboard and metrics related to an alert - it&rsquo;s easy to end up far from where you started and hard get back to where you came from. The ‘Return to previous’ button is an easy way to go back to the previous context, like the alert rule that kicked off your exploration. This first release works for Alerts, and we plan to expand to other apps and features in Grafana in future releases to make it easier to navigate around.</p>
+<p>Return to Previous is rolling out across Grafana Cloud now. To try Return to Previous in self-managed Grafana, turn on the <code>returnToPrevious</code> <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a> in Grafana v10.4 or newer.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=-Y3qPfD2wrA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The term <strong>context</strong> refers to applications in Grafana like Incident and OnCall, as well as core features like Explore and Dashboards.</p>
+<p>To notice a change in your context, look at Grafana&rsquo;s breadcrumbs. If you go from <em>Home &gt; <strong>Dashboards</strong></em> to <em>Home &gt; <strong>Explore</strong></em>, you&rsquo;ve changed context. If you go from <em>Home &gt; <strong>Dashboards</strong> &gt; Playlist &gt; Edit playlist</em> to <em>Home &gt; <strong>Dashboards</strong> &gt; Reporting &gt; Settings</em>, you are in the same context.</p></blockquote></div>
+
+<h2 id="alerting">Alerting</h2>
+<h3 id="simplified-alert-notification-routing">Simplified Alert Notification Routing</h3>
+<!-- #alerting -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>This feature simplifies your options for configuring where your notifications are sent when an alert rule fires. Choose an existing contact point directly from within the alert rule creation form without the need to label match notification policies.  You can also set optional muting, grouping, and timing settings directly in the alert rule.</p>
+<p>Simplified routing inherits the alert rule RBAC, increasing control over notification routing while preventing accidental notification policy updates, ensuring critical notifications make it to their intended contact point destination.</p>
+<p>To try out Simplified Alert Notification Routing enable the <code>alertingSimplifiedRouting</code> feature toggle.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=uBBQ-_pWSNs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="grafana-alerting-upgrade-with-rule-preview">Grafana Alerting upgrade with rule preview</h3>
+<!-- #alerting -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Users looking to migrate to the new Grafana Alerting product can do so with confidence with the Grafana Alerting migration preview tool. The migration preview tool allows users to view, edit, and delete migrated rules prior cutting over, with the option to roll back to Legacy Alerting.</p>
+<p><a href="/docs/grafana/v10.4/alerting/set-up/migrating-alerts/#upgrade-with-preview-recommended">Documentation</a></p>
+<h3 id="rule-evaluation-spread-over-the-entire-evaluation-interval">Rule evaluation spread over the entire evaluation interval</h3>
+<!-- #alerting -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Grafana Alerting previously evaluated rules at the start of the evaluation interval. This created a sudden spike of resource utilization, impacting data sources. Rule evaluation is now spread over the entire interval for smoother performance utilization of data sources.</p>
+<h3 id="utf-8-support-for-prometheus-and-mimir-alertmanagers">UTF-8 Support for Prometheus and Mimir Alertmanagers</h3>
+<!-- #alerting -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Grafana can now be used to manage both Prometheus and Mimir Alertmanagers with UTF-8 configurations. For more information, please see the
+<a href="https://github.com/prometheus/alertmanager/releases" target="_blank" rel="noopener noreferrer">release notes for Alertmanager 0.27.0</a>.</p>
+<h2 id="authentication-and-authorization">Authentication and authorization</h2>
+<h3 id="sso-settings-ui-and-terraform-resource-for-configuring-oauth-providers">SSO Settings UI and Terraform resource for configuring OAuth providers</h3>
+<!-- #proj-grafana-sso-config, #identity-access or Mihaly Gyongyosi (@Misi) -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>Configuring OAuth providers was a bit cumbersome in Grafana: Grafana Cloud users had to reach out to Grafana Support, self-hosted users had to manually edit the configuration file, set up environment variables, and then they had to restart Grafana. On Cloud, the Advanced Auth page is there to configure some of the providers, but configuring Generic OAuth hasn’t been available until now and there was no way to manage the settings through the Grafana UI, nor was there a way to manage the settings through Terraform or the Grafana API.</p>
+<p>Our goal is to make setting up SSO for your Grafana instance simple and fast.</p>
+<p>To get there, we are introducing easier self-serve configuration options for OAuth in Grafana. All of the currently supported OAuth providers are now available for configuration through the Grafana UI, Terraform and via the API. From the UI, you can also now manage all of the settings for the Generic OAuth provider.</p>
+<p>We are working on adding complete support for configuring all other supported OAuth providers as well, such as GitHub, GitLab, Google, Microsoft Azure AD and Okta. You can already manage some of these settings via the new self-serve configuration options, and we’re working on adding more at the moment.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana-cloud/screenshot-sso-settings-ui-public-prev-v10.4.png"
+  alt="Screenshot of the Authentication provider list page" width="1000"
+     height="549"/></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=xXW2eRTbjDY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p><a href="/docs/grafana/next/setup-grafana/configure-security/configure-authentication/">Documentation</a></p>
+<h2 id="data-sources">Data sources</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The following data sources are released separately from Grafana itself. They are included here for extra visibility.</p></blockquote></div>
+
+<h3 id="pagerduty-enterprise-data-source-for-grafana">PagerDuty enterprise data source for Grafana</h3>
+<!-- #enterprise-datasources -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>PagerDuty enterprise data source plugin for Grafana allows you to query incidents data or visualize incidents using annotations.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Plugin is currently in a preview phase.</p></blockquote></div>
+
+<p>You can find more information and how to configure the plugin in the <a href="/docs/plugins/grafana-pagerduty-datasource/latest/">documentation</a>.</p>
+<p>Screenshots:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1612px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/plugins/PagerDuty-incidents-annotation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/plugins/PagerDuty-incidents-annotation.png"data-srcset="/media/docs/plugins/PagerDuty-incidents-annotation.png?w=320 320w, /media/docs/plugins/PagerDuty-incidents-annotation.png?w=550 550w, /media/docs/plugins/PagerDuty-incidents-annotation.png?w=750 750w, /media/docs/plugins/PagerDuty-incidents-annotation.png?w=900 900w, /media/docs/plugins/PagerDuty-incidents-annotation.png?w=1040 1040w, /media/docs/plugins/PagerDuty-incidents-annotation.png?w=1240 1240w, /media/docs/plugins/PagerDuty-incidents-annotation.png?w=1920 1920w"
+          data-sizes="auto"alt="PagerDuty data source annotation editor"width="1612"height="1032"title="PagerDuty data source annotation editor"/>
+        <noscript>
+          <img
+            src="/media/docs/plugins/PagerDuty-incidents-annotation.png"
+            alt="PagerDuty data source annotation editor"width="1612"height="1032"title="PagerDuty data source annotation editor"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">PagerDuty data source annotation editor</figcaption></a></figure>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1612px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/plugins/PagerDuty-incidents-real-life-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/plugins/PagerDuty-incidents-real-life-example.png"data-srcset="/media/docs/plugins/PagerDuty-incidents-real-life-example.png?w=320 320w, /media/docs/plugins/PagerDuty-incidents-real-life-example.png?w=550 550w, /media/docs/plugins/PagerDuty-incidents-real-life-example.png?w=750 750w, /media/docs/plugins/PagerDuty-incidents-real-life-example.png?w=900 900w, /media/docs/plugins/PagerDuty-incidents-real-life-example.png?w=1040 1040w, /media/docs/plugins/PagerDuty-incidents-real-life-example.png?w=1240 1240w, /media/docs/plugins/PagerDuty-incidents-real-life-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Incidents annotations from PagerDuty data source on a dashboard panel"width="1612"height="1066"title="Incidents annotations from PagerDuty data source on a dashboard panel"/>
+        <noscript>
+          <img
+            src="/media/docs/plugins/PagerDuty-incidents-real-life-example.png"
+            alt="Incidents annotations from PagerDuty data source on a dashboard panel"width="1612"height="1066"title="Incidents annotations from PagerDuty data source on a dashboard panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Incidents annotations from PagerDuty data source on a dashboard panel</figcaption></a></figure>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=dCklm2DaVqQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="surrealdb-data-source">SurrealDB Data Source</h3>
+<!-- #grafana-partner-datasources, @adamyeats-->
+<p><em>Experimental in all editions of Grafana</em></p>
+<p>A SurrealDB data source has been <a href="/grafana/plugins/grafana-surrealdb-datasource/">added to the Plugin Catalog</a>, enabling the integration of <a href="https://surrealdb.com/" target="_blank" rel="noopener noreferrer">SurrealDB</a>, a real-time, multi-model database, with Grafana&rsquo;s visualization capabilities. This datasource allows users to directly query and visualize data from SurrealDB within Grafana, using SurrealDB&rsquo;s query language.</p>
+<p>The SurrealDB data source launches with just the basics today. You can write queries in SurrealQL using the built-in query editor, although many Grafana features like macros are not supported for now.</p>
+<p>You can find more information and how to configure the plugin <a href="https://github.com/grafana/surrealdb-datasource" target="_blank" rel="noopener noreferrer">on Github</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1919px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/images/dashboards/surrealdb-dashboard-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/images/dashboards/surrealdb-dashboard-example.png"data-srcset="/media/images/dashboards/surrealdb-dashboard-example.png?w=320 320w, /media/images/dashboards/surrealdb-dashboard-example.png?w=550 550w, /media/images/dashboards/surrealdb-dashboard-example.png?w=750 750w, /media/images/dashboards/surrealdb-dashboard-example.png?w=900 900w, /media/images/dashboards/surrealdb-dashboard-example.png?w=1040 1040w, /media/images/dashboards/surrealdb-dashboard-example.png?w=1240 1240w, /media/images/dashboards/surrealdb-dashboard-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana dashboard using SurrealDB data source"width="1919"height="946"/>
+        <noscript>
+          <img
+            src="/media/images/dashboards/surrealdb-dashboard-example.png"
+            alt="Grafana dashboard using SurrealDB data source"width="1919"height="946"/>
+        </noscript></div></a></figure>
+<p><a href="/grafana/plugins/grafana-surrealdb-datasource/">Documentation</a></p>
+<h2 id="table-visualization-for-logs">Table Visualization for Logs</h2>
+<!-- #observability-logs -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The table visualization for logs, announced in public preview for Grafana 10.3, is generally available in Cloud (all editions) and with Grafana 10.4.</p>
+<p>New to the table visualization with 10.4:</p>
+<ul>
+<li>the ability to sort columns</li>
+<li>data type autodetection of fields</li>
+<li>autodetection and clean formatting of json fields</li>
+</ul>
+<p>Try it out today!</p>

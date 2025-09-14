@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<h1 id="configure-standard-options">Configure standard options</h1>
+<p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. Options that you apply don&rsquo;t change the data, they just change how Grafana <em>displays</em> the data.</p>
+<p>When you set a standard option, the change is applied to all fields or series. For example, if you set the <strong>Unit</strong> option to <strong>Percentage</strong>, all fields with numeric values are displayed as percentages.</p>
+<p>For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<h2 id="supported-visualizations">Supported visualizations</h2>
+<p>You can configure standard options for the following visualizations:</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-gauge/">Bar gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Canvas</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/gauge/">Gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/">Geomap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">Histogram</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/pie-chart/">Pie chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/">Stat</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/xy-chart/">XY chart</a></li>
+</ul>
+
+</div>
+<h2 id="standard-options">Standard options</h2>
+<p>This section explains all available standard options.</p>
+<p>To set these options, expand the <strong>Standard options</strong> section in the panel editor pane. Most field options won&rsquo;t affect the visualization until you click outside of the field option box you&rsquo;re editing or press Enter.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Not all of the options listed apply to all visualizations with standard options.</p></blockquote></div>
+
+<h3 id="unit">Unit</h3>
+<p>This option lets you choose which unit a field should use. Click in the <strong>Unit</strong> field, then drill down until you find the unit you want. The unit you select is applied to all fields except time.</p>
+<h4 id="custom-units">Custom units</h4>
+<p>You can also use the <strong>Unit</strong> drop-down to specify custom units, custom prefixes or suffixes, and date time formats.</p>
+<p>To set a custom unit, enter the unit you want to use and then select it in the drop-down. It&rsquo;ll be the last option listed. For example, if you enter a unit called &ldquo;Hearts&rdquo;, the drop-down will then include the option <strong>Custom unit: Hearts</strong>.</p>
+<p>You can further define a custom unit with specific syntax. For example, to set a custom currency unit called &ldquo;Gems&rdquo;, enter <code>currency:Gems</code> in the field. The drop-down will include the option <strong>Custom unit: currency:Gems</strong>:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/custom_unit_currency_v11.0.png"
+  alt="A custom currency unit called Gems in the Unit drop-down" width="542"
+     height="100"/></p>
+<p>The following table lists the special syntax options for custom units:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Custom unit</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>suffix:&lt;suffix&gt;</code></td>
+          <td>Custom unit that should go after value.</td>
+      </tr>
+      <tr>
+          <td><code>prefix:&lt;prefix&gt;</code></td>
+          <td>Custom unit that should go before value.</td>
+      </tr>
+      <tr>
+          <td><code>time:&lt;format&gt;</code></td>
+          <td>Custom date time formats type, such as <code>time:YYYY-MM-DD</code>. Refer to <a href="https://momentjs.com/docs/#/displaying/" target="_blank" rel="noopener noreferrer">formats</a> for the format syntax and options.</td>
+      </tr>
+      <tr>
+          <td><code>si:&lt;base scale&gt;&lt;unit characters&gt;</code></td>
+          <td>Custom SI units, such as <code>si: mF</code>. You can specify both a unit and the source data scale. For example, if your source data is represented as milli-something, prefix the unit with the <code>m</code> SI scale character.</td>
+      </tr>
+      <tr>
+          <td><code>count:&lt;unit&gt;</code></td>
+          <td>Custom count unit.</td>
+      </tr>
+      <tr>
+          <td><code>currency:&lt;unit&gt;</code></td>
+          <td>Custom currency unit.</td>
+      </tr>
+      <tr>
+          <td><code>currency:financial:&lt;unit&gt;</code></td>
+          <td>Full format currency unit without abbreviations. Displays complete numeric values instead of scaled abbreviations (K: Thousand, M: Million, B: Billion, T: Trillion). For example, <code>currency:financial:$</code> displays <code>500,555</code> instead of <code>$501K</code>. Add <code>:suffix</code> to place the symbol after the number: <code>currency:financial:€:suffix</code> displays <code>500,555€</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>You can also paste a native emoji in the <strong>Unit</strong> drop-down and select it as a custom unit:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/custom_unit_thumbsup_v11.0.png"
+  alt="A thumbs up emoji as a custom unit" width="513"
+     height="67"/></p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/thumbsup_panel_v11.0.png"
+  alt="A time series visualization using custom thumbs up emoji units" width="641"
+     height="299"/></p>
+<h5 id="time-format-units">Time format units</h5>
+<p>All <strong>Date &amp; time</strong> format units in Grafana (such as <strong>Datetime ISO</strong> or <strong>Datetime US</strong>) expect input values to be in milliseconds since the Unix epoch (January 1, 1970). If your data source provides timestamps in seconds, these will be incorrectly interpreted as dates very close to January 1, 1970.</p>
+<p>To display timestamps that are in seconds since epoch, multiply your timestamp values by 1000 using a transformation following these steps:</p>
+<ol>
+<li>In the panel editor, click the <strong>Transformations</strong> tab.</li>
+<li>Click <strong>Add transformation</strong>.</li>
+<li>Select the <strong>Add field from calculation</strong> transformation.</li>
+<li>Set the following options:
+<ul>
+<li><strong>Mode</strong> - <strong>Binary operation</strong></li>
+<li><strong>Operation</strong>
+<ul>
+<li>Select your timestamp field</li>
+<li>Select the asterisk (<code>*</code>) for multiply by</li>
+<li>Enter 1000 in the <strong>Field or Number</strong> field</li>
+</ul>
+</li>
+<li>Toggle the <strong>Replace all fields</strong> switch on if you want to see the calculated field.</li>
+</ul>
+</li>
+</ol>
+<h4 id="control-unit-scaling">Control unit scaling</h4>
+<p>By default, Grafana automatically scales the unit based on the magnitude of the value. For example, if you have values of 0.14kW and 3000kW, Grafana displays them as 140W and 3MW, respectively. You can use custom units to control this behavior by setting a prefix, suffix, or custom SI unit.</p>
+<h4 id="string-units">String units</h4>
+<p>Sometimes Grafana is too aggressive in interpreting strings and displaying them as numbers. To configure Grafana to show the original string value, select <strong>Misc &gt; String</strong> in the <strong>Unit</strong> drop-down.</p>
+<h3 id="min">Min</h3>
+<p>Set the minimum value used in percentage threshold calculations. Leave this field empty to automatically calculate the minimum.</p>
+<h3 id="max">Max</h3>
+<p>Set the maximum value used in percentage threshold calculations. Leave this field empty to automatically calculate the maximum.</p>
+<h3 id="field-minmax">Field min/max</h3>
+<p>By default, the calculated <strong>Min</strong> and <strong>Max</strong> are based on the minimum and maximum of all series and fields. When you enable <strong>Field min/max</strong>, Grafana calculates the min or max of each field individually, based on the minimum or maximum value of the field.</p>
+<h3 id="decimals">Decimals</h3>
+<p>Specify the number of decimals Grafana includes in the rendered value. If you leave this field empty, Grafana automatically truncates the number of decimals based on the value. For example 1.1234 displays as 1.12 and 100.456 displays as 100.</p>
+<p>To display all decimals, set the unit to <strong>String</strong>.</p>
+<h3 id="display-name">Display name</h3>
+<p>Set the display title of all fields. You can use 
+    <a href="/docs/grafana/latest/dashboards/variables/">variables</a> in the field title.</p>
+<p>When multiple stats, fields, or series are displayed, this field controls the title in each stat. You can use expressions like <code>${__field.name}</code> to use only the series name or the field name in the title.</p>
+<p>The following table shows examples of the different field names generated using various expressions. In this example, there&rsquo;s a field with a name of &ldquo;Temp&rdquo; and labels of {&ldquo;Loc&rdquo;=&ldquo;PBI&rdquo;, &ldquo;Sensor&rdquo;=&ldquo;3&rdquo;}:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Expression syntax</th>
+          <th>Example</th>
+          <th>Renders to</th>
+          <th>Explanation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>${__field.displayName}</code></td>
+          <td>Same as syntax</td>
+          <td><code>Temp {Loc=&quot;PBI&quot;, Sensor=&quot;3&quot;}</code></td>
+          <td>Displays the field name, and labels in <code>{}</code> if they are present. If there is only one label key in the response, then for the label portion, Grafana displays the value of the label without the enclosing braces.</td>
+      </tr>
+      <tr>
+          <td><code>${__field.name}</code></td>
+          <td>Same as syntax</td>
+          <td><code>Temp</code></td>
+          <td>Displays the name of the field (without labels).</td>
+      </tr>
+      <tr>
+          <td><code>${__field.labels}</code></td>
+          <td>Same as syntax</td>
+          <td><code>Loc=&quot;PBI&quot;, Sensor=&quot;3&quot;</code></td>
+          <td>Displays the labels without the name.</td>
+      </tr>
+      <tr>
+          <td><code>${__field.labels.X}</code></td>
+          <td><code>${__field.labels.Loc}</code></td>
+          <td><code>PBI</code></td>
+          <td>Displays the value of the specified label key.</td>
+      </tr>
+      <tr>
+          <td><code>${__field.labels.__values}</code></td>
+          <td>Same as Syntax</td>
+          <td><code>PBI, 3</code></td>
+          <td>Displays the values of the labels separated by a comma (without label keys).</td>
+      </tr>
+  </tbody>
+</table>
+<p>If the value is an empty string after rendering the expression for a particular field, then the default display method is applied.</p>
+<h3 id="color-scheme">Color scheme</h3>
+<p>The <strong>Color scheme</strong> options let you set single or multiple colors for your entire visualization.</p>
+<p>The color options and their effect on a visualization depend on the visualization you&rsquo;re working with and some visualizations have different color options.</p>
+<p>Select one of the following schemes:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Color scheme</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Single color</td>
+          <td>Specifies a single color.</td>
+      </tr>
+      <tr>
+          <td>Shades of a color</td>
+          <td>Grafana selects shades of a single color.</td>
+      </tr>
+      <tr>
+          <td>From thresholds (by value)</td>
+          <td>The color is taken from the matching 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">threshold</a>. For some visualizations, you also need to choose if the color is set by the <strong>Last</strong>, <strong>Min</strong>, or <strong>Max</strong> value of the field or series.</td>
+      </tr>
+      <tr>
+          <td>Classic palette</td>
+          <td>Grafana automatically assigns a color for each field or series based on its order. If the order of a field changes in your query, the color also changes. Useful for graphs, pie charts, and other categorical data visualizations.</td>
+      </tr>
+      <tr>
+          <td>Classic palette (by series name)</td>
+          <td>Grafana automatically assigns colors based on the name of the series. Useful when the series names to be visualized can change based on the available data.</td>
+      </tr>
+      <tr>
+          <td>Multiple continuous colors (by value)</td>
+          <td>Grafana automatically assigns colors based on the percentage of a value relative to the min and the max of the field or series. For some visualizations, you also need to choose if the color is set by the <strong>Last</strong>, <strong>Min</strong>, or <strong>Max</strong> value of the field or series. Select from: <strong>Green-Yellow-Red</strong>, <strong>Red-Yellow-Green</strong>, <strong>Blue-Yellow-Red</strong>, <strong>Yellow-Red</strong>, <strong>Blue-Purple</strong>, and <strong>Yellow-Blue</strong>.</td>
+      </tr>
+      <tr>
+          <td>Single continuous color (by value)</td>
+          <td>Grafana automatically assigns shades of one color based on the percentage of a value relative to the min and the max of the field or series. For some visualizations, you also need to choose if the color is set by the <strong>Last</strong>, <strong>Min</strong>, or <strong>Max</strong> value of the field or series. Select from: <strong>Blues</strong>, <strong>Reds</strong>, <strong>Greens</strong>, and <strong>Purples</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>You can also use the legend to open the color picker by clicking the legend series color icon. Setting color this way automatically creates an override rule that set&rsquo;s a specific color for a specific series.</p>
+<h3 id="no-value">No value</h3>
+<p>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</p>

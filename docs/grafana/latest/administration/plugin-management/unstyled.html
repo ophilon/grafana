@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<h1 id="plugin-management">Plugin management</h1>
+<p>Plugins enhance your Grafana experience with new ways to connect to and visualize data.</p>
+<p>Read on for an overview on how to get started with plugins:</p>
+<ul>
+<li>Plugins are available in the <a href="#plugin-catalog">plugin catalog</a>. They can be built by Grafana Labs, commercial partners, our community, or you can <a href="/developers/plugin-tools">build a plugin yourself</a>.</li>
+<li>There are three <a href="#types-of-plugins">types of plugins</a>: panel, data source, and app plugins.</li>
+<li>Learn <a href="#install-a-plugin">how to install</a>, <a href="#update-a-plugin">update</a> and <a href="#verify-your-plugins">verify</a> your plugins.</li>
+</ul>
+<p><a href="#advanced-options">Advanced options</a> allow you to:</p>
+<ul>
+<li>Customize where app plugin pages appear in the navigation menu.</li>
+<li>Configure backend communication between installed plugins.</li>
+<li>Improve security by isolating plugins with the Plugin Frontend Sandbox.</li>
+</ul>
+<h2 id="types-of-plugins">Types of plugins</h2>
+<p>Grafana supports three types of plugins:</p>
+<ul>
+<li><a href="/grafana/plugins/panel-plugins">Panels</a> - These plugins make it easy to create and add any kind of visualization, to show your data, or improve your favorite dashboards.</li>
+<li><a href="/grafana/plugins/data-source-plugins">Data sources</a> - These plugins allow you to pull data from various data sources such as databases, APIs, log files, and so on, and display it in the form of graphs, charts, and dashboards in Grafana.</li>
+<li><a href="/grafana/plugins/app-plugins">Apps</a> - These plugins enable the bundling of data sources, panels, dashboards, and Grafana pages into a cohesive experience.</li>
+</ul>
+<p>Read more in <a href="plugin-types">Types of plugins</a>.</p>
+<h2 id="plugin-catalog">Plugin catalog</h2>
+<p>The Grafana plugin catalog allows you to browse and manage plugins from within Grafana. Only Grafana server administrators and Organization administrators can access and use the plugin catalog. For more information about Grafana roles and permissions, refer to <a href="../roles-and-permissions/">Roles and permissions</a>.</p>
+<p>The following access rules apply depending on the user role:</p>
+<ul>
+<li>If you are an <strong>Org Admin</strong>, you can configure app plugins, but you can&rsquo;t install, uninstall, or update them.</li>
+<li>If you are a <strong>Server Admin</strong>, you can&rsquo;t configure app plugins, but you can install, uninstall, or update them.</li>
+<li>If you are both <strong>Org Admin</strong> and <strong>Server Admin</strong>, you can configure app plugins and also install, uninstall, or update them.</li>
+</ul>
+<h3 id="browse-plugins">Browse plugins</h3>
+<p>To browse for available plugins:</p>
+<ol>
+<li>While logged into Grafana as an administrator, click <strong>Administration &gt; Plugins and data &gt; Plugins</strong> in the side menu to view installed and available plugins.</li>
+<li>Use the search box to filter based on name, keywords, organization and other metadata.</li>
+<li>Click the <strong>Data sources</strong>, <strong>Panels</strong>, or <strong>Applications</strong> buttons to filter by plugin type.</li>
+</ol>
+<h2 id="manage-your-plugins">Manage your plugins</h2>
+<p>We strongly recommend running the latest plugin version. Use 
+    <a href="/docs/grafana/latest/administration/grafana-advisor/">Grafana Advisor</a> to check the status of your data sources and plugins.</p>
+<h3 id="install-a-plugin">Install a plugin</h3>
+<p>The most common way to install a plugin is through the Grafana UI.</p>
+<ol>
+<li>In Grafana, click <strong>Administration &gt; Plugins and data &gt; Plugins</strong> in the side navigation menu to view all plugins.</li>
+<li>Browse and find a plugin.</li>
+<li>Click the plugin&rsquo;s logo.</li>
+<li>Click <strong>Install</strong>.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To see additional ways to install plugins refer to <a href="plugin-install">Install a plugin</a>.</p></blockquote></div>
+
+<h3 id="update-a-plugin">Update a plugin</h3>
+<p>To update a plugin:</p>
+<ol>
+<li>In Grafana, click <strong>Administration &gt; Plugins and data &gt; Plugins</strong> in the side navigation menu to view all plugins.</li>
+<li>Click the <strong>Installed</strong> filter to show only installed plugins.</li>
+<li>Click the plugin&rsquo;s logo.</li>
+<li>Click <strong>Update</strong>.</li>
+</ol>
+<p>When the update is complete, a confirmation message will indicate the installation was successful.</p>
+<h3 id="uninstall-a-plugin">Uninstall a plugin</h3>
+<p>To uninstall a plugin:</p>
+<ol>
+<li>In Grafana, click <strong>Administration &gt; Plugins and data &gt; Plugins</strong> in the side navigation menu to view all plugins.</li>
+<li>Click the plugin&rsquo;s logo.</li>
+<li>Click the <strong>Installed</strong> filter to show only installed plugins.</li>
+<li>Click <strong>Uninstall</strong>.</li>
+</ol>
+<p>When the update is complete, a confirmation message will indicate the installation was successful.</p>
+<h3 id="verify-your-plugins">Verify your plugins</h3>
+<p>Plugin signature verification, also known as <em>signing</em>, is a security measure to make sure plugins haven&rsquo;t been tampered with. Upon loading, Grafana checks to see if a plugin is signed or unsigned. Read more in <a href="plugin-sign">Plugin signatures</a>.</p>
+<h2 id="advanced-options">Advanced options</h2>
+<h3 id="customize-navigation-placement-of-plugin-pages">Customize navigation placement of plugin pages</h3>
+<p>You can relocate app plugin pages to customize the navigation menu structure, as explained in <a href="customize-nav-bar">Customize navigation placement of plugin pages</a>.</p>
+<h3 id="allow-plugin-backend-communication">Allow plugin backend communication</h3>
+<p>You can configure your Grafana instance to let the frontends of installed plugins directly communicate locally with the backends of other installed plugins. See how in <a href="plugin-integrate">Configure backend communication between installed plugins</a>.</p>
+<h3 id="isolate-plugin-code-with-the-frontend-sandbox">Isolate plugin code with the Frontend Sandbox</h3>
+<p>You can use the <a href="plugin-frontend-sandbox">Plugin Frontend Sandbox</a> to securely isolate plugin frontend code from the main Grafana application.</p>
+<p>When enabled, plugins run in a separate JavaScript context, which provides several security benefits:</p>
+<ul>
+<li>Prevents plugins from modifying parts of the Grafana interface outside their designated areas</li>
+<li>Stops plugins from interfering with other plugins functionality</li>
+<li>Protects core Grafana features from being altered by plugins</li>
+<li>Prevents plugins from modifying global browser objects and behaviors</li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="/grafana/plugins">Browse available plugins</a></li>
+<li><a href="/developers/plugin-tools">Develop your own plugins</a></li>
+<li><a href="https://community.grafana.com/c/plugin-development/30" target="_blank" rel="noopener noreferrer">Reach out to the plugin development Community</a></li>
+</ul>

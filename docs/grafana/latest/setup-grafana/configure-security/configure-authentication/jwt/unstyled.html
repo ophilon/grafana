@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<h1 id="configure-jwt-authentication">Configure JWT authentication</h1>
+<p>You can configure Grafana to accept a JWT token provided in the HTTP header. The token is verified using any of the following:</p>
+<ul>
+<li>PEM-encoded key file</li>
+<li>JSON Web Key Set (JWKS) in a local file</li>
+<li>JWKS provided by the configured JWKS endpoint</li>
+</ul>
+<p>This method of authentication is useful for integrating with other systems that
+use JWKS but can&rsquo;t directly integrate with Grafana or if you want to use pass-through
+authentication in an app embedding Grafana.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana does not currently support refresh tokens.</p></blockquote></div>
+
+<h2 id="enable-jwt">Enable JWT</h2>
+<p>To use JWT authentication:</p>
+<ol>
+<li>Enable JWT in the <a href="../../../configure-grafana/">main config file</a>.</li>
+<li>Specify the header name that contains a token.</li>
+</ol>
+<pre>[auth.jwt]
+# By default, auth.jwt is disabled.
+enabled = true
+
+# HTTP header to look into to get a JWT token.
+header_name = X-JWT-Assertion</pre>
+<h2 id="configure-login-claim">Configure login claim</h2>
+<p>To identify the user, some of the claims needs to be selected as a login info. The subject claim called <code>&quot;sub&quot;</code> is mandatory and needs to identify the principal that is the subject of the JWT.</p>
+<p>Typically, the subject claim called <code>&quot;sub&quot;</code> would be used as a login but it might also be set to some application specific claim.</p>
+<pre># [auth.jwt]
+# ...
+
+# Specify a claim to use as a username to sign in.
+username_claim = sub
+
+# Specify a claim to use as an email to sign in.
+email_claim = sub
+
+# auto-create users if they are not already matched
+# auto_sign_up = true</pre>
+<p>If <code>auto_sign_up</code> is enabled, then the <code>sub</code> claim is used as the &ldquo;external Auth ID&rdquo;. The <code>name</code> claim is used as the user&rsquo;s full name if it is present.</p>
+<p>Additionally, if the login username or the email claims are nested inside the JWT structure, you can specify the path to the attributes using the <code>username_attribute_path</code> and <code>email_attribute_path</code> configuration options using the JMESPath syntax.</p>
+<p>JWT structure example.</p>
+<pre>{
+  &#34;user&#34;: {
+    &#34;UID&#34;: &#34;1234567890&#34;,
+    &#34;name&#34;: &#34;John Doe&#34;,
+    &#34;username&#34;: &#34;johndoe&#34;,
+    &#34;emails&#34;: [&#34;personal@email.com&#34;, &#34;professional@email.com&#34;]
+  }
+}</pre>
+<pre># [auth.jwt]
+# ...
+
+# Specify a nested attribute to use as a username to sign in.
+username_attribute_path = user.username # user&#39;s login is johndoe
+
+# Specify a nested attribute to use as an email to sign in.
+email_attribute_path = user.emails[1] # user&#39;s email is professional@email.com</pre>
+<h2 id="iframe-embedding">Iframe Embedding</h2>
+<p>If you want to embed Grafana in an iframe while maintaining user identity and role checks,
+you can use JWT authentication to authenticate the iframe.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For Grafana Cloud, or scenarios where verifying viewer identity is not required,
+embed 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">shared dashboards</a>.</p></blockquote></div>
+
+<p>In this scenario, you will need to configure Grafana to accept a JWT
+provided in the HTTP header and a reverse proxy should rewrite requests to the
+Grafana instance to include the JWT in the request&rsquo;s headers.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For embedding to work, you must enable <code>allow_embedding</code> in the <a href="../../../configure-grafana/#allow_embedding">security section</a>. This setting is not available in Grafana Cloud.</p></blockquote></div>
+
+<p>In a scenario where it is not possible to rewrite the request headers you
+can use URL login instead.</p>
+<h3 id="url-login">URL login</h3>
+<p><code>url_login</code> allows grafana to search for a JWT in the URL query parameter
+<code>auth_token</code> and use it as the authentication token.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You need to enable JWT before setting this setting. Refer to <a href="#enable-jwt">Enabled JWT</a>.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>This can lead to JWTs being exposed in logs and possible session hijacking if the server is not
+using HTTP over TLS.</p></blockquote></div>
+
+<pre># [auth.jwt]
+# ...
+url_login = true # enable JWT authentication in the URL</pre>
+<p>An example of an URL for accessing grafana with JWT URL authentication is:</p>
+<pre>http://env.grafana.local/d/RciOKLR4z/board-identifier?orgId=1&amp;kiosk&amp;auth_token=eyJhbxxxxxxxxxxxxx</pre>
+<p>A sample repository using this authentication method is available
+at <a href="https://github.com/grafana/grafana-iframe-oauth-sample" target="_blank" rel="noopener noreferrer">grafana-iframe-oauth-sample</a>.</p>
+<h2 id="signature-verification">Signature verification</h2>
+<p>JSON web token integrity needs to be verified so cryptographic signature is used for this purpose. So we expect that every token must be signed with some known cryptographic key.</p>
+<p>You have a variety of options on how to specify where the keys are located.</p>
+<h3 id="verify-token-using-a-json-web-key-set-loaded-from-https-endpoint">Verify token using a JSON Web Key Set loaded from https endpoint</h3>
+<p>For more information on JWKS endpoints, refer to <a href="https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets" target="_blank" rel="noopener noreferrer">Auth0 docs</a>.</p>
+<pre># [auth.jwt]
+# ...
+
+jwk_set_url = https://your-auth-provider.example.com/.well-known/jwks.json
+
+# When the JWKS url requires an &#39;Authorization: Bearer &lt;TOKEN&gt;&#39; header
+# jwk_set_bearer_token_file = /path/to/bearer_token
+
+# Cache duration for https endpoint response.
+cache_ttl = 60m
+
+# Path to file containing one or more custom PEM-encoded CA certificates.
+# Used with jwk_set_url when the JWKS endpoint uses a certificate that is not
+# trusted by the default CA bundle (e.g. self-signed certificates).
+# tls_client_ca = /path/to/ca.crt
+
+# Skip CA Verification entirely
+# tls_skip_verify_insecure = false</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If the JWKS endpoint includes cache control headers and the value is less than the configured <code>cache_ttl</code>, then the cache control header value is used instead. If the <code>cache_ttl</code> is not set, the default of <code>60m</code> is used. <code>no-store</code> and <code>no-cache</code> cache control headers are ignored. To disable JWKS caching, set <code>cache_ttl = 0s</code></p></blockquote></div>
+
+<h3 id="verify-token-using-a-json-web-key-set-loaded-from-json-file">Verify token using a JSON Web Key Set loaded from JSON file</h3>
+<p>Key set in the same format as in JWKS endpoint but located on disk.</p>
+<pre>jwk_set_file = /path/to/jwks.json</pre>
+<h3 id="verify-token-using-a-single-key-loaded-from-pem-encoded-file">Verify token using a single key loaded from PEM-encoded file</h3>
+<p>PEM-encoded key file in PKIX, PKCS #1, PKCS #8 or SEC 1 format.</p>
+<pre>key_file = /path/to/key.pem</pre>
+<p>If the JWT token&rsquo;s header specifies a <code>kid</code> (Key ID), then the Key ID must be set using the <code>key_id</code> configuration option.</p>
+<pre>key_id = my-key-id</pre>
+<h2 id="validate-claims">Validate claims</h2>
+<p>By default, only <code>&quot;exp&quot;</code>, <code>&quot;nbf&quot;</code> and <code>&quot;iat&quot;</code> claims are validated.</p>
+<p>Consider validating that other claims match your expectations by using the <code>expect_claims</code> configuration option.
+Token claims must match exactly the values set here.</p>
+<pre># This can be seen as a required &#34;subset&#34; of a JWT Claims Set.
+expect_claims = {&#34;iss&#34;: &#34;https://your-token-issuer&#34;, &#34;your-custom-claim&#34;: &#34;foo&#34;}</pre>
+<h2 id="roles">Roles</h2>
+<p>Grafana checks for the presence of a role using the <a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> specified via the <code>role_attribute_path</code> configuration option. The JMESPath is applied to JWT token claims. The result after evaluation of the <code>role_attribute_path</code> JMESPath expression should be a valid Grafana role, for example, <code>None</code>, <code>Viewer</code>, <code>Editor</code> or <code>Admin</code>.</p>
+<p>To assign the role to a specific organization include the <code>X-Grafana-Org-Id</code> header along with your JWT when making API requests to Grafana.
+To learn more about the header, please refer to the <a href="../../../../developers/http_api/#x-grafana-org-id-header">documentation</a>.</p>
+<h3 id="configure-role-mapping">Configure role mapping</h3>
+<p>Unless <code>skip_org_role_sync</code> option is enabled, the user&rsquo;s role will be set to the role retrieved from the JWT.</p>
+<p>The user&rsquo;s role is retrieved using a <a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression from the <code>role_attribute_path</code> configuration option.
+To map the server administrator role, use the <code>allow_assign_grafana_admin</code> configuration option.</p>
+<p>If no valid role is found, the user is assigned the role specified by <a href="../../../configure-grafana/#auto_assign_org_role">the <code>auto_assign_org_role</code> option</a>.
+You can disable this default role assignment by setting <code>role_attribute_strict = true</code>. This setting denies user access if no role or an invalid role is returned after evaluating the <code>role_attribute_path</code> and the <code>org_mapping</code> expressions.</p>
+<p>You can use the <code>org_attribute_path</code> and <code>org_mapping</code> configuration options to assign the user to organizations and specify their role. For more information, refer to <a href="#org-roles-mapping-example">Org roles mapping example</a>. If both org role mapping (<code>org_mapping</code>) and the regular role mapping (<code>role_attribute_path</code>) are specified, then the user will get the highest of the two mapped roles.</p>
+<p>To ease configuration of a proper JMESPath expression, go to <a href="http://jmespath.org/" target="_blank" rel="noopener noreferrer">JMESPath</a> to test and evaluate expressions with custom payloads.</p>
+<p><strong>Basic example:</strong></p>
+<p>In the following example user will get <code>Editor</code> as role when authenticating. The value of the property <code>role</code> will be the resulting role if the role is a proper Grafana role, i.e. <code>None</code>, <code>Viewer</code>, <code>Editor</code> or <code>Admin</code>.</p>
+<p>Payload:</p>
+<pre>{
+    ...
+    &#34;role&#34;: &#34;Editor&#34;,
+    ...
+}</pre>
+<p>Configuration:</p>
+<pre>role_attribute_path = role</pre>
+<p><strong>Advanced example:</strong></p>
+<p>In the following example user will get <code>Admin</code> as role when authenticating since it has a role <code>admin</code>. If a user has a role <code>editor</code> it will get <code>Editor</code> as role, otherwise <code>Viewer</code>.</p>
+<p>Payload:</p>
+<pre>{
+    ...
+    &#34;info&#34;: {
+        ...
+        &#34;roles&#34;: [
+            &#34;engineer&#34;,
+            &#34;admin&#34;,
+        ],
+        ...
+    },
+    ...
+}</pre>
+<p>Configuration:</p>
+<pre>role_attribute_path = contains(info.roles[*], &#39;admin&#39;) &amp;&amp; &#39;Admin&#39; || contains(info.roles[*], &#39;editor&#39;) &amp;&amp; &#39;Editor&#39; || &#39;Viewer&#39;</pre>
+<p><strong>Org roles mapping example</strong></p>
+<p>In the following example, the , the user has been granted the role of a <code>Viewer</code> in the <code>org_foo</code> organization, and the role of an <code>Editor</code> in the <code>org_bar</code> and <code>org_baz</code> organizations.</p>
+<p>Payload:</p>
+<pre>{
+    ...
+    &#34;info&#34;: {
+        ...
+        &#34;orgs&#34;: [
+            &#34;engineer&#34;,
+            &#34;admin&#34;,
+        ],
+        ...
+    },
+    ...
+}</pre>
+<p>Configuration:</p>
+<pre>org_attribute_path = info.orgs
+org_mapping = engineer:org_foo:Viewer admin:org_bar:Editor *:org_baz:Editor</pre>
+<h3 id="grafana-admin-role">Grafana Admin Role</h3>
+<p>If the <code>role_attribute_path</code> property returns a <code>GrafanaAdmin</code> role, Grafana Admin is not assigned by default, instead the <code>Admin</code> role is assigned. To allow <code>Grafana Admin</code> role to be assigned set <code>allow_assign_grafana_admin = true</code>.</p>
+<h3 id="skip-organization-role-mapping">Skip organization role mapping</h3>
+<p>To skip the assignment of roles and permissions upon login via JWT and handle them via other mechanisms like the user interface, we can skip the organization role synchronization with the following configuration.</p>
+<pre>[auth.jwt]
+# ...
+
+skip_org_role_sync = true</pre>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<h1 id="azure-monitor-template-variables">Azure Monitor template variables</h1>
+<p>Instead of hard-coding details such as resource group or resource name values in metric queries, you can use variables.
+This helps you create more interactive, dynamic, and reusable dashboards.
+Grafana refers to such variables as template variables.</p>
+<p>For an introduction to templating and template variables, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a> documentation.</p>
+<h2 id="use-query-variables">Use query variables</h2>
+<p>You can specify these Azure Monitor data source queries in the Variable edit view&rsquo;s <strong>Query Type</strong> field.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Subscriptions</strong></td>
+          <td>Returns subscriptions.</td>
+      </tr>
+      <tr>
+          <td><strong>Resource Groups</strong></td>
+          <td>Returns resource groups for a specified subscription. Supports multi-value.</td>
+      </tr>
+      <tr>
+          <td><strong>Namespaces</strong></td>
+          <td>Returns metric namespaces for the specified subscription. If a resource group is provided, only the namespaces within that group are returned.</td>
+      </tr>
+      <tr>
+          <td><strong>Regions</strong></td>
+          <td>Returns regions for the specified subscription</td>
+      </tr>
+      <tr>
+          <td><strong>Resource Names</strong></td>
+          <td>Returns a list of resource names for a specified subscription, resource group and namespace. Supports multi-value.</td>
+      </tr>
+      <tr>
+          <td><strong>Metric Names</strong></td>
+          <td>Returns a list of metric names for a resource.</td>
+      </tr>
+      <tr>
+          <td><strong>Workspaces</strong></td>
+          <td>Returns a list of workspaces for the specified subscription.</td>
+      </tr>
+      <tr>
+          <td><strong>Logs</strong></td>
+          <td>Use a KQL query to return values.</td>
+      </tr>
+      <tr>
+          <td><strong>Custom Namespaces</strong></td>
+          <td>Returns metric namespaces for the specified resource.</td>
+      </tr>
+      <tr>
+          <td><strong>Custom Metric Names</strong></td>
+          <td>Returns a list of custom metric names for the specified resource.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Custom metrics cannot be emitted against a subscription or resource group. Select resources only when you need to retrieve custom metric namespaces or custom metric names associated with a specific resource.</p></blockquote></div>
+
+<p>You can use any Log Analytics Kusto Query Language (KQL) query that returns a single list of values in the <code>Query</code> field.
+For example:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Query</th>
+          <th>List of values returned</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>workspace(&quot;myWorkspace&quot;).Heartbeat | distinct Computer</code></td>
+          <td>Virtual machines</td>
+      </tr>
+      <tr>
+          <td><code>workspace(&quot;$workspace&quot;).Heartbeat | distinct Computer</code></td>
+          <td>Virtual machines with template variable</td>
+      </tr>
+      <tr>
+          <td><code>workspace(&quot;$workspace&quot;).Perf | distinct ObjectName</code></td>
+          <td>Objects from the Perf table</td>
+      </tr>
+      <tr>
+          <td><code>workspace(&quot;$workspace&quot;).Perf | where ObjectName == &quot;$object&quot;</code> <code>| distinct CounterName</code></td>
+          <td>Metric names from the Perf table</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="query-variable-example">Query variable example</h3>
+<p>This time series query uses query variables:</p>
+<pre>Perf
+| where ObjectName == &#34;$object&#34; and CounterName == &#34;$metric&#34;
+| where TimeGenerated &gt;= $__timeFrom() and TimeGenerated &lt;= $__timeTo()
+| where  $__contains(Computer, $computer)
+| summarize avg(CounterValue) by bin(TimeGenerated, $__interval), Computer
+| order by TimeGenerated asc</pre>
+<h3 id="multi-value-variables">Multi-value variables</h3>
+<p>It is possible to select multiple values for <strong>Resource Groups</strong> and <strong>Resource Names</strong> and use a single metrics query pointing to those values as long as they:</p>
+<ul>
+<li>Belong to the same subscription.</li>
+<li>Are in the same region.</li>
+<li>Are of the same type (namespace).</li>
+</ul>
+<p>Also, note that if a template variable pointing to multiple resource groups or names is used in another template variable as a parameter (e.g. to retrieve metric names), only the first value will be used. This means that the combination of the first resource group and name selected should be valid.</p>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<h1 id="manage-resources-with-grafana-cli">Manage resources with Grafana CLI</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p><code>grafanactl</code> is under active development. Command-line flags and subcommands described here may change. This document outlines the target workflows the tool is expected to support.</p></blockquote></div>
+
+<h2 id="migrate-resources-between-environments">Migrate resources between environments</h2>
+<p>Using the <code>config</code> and <code>resources</code> options, you can migrate Grafana resources from one environment to another, for example, from a development to production environment.
+The <code>config</code> option lets you define the configuration context.
+Using <code>resources</code> with <code>pull</code>, <code>push</code>, and <code>serve</code> lets you pull a defined resource from one instance, and push that resource to another instance. <code>Serve</code> allows you to preview changes locally before pushing.</p>
+<p>Use these steps to migrate resources between environments:</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Currently, the <code>serve</code> command only works with dashboards.</p></blockquote></div>
+
+<p>Use these steps to migrate resources between environments:</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Resources are pulled and pushed from the <code>./resources</code> directory by default.
+This directory can be configured with the <code>--directory</code>/<code>-d</code> flags.</p></blockquote></div>
+
+<ol>
+<li>
+<p>Make changes to dashboards and other resources using the Grafana UI in your <strong>development instance</strong>.</p>
+</li>
+<li>
+<p>Pull those resources from the development environment to your local machine:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;dev&#34;
+grafanactl resources pull -d ./resources/ -o yaml  # or json</pre>
+</li>
+<li>
+<p>(Optional) Preview the resources locally before pushing:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;prod&#34;
+grafanactl resources serve -d ./resources/</pre>
+</li>
+<li>
+<p>Switch to the <strong>production instance</strong> and push the resources:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;prod&#34;
+grafanactl resources push -d ./resources/</pre>
+</li>
+</ol>
+<h2 id="back-up-grafana-resources">Back up Grafana resources</h2>
+<p>This workflow helps you back up all Grafana resources from one instance and later restore them. This is useful to replicate a configuration or perform disaster recovery.</p>
+<ol>
+<li>
+<p>Use <code>grafanactl</code> to pull all resources from your target environment:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;prod&#34;
+grafanactl resources pull -d ./resources/ -o yaml  # or json</pre>
+</li>
+<li>
+<p>Save the exported resources to version control or cloud storage.</p>
+</li>
+</ol>
+<h2 id="restore-grafana-resources">Restore Grafana resources</h2>
+<ol>
+<li>
+<p>(Optional) Preview the backup locally:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;prod&#34;
+grafanactl resources serve -d ./resources/</pre>
+</li>
+<li>
+<p>To restore the resources later or restore them on another instance, push the saved resources:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;prod&#34;
+grafanactl resources push -d ./resources/</pre>
+</li>
+</ol>
+<h2 id="manage-dashboards-as-code">Manage dashboards as code</h2>
+<p>With this workflow, you can define and manage dashboards as code, saving them to a version control system like Git. This is useful for teams that want to maintain a history of changes, collaborate on dashboard design, and ensure consistency across environments.</p>
+<ol>
+<li>
+<p>Use a dashboard generation script (for example, with the <a href="https://github.com/grafana/grafana-foundation-sdk" target="_blank" rel="noopener noreferrer">Foundation SDK</a>). You can find an example implementation in the Grafana as code <a href="https://github.com/grafana/dashboards-as-code-workshop/tree/main/part-one-golang" target="_blank" rel="noopener noreferrer">hands-on lab repository</a>.</p>
+</li>
+<li>
+<p>Serve and preview the output of the dashboard generator locally:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;dev&#34;
+grafanactl resources serve --script &#39;go run scripts/generate-dashboard.go&#39; --watch &#39;./scripts&#39;</pre>
+</li>
+<li>
+<p>When the output looks correct, generate dashboard manifest files:</p>
+<pre>go run scripts/generate-dashboard.go --generate-resource-manifests --output &#39;./resources&#39;</pre>
+</li>
+<li>
+<p>Push the generated resources to your Grafana instance:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;dev&#34;
+grafanactl resources push -d ./resources/</pre>
+</li>
+</ol>
+<h2 id="explore-and-modify-resources-from-the-terminal">Explore and modify resources from the terminal</h2>
+<p>This section describes how to use the Grafana CLI to interact with Grafana resources directly from your terminal. These commands allow you to browse, inspect, update, and delete resources without using the Grafana UI. This approach is useful for advanced users who want to manage resources more efficiently or integrate Grafana operations into automated workflows.</p>
+<h3 id="find-and-delete-dashboards-using-invalid-data-sources">Find and delete dashboards using invalid data sources</h3>
+<p>Use this workflow to identify dashboards that reference incorrect or outdated data sources, and remove them if necessary.</p>
+<ol>
+<li>
+<p>Set the context to the appropriate environment:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;prod&#34;</pre>
+</li>
+<li>
+<p>Find dashboards using specific data sources:</p>
+<pre>grafanactl resources get dashboards -ojson | jq &#39;.items | map({ uid: .metadata.name, datasources: .spec.panels | map(.datasource.uid)  })&#39;
+[
+   {
+      &#34;uid&#34;: &#34;important-production-dashboard&#34;,
+      &#34;datasources&#34;: [
+         &#34;mimir-prod&#34;
+      ]
+   },
+   {
+      &#34;uid&#34;: &#34;test-dashboard-from-dev&#34;,
+      &#34;datasources&#34;: [
+         &#34;mimir-prod&#34;,
+         &#34;mimir-dev&#34;
+      ]
+   },
+   {
+      &#34;uid&#34;: &#34;test-dashboard-from-stg&#34;,
+      &#34;datasources&#34;: [
+         &#34;mimir-prod&#34;,
+         &#34;mimir-stg&#34;,
+         &#34;mimir-dev&#34;
+      ]
+   }
+]</pre>
+<p>This command lists dashboard UIDs along with the data source UIDs used in their panels. You can then identify the dashboards that are using invalid or unexpected data sources.</p>
+</li>
+<li>
+<p>Delete the identified dashboards directly:</p>
+<pre>grafanactl resources delete dashboards/test-dashboard-from-stg,test-dashboard-from-dev
+✔ 2 resources deleted, 0 errors</pre>
+</li>
+</ol>
+<h3 id="find-and-deprecate-dashboards-using-the-old-api-version">Find and deprecate dashboards using the old API version</h3>
+<p>Use this workflow to locate dashboards using a deprecated API version and mark them accordingly.</p>
+<ol>
+<li>
+<p>Set the context to the appropriate environment:</p>
+<pre>grafanactl config use-context YOUR_CONTEXT  # for example &#34;prod&#34;</pre>
+</li>
+<li>
+<p>List all available resources types and versions:</p>
+<pre>grafanactl resources list</pre>
+<p>This command returns a list of resources, including their versions, types, and quantities:</p>
+<pre>GROUP                               VERSION   KIND
+folder.grafana.app                  v1        folder
+dashboard.grafana.app               v1        dashboard
+dashboard.grafana.app               v1        librarypanel
+dashboard.grafana.app               v2        dashboard
+dashboard.grafana.app               v2        librarypanel
+playlist.grafana.app                v1        playlist</pre>
+</li>
+<li>
+<p>Find dashboards that are still using an old API version:</p>
+<pre>grafanactl resources get dashboards.v1.dashboard.grafana.app</pre>
+<p>This command returns a table displaying the resource type, resource name, and associated namespace:</p>
+<pre>KIND         NAME                                   NAMESPACE
+dashboards   really-old-dashboard                   default</pre>
+</li>
+<li>
+<p>Edit each of these dashboards to add a <code>deprecated</code> tag:</p>
+<pre>grafanactl resources edit dashboards.v1.dashboard.grafana.app/really-old-dashboard -p &#39;{&#34;spec&#34;:{&#34;tags&#34;:[&#34;deprecated&#34;]}}&#39;</pre>
+</li>
+</ol>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>You can get help by using the <code>grafanactl --help</code> command.</p></blockquote></div>
+

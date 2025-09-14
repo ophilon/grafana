@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<h1 id="manage-dashboards">Manage dashboards</h1>
+<p>On the <strong>Dashboards</strong> page, you can perform dashboard management tasks such as:</p>
+<ul>
+<li><a href="#browse-dashboards">Browsing</a> and <a href="#create-a-dashboard-folder">creating</a> dashboard folders</li>
+<li><a href="#folder-permissions">Managing folder permissions</a></li>
+<li><a href="#set-up-generative-ai-features-for-dashboards">Adding generative AI features to dashboards</a></li>
+</ul>
+<p>For more information about creating dashboards, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">Build dashboards</a>.</p>
+<h2 id="browse-dashboards">Browse dashboards</h2>
+<p>On the <strong>Dashboards</strong> page, you can browse and manage folders and dashboards. This includes the options to:</p>
+<ul>
+<li>Create folders and dashboards.</li>
+<li>Move dashboards between folders.</li>
+<li>Delete multiple dashboards and folders.</li>
+<li>Navigate to a folder.</li>
+<li>Manage folder permissions. For more information, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#dashboard-permissions">Dashboard permissions</a>.</li>
+</ul>
+<p>The page lists all the dashboards to which you have access, grouped into folders. Dashboards without a folder are displayed at the top level alongside folders.</p>
+<h3 id="shared-with-me">Shared with me</h3>
+<p>The <strong>Shared with me</strong> section displays folders and dashboards that are directly shared with you. These folders and dashboards aren&rsquo;t shown in the main list because you don&rsquo;t have access to one or more of their parent folders.</p>
+<p>If you have permission to view all folders, you won&rsquo;t see a <strong>Shared with me</strong>.</p>
+<h2 id="create-a-dashboard-folder">Create a dashboard folder</h2>
+<p>Folders help you organize and group dashboards, which is useful when you have many dashboards or multiple teams using the same Grafana instance.</p>
+<blockquote>
+<p><strong>Before you begin:</strong> Ensure you have organization Editor permissions or greater to create root level folders or Edit or Admin access to a parent folder to create subfolders. For more information about dashboard permissions, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#dashboard-permissions">Dashboard permissions</a>.</p></blockquote>
+<p><strong>To create a dashboard folder:</strong></p>
+<ol>
+<li>
+<p>Click <strong>Dashboards</strong> in the primary menu.</p>
+</li>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>On the <strong>Dashboards</strong> page, click <strong>New</strong> and select <strong>New folder</strong> in the drop-down.</li>
+<li>Click an existing folder and on the folder’s page, click <strong>New</strong> and select <strong>New folder</strong> in the drop-down.</li>
+</ul>
+</li>
+<li>
+<p>Enter a unique name.</p>
+<p>Folder names can&rsquo;t include underscores (_) or percentage signs (%), as it interferes with the search functionality.</p>
+<p>Also, alerts can&rsquo;t be placed in folders with slashes (\ /) in the name. If you want to place alerts in the folder, don&rsquo;t use slashes in the folder name.</p>
+</li>
+<li>
+<p>Click <strong>Create</strong></p>
+</li>
+</ol>
+<p>When you nest folders, you can do so up to four levels deep.</p>
+<p>When you save a dashboard, you can optionally select a folder to save the dashboard in.</p>
+<p><strong>To edit the name of a folder:</strong></p>
+<ol>
+<li>Click <strong>Dashboards</strong> in the primary menu.</li>
+<li>Navigate to the folder by selecting it in the list, or searching for it.</li>
+<li>Click the <strong>Edit title</strong> icon (pencil) in the header and update the name of the folder.</li>
+</ol>
+<p>The new folder name is automatically saved.</p>
+<h3 id="folder-permissions">Folder permissions</h3>
+<p>You can assign permissions to a folder. Dashboards in the folder inherit any permissions that you&rsquo;ve assigned to the folder. You can assign permissions to organization roles, teams, and users.</p>
+<p><strong>To modify permissions for a folder:</strong></p>
+<ol>
+<li>Click <strong>Dashboards</strong> in the primary menu.</li>
+<li>Navigate to the folder by selecting it in the list, or searching for it.</li>
+<li>On the folder&rsquo;s page, click <strong>Folder actions</strong> and select <strong>Manage permissions</strong> in the drop-down.</li>
+<li>Update the permissions as desired.</li>
+</ol>
+<p>Changes are saved automatically.</p>
+<p>For more information about dashboard permissions, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#dashboard-permissions">Dashboard permissions</a>.</p>
+<h2 id="set-up-generative-ai-features-for-dashboards">Set up generative AI features for dashboards</h2>
+<p>You can use generative AI to help you with the following tasks:</p>
+<ul>
+<li><strong>Generate panel and dashboard titles and descriptions</strong>: Generate a title and description based on the data you’ve added for your panel or dashboard. This is useful when you want to visualize your data quickly and don’t want to spend time coming up with a title or description.</li>
+<li><strong>Generate dashboard save changes summary</strong>: Generate a summary of the changes you’ve made to a dashboard when you save it. This is great for easily tracking the history of a dashboard.</li>
+</ul>
+<p>To access these features, install and configure Grafana’s Large Language Model (LLM) app plugin. For more information, refer to the <a href="/docs/grafana-cloud/alerting-and-irm/machine-learning/configure/llm-plugin/">Grafana LLM plugin documentation</a>.</p>
+<p>When enabled, the <strong>✨ Auto generate</strong> option displays next to the <strong>Title</strong> and <strong>Description</strong> fields in your panels and dashboards, or when you press the <strong>Save</strong> button.</p>

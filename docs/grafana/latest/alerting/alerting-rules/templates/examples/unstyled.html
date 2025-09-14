@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<h1 id="labels-and-annotations-template-examples">Labels and annotations template examples</h1>
+<p>Templating allows you to add dynamic data from queries to alert labels and annotations. Dynamic data enhances alert context, making it easier for responders to quickly assess and address the issue.</p>
+<p>This page provides common examples for templating labels and annotations. For more information on templating, refer to:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">Template annotations and labels</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/">Annotation and label template reference</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/language/">Alerting template language</a></li>
+</ul>
+<h2 id="annotation-example">Annotation example</h2>
+<p>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#annotations">Annotations</a> add extra details to alert instances and are often used to provide helpful information for identifying the issue and guiding the response.</p>
+<p>A common use case for annotations is to display the specific query value or threshold that triggered the alert.</p>
+<p>For example, you can display the query value from the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#values"><code>$values</code></a> variable to inform about the CPU value that triggered the alert.</p>
+<pre>CPU usage has exceeded 80% ({{ $values.A.value }}) for the last 5 minutes.</pre>
+<p>Alternatively, you can use the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/language/#functions"><code>index()</code></a> function to retrieve the query value as follows.</p>
+<pre>CPU usage has exceeded 80% ({{ index $values &#34;A&#34; }}) for the last 5 minutes.</pre>
+<pre>CPU usage has exceeded 80% (81.2345) for the last 5 minutes.</pre>
+<h3 id="include-labels-for-extra-details">Include labels for extra details</h3>
+<p>To provide additional context, you can include labels from the query using the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#labels"><code>$labels</code></a> variable.</p>
+<p>For instance, the previous case could also include the affected <code>instance</code>.</p>
+<pre>CPU usage for {{ $labels.instance }} has exceeded 80% ({{ $values.A.Value }}) for the last 5 minutes.</pre>
+<pre>CPU usage for Instance 1 has exceeded 80% (81.2345) for the last 5 minutes.</pre>
+<p>You can incorporate any labels returned by the query into the template. For instance, the following template includes information about the environment and region where the alert occurred.</p>
+<pre>Alert triggered in {{ $labels.environment }} on {{ $labels.region }} region.</pre>
+<pre>Alert triggered in production on AMER region.</pre>
+<h3 id="print-a-range-query">Print a range query</h3>
+<p>To print the value of an instant query you can print its Ref ID using the <code>index</code> function or the <code>$values</code> variable:</p>
+<pre>{{ $values.A.Value }}</pre>
+<p>For range queries, reduce them from a time series to an instant vector using a reduce expression. You can then print the result by referencing its Ref ID. For example, if the reduce expression averages <code>A</code> with the Ref ID <code>B</code>, you would then print <code>$values.B</code>:</p>
+<pre>{{ $values.B.Value }}</pre>
+<h3 id="humanize-the-value-of-a-query">Humanize the value of a query</h3>
+<p>To print the humanized value of an instant query, use the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#humanize"><code>humanize</code></a> function:</p>
+<pre>{{ humanize $values.A.Value }}</pre>
+<p>Alternatively:</p>
+<pre>{{ humanize (index $values &#34;A&#34;).Value }}</pre>
+<pre>554.9</pre>
+<p>To print the value of an instant query as a percentage, use the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#humanizepercentage"><code>humanizePercentage</code></a> function:</p>
+<pre>{{ humanizePercentage $values.A.Value }}</pre>
+<pre>10%</pre>
+<p>For additional functions to display or format data, refer to:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#functions">Annotation and label template functions</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/language/#functions">Template language functions</a></li>
+</ul>
+<h2 id="label-example">Label example</h2>
+<p>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#labels">Labels</a> determine how alerts are routed and managed, ensuring that notifications reach the right teams at the right time. If the labels returned by your queries don’t fully capture the necessary context, you can create a new label and sets its value based on query data.</p>
+<h3 id="based-on-query-value">Based on query value</h3>
+<p>Here’s an example of creating a <code>severity</code> label based on a query value:</p>
+<pre>{{- if (gt $values.A.Value 90.0) -}}critical
+{{- else if (gt $values.A.Value 80.0) -}}high
+{{- else if (gt $values.A.Value 60.0) -}}medium
+{{- else -}}low
+{{- end -}}</pre>
+<p>In this example, the <code>severity</code> label is determined by the query value:</p>
+<ul>
+<li><code>critical</code> for values above 90,</li>
+<li><code>high</code> for values above 80,</li>
+<li><code>medium</code> for values above 60,</li>
+<li>and <code>low</code> for anything below.</li>
+</ul>
+<p>You can then use the <code>severity</code> label to control how alerts are handled. For instance, you could send <code>critical</code> alerts immediately, while routing <code>low</code> severity alerts to a team for further investigation.</p>
+<blockquote>
+<p><strong>Note:</strong> An alert instance is uniquely identified by its set of labels.</p>
+<ul>
+<li>Avoid displaying query values in labels, as this can create numerous alert instances—one for each distinct label set. Instead, use annotations for query values.</li>
+<li>If a templated label&rsquo;s value changes, it maps to a different alert instance, and the previous instance is considered <strong>stale</strong>. Learn all the details in this 
+    <a href="/docs/grafana/latest/alerting/best-practices/dynamic-labels/">example using dynamic labels</a>.</li>
+</ul></blockquote>
+<h3 id="based-on-query-label">Based on query label</h3>
+<p>You can use labels to differentiate alerts coming from various environments (e.g., production, staging, dev). For example, you may want to add a label that sets the environment based on the instance’s label. Here’s how you can template it:</p>
+<pre>{{- if eq $labels.instance &#34;prod-server-1&#34; -}}
+production
+{{- else if eq $labels.instance &#34;staging-server-1&#34; -}}
+staging
+{{- else -}}
+development
+{{- end -}}</pre>
+<p>This would print:</p>
+<ul>
+<li>For instance <code>prod-server-1</code>, the label would be <code>production</code>.</li>
+<li>For <code>staging-server-1</code>, the label would be <code>staging</code>.</li>
+<li>All other instances would be labeled <code>development</code>.</li>
+</ul>
+<p>To make this template more flexible, you can use a regular expression that matches the instance name with the instance name prefix using the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/#match"><code>match()</code></a> function:</p>
+<pre>{{- if match &#34;^prod-server-.*&#34; $labels.instance -}}
+production
+{{- else if match &#34;^staging-server-.*&#34; $labels.instance -}}
+staging
+{{- else -}}
+development
+{{- end -}}</pre>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Legacy Alerting templates</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h2 id="legacy-alerting-templates">Legacy Alerting templates</h2>
+<p>For users working with Grafana&rsquo;s legacy alerting system, templates can still be utilized to extract useful information from alert conditions. However, it&rsquo;s important to note that you cannot use <code>$labels</code> to print labels from the query if you are using classic conditions, and must use <code>$values</code> instead. The reason for this is classic conditions discard these labels to enforce uni-dimensional behavior (at most one alert per alert rule). If classic conditions didn&rsquo;t discard these labels, then queries that returned many time series would cause alerts to flap between firing and resolved constantly as the labels would change every time the alert rule was evaluated.</p>
+<p>Instead, the <code>$values</code> variable contains the reduced values of all time series for all conditions that are firing. For example, if you have an alert rule with a query A that returns two time series, and a classic condition B with two conditions, then <code>$values</code> would contain <code>B0</code>, <code>B1</code>, <code>B2</code> and <code>B3</code>. If the classic condition B had just one condition, then <code>$values</code> would contain just <code>B0</code> and <code>B1</code>.</p>
+<h4 id="print-all-labels-from-a-classic-condition">Print all labels from a classic condition</h4>
+<p>To print all labels of all firing time series use the following template (make sure to replace <code>B</code> in the regular expression with the Ref ID of the classic condition if it&rsquo;s different):</p>
+<pre>{{ range $k, $v := $values -}}
+{{ if (match &#34;B[0-9]+&#34; $k) -}}
+{{ $k }}: {{ $v.Labels }}{{ end }}
+{{ end }}</pre>
+<p>For example, a classic condition for two time series exceeding a single condition would print:</p>
+<pre>B0: instance=server1
+B1: instance=server2</pre>
+<p>If the classic condition has two or more conditions, and a time series exceeds multiple conditions at the same time, then its labels will be duplicated for each condition that is exceeded:</p>
+<pre>B0: instance=server1
+B1: instance=server2
+B2: instance=server1
+B3: instance=server2</pre>
+<p>If you need to print unique labels you should consider changing your alert rules from uni-dimensional to multi-dimensional instead. You can do this by replacing your classic condition with reduce and math expressions.</p>
+<h4 id="print-all-values-from-a-classic-condition">Print all values from a classic condition</h4>
+<p>To print all values from a classic condition take the previous example and replace <code>$v.Labels</code> with <code>$v.Value</code>:</p>
+<pre>{{ range $k, $v := $values -}}
+{{ if (match &#34;B[0-9]+&#34; $k) -}}
+{{ $k }}: {{ $v.Value }}{{ end }}
+{{ end }}</pre>
+<p>For example, a classic condition for two time series exceeding a single condition would print:</p>
+<pre>B0: 81.2345
+B1: 84.5678</pre>
+<p>If the classic condition has two or more conditions, and a time series exceeds multiple conditions at the same time, then <code>$values</code> will contain the values of all conditions:</p>
+<pre>B0: 81.2345
+B1: 92.3456
+B2: 84.5678
+B3: 95.6789</pre>
+
+    </div>
+  </div>
+</div>
+

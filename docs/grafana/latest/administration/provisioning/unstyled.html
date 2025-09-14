@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<h1 id="provision-grafana">Provision Grafana</h1>
+<p>Grafana has an active provisioning system that uses configuration files. You can define data sources and dashboards using files that can be version controlled, making GitOps more natural.</p>
+<h2 id="configuration-file">Configuration file</h2>
+<p>Refer to <a href="../../setup-grafana/configure-grafana/">Configuration</a> for more information on what you can configure in <code>grafana.ini</code>.</p>
+<h3 id="configuration-file-locations">Configuration file locations</h3>
+<p>Grafana reads its default configuration from <code>&lt;WORKING DIRECTORY&gt;/conf/defaults.ini</code>.</p>
+<p>Grafana reads custom configuration from <code>&lt;WORKING DIRECTORY&gt;/conf/custom.ini</code>. You can override the custom configuration path with the <code>--config</code> option.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The Deb and RPM packages install the configuration file at <code>/etc/grafana/grafana.ini</code>.
+The Grafana init.d script sets the <code>--config</code> option to that path.</p></blockquote></div>
+
+<h2 id="use-environment-variables">Use environment variables</h2>
+<p>You can use environment variable lookups in all provisioning configuration. The syntax for an environment variable is <code>$ENV_VAR_NAME</code> or <code>${ENV_VAR_NAME}</code>.</p>
+<p>The following applies:</p>
+<ul>
+<li>Only use environment variables for configuration values. Do not use it for keys or bigger parts of the configuration file structure.</li>
+<li>Use environment variables in dashboard provisioning configuration, but not in the dashboard definition files themselves.</li>
+</ul>
+<p>The following example looks up the data source URL port, user, and password using environment variables:</p>
+<pre>datasources:
+  - name: Graphite
+    url: http://localhost:$PORT
+    user: $USER
+    secureJsonData:
+      password: $PASSWORD</pre>
+<h3 id="use-of-the-special-character-">Use of the special character <code>$</code></h3>
+<p>Grafana&rsquo;s provisioning system considers any set of characters after an <code>$</code> a variable name.</p>
+<p>During the replacement process, Grafana:</p>
+<ol>
+<li>Replaces the variables that use the syntax <code>${ENV_VAR_NAME}</code>.</li>
+<li>Next, it replaces the variables that use the syntax <code>$ENV_VAR_NAME</code>.</li>
+</ol>
+<p>If your data contains the character <code>$</code>, for example <code>Pa$sw0rd</code>, and you&rsquo;re using an environment variable, use the <code>$ENV_VAR_NAME</code> syntax to avoid double expansion. If you use the <code>${ENV_VAR_NAME}</code> syntax, the value will be first replaced as <code>Pa$sw0rd</code> and then again as <code>Pa</code> since <code>$sw0rd</code> will be considered another variable.</p>
+<p>If you want to use the literal value <code>Pa$sw0rd</code>, you need to escape the character <code>$</code> using a double <code>$$</code>: <code>Pa$$sw0rd</code>.</p>
+<p>The following example shows how variables are replaced, assuming <code>PASSWORD=Pa$sw0rd</code>:</p>
+<pre>datasources:
+  - name: Graphite
+    secureJsonData:
+      password1: $PASSWORD # Resolved as Pa$sw0rd
+      password2: ${PASSWORD} # Resolved as Pa
+      password3: &#39;Pa$$sw0rd&#39; # Resolved as Pa$sw0rd
+      password4: &#39;Pa$sw0rd&#39; # Resolved as Pa</pre>
+<h2 id="configuration-management-tools">Configuration management tools</h2>
+<p>The Grafana community maintains libraries for many popular configuration management tools.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Tool</th>
+          <th>Project</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Puppet</td>
+          <td><a href="https://forge.puppet.com/puppet/grafana" target="_blank" rel="noopener noreferrer">https://forge.puppet.com/puppet/grafana</a></td>
+      </tr>
+      <tr>
+          <td>Ansible</td>
+          <td><a href="https://github.com/grafana/grafana-ansible-collection" target="_blank" rel="noopener noreferrer">https://github.com/grafana/grafana-ansible-collection</a></td>
+      </tr>
+      <tr>
+          <td>Chef</td>
+          <td><a href="https://github.com/sous-chefs/chef-grafana" target="_blank" rel="noopener noreferrer">https://github.com/sous-chefs/chef-grafana</a></td>
+      </tr>
+      <tr>
+          <td>Saltstack</td>
+          <td><a href="https://github.com/salt-formulas/salt-formula-grafana" target="_blank" rel="noopener noreferrer">https://github.com/salt-formulas/salt-formula-grafana</a></td>
+      </tr>
+      <tr>
+          <td>Jsonnet</td>
+          <td><a href="https://github.com/grafana/grafonnet-lib/" target="_blank" rel="noopener noreferrer">https://github.com/grafana/grafonnet-lib/</a>)</td>
+      </tr>
+      <tr>
+          <td>NixOS</td>
+          <td><a href="https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/monitoring/grafana.nix" target="_blank" rel="noopener noreferrer"><code>services.grafana.provision</code> module</a></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="data-sources">Data sources</h2>
+<p>You can manage data sources in Grafana by adding YAML configuration files in the <a href="../../setup-grafana/configure-grafana/#provisioning"><code>provisioning/datasources</code></a> directory.
+Each configuration file contains a list of data sources, under the <code>datasources</code> key, to add or update during startup.
+If the data source already exists, Grafana reconfigures it to match the provisioned configuration file.</p>
+<p>You can also list data sources to automatically delete, using the key <code>deleteDatasources</code>.
+Grafana deletes the data sources listed in <code>deleteDatasources</code> <em>before</em> adding or updating those in the <code>datasources</code> list.</p>
+<p>You can configure Grafana to automatically delete provisioned data sources when they&rsquo;re removed from the provisioning file.
+To do so, add <code>prune: true</code> to the root of your data source provisioning file.
+With this configuration, Grafana also removes the provisioned data sources if you remove the provisioning file entirely.</p>
+<h3 id="run-multiple-grafana-instances">Run multiple Grafana instances</h3>
+<p>If you run multiple instances of Grafana, add a version number to each data source in the configuration and increase it when you update the configuration.
+Grafana only updates data sources with the same or lower version number than the one set in the configuration file.
+This prevents old configurations from overwriting newer ones if you have different versions of the <code>datasource.yaml</code> file that don&rsquo;t define version numbers, and then restart instances at the same time.</p>
+<h3 id="example-data-source-configuration-file">Example data source configuration file</h3>
+<p>This example provisions a <a href="../../datasources/graphite/">Graphite data source</a>:</p>
+<pre># Configuration file version
+apiVersion: 1
+
+# List of data sources to delete from the database.
+deleteDatasources:
+  - name: Graphite
+    orgId: 1
+
+# Mark provisioned data sources for deletion if they are no longer in a provisioning file.
+# It takes no effect if data sources are already listed in the deleteDatasources section.
+prune: true
+
+# List of data sources to insert/update depending on what&#39;s
+# available in the database.
+datasources:
+  # &lt;string, required&gt; Sets the name you use to refer to
+  # the data source in panels and queries.
+  - name: Graphite
+    # &lt;string, required&gt; Sets the data source type.
+    type: graphite
+    # &lt;string, required&gt; Sets the access mode, either
+    # proxy or direct (Server or Browser in the UI).
+    # Some data sources are incompatible with any setting
+    # but proxy (Server).
+    access: proxy
+    # &lt;int&gt; Sets the organization id. Defaults to orgId 1.
+    orgId: 1
+    # &lt;string&gt; Sets a custom UID to reference this
+    # data source in other parts of the configuration.
+    # If not specified, Grafana generates one.
+    uid: my_unique_uid
+    # &lt;string&gt; Sets the data source&#39;s URL, including the
+    # port.
+    url: http://localhost:8080
+    # &lt;string&gt; Sets the database user, if necessary.
+    user:
+    # &lt;string&gt; Sets the database name, if necessary.
+    database:
+    # &lt;bool&gt; Enables basic authorization.
+    basicAuth:
+    # &lt;string&gt; Sets the basic authorization username.
+    basicAuthUser:
+    # &lt;bool&gt; Enables credential headers.
+    withCredentials:
+    # &lt;bool&gt; Toggles whether the data source is pre-selected
+    # for new panels. You can set only one default
+    # data source per organization.
+    isDefault:
+    # &lt;map&gt; Fields to convert to JSON and store in jsonData.
+    jsonData:
+      # &lt;string&gt; Defines the Graphite service&#39;s version.
+      graphiteVersion: &#39;1.1&#39;
+      # &lt;bool&gt; Enables TLS authentication using a client
+      # certificate configured in secureJsonData.
+      tlsAuth: true
+      # &lt;bool&gt; Enables TLS authentication using a CA
+      # certificate.
+      tlsAuthWithCACert: true
+    # &lt;map&gt; Fields to encrypt before storing in jsonData.
+    secureJsonData:
+      # &lt;string&gt; Defines the CA cert, client cert, and
+      # client key for encrypted authentication.
+      tlsCACert: &#39;...&#39;
+      tlsClientCert: &#39;...&#39;
+      tlsClientKey: &#39;...&#39;
+      # &lt;string&gt; Sets the database password, if necessary.
+      password:
+      # &lt;string&gt; Sets the basic authorization password.
+      basicAuthPassword:
+    # &lt;int&gt; Sets the version. Used to compare versions when
+    # updating. Ignored when creating a new data source.
+    version: 1
+    # &lt;bool&gt; Allows users to edit data sources from the
+    # Grafana UI.
+    editable: false</pre>
+<p>For provisioning examples of specific data sources, refer to that <a href="../../datasources/">data source&rsquo;s documentation</a>.</p>
+<h4 id="json-data">JSON data</h4>
+<p>Not all data sources have the same configuration settings, only the most common ones are fields in the data source provisioning file.
+To provision the rest of a data source&rsquo;s settings, include them as JSON in the <code>jsonData</code> field.</p>
+<p>Common settings in the <a href="../../datasources/#built-in-core-data-sources">built-in core data sources</a> include:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Data source</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>tlsAuth</code></td>
+          <td>boolean</td>
+          <td><em>HTTP*</em>, MySQL</td>
+          <td>Enable TLS authentication using client cert configured in secure JSON data</td>
+      </tr>
+      <tr>
+          <td><code>tlsAuthWithCACert</code></td>
+          <td>boolean</td>
+          <td><em>HTTP*</em>, MySQL, PostgreSQL</td>
+          <td>Enable TLS authentication using CA cert</td>
+      </tr>
+      <tr>
+          <td><code>tlsSkipVerify</code></td>
+          <td>boolean</td>
+          <td><em>HTTP*</em>, MySQL, PostgreSQL, MSSQL</td>
+          <td>Controls whether a client verifies the server&rsquo;s certificate chain and host name.</td>
+      </tr>
+      <tr>
+          <td><code>serverName</code></td>
+          <td>string</td>
+          <td><em>HTTP*</em>, MSSQL</td>
+          <td>Optional. Controls the server name used for certificate common name/subject alternative name verification. Defaults to using the data source URL.</td>
+      </tr>
+      <tr>
+          <td><code>timeout</code></td>
+          <td>string</td>
+          <td><em>HTTP*</em></td>
+          <td>Request timeout in seconds. Overrides <code>dataproxy.timeout</code> option</td>
+      </tr>
+      <tr>
+          <td><code>graphiteVersion</code></td>
+          <td>string</td>
+          <td>Graphite</td>
+          <td>Graphite version</td>
+      </tr>
+      <tr>
+          <td><code>timeInterval</code></td>
+          <td>string</td>
+          <td>Prometheus, Elasticsearch, InfluxDB, MySQL, PostgreSQL and MSSQL</td>
+          <td>Lowest interval/step value that should be used for this data source.</td>
+      </tr>
+      <tr>
+          <td><code>httpMode</code></td>
+          <td>string</td>
+          <td>InfluxDB</td>
+          <td>HTTP Method. &lsquo;GET&rsquo;, &lsquo;POST&rsquo;, defaults to GET</td>
+      </tr>
+      <tr>
+          <td><code>maxSeries</code></td>
+          <td>number</td>
+          <td>InfluxDB</td>
+          <td>Max number of series/tables that Grafana processes</td>
+      </tr>
+      <tr>
+          <td><code>httpMethod</code></td>
+          <td>string</td>
+          <td>Prometheus</td>
+          <td>HTTP Method. &lsquo;GET&rsquo;, &lsquo;POST&rsquo;, defaults to POST</td>
+      </tr>
+      <tr>
+          <td><code>customQueryParameters</code></td>
+          <td>string</td>
+          <td>Prometheus</td>
+          <td>Query parameters to add, as a URL-encoded string.</td>
+      </tr>
+      <tr>
+          <td><code>manageAlerts</code></td>
+          <td>boolean</td>
+          <td>Prometheus and Loki</td>
+          <td>Manage alerts via Alerting UI</td>
+      </tr>
+      <tr>
+          <td><code>alertmanagerUid</code></td>
+          <td>string</td>
+          <td>Prometheus and Loki</td>
+          <td>UID of Alertmanager that manages Alert for this data source.</td>
+      </tr>
+      <tr>
+          <td><code>timeField</code></td>
+          <td>string</td>
+          <td>Elasticsearch</td>
+          <td>Which field that should be used as timestamp</td>
+      </tr>
+      <tr>
+          <td><code>interval</code></td>
+          <td>string</td>
+          <td>Elasticsearch</td>
+          <td>Index date time format. nil(No Pattern), &lsquo;Hourly&rsquo;, &lsquo;Daily&rsquo;, &lsquo;Weekly&rsquo;, &lsquo;Monthly&rsquo; or &lsquo;Yearly&rsquo;</td>
+      </tr>
+      <tr>
+          <td><code>logMessageField</code></td>
+          <td>string</td>
+          <td>Elasticsearch</td>
+          <td>Which field should be used as the log message</td>
+      </tr>
+      <tr>
+          <td><code>logLevelField</code></td>
+          <td>string</td>
+          <td>Elasticsearch</td>
+          <td>Which field should be used to indicate the priority of the log message</td>
+      </tr>
+      <tr>
+          <td><code>maxConcurrentShardRequests</code></td>
+          <td>number</td>
+          <td>Elasticsearch</td>
+          <td>Maximum number of concurrent shard requests that each sub-search request executes per node</td>
+      </tr>
+      <tr>
+          <td><code>sigV4Auth</code></td>
+          <td>boolean</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>Enable usage of SigV4</td>
+      </tr>
+      <tr>
+          <td><code>sigV4AuthType</code></td>
+          <td>string</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>SigV4 auth provider. default/credentials/keys</td>
+      </tr>
+      <tr>
+          <td><code>sigV4ExternalId</code></td>
+          <td>string</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>Optional SigV4 External ID</td>
+      </tr>
+      <tr>
+          <td><code>sigV4AssumeRoleArn</code></td>
+          <td>string</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>Optional SigV4 ARN role to assume</td>
+      </tr>
+      <tr>
+          <td><code>sigV4Region</code></td>
+          <td>string</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>SigV4 AWS region</td>
+      </tr>
+      <tr>
+          <td><code>sigV4Profile</code></td>
+          <td>string</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>Optional SigV4 credentials profile</td>
+      </tr>
+      <tr>
+          <td><code>authType</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Auth provider. default/credentials/keys</td>
+      </tr>
+      <tr>
+          <td><code>externalId</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Optional External ID</td>
+      </tr>
+      <tr>
+          <td><code>assumeRoleArn</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Optional ARN role to assume</td>
+      </tr>
+      <tr>
+          <td><code>defaultRegion</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Optional default AWS region</td>
+      </tr>
+      <tr>
+          <td><code>customMetricsNamespaces</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Namespaces of Custom Metrics</td>
+      </tr>
+      <tr>
+          <td><code>profile</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Optional credentials profile</td>
+      </tr>
+      <tr>
+          <td><code>tsdbVersion</code></td>
+          <td>string</td>
+          <td>OpenTSDB</td>
+          <td>Version</td>
+      </tr>
+      <tr>
+          <td><code>tsdbResolution</code></td>
+          <td>string</td>
+          <td>OpenTSDB</td>
+          <td>Resolution</td>
+      </tr>
+      <tr>
+          <td><code>sslmode</code></td>
+          <td>string</td>
+          <td>PostgreSQL</td>
+          <td>SSL mode. &lsquo;disable&rsquo;, &lsquo;require&rsquo;, &lsquo;verify-ca&rsquo; or &lsquo;verify-full&rsquo;</td>
+      </tr>
+      <tr>
+          <td><code>tlsConfigurationMethod</code></td>
+          <td>string</td>
+          <td>PostgreSQL</td>
+          <td>SSL certificate configuration, either by &lsquo;file-path&rsquo; or &lsquo;file-content&rsquo;</td>
+      </tr>
+      <tr>
+          <td><code>sslRootCertFile</code></td>
+          <td>string</td>
+          <td>PostgreSQL, MSSQL</td>
+          <td>SSL server root certificate file, must be readable by the Grafana user</td>
+      </tr>
+      <tr>
+          <td><code>sslCertFile</code></td>
+          <td>string</td>
+          <td>PostgreSQL</td>
+          <td>SSL client certificate file, must be readable by the Grafana user</td>
+      </tr>
+      <tr>
+          <td><code>sslKeyFile</code></td>
+          <td>string</td>
+          <td>PostgreSQL</td>
+          <td>SSL client key file, must be readable by <em>only</em> the Grafana user</td>
+      </tr>
+      <tr>
+          <td><code>encrypt</code></td>
+          <td>string</td>
+          <td>MSSQL</td>
+          <td>Determines SSL encryption handling. Options include: <code>disable</code> - data sent between client and server is not encrypted; <code>false</code> - data sent between client and server is not encrypted beyond the login packet; <code>true</code> - data sent between client and server is encrypted. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td><code>postgresVersion</code></td>
+          <td>number</td>
+          <td>PostgreSQL</td>
+          <td>Postgres version as a number (903/904/905/906/1000) meaning v9.3, v9.4, &hellip;, v10</td>
+      </tr>
+      <tr>
+          <td><code>timescaledb</code></td>
+          <td>boolean</td>
+          <td>PostgreSQL</td>
+          <td>Enable usage of TimescaleDB extension</td>
+      </tr>
+      <tr>
+          <td><code>maxOpenConns</code></td>
+          <td>number</td>
+          <td>MySQL, PostgreSQL and MSSQL</td>
+          <td>Maximum number of open connections to the database (Grafana v5.4+)</td>
+      </tr>
+      <tr>
+          <td><code>maxIdleConns</code></td>
+          <td>number</td>
+          <td>MySQL, PostgreSQL and MSSQL</td>
+          <td>Maximum number of connections in the idle connection pool (Grafana v5.4+)</td>
+      </tr>
+      <tr>
+          <td><code>connMaxLifetime</code></td>
+          <td>number</td>
+          <td>MySQL, PostgreSQL and MSSQL</td>
+          <td>Maximum amount of time in seconds a connection may be reused (Grafana v5.4+)</td>
+      </tr>
+      <tr>
+          <td><code>keepCookies</code></td>
+          <td>array</td>
+          <td><em>HTTP*</em></td>
+          <td>Cookies that needs to be passed along while communicating with data sources</td>
+      </tr>
+      <tr>
+          <td><code>prometheusVersion</code></td>
+          <td>string</td>
+          <td>Prometheus</td>
+          <td>The version of the Prometheus data source, such as <code>2.37.0</code>, <code>2.24.0</code></td>
+      </tr>
+      <tr>
+          <td><code>prometheusType</code></td>
+          <td>string</td>
+          <td>Prometheus</td>
+          <td>Prometheus database type. Options are <code>Prometheus</code>, <code>Cortex</code>, <code>Mimir</code> or<code>Thanos</code>.</td>
+      </tr>
+      <tr>
+          <td><code>cacheLevel</code></td>
+          <td>string</td>
+          <td>Prometheus</td>
+          <td>Determines the duration of the browser cache. Valid values include: <code>Low</code>, <code>Medium</code>, <code>High</code>, and <code>None</code>.</td>
+      </tr>
+      <tr>
+          <td><code>incrementalQuerying</code></td>
+          <td>string</td>
+          <td>Prometheus</td>
+          <td>Experimental: Turn on incremental querying to enhance dashboard reload performance with slow data sources</td>
+      </tr>
+      <tr>
+          <td><code>incrementalQueryOverlapWindow</code></td>
+          <td>string</td>
+          <td>Prometheus</td>
+          <td>Experimental: Configure incremental query overlap window. Requires a valid duration string, for example, <code>180s</code> or <code>15m</code> Default value is <code>10m</code> (10 minutes).</td>
+      </tr>
+      <tr>
+          <td><code>disableRecordingRules</code></td>
+          <td>boolean</td>
+          <td>Prometheus</td>
+          <td>Experimental: Turn off Prometheus recording rules</td>
+      </tr>
+      <tr>
+          <td><code>implementation</code></td>
+          <td>string</td>
+          <td>Alertmanager</td>
+          <td>The implementation of the Alertmanager data source, such as <code>prometheus</code>, <code>cortex</code> or <code>mimir</code></td>
+      </tr>
+      <tr>
+          <td><code>handleGrafanaManagedAlerts</code></td>
+          <td>boolean</td>
+          <td>Alertmanager</td>
+          <td>When enabled, Grafana-managed alerts are sent to this Alertmanager</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Data sources tagged with <em>HTTP*</em> communicate using the HTTP protocol, which includes all core data source plugins except MySQL, PostgreSQL, and MSSQL.</p></blockquote></div>
+
+<p>For examples of specific data sources&rsquo; JSON data, refer to that <a href="../../datasources/">data source&rsquo;s documentation</a>.</p>
+<h4 id="secure-json-data">Secure JSON data</h4>
+<p>Secure JSON data is a map of settings encrypted with a <a href="../../setup-grafana/configure-grafana/#secret_key">secret key</a>.
+The encryption hides the JSON data from the users of Grafana.
+You should use secure JSON data to store TLS certificates and passwords for data source HTTP requests.
+All of these settings are optional.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Data source</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>tlsCACert</code></td>
+          <td>string</td>
+          <td><em>HTTP*</em>, MySQL, PostgreSQL</td>
+          <td>CA cert for out going requests</td>
+      </tr>
+      <tr>
+          <td><code>tlsClientCert</code></td>
+          <td>string</td>
+          <td><em>HTTP*</em>, MySQL, PostgreSQL</td>
+          <td>TLS Client cert for outgoing requests</td>
+      </tr>
+      <tr>
+          <td><code>tlsClientKey</code></td>
+          <td>string</td>
+          <td><em>HTTP*</em>, MySQL, PostgreSQL</td>
+          <td>TLS Client key for outgoing requests</td>
+      </tr>
+      <tr>
+          <td><code>password</code></td>
+          <td>string</td>
+          <td><em>HTTP*</em>, MySQL, PostgreSQL, MSSQL</td>
+          <td>password</td>
+      </tr>
+      <tr>
+          <td><code>basicAuthPassword</code></td>
+          <td>string</td>
+          <td><em>HTTP*</em></td>
+          <td>password for basic authentication</td>
+      </tr>
+      <tr>
+          <td><code>accessKey</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Access key for connecting to Amazon CloudWatch</td>
+      </tr>
+      <tr>
+          <td><code>secretKey</code></td>
+          <td>string</td>
+          <td>Amazon CloudWatch</td>
+          <td>Secret key for connecting to Amazon CloudWatch</td>
+      </tr>
+      <tr>
+          <td><code>sigV4AccessKey</code></td>
+          <td>string</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>SigV4 access key. Required when using keys auth provider</td>
+      </tr>
+      <tr>
+          <td><code>sigV4SecretKey</code></td>
+          <td>string</td>
+          <td>Elasticsearch and Prometheus</td>
+          <td>SigV4 secret key. Required when using keys auth provider</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <em>HTTP*</em> tag denotes data sources that communicate using the HTTP protocol, including all core data source plugins except MySQL, PostgreSQL, and MSSQL.</p></blockquote></div>
+
+<h4 id="custom-http-headers-for-data-sources">Custom HTTP headers for data sources</h4>
+<p>You can add HTTP headers to all requests sent to data sources managed by Grafana provisioning
+Configure the header name in the <code>jsonData</code> field and the header value in <code>secureJsonData</code>.
+The following example sets the <code>HeaderName</code> header to have the value <code>HeaderValue</code> and the <code>Authorization</code> header to have the value <code>Bearer XXXXXXXXX</code>:</p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Graphite
+    jsonData:
+      httpHeaderName1: &#39;HeaderName&#39;
+      httpHeaderName2: &#39;Authorization&#39;
+    secureJsonData:
+      httpHeaderValue1: &#39;HeaderValue&#39;
+      httpHeaderValue2: &#39;Bearer XXXXXXXXX&#39;</pre>
+<h2 id="plugins">Plugins</h2>
+<p>You can manage plugin applications in Grafana by adding one or more YAML configuration files in the <a href="../../setup-grafana/configure-grafana/#provisioning"><code>provisioning/plugins</code></a> directory.
+Each configuration file contains a list of <code>apps</code> that Grafana configures during start up.
+Grafana configures each app to use the configuration in the file.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature enables you to provision plugin configurations, not the plugins themselves.
+You must have already installed the plugin to use plugin configuration provisioning.</p></blockquote></div>
+
+<h3 id="example-plugin-configuration-file">Example plugin configuration file</h3>
+<pre>apiVersion: 1
+
+apps:
+  # &lt;string&gt; the type of app, plugin identifier. Required
+  - type: raintank-worldping-app
+    # &lt;int&gt; Org ID. Default to 1, unless org_name is specified
+    org_id: 1
+    # &lt;string&gt; Org name. Overrides org_id unless org_id not specified
+    org_name: Main Org.
+    # &lt;bool&gt; disable the app. Default to false.
+    disabled: false
+    # &lt;map&gt; fields that will be converted to json and stored in jsonData. Custom per app.
+    jsonData:
+      # key/value pairs of string to object
+      key: value
+    # &lt;map&gt; fields that will be converted to json, encrypted and stored in secureJsonData. Custom per app.
+    secureJsonData:
+      # key/value pairs of string to string
+      key: value</pre>
+<h2 id="dashboards">Dashboards</h2>
+<p>You can manage dashboards in Grafana by adding one or more YAML configuration files in the <a href="../../setup-grafana/configure-grafana/#dashboards"><code>provisioning/dashboards</code></a> directory.
+Each configuration file contains a list of <code>providers</code> that Grafana uses to load dashboards from the local filesystem.</p>
+<h3 id="example-dashboard-configuration-file">Example dashboard configuration file</h3>
+<pre>apiVersion: 1
+
+providers:
+  # &lt;string&gt; an unique provider name. Required
+  - name: &#39;a unique provider name&#39;
+    # &lt;int&gt; Org id. Default to 1
+    orgId: 1
+    # &lt;string&gt; name of the dashboard folder.
+    folder: &#39;&#39;
+    # &lt;string&gt; folder UID. will be automatically generated if not specified
+    folderUid: &#39;&#39;
+    # &lt;string&gt; provider type. Default to &#39;file&#39;
+    type: file
+    # &lt;bool&gt; disable dashboard deletion
+    disableDeletion: false
+    # &lt;int&gt; how often Grafana will scan for changed dashboards
+    updateIntervalSeconds: 10
+    # &lt;bool&gt; allow updating provisioned dashboards from the UI
+    allowUiUpdates: false
+    options:
+      # &lt;string, required&gt; path to dashboard files on disk. Required when using the &#39;file&#39; type
+      path: /var/lib/grafana/dashboards
+      # &lt;bool&gt; use folder names from filesystem to create folders in Grafana
+      foldersFromFilesStructure: true</pre>
+<p>When Grafana starts, it updates or creates all dashboards found in the configured path.
+It later polls that path every <code>updateIntervalSeconds</code> for updates to the dashboard files and updates its database.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana installs dashboards at the root level if you don&rsquo;t set the <code>folder</code> field.</p></blockquote></div>
+
+<h4 id="make-changes-to-a-provisioned-dashboard">Make changes to a provisioned dashboard</h4>
+<p>You can make changes to a provisioned dashboard in the Grafana UI but its not possible to automatically save the changes back to the provisioning source.
+If <code>allowUiUpdates</code> is set to <code>true</code> and you make changes to a provisioned dashboard, when you save the dashboard, Grafana persists the changes to its database.</p>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>If you save a provisioned dashboard in the UI and then later update the provisioning source, Grafana always overwrites the database dashboard with the one from the provisioning file.
+Grafana ignores the <code>version</code> property in the JSON file, even if it&rsquo;s lower than the dashboard in the database.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>If you save a provisioned dashboard in the UI and remove the provisioning source, Grafana deletes the dashboard in the database unless you have set the option <code>disableDeletion</code> to <code>true</code>.</p></blockquote></div>
+
+<p>If you set <code>allowUiUpdates</code> to <code>false</code>, you can&rsquo;t save changes to a provisioned dashboard.
+When you try to save changes to a provisioned dashboard, Grafana brings up a <em>Cannot save provisioned dashboard</em> dialog box.</p>
+<p>Grafana offers options to export the JSON definition of a dashboard.
+Use either <strong>Copy JSON to Clipboard</strong> or <strong>Save JSON to file</strong> to sync your dashboard changes back to the provisioning source.
+Grafana removes the <code>id</code> field from the dashboard JSON to help the provisioning workflow.</p>
+<p>The following screenshot illustrates this behavior.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v51/provisioning_cannot_save_dashboard.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v51/provisioning_cannot_save_dashboard.png"data-srcset="/static/img/docs/v51/provisioning_cannot_save_dashboard.png?w=320 320w, /static/img/docs/v51/provisioning_cannot_save_dashboard.png?w=550 550w, /static/img/docs/v51/provisioning_cannot_save_dashboard.png?w=750 750w, /static/img/docs/v51/provisioning_cannot_save_dashboard.png?w=900 900w, /static/img/docs/v51/provisioning_cannot_save_dashboard.png?w=1040 1040w, /static/img/docs/v51/provisioning_cannot_save_dashboard.png?w=1240 1240w, /static/img/docs/v51/provisioning_cannot_save_dashboard.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="746"height="505"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v51/provisioning_cannot_save_dashboard.png"
+            alt=""width="746"height="505"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h3 id="reusable-dashboard-urls">Reusable dashboard URLs</h3>
+<p>If the dashboard in the JSON file contains an <a href="../../dashboards/build-dashboards/view-dashboard-json-model/">UID</a>, Grafana updates that the dashboard with that UID in the database.
+This lets you migrate dashboards between Grafana instances and keep consistent dashboard URLs.
+When Grafana starts, it creates or updates all dashboards available in the configured folders.</p>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>You can overwrite existing dashboards with provisioning.</p>
+<p>Be careful not to reuse the same <code>title</code> multiple times within a folder or <code>uid</code> within the same Grafana instance to avoid inconsistent behavior.</p></blockquote></div>
+
+<h3 id="provision-folders-structure-from-filesystem-to-grafana">Provision folders structure from filesystem to Grafana</h3>
+<p>If you already store your dashboards using folders in a Git repository or on a filesystem, and want to have the same folder names in the Grafana menu, use <code>foldersFromFilesStructure</code> option.</p>
+<p>For example, to replicate the following dashboards structure from the filesystem to Grafana:</p>
+<pre>/etc/dashboards
+├── /server
+│   ├── /common_dashboard.json
+│   └── /network_dashboard.json
+└── /application
+    ├── /requests_dashboard.json
+    └── /resources_dashboard.json</pre>
+<p>use the following provisioning configuration file:</p>
+<pre>apiVersion: 1
+
+providers:
+  - name: dashboards
+    type: file
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/dashboards
+      foldersFromFilesStructure: true</pre>
+<p>Grafana creates the <code>server</code> and <code>application</code> folders in the UI.</p>
+<p>To use <code>foldersFromFilesStructure</code>, you must unset the <code>folder</code> and <code>folderUid</code> options.</p>
+<p>To provision dashboards to the root level, store them in the root of your <code>path</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature doesn&rsquo;t let you create nested folder structures, where you have folders within folders.</p></blockquote></div>
+
+<h2 id="alerting">Alerting</h2>
+<p>For information on provisioning Grafana Alerting, refer to <a href="../../alerting/set-up/provision-alerting-resources/">Provision Grafana Alerting resources</a>.</p>
+<h3 id="supported-settings">Supported settings</h3>
+<p>The following sections detail the supported settings and secure settings for each alert notification type.
+In the provisioning YAML use <code>settings</code> for settings and <code>secure_settings</code> for secure settings.
+Grafana encrypts secure settings in the database.</p>
+<h4 id="alert-notification-pushover">Alert notification <code>pushover</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>apiToken</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>userKey</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>device</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>priority</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>okPriority</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>retry</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>expire</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>sound</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>okSound</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-discord">Alert notification <code>discord</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>avatar_url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>content</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>use_discord_username</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-slack">Alert notification <code>slack</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>recipient</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>username</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>icon_emoji</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>icon_url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>uploadImage</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>mentionUsers</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>mentionGroups</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>mentionChannel</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>token</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>color</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-victorops">Alert notification <code>victorops</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+      </tr>
+      <tr>
+          <td><code>autoResolve</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-kafka">Alert notification <code>kafka</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>kafkaRestProxy</code></td>
+      </tr>
+      <tr>
+          <td><code>kafkaTopic</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-line">Alert notification <code>LINE</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>token</code></td>
+          <td>yes</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-mqtt">Alert notification <code>MQTT</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>brokerUrl</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>clientId</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>topic</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>messageFormat</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>username</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>password</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>retain</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>qos</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>tlsConfig</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="tls-configuration">TLS configuration</h5>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>insecureSkipVerify</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>clientCertificate</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>clientKey</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>caCertificate</code></td>
+          <td>yes</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-pagerduty">Alert notification <code>pagerduty</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>integrationKey</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>autoResolve</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-sensu">Alert notification <code>sensu</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>source</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>handler</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>username</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>password</code></td>
+          <td>yes</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-sensugo">Alert notification <code>sensugo</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>apikey</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>entity</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>check</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>handler</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>namespace</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-prometheus-alertmanager">Alert notification <code>prometheus-alertmanager</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>basicAuthUser</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>basicAuthPassword</code></td>
+          <td>yes</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-teams">Alert notification <code>teams</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-dingding">Alert notification <code>dingding</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-email">Alert notification <code>email</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>singleEmail</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>addresses</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-hipchat">Alert notification <code>hipchat</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>apikey</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>roomid</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-opsgenie">Alert notification <code>opsgenie</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>apiKey</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>apiUrl</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>autoClose</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>overridePriority</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>sendTagsAs</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-telegram">Alert notification <code>telegram</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>bottoken</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>chatid</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>uploadImage</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-threema">Alert notification <code>threema</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>gateway_id</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>recipient_id</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>api_secret</code></td>
+          <td>yes</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-webhook">Alert notification <code>webhook</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>http_method</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>username</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>password</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>tls_config</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>hmac_config</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="tls-configuration-1">TLS configuration</h5>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>insecureSkipVerify</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>clientCertificate</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>clientKey</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>caCertificate</code></td>
+          <td>yes</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="hmac-signature-configuration">HMAC signature configuration</h5>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>secret</code></td>
+          <td>yes</td>
+      </tr>
+      <tr>
+          <td><code>header</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>timestampHeader</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-googlechat">Alert notification <code>googlechat</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>url</code></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="alert-notification-cisco-webex-teams">Alert notification <code>Cisco Webex Teams</code></h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Secure setting</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>message</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>room_id</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>api_url</code></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>bot_token</code></td>
+          <td>yes</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="grafana-enterprise">Grafana Enterprise</h2>
+<p>Grafana Enterprise supports:</p>
+<ul>
+<li><a href="../roles-and-permissions/access-control/rbac-grafana-provisioning/">Provisioning role-based access control with Grafana</a></li>
+<li><a href="../roles-and-permissions/access-control/rbac-terraform-provisioning/">Provisioning role-based access control with Terraform</a></li>
+</ul>

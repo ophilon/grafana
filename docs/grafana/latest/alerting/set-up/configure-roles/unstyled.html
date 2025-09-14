@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<h1 id="configure-roles-and-permissions">Configure roles and permissions</h1>
+<p>A user is any individual who can log in to Grafana. Each user is associated with a role that includes permissions. Permissions determine the tasks a user can perform in the system. For example, the Admin role includes permissions for an administrator to create and delete users.</p>
+<p>For more information, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#organization-roles">Organization roles</a>.</p>
+<h2 id="manage-access-using-roles">Manage access using roles</h2>
+<p>For Grafana OSS, there are three roles: Admin, Editor, and Viewer.</p>
+<p>Details of the roles and the access they provide for Grafana Alerting are below.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Role</th>
+          <th>Access</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Admin</td>
+          <td>Write access to alert rules, notification resources (notification API, contact points, templates, time intervals, notification policies, and silences), and provisioning.</td>
+      </tr>
+      <tr>
+          <td>Editor</td>
+          <td>Write access to alert rules, notification resources (notification API, contact points, templates, time intervals, notification policies, and silences), and provisioning.</td>
+      </tr>
+      <tr>
+          <td>Viewer</td>
+          <td>Read access to alert rules, notification resources (notification API, contact points, templates, time intervals, notification policies, and silences).</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="assign-roles">Assign roles</h2>
+<p>To assign roles, admins need to complete the following steps.</p>
+<ol>
+<li>Navigate to <strong>Administration</strong> &gt; <strong>Users and access</strong> &gt; <strong>Users, Teams, or Service Accounts</strong>.</li>
+<li>Search for the user, team or service account you want to add a role for.</li>
+<li>Add the role you want to assign.</li>
+</ol>
+<h2 id="manage-access-using-folder-permissions">Manage access using folder permissions</h2>
+<p>You can extend the access provided by a role to alert rules and rule-specific silences by assigning permissions to individual folders.</p>
+<p>This allows different users, teams, or service accounts to have customized access to modify or silence alert rules in specific folders.</p>
+<p>Refer to the following table for details on the additional access provided by folder permissions:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Folder permission</th>
+          <th>Additional Access</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>View</td>
+          <td>No additional access: all permissions already contained in Viewer role.</td>
+      </tr>
+      <tr>
+          <td>Edit</td>
+          <td>Write access to alert rules and their rule-specific silences <em>only</em> in the given folder and subfolders.</td>
+      </tr>
+      <tr>
+          <td>Admin</td>
+          <td>Same additional access as Edit.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can&rsquo;t use folders to customize access to notification resources.</p></blockquote></div>
+
+<p>To manage folder permissions, complete the following steps.</p>
+<ol>
+<li>In the left-side menu, click <strong>Dashboards</strong>.</li>
+<li>Hover your mouse cursor over a folder and click <strong>Go to folder</strong>.</li>
+<li>Click <strong>Manage permissions</strong> from the Folder actions menu.</li>
+<li>Update or add permissions as required.</li>
+</ol>
+<h2 id="manage-access-using-contact-point-permissions">Manage access using contact point permissions</h2>
+<h3 id="before-you-begin">Before you begin</h3>
+<p>Extend or limit the access provided by a role to contact points by assigning permissions to individual contact point.</p>
+<p>This allows different users, teams, or service accounts to have customized access to read or modify specific contact points.</p>
+<p>Refer to the following table for details on the additional access provided by contact point permissions.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Folder permission</th>
+          <th>Additional Access</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>View</td>
+          <td>View and export contact point as well as select it on the Alert rule edit page</td>
+      </tr>
+      <tr>
+          <td>Edit</td>
+          <td>Update or delete the contact point</td>
+      </tr>
+      <tr>
+          <td>Admin</td>
+          <td>Same additional access as Edit and manage permissions for the contact point. User should have additional permissions to read users and teams.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="steps">Steps</h3>
+<p>To contact point permissions, complete the following steps.</p>
+<ol>
+<li>In the left-side menu, click <strong>Contact points</strong>.</li>
+<li>Hover your mouse cursor over a contact point and click <strong>More</strong>.</li>
+<li>Click <strong>Manage permissions</strong> from the actions menu.</li>
+<li>Update or add permissions as required.</li>
+</ol>

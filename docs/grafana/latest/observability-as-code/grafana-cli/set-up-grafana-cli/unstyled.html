@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<h1 id="set-up-grafana-cli">Set up Grafana CLI</h1>
+<p>You can configure Grafana CLI in two ways: using environment variables or through a configuration file.</p>
+<ul>
+<li><strong>Environment variables</strong> are ideal for CI environments and support a single context. A full list of supported environment variables is available in the <a href="https://github.com/grafana/grafanactl/blob/main/docs/reference/environment-variables/index.md#environment-variables-reference" target="_blank" rel="noopener noreferrer">reference documentation</a>.</li>
+<li><strong>Configuration files</strong> can manage multiple contexts, making it easier to switch between different Grafana instances.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Configuration items may change depending on your set-up. For example, use <code>org-id</code> for Grafana on-prem, but use <code>stack-id</code> for Grafana Cloud.</p></blockquote></div>
+
+<h2 id="configure-grafana-cli-with-environment-variables">Configure Grafana CLI with environment variables</h2>
+<p>Grafana CLI communicates with Grafana via its REST API, which requires authentication credentials.</p>
+<p>At a minimum, set the URL of your Grafana instance and the organization ID:</p>
+<pre>GRAFANA_SERVER=&#39;http://localhost:3000&#39; GRAFANA_ORG_ID=&#39;1&#39; grafanactl config check</pre>
+<p>Depending on your authentication method, you may also need to set:</p>
+<ul>
+<li>A <a href="https://github.com/grafana/grafanactl/blob/main/docs/reference/environment-variables/index.md#grafana_token" target="_blank" rel="noopener noreferrer">token</a> for a <a href="/docs/grafana/latest/administration/service-accounts/">Grafana service account</a> (recommended)</li>
+<li>A <a href="https://github.com/grafana/grafanactl/blob/main/docs/reference/environment-variables/index.md#grafana_user" target="_blank" rel="noopener noreferrer">username</a> and <a href="https://github.com/grafana/grafanactl/blob/main/docs/reference/environment-variables/index.md#grafana_password" target="_blank" rel="noopener noreferrer">password</a> for basic authentication</li>
+</ul>
+<p>To persist your configuration, consider <a href="#use-configuration-contexts">creating a context</a>.</p>
+<h3 id="use-configuration-contexts">Use configuration contexts</h3>
+<p>Contexts allow you to easily switch between multiple Grafana instances.</p>
+<p>By default, the CLI uses a context named <code>default</code>. To configure it use:</p>
+<pre>grafanactl config set contexts.default.grafana.server http://localhost:3000
+grafanactl config set contexts.default.grafana.org-id 1
+
+# Authenticate with a service account token
+grafanactl config set contexts.default.grafana.token service-account-token
+
+# Or use basic authentication
+grafanactl config set contexts.default.grafana.user admin
+grafanactl config set contexts.default.grafana.password admin</pre>
+<p>You can define additional contexts in the same way:</p>
+<pre>grafanactl config set contexts.staging.grafana.server https://staging.grafana.example
+grafanactl config set contexts.staging.grafana.org-id 1</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In these examples, <code>default</code> and <code>staging</code> are the names of the contexts.</p></blockquote></div>
+
+<h2 id="configure-grafana-cli-with-configuration-files">Configure Grafana CLI with configuration files</h2>
+<p>Grafana CLI stores its configuration in a YAML file. The CLI determines the configuration file location in the following order:</p>
+<ol>
+<li>If the <code>--config</code> flag is provided, the specified file is used.</li>
+<li>If <code>$XDG_CONFIG_HOME</code> is set:
+<code>$XDG_CONFIG_HOME/grafanactl/config.yaml</code></li>
+<li>If <code>$HOME</code> is set:
+<code>$HOME/.config/grafanactl/config.yaml</code></li>
+<li>If <code>$XDG_CONFIG_DIRS</code> is set:
+<code>$XDG_CONFIG_DIRS/grafanactl/config.yaml</code></li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use <code>grafanactl config check</code> to display the configuration file currently in use.</p></blockquote></div>
+
+<h2 id="useful-commands">Useful commands</h2>
+<p>Check the current configuration:</p>
+<pre>grafanactl config check</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This command is useful to troubleshoot your configuration.</p></blockquote></div>
+
+<p>List all available contexts:</p>
+<pre>grafanactl config list-contexts</pre>
+<p>Switch to a specific context:</p>
+<pre>grafanactl config use-context staging</pre>
+<p>View the full configuration:</p>
+<pre>grafanactl config view</pre>

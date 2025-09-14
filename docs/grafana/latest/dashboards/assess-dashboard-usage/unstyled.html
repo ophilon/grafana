@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<h1 id="assess-dashboard-usage">Assess dashboard usage</h1>
+<p>Usage insights enables you to have a better understanding of how your Grafana instance is used.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.
+Grafana Cloud insights logs include additional fields with their own dashboards.
+Read more in the <a href="/docs/grafana-cloud/account-management/usage-insights/">Grafana Cloud documentation</a>.</p></blockquote></div>
+
+<p>The usage insights feature collects a number of aggregated data and stores them in the database:</p>
+<ul>
+<li>Dashboard views (aggregated and per user)</li>
+<li>Data source errors</li>
+<li>Data source queries</li>
+</ul>
+<p>The aggregated data provides you access to several features:</p>
+<ul>
+<li><a href="#dashboard-and-data-source-insights">Dashboard and data source insights</a></li>
+<li><a href="#presence-indicator">Presence indicator</a></li>
+<li><a href="#sort-dashboards-by-using-insights-data">Sort dashboards by using insights data</a></li>
+<li><a href="#visualize-usage-insights-data">Visualize usage insight data in a dashboard</a></li>
+</ul>
+<p>This feature also generates detailed logs that can be exported to Loki. Refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/export-logs/">Export logs of usage insights</a>.</p>
+<h2 id="dashboard-and-data-source-insights">Dashboard and data source insights</h2>
+<p>For every dashboard and data source, you can access usage information.</p>
+<h3 id="dashboard-insights">Dashboard insights</h3>
+<p>To see dashboard usage information, click the dashboard insights icon in the header.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/screenshot-dashboard-insights-icon-11.2.png"
+  alt="Dashboard insights icon" width="409"
+     height="97"/></p>
+<p>Dashboard insights show the following information:</p>
+<ul>
+<li><strong>Stats:</strong> The number of daily queries and errors for the past 30 days.</li>
+<li><strong>Users &amp; activity:</strong> The daily view count for the last 30 days; last activities on the dashboard and recent users (with a limit of 20).</li>
+</ul>
+<p><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/dashboard_insights_stats.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/dashboard_insights_stats.png"data-srcset="/static/img/docs/enterprise/dashboard_insights_stats.png?w=320 320w, /static/img/docs/enterprise/dashboard_insights_stats.png?w=550 550w, /static/img/docs/enterprise/dashboard_insights_stats.png?w=750 750w, /static/img/docs/enterprise/dashboard_insights_stats.png?w=900 900w, /static/img/docs/enterprise/dashboard_insights_stats.png?w=1040 1040w, /static/img/docs/enterprise/dashboard_insights_stats.png?w=1240 1240w, /static/img/docs/enterprise/dashboard_insights_stats.png?w=1920 1920w"
+          data-sizes="auto"alt="Stats tab"width="959"height="812"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/dashboard_insights_stats.png"
+            alt="Stats tab"width="959"height="812"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/dashboard_insights_users.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/dashboard_insights_users.png"data-srcset="/static/img/docs/enterprise/dashboard_insights_users.png?w=320 320w, /static/img/docs/enterprise/dashboard_insights_users.png?w=550 550w, /static/img/docs/enterprise/dashboard_insights_users.png?w=750 750w, /static/img/docs/enterprise/dashboard_insights_users.png?w=900 900w, /static/img/docs/enterprise/dashboard_insights_users.png?w=1040 1040w, /static/img/docs/enterprise/dashboard_insights_users.png?w=1240 1240w, /static/img/docs/enterprise/dashboard_insights_users.png?w=1920 1920w"
+          data-sizes="auto"alt="Users and activity tab"width="959"height="809"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/dashboard_insights_users.png"
+            alt="Users and activity tab"width="959"height="809"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure></p>
+<p>If 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#public_dashboards">dashboard sharing</a> is enabled, you&rsquo;ll also see a <strong>Shared dashboards</strong> tab in your analytics.</p>
+<h3 id="data-source-insights">Data source insights</h3>
+<p>Data source insights provides information about how a data source has been used in the past 30 days, such as:</p>
+<ul>
+<li>Queries per day</li>
+<li>Errors per day</li>
+<li>Query load time per day (averaged in ms)</li>
+</ul>
+<p>To find data source insights:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the main navigation.</li>
+<li>Under Your connections, click <strong>Data sources</strong>.</li>
+<li>Click a data source.</li>
+<li>Click the <strong>Insights</strong> tab.</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 650px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png"data-srcset="/media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png?w=1920 1920w"
+          data-sizes="auto"alt="Insights tab for a data source"width="955"height="844"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-data-source-insights-9.5.png"
+            alt="Insights tab for a data source"width="955"height="844"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="presence-indicator">Presence indicator</h2>
+<p>When you are signed in and looking at a dashboard, you can know who is looking at the same dashboard as you are via a presence indicator, which displays avatars of users who have recently interacted with the dashboard. The default time frame is 10 minutes. To see the user&rsquo;s name, hover over the user&rsquo;s avatar. The avatars come from <a href="https://gravatar.com" target="_blank" rel="noopener noreferrer">Gravatar</a> based on the user&rsquo;s email.</p>
+<p>When there are more active users on a dashboard than can fit within the presence indicator, click the <strong>+X</strong> icon. Doing so opens <a href="#dashboard-and-data-source-insights">dashboard insights</a>, which contains more details about recent user activity.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/presence_indicators.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/presence_indicators.png"data-srcset="/static/img/docs/enterprise/presence_indicators.png?w=320 320w, /static/img/docs/enterprise/presence_indicators.png?w=550 550w, /static/img/docs/enterprise/presence_indicators.png?w=750 750w, /static/img/docs/enterprise/presence_indicators.png?w=900 900w, /static/img/docs/enterprise/presence_indicators.png?w=1040 1040w, /static/img/docs/enterprise/presence_indicators.png?w=1240 1240w, /static/img/docs/enterprise/presence_indicators.png?w=1920 1920w"
+          data-sizes="auto"alt="Presence indicator icons"width="554"height="69"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/presence_indicators.png"
+            alt="Presence indicator icons"width="554"height="69"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>To change <em>recent</em> to something other than the past 10 minutes, edit the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/">configuration</a> file:</p>
+<pre>[analytics.views]
+
+# Set age for recent active users to 10 minutes
+recent_users_age = 10m</pre>
+<p>To disable the presence indicator, edit the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/">configuration</a> file as follows:</p>
+<pre>[analytics.views]
+
+
+# Disables the presence indicator
+recent_users_age = 0</pre>
+<p>The dashboard won&rsquo;t show any avatars and thus no recent user activity.</p>
+<h2 id="sort-dashboards-by-using-insights-data">Sort dashboards by using insights data</h2>
+<p>In the search view, you can use insights data to help you find most-used, broken, and unused dashboards.</p>
+<p>You can sort the dashboards by:</p>
+<ul>
+<li>Errors total</li>
+<li>Errors 30 days (most and least)</li>
+<li>Views total</li>
+<li>Views 30 days (most and least)</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 650px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png"data-srcset="/media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png?w=1920 1920w"
+          data-sizes="auto"alt="Open list of dashboard sort options"width="957"height="548"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-dashboard-sort-9.5.png"
+            alt="Open list of dashboard sort options"width="957"height="548"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="visualize-usage-insights-data">Visualize usage insights data</h2>
+<p>If you set up your installation to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/export-logs/">export logs of usage insights</a>, there are two dashboards to help you take advantage of this data.</p>
+<ol>
+<li><a href="/grafana/dashboards/13785">Usage Insights overview</a> provides a top-level perspective of user activity.</li>
+<li><a href="/grafana/dashboards/13786">Data source details</a> dashboard provides a view of data source activity and health.</li>
+</ol>
+<p>You can click the previous links to download the respective dashboard JSON, then import into your Grafana installation.</p>

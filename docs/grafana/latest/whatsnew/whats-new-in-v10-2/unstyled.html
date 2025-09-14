@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v102">What’s new in Grafana v10.2</h1>
+<p>Welcome to Grafana 10.2! Read on to learn about changes to dashboards and visualizations, data sources, security and authentication, and more. We’re particularly excited about the addition of generative AI features for dashboards, a new kind of basic role, and improvements to visualization transformations.</p>
+<p>For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>. For the specific steps we recommend when you upgrade to v10.2, check out our 
+    <a href="/docs/grafana/latest/upgrade-guide/upgrade-v10.2/">Upgrade Guide</a>.</p>
+<!-- Template below
+
+> Add on-prem only features here. Features documented in the Cloud What's new will be copied from those release notes.
+
+## Feature
+<!-- Name of contributor -->
+<!-- _[Generally available | Available in private/public preview | Experimental] in Grafana [Open Source, Enterprise]_
+Description. Include an overview of the feature and problem it solves, and where to learn more (like a link to the docs).
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use full URLs for links. When linking to versioned docs, replace the version with the version interpolation placeholder (for example, &lt;GRAFANA_VERSION&gt;, &lt;TEMPO_VERSION&gt;, &lt;MIMIR_VERSION&gt;) so the system can determine the correct set of docs to point to. For example, &ldquo;/docs/grafana/latest/administration/&rdquo; becomes &ldquo;/docs/grafana/&lt;GRAFANA_VERSION&gt;/administration/&rdquo;.</p></blockquote></div>
+
+-->
+<!-- Add an image, GIF or video  as below
+
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards/WidgetVizSplit.png"data-srcset="/media/docs/grafana/dashboards/WidgetVizSplit.png?w=320 320w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=550 550w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=750 750w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=900 900w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1040 1040w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1240 1240w, /media/docs/grafana/dashboards/WidgetVizSplit.png?w=1920 1920w"
+          data-sizes="auto"alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/WidgetVizSplit.png"
+            alt="DESCRIPTIVE CAPTION"width="1255"height="850"title="DESCRIPTIVE CAPTION"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">DESCRIPTIVE CAPTION</figcaption></a></figure>
+
+Learn how to upload images here: /docs/writers-toolkit/write/image-guidelines/#where-to-store-media-assets
+-->
+<h2 id="share-your-dashboard-with-the-world-public-dashboards-are-generally-available">Share your dashboard with the world: Public dashboards are generally available</h2>
+<!-- Thanos Karachalios -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Public dashboards allow you to share your visualizations and insights with a broader audience without the requirement of a login. You can effortlessly use our current sharing model and create a public dashboard URL to share with anyone using the generated public URL link. To learn more, refer to the 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">Public dashboards documentation</a>, as well as the following video demo:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=XHwwRCdxHMg%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="navigate-lengthy-mixed-data-in-explore-with-content-outline">Navigate lengthy, mixed data in Explore with Content Outline</h2>
+<!-- Thanos Karachalios -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Introducing Content Outline in Grafana Explore. It&rsquo;s easy to lose track of your place when you&rsquo;re running complex mixed queries or switching between logs and traces. Content outline is our first step towards seamless navigation from log lines to traces and back to queries, ensuring quicker searches while preserving context. Experience efficient, contextual investigations with this update in Grafana Explore. To learn more, refer to the 
+    <a href="/docs/grafana/latest/explore/#content-outline">Content outline documentation</a>, as well as the following video demo.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=cE7J1-S4ZCQ%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="correlations">Correlations</h2>
+<p>Grafana Correlations is a new public preview feature you can use to establish links from any data source query to any other, carrying forward data like namespace, host, or label values. This is extremely powerful for performing root cause analysis with a diverse set of data sources. For more information, refer to 
+    <a href="/docs/grafana/latest/administration/correlations/">the documentation</a>.</p>
+<h3 id="create-correlations-the-easy-way-in-grafana-explore">Create Correlations the easy way in Grafana Explore</h3>
+<!-- Kristina Durivage -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>Creating correlations has just become easier. Try out our new correlations editor in Explore by selecting the <strong>+ Add &gt; Add correlation</strong> option from the top bar or from the command palette. The editor shows all possible places where you can place data links and guides you through building and testing target queries. For more information, refer to 
+    <a href="/docs/grafana/latest/administration/correlations/">the documentation</a>.</p>
+<p>To try out <strong>Correlations</strong>, enable the <code>correlations</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/#preview-feature-toggles">feature toggle</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/correlations-explore-editor-10-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/correlations-explore-editor-10-2.png"data-srcset="/media/docs/grafana/correlations-explore-editor-10-2.png?w=320 320w, /media/docs/grafana/correlations-explore-editor-10-2.png?w=550 550w, /media/docs/grafana/correlations-explore-editor-10-2.png?w=750 750w, /media/docs/grafana/correlations-explore-editor-10-2.png?w=900 900w, /media/docs/grafana/correlations-explore-editor-10-2.png?w=1040 1040w, /media/docs/grafana/correlations-explore-editor-10-2.png?w=1240 1240w, /media/docs/grafana/correlations-explore-editor-10-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Create a correlation with variables from within Grafana Explore"width="2073"height="1067"title="Create a correlation with variables from within Grafana Explore"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/correlations-explore-editor-10-2.png"
+            alt="Create a correlation with variables from within Grafana Explore"width="2073"height="1067"title="Create a correlation with variables from within Grafana Explore"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Create a correlation with variables from within Grafana Explore</figcaption></a></figure>
+<h3 id="create-correlations-for-provisioned-data-sources">Create correlations for provisioned data sources</h3>
+<!-- Piotr Jamróz -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>In previous versions of Grafana, if a data source was provisioned, the only way to add correlations to it was also with provisioning. Now, that&rsquo;s no longer the case, and you can easily create new correlations mixing both methods—using the <strong>Administration</strong> page or provisioning. For more information, refer to 
+    <a href="/docs/grafana/latest/administration/correlations/">the documentation</a>.</p>
+<p>To try out <strong>Correlations</strong>, enable the <code>correlations</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/#preview-feature-toggles">feature toggle</a>.</p>
+<h2 id="dashboards-and-visualizations">Dashboards and visualizations</h2>
+<h3 id="use-ai-to-generate-titles-descriptions-and-change-summaries">Use AI to generate titles, descriptions, and change summaries</h3>
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<!-- Nathan Marrs -->
+<!-- Cloud -->
+<p>You can now use generative AI to assist you in your Grafana dashboards. So far generative AI can help you with the following tasks:</p>
+<ul>
+<li><strong>Generate panel and dashboard titles and descriptions</strong> - You can now generate a title and description for your panel or dashboard based on the data you&rsquo;ve added to it. This is useful when you want to quickly visualize your data and don&rsquo;t want to spend time coming up with a title or description.</li>
+<li><strong>Generate dashboard save changes summary</strong> - You can now generate a summary of the changes you&rsquo;ve made to a dashboard when you save it. This is great for effortlessly tracking the history of a dashboard.</li>
+</ul>
+<p>To enable these features, you must first enable the <code>dashgpt</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/#experimental-feature-toggles">feature toggle</a>. Then install and configure Grafana&rsquo;s LLM app plugin. For more information, refer to the <a href="/docs/grafana-cloud/alerting-and-irm/machine-learning/configure/llm-plugin/">Grafana LLM app plugin documentation</a>.</p>
+<p>When enabled, look for the <strong>✨ Auto generate</strong> option next to the <strong>Title</strong> and <strong>Description</strong> fields in your panels and dashboards, or when you press the <strong>Save</strong> button.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=tgBussaYJww%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="find-your-dashboard-faster-with-the-new-dashboards-browse-screen">Find your dashboard faster with the new Dashboards browse screen</h3>
+<!-- Yaelle Chaudy for Frontend Platform -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The new browse screen for dashboards features a more compact design, making it easier to navigate, search for, and manage your folders and dashboards. The new interface also has many performance improvements, especially for instances with a large number of folders and dashboards.</p>
+<p>To make using folders easier and more consistent, there&rsquo;s no longer a special <strong>General</strong> folder. Dashboards without a folder, or dashboards previously in the <strong>General</strong> folder, are now shown at the root level.</p>
+<p>To try it out, go to the <strong>Dashboards</strong> section of your Grafana instance.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=-S_Jjuwj74k%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="create-interactive-buttons-in-canvas-visualizations">Create interactive buttons in canvas visualizations</h3>
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<!-- Nathan Marrs -->
+<!-- Cloud -->
+<p>You can now add buttons to your canvas visualizations. Buttons can be configured to call an API endpoint. This pushes Grafana&rsquo;s capabilities to new heights, allowing you to create interactive dashboards that can be used to control external systems.</p>
+<p>To learn more, refer to our 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/#button">Canvas button element documentation</a>, as well as the following video demo.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=T6fg1TpfBUg%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="zoom-in-on-the-y-axis-of-the-time-series-and-candlestick-visualizations">Zoom in on the y-axis of the time series and candlestick visualizations</h3>
+<p><em>Generally available in all editions of Grafana</em></p>
+<!-- Nathan Marrs -->
+<!-- Cloud -->
+<p>You can now zoom in on the y-axis of your time series and candlestick visualizations. This is useful when you want to focus on a specific range of values. To zoom in on the y-axis on supported visualizations, hold the Shift key while clicking and dragging; double-click to reset the zoom.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-10-2-y-axis-zoom-demo.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Y-axis zooming demo</figcaption></figure>
+</div>
+<h3 id="calculate-visualization-minmax-individually-per-field">Calculate visualization min/max individually per field</h3>
+<!-- Oscar Kilhed -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>When visualizing multiple fields with a wide spread of values, calculating the min or max value of the visualization based on all fields can hide useful details.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 300px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/panels-visualizations/globalminmax.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/panels-visualizations/globalminmax.png"data-srcset="/media/docs/grafana/panels-visualizations/globalminmax.png?w=320 320w, /media/docs/grafana/panels-visualizations/globalminmax.png?w=550 550w, /media/docs/grafana/panels-visualizations/globalminmax.png?w=750 750w, /media/docs/grafana/panels-visualizations/globalminmax.png?w=900 900w, /media/docs/grafana/panels-visualizations/globalminmax.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/globalminmax.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/globalminmax.png?w=1920 1920w"
+          data-sizes="auto"alt="Stat visualization with min/max calculated from all fields"width="655"height="319"title="Stat visualization with min/max calculated from all fields"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/globalminmax.png"
+            alt="Stat visualization with min/max calculated from all fields"width="655"height="319"title="Stat visualization with min/max calculated from all fields"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Stat visualization with min/max calculated from all fields</figcaption></a></figure>
+<p>In this example in the stat visualization, it&rsquo;s hard to get an idea of how the values of each series relate to the historical values of that series. The threshold of 10% is exceeded by the A-series even though the A-series is below 10% of its historical maximum.</p>
+<p>Now, you can automatically calculate the min or max of each visualized field based on the lowest and highest value of the individual field. This setting is available in the standard options of most visualizations.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 300px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/panels-visualizations/localminmax.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/panels-visualizations/localminmax.png"data-srcset="/media/docs/grafana/panels-visualizations/localminmax.png?w=320 320w, /media/docs/grafana/panels-visualizations/localminmax.png?w=550 550w, /media/docs/grafana/panels-visualizations/localminmax.png?w=750 750w, /media/docs/grafana/panels-visualizations/localminmax.png?w=900 900w, /media/docs/grafana/panels-visualizations/localminmax.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/localminmax.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/localminmax.png?w=1920 1920w"
+          data-sizes="auto"alt="Stat visualization with min/max calculated per field"width="653"height="318"title="Stat visualization with min/max calculated per field"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/localminmax.png"
+            alt="Stat visualization with min/max calculated per field"width="653"height="318"title="Stat visualization with min/max calculated per field"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Stat visualization with min/max calculated per field</figcaption></a></figure>
+<p>In this example, using the same data, with the min and max calculated for each individual field, we get a much better understanding of how the current value relates to the historical values. The A-series no longer exceeds the 10% threshold; in fact, it&rsquo;s now clear that it&rsquo;s at a historical low.</p>
+<p>This isn&rsquo;t only useful in the stat visualization—gauge, bar gauge, and status history visualizations, table cells formatted by thresholds, and gauge table cells all benefit from this addition.</p>
+<h3 id="data-visualization-quality-of-life-improvements">Data visualization quality of life improvements</h3>
+<p><em>Generally available in all editions of Grafana</em></p>
+<!-- Nathan Marrs -->
+<!-- Cloud -->
+<p>We&rsquo;ve made a number of smaller improvements to the data visualization experience in Grafana.</p>
+<h4 id="geomap-marker-symbol-alignment-options">Geomap marker symbol alignment options</h4>
+<p>You can now offset geomap marker symbols from the underlying data point.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/gif-grafana-10-2-geomap-marker-symbol-alignment.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/gif-grafana-10-2-geomap-marker-symbol-alignment.gif"alt="Geomap marker symbol alignment"width="600"height="293"title="Geomap marker symbol alignment"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/gif-grafana-10-2-geomap-marker-symbol-alignment.gif"
+            alt="Geomap marker symbol alignment"width="600"height="293"title="Geomap marker symbol alignment"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Geomap marker symbol alignment</figcaption></a></figure>
+<h4 id="gauge-visualization-overflow-support">Gauge visualization overflow support</h4>
+<p>You can now visualize gauges in vertical and horizontal orientations with overflow. This resolves an issue where the design would break when the number of gauges exceeded the available space.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/gif-grafana-10-2-gauge-overflow.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/gif-grafana-10-2-gauge-overflow.gif"alt="Gauge overflow"width="600"height="293"title="Gauge overflow"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/gif-grafana-10-2-gauge-overflow.gif"
+            alt="Gauge overflow"width="600"height="293"title="Gauge overflow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Gauge overflow</figcaption></a></figure>
+<h4 id="bar-chart-axes-improvements">Bar chart axes improvements</h4>
+<p>You can now center bar chart axes on zero and configure axes border and color settings.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png"data-srcset="/media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png?w=320 320w, /media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png?w=550 550w, /media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png?w=750 750w, /media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png?w=900 900w, /media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png?w=1040 1040w, /media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png?w=1240 1240w, /media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png?w=1920 1920w"
+          data-sizes="auto"alt="Bar chart improvements"width="2711"height="1037"title="Bar chart improvements"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-grafana-10-2-bar-chart-axes-improvements.png"
+            alt="Bar chart improvements"width="2711"height="1037"title="Bar chart improvements"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Bar chart improvements</figcaption></a></figure>
+<h2 id="data-sources-and-querying">Data sources and querying</h2>
+<h3 id="tempo-data-source">Tempo data source</h3>
+<p>We&rsquo;ve placed special focus on the Tempo data source over the past couple of months with new features, query performance improvements, and a better query experience.</p>
+<h4 id="compute-red-metrics-over-spans-aggregated-by-attribute-with-the-aggregate-by-search-option">Compute RED metrics over spans aggregated by attribute with the &ldquo;Aggregate By&rdquo; Search option</h4>
+<!-- Joey Tawadrous, Jen Villa -->
+<p><em>Experimental in all editions of Grafana</em></p>
+<p>Requires Tempo or Grafana Enterprise Traces (GET) v2.2 or greater.</p>
+<p>We&rsquo;ve added an <strong>Aggregate By</strong> option to the 
+    <a href="/docs/grafana/latest/datasources/tempo/query-editor/traceql-search/#write-traceql-queries-using-search">TraceQL query editor</a> to leverage Tempo&rsquo;s 
+    <a href="/docs/tempo/latest/api_docs/metrics-summary/">metrics summary API</a>. You can calculate RED metrics (total span count, percent erroring spans, and latency information) for spans of <code>kind=server</code> received in the last hour that match your filter criteria, grouped by whatever attributes you specify.</p>
+<p>This feature is disabled by default. To enable it, use the <code>metricsSummary</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/#experimental-feature-toggles">experimental feature toggle</a>.</p>
+<p>For more information, refer to the 
+    <a href="/docs/grafana/latest/datasources/tempo/query-editor/traceql-search/#optional-use-aggregate-by">documentation</a>, as well as the following video demo.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=g97CjKOZqT4%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h4 id="query-traces-more-easily-with-the-improved-traceql-editor">Query traces more easily with the Improved TraceQL editor</h4>
+<!-- Fabrizio Casati -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The <a href="/docs/tempo/latest/traceql/#traceql-query-editor">TraceQL query editor</a> has been improved to facilitate the creation of TraceQL queries. In particular, it now features improved autocompletion, syntax highlighting, and error reporting.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/tempo/screen-recording-grafana-10.2-traceql-query-editor-improvements.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h4 id="group-multiple-spansets-per-trace">Group multiple spansets per trace</h4>
+<!-- Joey Tawadrous -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The 
+    <a href="/docs/tempo/latest/traceql/#traceql-query-editor">TraceQL query editor</a> has been improved to facilitate the grouping of multiple spans per trace in TraceQL queries. For example, when <code>by(resource.service.name)</code> is added to your TraceQL query, it will group the spans in each trace by <code>resource.service.name</code>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=fraepWra00Y%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h4 id="create-query-type-template-variables-for-the-tempo-data-source">Create query-type template variables for the Tempo data source</h4>
+<!-- Fabrizio Casati -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The Tempo data source now supports query-type template variables. With this update, you can create variables for which the values are a list of attribute names or attribute values seen on spans received by Tempo.</p>
+<p>To learn more, refer to the following video demo, as well as the <a href="/docs/grafana/next/dashboards/variables/">Grafana Variables documentation</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/tempo/screen-recording-grafana-10.2-tempo-query-type-template-variables.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h3 id="sap-hana-configure-your-data-source-with-tenant-database-instance-name-and-number">SAP HANA®: Configure your data source with tenant database instance name and number</h3>
+<!-- Miguel Palau -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>The SAP HANA® data source now supports tenant database connections by using the database name and/or instance number. This is helpful because these are less likely to change than the port for your database. For more information, refer to our <a href="/docs/plugins/grafana-saphana-datasource/latest/#configuration">SAP HANA® configuration documentation</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/sap-hana/tenant.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h3 id="datadog-aggregate-logs-to-compute-metrics-and-time-series">Datadog: Aggregate logs to compute metrics and time series</h3>
+<!-- Taewoo Kim -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>The Datadog data source now supports log aggregation. This feature helps aggregate logs/events into buckets and compute metrics and time series. For more information, refer to <a href="/docs/plugins/grafana-datadog-datasource/latest/#logs-analytics--aggregation">Datadog log aggregation</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/datadog/datadog-log-aggregation.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h3 id="datadog-rate-limit-requests-from-the-datadog-data-source">Datadog: Rate-limit requests from the Datadog data source</h3>
+<!-- Taewoo Kim -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>In the Datadog data source, you can now block API requests for metric queries based on upstream rate limits. With this update, you can set a rate limit percentage at which the plugin stops sending queries.</p>
+<p>To learn more, refer to <a href="/docs/plugins/grafana-datadog-datasource/latest/#configure-the-data-source">Datadog data source settings</a>, as well as the following video demo.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/datadog/datadog-rate-limit.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h3 id="microsoft-sql-server-support-for-azure-authentication-service-principalmsi">Microsoft SQL Server: Support for Azure Authentication (Service principal/MSI)</h3>
+<!-- Jev Forsberg, Oscar Kilhed -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>We&rsquo;ve added support for Azure Authentication (Service principal/MSI) on our MS SQL plugin to authenticate and allow querying of content stored in SQL Managed Instance databases.</p>
+<p>Enable this feature by setting the <code>managed_identity_enabled</code> property to <code>true</code> under the <code>Azure</code> heading in your configuration file (/conf/&lt;your_config_file&gt;.ini). Then take the following steps in your Microsoft SQL Server data source configuration UI:</p>
+<ol>
+<li>Under <strong>Authentication</strong>, select <strong>Azure AD Authentication</strong> in the drop-down to reveal the <strong>Azure Authentication Settings</strong> section.</li>
+<li>In this section, select either <strong>Managed Identity</strong> or <strong>App Registration</strong>.</li>
+<li>Enter the credentials accordingly.</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 550px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png"data-srcset="/media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png?w=320 320w, /media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png?w=550 550w, /media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png?w=750 750w, /media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png?w=900 900w, /media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png?w=1040 1040w, /media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png?w=1240 1240w, /media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png?w=1920 1920w"
+          data-sizes="auto"alt="Azure MSI Authentication"width="1730"height="1499"title="Azure MSI Authentication"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/screenshot-managed-identity-mssql-ui-cropped.png"
+            alt="Azure MSI Authentication"width="1730"height="1499"title="Azure MSI Authentication"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Azure MSI Authentication</figcaption></a></figure>
+<p>Learn more in the 
+    <a href="/docs/grafana/latest/datasources/mssql/">Microsoft SQL Server documentation</a>.</p>
+<h2 id="transformations">Transformations</h2>
+<p>As our work on improving the user experience of transforming data continues, we&rsquo;ve also been adding new capabilities to transformations.</p>
+<h3 id="use-dashboard-variables-in-transformations">Use dashboard variables in transformations</h3>
+<!-- Oscar Kilhed, Victor Marin -->
+<p><em>Experimental in all editions of Grafana</em></p>
+<p>Previously, the only transformation that supported 
+    <a href="/docs/grafana/latest/dashboards/variables/">dashboard variables</a> was the <strong>Add field from calculation</strong> transformation. We&rsquo;ve now extended the support for variables to the <strong>Filter by value</strong>, <strong>Create heatmap</strong>, <strong>Histogram</strong>, <strong>Sort by</strong>, <strong>Limit</strong>, <strong>Filter by name</strong>, and <strong>Join by field</strong> transformations.</p>
+<p>We&rsquo;ve also made it easier to find the correct dashboard variable by displaying available variables in the fields that support them, either in the drop-down or as a suggestion when you type <strong>$</strong> or press Ctrl + Space.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=WE0tt69ApO4%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="new-modes-for-the-add-field-from-calculation-transformation">New modes for the Add field from calculation transformation</h3>
+<!-- Victor Marin -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The <strong>Add field from calculation</strong> transformation has been updated.</p>
+<p><strong>Unary operation</strong> is a new mode that lets you apply mathematical operations to a field. The currently supported operations are:</p>
+<ul>
+<li><strong>Absolute value (abs)</strong> - Returns the absolute value of a given expression. It represents its distance from zero as a positive number.</li>
+<li><strong>Natural exponential (exp)</strong> - Returns <em>e</em> raised to the power of a given expression.</li>
+<li><strong>Natural logarithm (ln)</strong> - Returns the natural logarithm of a given expression.</li>
+<li><strong>Floor (floor)</strong> - Returns the largest integer less than or equal to a given expression.</li>
+<li><strong>Ceiling (ceil)</strong> - Returns the smallest integer greater than or equal to a given expression.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 472px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/transformations/unary-operation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/transformations/unary-operation.png"data-srcset="/media/docs/grafana/transformations/unary-operation.png?w=320 320w, /media/docs/grafana/transformations/unary-operation.png?w=550 550w, /media/docs/grafana/transformations/unary-operation.png?w=750 750w, /media/docs/grafana/transformations/unary-operation.png?w=900 900w, /media/docs/grafana/transformations/unary-operation.png?w=1040 1040w, /media/docs/grafana/transformations/unary-operation.png?w=1240 1240w, /media/docs/grafana/transformations/unary-operation.png?w=1920 1920w"
+          data-sizes="auto"alt="Unary operation options"width="472"height="192"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/unary-operation.png"
+            alt="Unary operation options"width="472"height="192"/>
+        </noscript></div></a></figure>
+<p>Also, <strong>Row index</strong> can now show the index as a percentage.</p>
+<p>Learn more in the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#add-field-from-calculation">Add field from calculation documentation</a>.</p>
+<h3 id="format-strings-with-transformations">Format strings with transformations</h3>
+<!-- Solomon Dubock, BI Squad -->
+<p><em>Experimental in all editions of Grafana</em></p>
+<p>With the new <strong>Format string</strong> transformation, you can manipulate string fields to improve how they&rsquo;re displayed. The currently supported operations are:</p>
+<ul>
+<li><strong>Change case</strong> changes the case of your string to upper case, lower case, sentence case, title case, pascal case, camel case, or snake case.</li>
+<li><strong>Trim</strong> removes white space characters at the start and end of your string.</li>
+<li><strong>Substring</strong> selects a part of your string field.</li>
+</ul>
+<p>Learn more in the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#format-string">Format string documentation</a>.</p>
+<h3 id="see-which-transformations-will-work-with-your-data">See which transformations will work with your data</h3>
+<!-- Kyle Cunningham -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>We&rsquo;ve added initial support to detect situations in which various transformations won&rsquo;t work appropriately based on current data. Previously, selecting the appropriate transformation and configuring it correctly required a process of trial and error or already knowing how a given transformation worked. Now, transformations that we&rsquo;ve detected can&rsquo;t be used are shaded in the interface to indicate this, along with a helpful message explaining why.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1044px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/transformations/disabled-transformation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/transformations/disabled-transformation.png"data-srcset="/media/docs/grafana/transformations/disabled-transformation.png?w=320 320w, /media/docs/grafana/transformations/disabled-transformation.png?w=550 550w, /media/docs/grafana/transformations/disabled-transformation.png?w=750 750w, /media/docs/grafana/transformations/disabled-transformation.png?w=900 900w, /media/docs/grafana/transformations/disabled-transformation.png?w=1040 1040w, /media/docs/grafana/transformations/disabled-transformation.png?w=1240 1240w, /media/docs/grafana/transformations/disabled-transformation.png?w=1920 1920w"
+          data-sizes="auto"alt="Transformation that has been disabled because it doesn&#39;t have the necessary data"width="1044"height="510"title="Transformation that has been disabled because it doesn&#39;t have the necessary data"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/disabled-transformation.png"
+            alt="Transformation that has been disabled because it doesn&#39;t have the necessary data"width="1044"height="510"title="Transformation that has been disabled because it doesn&#39;t have the necessary data"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Transformation that has been disabled because it doesn&rsquo;t have the necessary data</figcaption></a></figure>
+<p>If you have the <code>transformationsRedesign</code> feature flag set, you&rsquo;ll be able to access this functionality right away. If you&rsquo;d like to try it, enable this feature flag in your 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#feature_toggles">Grafana configuration</a>.</p>
+<h3 id="choose-your-timezome-in-the-format-time-and-convert-field-type-transformations">Choose your timezome in the Format time and Convert field type transformations</h3>
+<!-- Kyle Cunningham -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>We&rsquo;ve added support for setting timezones manually when formatting times as strings using the <strong>Format time</strong> and <strong>Convert field type</strong> transformations. This allows times to be formatted relative to any timezone across the globe.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 2222px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/transformations/format-timezone.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/transformations/format-timezone.png"data-srcset="/media/docs/grafana/transformations/format-timezone.png?w=320 320w, /media/docs/grafana/transformations/format-timezone.png?w=550 550w, /media/docs/grafana/transformations/format-timezone.png?w=750 750w, /media/docs/grafana/transformations/format-timezone.png?w=900 900w, /media/docs/grafana/transformations/format-timezone.png?w=1040 1040w, /media/docs/grafana/transformations/format-timezone.png?w=1240 1240w, /media/docs/grafana/transformations/format-timezone.png?w=1920 1920w"
+          data-sizes="auto"alt="Timezone support in the Format time transformation"width="2222"height="822"title="Timezone support in the Format time transformation"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/format-timezone.png"
+            alt="Timezone support in the Format time transformation"width="2222"height="822"title="Timezone support in the Format time transformation"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Timezone support in the Format time transformation</figcaption></a></figure>
+<h2 id="alerting">Alerting</h2>
+<h3 id="grafana-oncall-integration-for-alerting">Grafana OnCall integration for Alerting</h3>
+<!-- Brenda Muir -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Use the Grafana Alerting - Grafana OnCall integration to effortlessly connect alerts generated by Grafana Alerting with Grafana OnCall. From there, you can route them according to defined escalation chains and schedules.</p>
+<p>To learn more, refer to the 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-oncall/">Grafana OnCall integration for Alerting documentation</a>, as well as the following video demo.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=abRn5I61hxs%3frel%3d0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h3 id="export-alerting-resources-to-terraform">Export alerting resources to Terraform</h3>
+<!-- Yuri Tseretyan -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Export your alerting resources, such as alert rules, contact points, and notification policies as Terraform resources. A new “Modify export” mode for alert rules enables you to edit provisioned alert rules and export a modified version.</p>
+<h3 id="additional-contact-points-for-external-alertmanager">Additional contact points for external Alertmanager</h3>
+<!-- Alexander Weaver -->
+<p><em>Generally available in Grafana Open Source and Enterprise</em></p>
+<p>We&rsquo;ve added support for the Microsoft Teams contact points when using an external Alertmanager.</p>
+<h2 id="authentication-and-authorization">Authentication and authorization</h2>
+<h3 id="no-basic-role">No basic role</h3>
+<!-- Eric Leijonmarck -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>We&rsquo;re excited to introduce the &ldquo;No basic role,&rdquo; a new basic role with no permissions. A basic role in Grafana dictates the set of actions a user or entity can perform, known as permissions. This new role is especially beneficial if you&rsquo;re aiming for tailored, customized RBAC permissions for your service accounts or users. You can set this as a basic role through the API or UI.</p>
+<p>Previously, permissions were granted based on predefined sets of capabilities. Now, with the &ldquo;No basic role,&rdquo; you have the flexibility to be even more granular.</p>
+<p>For more details on basic roles and permissions, refer to the 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/">documentation</a>.</p>
+<h3 id="new-service-account-permissions">New service account permissions</h3>
+<p>
+    <a href="/docs/grafana/latest/administration/service-accounts/">Service accounts</a> allow you to create tokens to access Grafana&rsquo;s API and dashboards. Service accounts are a powerful tool for authenticating with Grafana&rsquo;s API and accessing data sources. However, without proper access controls, service accounts can pose a security risk to your Grafana instance. In Grafana 10.2, we&rsquo;ve added new tools to limit service accounts to just the resources they need to access.</p>
+<h4 id="add-dashboard-and-folder-permissions-to-service-accounts">Add dashboard and folder permissions to service accounts</h4>
+<!-- Jo Guerreiro -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>In this release, we&rsquo;ve added the ability to assign dashboard and folder permissions to service accounts.
+This means that you can now create a service account that can be used to access a specific dashboard and nothing else.</p>
+<p>This is useful if you want to limit the access service accounts have to your Grafana instance.</p>
+<p>Learn more in our 
+    <a href="/docs/grafana/latest/administration/user-management/manage-dashboard-permissions/#manage-dashboard-permissions">dashboard and folder permissions documentation</a>.</p>
+<h4 id="add-data-source-permissions-to-service-accounts">Add data source permissions to service accounts</h4>
+<!-- Jo Guerreiro -->
+<p><em>Generally available in Grafana Cloud and Grafana Enterprise</em></p>
+<p>Grafana 10.2 also introduces the ability to assign <em>data source</em> permissions to service accounts, for Grafana CLoud and Enterprise users.
+With this feature, you can create a service account that has access to a specific data source and nothing else.
+This is useful in scenarios where you want to limit the access service accounts have to your Grafana instance.</p>
+<p>For example, imagine you have a team of developers who need to access a specific data source to develop a new feature.
+Instead of giving them full access to your Grafana instance, you can create a service account that has access only to that data source.
+This way, you can limit the potential damage that could be caused by a compromised service account.</p>
+<p>Learn more in our 
+    <a href="/docs/grafana/latest/administration/data-source-management/#data-source-permissions">data source permissions documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png"data-srcset="/media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png?w=320 320w, /media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png?w=550 550w, /media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png?w=750 750w, /media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png?w=900 900w, /media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png?w=1040 1040w, /media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png?w=1240 1240w, /media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png?w=1920 1920w"
+          data-sizes="auto"alt="Data source permissions in 10.2"width="1045"height="846"title="Data source permissions in 10.2"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-grafana-10-2-sa-managed-permissions.png"
+            alt="Data source permissions in 10.2"width="1045"height="846"title="Data source permissions in 10.2"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Data source permissions in 10.2</figcaption></a></figure>
+<h3 id="role-mapping-support-for-google-oidc">Role mapping support for Google OIDC</h3>
+<!-- Jo Guerreiro -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>You can now map Google groups to Grafana organizational roles when using Google OIDC.
+This is useful if you want to limit the access users have to your Grafana instance.</p>
+<p>We&rsquo;ve also added support for controlling allowed groups when using Google OIDC.</p>
+<p>Refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/google/">Google Authentication documentation</a> to learn how to use these new options.</p>
+<h3 id="configure-refresh-token-handling-separately-for-oauth-providers">Configure refresh token handling separately for OAuth providers</h3>
+<!-- Mihaly Gyongyosi -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>With Grafana v9.3, we introduced a 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a> called <code>accessTokenExpirationCheck</code>. It improves the security of Grafana by checking the expiration of the access token and automatically refreshing the expired access token when a user is logged in using one of the OAuth providers.</p>
+<p>With the current release, we&rsquo;ve introduced a new configuration option for each OAuth provider called <code>use_refresh_token</code> that allows you to configure whether the particular OAuth integration should use refresh tokens to automatically refresh access tokens when they expire. In addition, to further improve security and provide secure defaults, <code>use_refresh_token</code> is enabled by default for providers that support either refreshing tokens automatically or client-controlled fetching of refresh tokens. It&rsquo;s enabled by default for the following OAuth providers: <code>AzureAD</code>, <code>GitLab</code>, <code>Google</code>.</p>
+<p>For more information on how to set up refresh token handling, please refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/">the documentation of the particular OAuth provider.</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>use_refresh_token</code> configuration must be used in conjunction with the <code>accessTokenExpirationCheck</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a>. If you disable the <code>accessTokenExpirationCheck</code> feature toggle, Grafana won&rsquo;t check the expiration of the access token and won&rsquo;t automatically refresh the expired access token, even if the <code>use_refresh_token</code> configuration is set to <code>true</code>.</p>
+<p>The <code>accessTokenExpirationCheck</code> feature toggle will be removed in Grafana v10.3.</p></blockquote></div>
+
+<h3 id="permission-validation-on-custom-role-creation-and-update">Permission validation on custom role creation and update</h3>
+<!-- Mihaly Gyongyosi -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>With the current release, we enabled RBAC permission validation (<code>rbac.permission_validation_enabled</code> setting) by default. This means that the permissions provided in the request during custom role creation or update are validated against the list of 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/#action-definitions">available permissions and their scopes</a>. If the request contains a permission that is not available or the scope of the permission is not valid, the request is rejected with an error message.</p>
+<h2 id="recorded-queries-record-multiple-metrics-from-a-single-query">Recorded queries: Record multiple metrics from a single query</h2>
+<!-- Kyle Brandt, Observability Metrics -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud</em></p>
+<p>Recorded queries provide a way to take a <em>static</em> number, (for example, the number of GitHub issues open at a given time, or the number of rows in a database table) and record it periodically as a Prometheus metric. This is great for tracking numbers over time for quick querying later. Previously, recorded queries were limited to a single series, so you needed to narrow your query down to a single number in order to record it. Now, you can record multiple metrics with a single recorded query, which makes them more powerful <em>and</em> easier to create and manage.</p>
+<!-- TODO: add graphic or video -->

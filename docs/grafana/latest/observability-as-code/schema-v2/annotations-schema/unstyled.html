@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<h1 id="annotations"><code>annotations</code></h1>
+<p>The configuration for the list of annotations that are associated with the dashboard.</p>
+<pre>  &#34;annotations&#34;: [
+    {
+      &#34;kind&#34;: &#34;AnnotationQuery&#34;,
+      &#34;spec&#34;: {
+        &#34;builtIn&#34;: false,
+        &#34;datasource&#34;: {
+          &#34;type&#34;: &#34;&#34;,
+          &#34;uid&#34;: &#34;&#34;
+        },
+        &#34;enable&#34;: false,
+        &#34;hide&#34;: false,
+        &#34;iconColor&#34;: &#34;&#34;,
+        &#34;name&#34;: &#34;&#34;
+      }
+    }
+  ],</pre>
+<p><code>AnnotationsQueryKind</code> consists of:</p>
+<ul>
+<li>kind: &ldquo;AnnotationQuery&rdquo;</li>
+<li>spec: <a href="#annotationqueryspec">AnnotationQuerySpec</a></li>
+</ul>
+<h2 id="annotationqueryspec"><code>AnnotationQuerySpec</code></h2>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type/Definition</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>datasource</td>
+          <td><a href="#datasourceref"><code>DataSourceRef</code></a></td>
+      </tr>
+      <tr>
+          <td>query</td>
+          <td><a href="#dataquerykind"><code>DataQueryKind</code></a></td>
+      </tr>
+      <tr>
+          <td>enable</td>
+          <td>bool</td>
+      </tr>
+      <tr>
+          <td>hide</td>
+          <td>bool</td>
+      </tr>
+      <tr>
+          <td>iconColor</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>name</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>builtIn</td>
+          <td>bool. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>filter</td>
+          <td><a href="#annotationpanelfilter"><code>AnnotationPanelFilter</code></a></td>
+      </tr>
+      <tr>
+          <td>options</td>
+          <td><code>[string]</code>: A catch-all field for datasource-specific properties.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="datasourceref"><code>DataSourceRef</code></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>type?</td>
+          <td>string. The plugin type-id.</td>
+      </tr>
+      <tr>
+          <td>uid?</td>
+          <td>The specific data source instance.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="dataquerykind"><code>DataQueryKind</code></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>kind</td>
+          <td>string</td>
+      </tr>
+      <tr>
+          <td>spec</td>
+          <td>string</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="annotationpanelfilter"><code>AnnotationPanelFilter</code></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type/Definition</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>exclude?</td>
+          <td>bool. Should the specified panels be included or excluded. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>ids</td>
+          <td><code>[...uint8]</code>. Panel IDs that should be included or excluded.</td>
+      </tr>
+  </tbody>
+</table>

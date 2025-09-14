@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<h1 id="stale-alert-instances">Stale alert instances</h1>
+<p>An alert instance is considered <strong>stale</strong> if the alert rule query returns data but its dimension (or series) has disappeared for a number of consecutive evaluation intervals (2 by default).</p>
+<p>This is different from the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/nodata-and-error-states/#no-data-state"><strong>No Data</strong> state</a>, which occurs when the alert rule query runs successfully but returns no dimensions (or series) at all.</p>
+<p>A stale alert instance transitions to the <strong>Normal (MissingSeries)</strong> state as <strong>Resolved</strong>, and is then evicted:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Eval. Interval</th>
+          <th style="text-align: left">1</th>
+          <th style="text-align: left">2</th>
+          <th style="text-align: left">3</th>
+          <th style="text-align: left">4</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Alert instance A</td>
+          <td style="text-align: left">✔</td>
+          <td style="text-align: left">✔</td>
+          <td style="text-align: left">✔</td>
+          <td style="text-align: left">✔</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Alert instance B</td>
+          <td style="text-align: left">✔</td>
+          <td style="text-align: left"><code>MissingSeries</code></td>
+          <td style="text-align: left">️<code>Normal(MissingSeries)</code> 📩<sup>*</sup></td>
+          <td style="text-align: left"></td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Stale alert instances are supported only for Grafana-managed alert rules.</p></blockquote></div>
+
+<h2 id="how-grafana-handles-stale-alert-instances">How Grafana handles stale alert instances</h2>
+<p>The process for handling stale alert instances is as follows:</p>
+<ol>
+<li>
+<p>The alert rule runs and returns data for some label sets.</p>
+</li>
+<li>
+<p>An alert instance that previously existed is now missing.</p>
+</li>
+<li>
+<p>Grafana keeps the previous state of the alert instance for the number of evaluation intervals specified in <a href="#configure-missing-series-evaluations-to-resolve">Missing series evaluations to resolve</a>.</p>
+</li>
+<li>
+<p>If it remains missing after the specified number of evaluation intervals (2 by default), it transitions to the <strong>Normal</strong> state and sets <strong>MissingSeries</strong> in the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/nodata-and-error-states/#grafana_state_reason-for-troubleshooting"><code>grafana_state_reason</code> annotation</a>.</p>
+<p>Stale alert instances in the <strong>Alerting</strong>, <strong>No Data</strong>, or <strong>Error</strong> states transition to the <strong>Normal</strong> state as <strong>Resolved</strong>, and are routed for notifications like other resolved alerts.</p>
+</li>
+<li>
+<p>The alert instance is removed from the UI.</p>
+</li>
+</ol>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>For common examples and practical guidance on handling <strong>No Data</strong> and <strong>stale</strong> alert scenarios, see 
+    <a href="/docs/grafana/latest/alerting/best-practices/missing-data/">Handling missing data</a>.</p></blockquote></div>
+
+<h2 id="configure-missing-series-evaluations-to-resolve">Configure Missing series evaluations to resolve</h2>
+<p>In 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/#configure-no-data-and-error-handling">Configure no data and error handling &gt; Missing series evaluations to resolve</a>, you can set how many consecutive evaluation intervals must pass without data for a given dimension before the alert instance is marked as stale and resolved.</p>
+<p>If you don&rsquo;t specify a value, Grafana uses the <strong>default of 2 evaluation intervals</strong>.</p>

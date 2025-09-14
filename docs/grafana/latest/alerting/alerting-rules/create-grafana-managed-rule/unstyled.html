@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<h1 id="configure-grafana-managed-alert-rules">Configure Grafana-managed alert rules</h1>
+<p>Grafana-managed alert rules are the default way to create alert rules in Grafana.</p>
+<p>Grafana-managed rules inherit their model from Prometheus Alerting and extend it with greater flexibility—such as multi-data source queries, expression-based transformations, advanced alert conditions, images in notifications, custom states, and more.</p>
+<p>To create or edit Grafana-managed alert rules, follow the instructions below.</p>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>For quick-start tutorials on key alerting features, see 
+    <a href="/docs/grafana/latest/alerting/best-practices/tutorials/">Getting started with Grafana Alerting tutorials</a>.</p></blockquote></div>
+
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Before you create Grafana-managed alert rules, review the following requirements and options.</p>
+<h3 id="supported-data-sources">Supported data sources</h3>
+<p>Grafana-managed alert rules can query backend data sources when the data source&rsquo;s <code>plugin.json</code> file sets <code>{&quot;backend&quot;: true, &quot;alerting&quot;: true}</code>.</p>
+<p>Before you create an alert rule, verify that the data sources you plan to query are compatible and properly configured.</p>
+<p>You can find the public data sources that support alert rules in the <a href="/grafana/plugins/data-source-plugins/?features=alerting">Grafana Plugins directory</a>.</p>
+<h3 id="alert-rule-limits-in-grafana-cloud">Alert rule limits in Grafana Cloud</h3>
+<p>In Grafana Cloud, the number of Grafana-managed alert rules you can create depends on your Grafana Cloud plan.</p>
+<ul>
+<li>Free Forever plan: You can create up to 100 free alert rules, with each alert rule having a maximum of 1000 alert instances.</li>
+<li>All paid plans: They have a soft limit of 2000 alert rules and support unlimited alert instances. To increase the limit, open a support ticket from the <a href="/docs/grafana-cloud/account-management/support/">Cloud portal</a>.</li>
+</ul>
+<h3 id="permissions">Permissions</h3>
+<p>Only users with <strong>Edit</strong> permissions for the folder storing the rules can edit or delete Grafana-managed alert rules. Only admins can restore deleted Grafana-managed alert rules.</p>
+<h3 id="provisioning">Provisioning</h3>
+<p>Note that if you delete an alert resource created in the UI, you can no longer retrieve it.</p>
+<p>To backup and manage alert rules, you can 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/">provision alerting resources</a> using options such as configuration files, Terraform, or the Alerting API.</p>
+<h3 id="default-vs-advanced-options">Default vs Advanced options</h3>
+<p>You can use default or advanced options for Grafana-managed alert rule creation. The default options streamline rule creation with a cleaner header and a single query and condition. For more complex rules, use advanced options to add multiple queries and expressions.</p>
+<p>You can toggle between the two options.
+After you have created an alert rule, the system defaults to your previous choice for the next alert rule.</p>
+<p>Switching from advanced to default may result in queries and expressions that can&rsquo;t be converted.
+In this case, a warning message asks if you want to continue to reset to default settings.</p>
+<h2 id="set-alert-rule-name">Set alert rule name</h2>
+
+
+<div data-shared="alerts/configure-alert-rule-name.md">
+            <ol>
+<li>
+<p>Click <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alert rules</strong> -&gt; <strong>+ New alert rule</strong>.</p>
+</li>
+<li>
+<p>Enter a name to identify your alert rule.</p>
+<p>This name is displayed in the alert rule list. It is also the <code>alertname</code> label for every alert instance that is created from this rule.</p>
+</li>
+</ol>
+</div>
+
+        
+<h2 id="define-query-and-condition">Define query and condition</h2>
+<p>Define a query to get the data you want to measure and a condition that needs to be met before an alert rule fires.</p>
+<p>You can toggle between <strong>Default</strong> and <strong>Advanced</strong> options. If the <a href="#default-vs-advanced-options">Default vs. Advanced feature</a> is not enabled in your Grafana instance, follow the <strong>Advanced options</strong> instructions.</p>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Default options</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <ol>
+<li>
+<p>Add a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/">query</a>.</p>
+</li>
+<li>
+<p>Add an 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#alert-condition">alert condition</a>.</p>
+<p>The <strong>When</strong> input includes the reducer function and the last input is the threshold.</p>
+</li>
+<li>
+<p>Click <strong>Preview</strong> to verify.</p>
+</li>
+</ol>
+
+    </div>
+  </div>
+</div>
+
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Advanced options</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <ol>
+<li>
+<p>Select a data source.</p>
+</li>
+<li>
+<p>From the <strong>Options</strong> drop-down menu, specify a 
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/#time-units-and-relative-ranges">time range</a>.</p>
+<p>Note that Grafana Alerting only supports fixed relative time ranges, for example, <code>now-24hr: now</code>.
+It doesn&rsquo;t support absolute time ranges: <code>2021-12-02 00:00:00 to 2021-12-05 23:59:592</code> or semi-relative time ranges: <code>now/d to: now</code>.</p>
+</li>
+<li>
+<p>Add a query.</p>
+<p>To add multiple 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/">queries</a>, click <strong>Add query</strong>.</p>
+<p>All alert rules are managed by Grafana by default. If you want to switch to a data source-managed alert rule, click <strong>Switch to data source-managed alert rule</strong>.</p>
+</li>
+<li>
+<p>Add one or more 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#expression-queries">expressions</a>.</p>
+<p>a. For each expression, select either <strong>Classic condition</strong> to create a single alert rule, or choose from the <strong>Math</strong>, <strong>Reduce</strong>, and <strong>Resample</strong> options to generate separate alert for each series.</p>
+<p>When using Prometheus, you can use an instant vector and built-in functions, so you don&rsquo;t need to add additional expressions.</p>
+<p>b. Click <strong>Preview</strong> to verify that the expression is successful.</p>
+</li>
+<li>
+<p>To add a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#recovery-threshold">recovery threshold</a>, enable the <strong>Custom recovery threshold</strong> toggle and enter a value that defines when the alert should recover—transition to <code>Normal</code> state from the <code>Alerting</code> or <code>Pending</code> state.</p>
+<p>You can only add one recovery threshold, and it must be part of the alert condition.</p>
+</li>
+<li>
+<p>Click <strong>Set as alert condition</strong> on the query or expression you want to set as your 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#alert-condition">alert condition</a>.</p>
+</li>
+</ol>
+
+    </div>
+  </div>
+</div>
+
+<h2 id="set-folder-and-labels">Set folder and labels</h2>
+<p>Organize your alert rule with a folder and set of labels.</p>
+<p>In the <strong>Labels</strong> section, you can optionally choose whether to add labels to organize your alert rules and their notifications. For more details, refer to 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#labels">alert rule labels</a>.</p>
+<ol>
+<li>
+<p>Select a folder or click <strong>+ New folder</strong>.</p>
+</li>
+<li>
+<p>Add labels, if required.</p>
+<p>Add custom labels by selecting existing key-value pairs from the drop down, or add new labels by entering the new key or value.</p>
+</li>
+</ol>
+<h2 id="configure-alert-evaluation-behavior">Configure alert evaluation behavior</h2>
+<p>Use 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/">alert rule evaluation</a> to determine how frequently an alert rule should be evaluated and how quickly it should change its state.</p>
+<p>To do this, you need to make sure that your alert rule is in the right evaluation group and set a pending period time that works best for your use case.</p>
+<ol>
+<li>
+<p>Select an evaluation group or click <strong>+ New evaluation group</strong>.</p>
+<p>If you are creating a new evaluation group, specify the interval for the group.</p>
+<p>All rules within the same group are evaluated concurrently over the same time interval.</p>
+</li>
+<li>
+<p>Enter a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/#pending-period">pending period</a>.</p>
+<p>The pending period is the period in which an alert rule can be in breach of the condition until it fires.</p>
+<p>After a condition is met, the alert goes into the <strong>Pending</strong> state.
+If the condition remains active for the duration specified, the alert transitions to the <strong>Firing</strong> state, else it reverts to the <strong>Normal</strong> state.</p>
+</li>
+<li>
+<p>Optionally, set the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/#keep-firing-for">Keep firing for</a> period.</p>
+<p>You can set the minimum amount of time that an alert remains firing after the breached threshold expression no longer returns any results. This sets an alert to a &ldquo;Recovering&rdquo; state for the duration of time set here. The Recovering state can be used to reduce noise from flapping alerts. Select &ldquo;none&rdquo; stop an alert from firing immediately after the breach threshold is cleared.</p>
+</li>
+<li>
+<p>Turn on pause alert notifications, if required.</p>
+<p>You can pause alert rule evaluation to prevent noisy alerting while tuning your alerts.
+Pausing stops alert rule evaluation and doesn&rsquo;t create any alert instances.
+This is different to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/mute-timings/">mute timings</a>, which stop notifications from being delivered, but still allows for alert rule evaluation and the creation of alert instances.</p>
+</li>
+<li>
+<p>In <strong>Configure no data and error handling</strong>, you can define the alerting behavior and alerting state for two scenarios:</p>
+<ul>
+<li>When the evaluation returns <strong>No data</strong> or all values are null.</li>
+<li>When the evaluation returns <strong>Error</strong> or timeout.</li>
+</ul>
+<h3 id="configure-no-data-and-error-handling">Configure no data and error handling</h3>
+
+   
+   <div data-shared="alerts/table-configure-no-data-and-error.md">
+               <table>
+     <thead>
+         <tr>
+             <th>Configure</th>
+             <th>Set alert state</th>
+             <th>Description</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr>
+             <td>No Data</td>
+             <td>No Data</td>
+             <td>The default option for <strong>No Data</strong> events.<br/>Sets alert instance state to <code>No Data</code>. <br/> The alert rule immediately creates a new <code>DatasourceNoData</code> alert instance after evaluation, with the alert rule&rsquo;s name, UID, and the data source UID as labels.</td>
+         </tr>
+         <tr>
+             <td>Error</td>
+             <td>Error</td>
+             <td>The default option for <strong>Error</strong> events.<br/>Sets alert instance state to <code>Error</code>. <br/> The alert rule immediately creates a new <code>DatasourceError</code> alert instance after evaluation, with the alert rule&rsquo;s name, UID, and the data source UID as labels.</td>
+         </tr>
+         <tr>
+             <td>No Data or Error</td>
+             <td>Alerting</td>
+             <td>Sets the alert instance state to <code>Pending</code> and then transitions to <code>Alerting</code> once the pending period ends. If you sent the pending period to 0, the alert instance state is immediately set to <code>Alerting</code>.</td>
+         </tr>
+         <tr>
+             <td>No Data or Error</td>
+             <td>Normal</td>
+             <td>Sets alert instance state to <code>Normal</code>.</td>
+         </tr>
+         <tr>
+             <td>No Data or Error</td>
+             <td>Keep Last State</td>
+             <td>Maintains the alert instance in its last state. Useful for mitigating temporary issues.</td>
+         </tr>
+     </tbody>
+   </table>
+   </div>
+   
+           
+<p>For more details, refer to 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/stale-alert-instances/">alert instance states</a> and 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/nodata-and-error-states/#modify-the-no-data-or-error-state">modify the no data or error state</a>.</p>
+</li>
+<li>
+<p>In <strong>Configure no data and error handling</strong>, you can also configure 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/stale-alert-instances/#configure-missing-series-evaluations-to-resolve">Missing series evaluations to resolve</a>: how many consecutive evaluation intervals must pass without data before an alert instance is considered stale.</p>
+</li>
+</ol>
+<h2 id="configure-notifications">Configure notifications</h2>
+<p>Choose to select a contact point directly from the alert rule form or to use notification policy routing as well as set up mute timings and groupings.</p>
+<p>Complete the following steps to set up notifications.</p>
+<ol>
+<li>
+<p>Configure who receives a notification when an alert rule fires by either choosing <strong>Select contact point</strong> or <strong>Use notification policy</strong>.</p>
+<p><strong>Select contact point</strong></p>
+<ol>
+<li>
+<p>Choose this option to select an existing 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/contact-points/">contact point</a>.</p>
+<p>All notifications for this alert rule are sent to this contact point automatically and notification policies aren&rsquo;t used.</p>
+</li>
+<li>
+<p>You can also optionally select a mute or active timing as well as groupings and timings to define when not to send notifications.</p>
+</li>
+</ol>
+<p><strong>Use notification policy</strong></p>
+<ol>
+<li>
+<p>Choose this option to use the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">notification policy tree</a> to handle alert notifications.</p>
+<p>All notifications for this alert rule are managed by the notification policy tree, which routes alerts based on their labels.
+If an alert doesn&rsquo;t match a specific policy, the default notification policy applies, ensuring all alerts are handled.</p>
+</li>
+<li>
+<p>Preview your alert instance routing set up.</p>
+<p>Based on the labels added, alert instances are routed to the following notification policies displayed.</p>
+</li>
+<li>
+<p>Expand each notification policy below to view more details.</p>
+</li>
+<li>
+<p>Click <strong>See details</strong> to view alert routing details and an email preview.</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="configure-notification-message">Configure notification message</h2>
+<p>Use 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#annotations">annotations</a> to add information to alert messages that can help respond to the alert.</p>
+<p>Annotations are included by default in notification messages, and can use text or 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">templates</a> to display dynamic data from queries.</p>
+<p>Grafana provides several optional annotations.</p>
+<ol>
+<li>
+<p>Optional: Add a summary.</p>
+<p>Short summary of what happened and why.</p>
+</li>
+<li>
+<p>Optional: Add a description.</p>
+<p>Description of what the alert rule does.</p>
+</li>
+<li>
+<p>Optional: Add a Runbook URL.</p>
+<p>Webpage where you keep your runbook for the alert</p>
+</li>
+<li>
+<p>Optional: Add a custom annotation.</p>
+<p>Add any additional information that could help address the alert.</p>
+</li>
+<li>
+<p>Optional: <strong>Link dashboard and panel</strong>.</p>
+<p>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/link-alert-rules-to-panels/">Link the alert rule to a panel</a> to facilitate alert investigation.</p>
+</li>
+<li>
+<p>Click <strong>Save rule</strong>.</p>
+</li>
+</ol>

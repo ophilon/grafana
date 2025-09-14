@@ -1,0 +1,3447 @@
+<!DOCTYPE html>
+<h1 id="transform-data">Transform data</h1>
+<p>Transformations are a powerful way to manipulate data returned by a query before the system applies a visualization. Using transformations, you can:</p>
+<ul>
+<li>Rename fields</li>
+<li>Join time series/SQL-like data</li>
+<li>Perform mathematical operations across queries</li>
+<li>Use the output of one transformation as the input to another transformation</li>
+</ul>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2 my-1">
+  <img class="maxw-240 w-100p mb-1 lazyload" data-src="/media/docs/learning-journey/map.svg" width="237" height="154" alt="Grafana Learning Journeys">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Start your learning experience with Grafana Learning Journeys</div>
+    <p class="pr-1 pb-half">Grafana Learning Journeys provide a clear, structured path that leads you from beginner concepts to advanced use cases. Learn about this Grafana feature on <a href="/docs/learning-journeys/data-transformation/">Transform data in a Grafana Cloud dashboard</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" href="/docs/learning-journeys/data-transformation/">Start learning</a>
+    </div>
+  </div>
+</div>
+<p>For users that rely on multiple views of the same dataset, transformations offer an efficient method of creating and maintaining numerous dashboards.</p>
+<p>You can also use the output of one transformation as the input to another transformation, which results in a performance gain.</p>
+<blockquote>
+<p>Sometimes the system cannot graph transformed data. When that happens, click the <code>Table view</code> toggle above the visualization to switch to a table view of the data. This can help you understand the final result of your transformations.</p></blockquote>
+<h2 id="transformation-types">Transformation types</h2>
+<p>Grafana provides a number of ways that you can transform data. For a complete list of transformations, refer to <a href="#transformation-functions">Transformation functions</a>.</p>
+<h2 id="order-of-transformations">Order of transformations</h2>
+<p>When there are multiple transformations, Grafana applies them in the order they are listed. Each transformation creates a result set that then passes on to the next transformation in the processing pipeline.</p>
+<p>The order in which Grafana applies transformations directly impacts the results. For example, if you use a Reduce transformation to condense all the results of one column into a single value, then you can only apply transformations to that single value.</p>
+<h2 id="dashboard-variables-in-transformations">Dashboard variables in transformations</h2>
+<p>All text input fields in transformations accept 
+    <a href="/docs/grafana/latest/dashboards/variables/">variable syntax</a>:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 549px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="Transformation with a mock variable in a text field"width="549"height="234"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-transformation-variables-v11.6.png"
+            alt="Transformation with a mock variable in a text field"width="549"height="234"/>
+        </noscript></div></a></figure>
+<p>When you use dashboard variables in transformations, the variables are automatically interpolated before the transformations are applied to the data.</p>
+<p>For an example, refer to <a href="#use-a-dashboard-variable">Use a dashboard variable</a> in the <strong>Filter fields by name</strong> transformation.</p>
+<h2 id="add-a-transformation-function-to-data">Add a transformation function to data</h2>
+<p>The following steps guide you in adding a transformation to data. This documentation does not include steps for each type of transformation. For a complete list of transformations, refer to <a href="#transformation-functions">Transformation functions</a>.</p>
+<ol>
+<li>Navigate to the panel where you want to add one or more transformations.</li>
+<li>Hover over any part of the panel to display the actions menu on the top right corner.</li>
+<li>Click the menu and select <strong>Edit</strong>.</li>
+<li>Click the <strong>Transform</strong> tab.</li>
+<li>Click a transformation.
+A transformation row appears where you configure the transformation options. For more information about how to configure a transformation, refer to <a href="#transformation-functions">Transformation functions</a>.
+For information about available calculations, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a>.</li>
+<li>To apply another transformation, click <strong>Add transformation</strong>.
+This transformation acts on the result set returned by the previous transformation.
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 1100px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/static/img/docs/transformations/transformations-7-0.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/static/img/docs/transformations/transformations-7-0.png"data-srcset="/static/img/docs/transformations/transformations-7-0.png?w=320 320w, /static/img/docs/transformations/transformations-7-0.png?w=550 550w, /static/img/docs/transformations/transformations-7-0.png?w=750 750w, /static/img/docs/transformations/transformations-7-0.png?w=900 900w, /static/img/docs/transformations/transformations-7-0.png?w=1040 1040w, /static/img/docs/transformations/transformations-7-0.png?w=1240 1240w, /static/img/docs/transformations/transformations-7-0.png?w=1920 1920w"
+             data-sizes="auto"alt="Transform tab in the panel editor"width="1605"height="354"/>
+           <noscript>
+             <img
+               src="/static/img/docs/transformations/transformations-7-0.png"
+               alt="Transform tab in the panel editor"width="1605"height="354"class="docs-image--no-shadow"/>
+           </noscript></div></a></figure></li>
+</ol>
+<h2 id="debug-a-transformation">Debug a transformation</h2>
+<p>To see the input and the output result sets of the transformation, click the bug icon on the right side of the transformation row.</p>
+<p>The input and output results sets can help you debug a transformation.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/debug-transformations-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/debug-transformations-7-0.png"data-srcset="/static/img/docs/transformations/debug-transformations-7-0.png?w=320 320w, /static/img/docs/transformations/debug-transformations-7-0.png?w=550 550w, /static/img/docs/transformations/debug-transformations-7-0.png?w=750 750w, /static/img/docs/transformations/debug-transformations-7-0.png?w=900 900w, /static/img/docs/transformations/debug-transformations-7-0.png?w=1040 1040w, /static/img/docs/transformations/debug-transformations-7-0.png?w=1240 1240w, /static/img/docs/transformations/debug-transformations-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="The debug transformation screen with the debug icon highlighted"width="1510"height="762"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/debug-transformations-7-0.png"
+            alt="The debug transformation screen with the debug icon highlighted"width="1510"height="762"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="disable-a-transformation">Disable a transformation</h2>
+<p>You can disable or hide one or more transformations by clicking on the eye icon on the top right side of the transformation row. This disables the applied actions of that specific transformation and can help to identify issues when you change several transformations one after another.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/screenshot-example-disable-transformation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/screenshot-example-disable-transformation.png"data-srcset="/static/img/docs/transformations/screenshot-example-disable-transformation.png?w=320 320w, /static/img/docs/transformations/screenshot-example-disable-transformation.png?w=550 550w, /static/img/docs/transformations/screenshot-example-disable-transformation.png?w=750 750w, /static/img/docs/transformations/screenshot-example-disable-transformation.png?w=900 900w, /static/img/docs/transformations/screenshot-example-disable-transformation.png?w=1040 1040w, /static/img/docs/transformations/screenshot-example-disable-transformation.png?w=1240 1240w, /static/img/docs/transformations/screenshot-example-disable-transformation.png?w=1920 1920w"
+          data-sizes="auto"alt="A transformation row with the disable transformation icon highlighted"width="1942"height="170"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/screenshot-example-disable-transformation.png"
+            alt="A transformation row with the disable transformation icon highlighted"width="1942"height="170"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="filter-a-transformation">Filter a transformation</h2>
+<p>If your panel uses more than one query, you can filter these and apply the selected transformation to only one of the queries. To do this, click the filter icon on the top right of the transformation row. This opens a drop-down with a list of queries used on the panel. From here, you can select the query you want to transform.</p>
+<p>You can also filter by annotations (which includes exemplars) to apply transformations to them. When you do so, the list of fields changes to reflect those in the annotation or exemplar tooltip.</p>
+<p>The filter icon is always displayed if your panel has more than one query or source of data (that is, panel or annotation data) but it may not work if previous transformations for merging the queries’ outputs are applied. This is because one transformation takes the output of the previous one.</p>
+<h2 id="delete-a-transformation">Delete a transformation</h2>
+<p>We recommend that you remove transformations that you don&rsquo;t need. When you delete a transformation, you remove the data from the visualization.</p>
+<p><strong>Before you begin:</strong></p>
+<ul>
+<li>Identify all dashboards that rely on the transformation and inform impacted dashboard users.</li>
+</ul>
+<p><strong>To delete a transformation</strong>:</p>
+<ol>
+<li>Open a panel for editing.</li>
+<li>Click the <strong>Transform</strong> tab.</li>
+<li>Click the trash icon next to the transformation you want to delete.</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/screenshot-example-remove-transformation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/screenshot-example-remove-transformation.png"data-srcset="/static/img/docs/transformations/screenshot-example-remove-transformation.png?w=320 320w, /static/img/docs/transformations/screenshot-example-remove-transformation.png?w=550 550w, /static/img/docs/transformations/screenshot-example-remove-transformation.png?w=750 750w, /static/img/docs/transformations/screenshot-example-remove-transformation.png?w=900 900w, /static/img/docs/transformations/screenshot-example-remove-transformation.png?w=1040 1040w, /static/img/docs/transformations/screenshot-example-remove-transformation.png?w=1240 1240w, /static/img/docs/transformations/screenshot-example-remove-transformation.png?w=1920 1920w"
+          data-sizes="auto"alt="A transformation row with the remove transformation icon highlighted"width="1931"height="319"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/screenshot-example-remove-transformation.png"
+            alt="A transformation row with the remove transformation icon highlighted"width="1931"height="319"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="transformation-functions">Transformation functions</h2>
+<p>You can perform the following transformations on your data.</p>
+<h3 id="add-field-from-calculation">Add field from calculation</h3>
+<p>Use this transformation to add a new field calculated from two other fields. Each transformation allows you to add one new field.</p>
+<ul>
+<li><strong>Mode</strong> - Select a mode:
+<ul>
+<li><strong>Reduce row</strong> - Apply selected calculation on each row of selected fields independently.</li>
+<li><strong>Binary operation</strong> - Apply basic binary operations (for example, sum or multiply) on values in a single row from two selected fields.</li>
+<li><strong>Unary operation</strong> - Apply basic unary operations on values in a single row from a selected field. The available operations are:
+<ul>
+<li><strong>Absolute value (abs)</strong> - Returns the absolute value of a given expression. It represents its distance from zero as a positive number.</li>
+<li><strong>Natural exponential (exp)</strong> - Returns <em>e</em> raised to the power of a given expression.</li>
+<li><strong>Natural logarithm (ln)</strong> - Returns the natural logarithm of a given expression.</li>
+<li><strong>Floor (floor)</strong> - Returns the largest integer less than or equal to a given expression.</li>
+<li><strong>Ceiling (ceil)</strong> - Returns the smallest integer greater than or equal to a given expression.</li>
+</ul>
+</li>
+<li><strong>Cumulative functions</strong> - Apply functions on the current row and all preceding rows.
+<ul>
+<li><strong>Total</strong> - Calculates the cumulative total up to and including the current row.</li>
+<li><strong>Mean</strong> - Calculates the mean up to and including the current row.</li>
+</ul>
+</li>
+<li><strong>Window functions</strong> - Apply window functions. The window can either be <strong>trailing</strong> or <strong>centered</strong>.
+With a trailing window the current row will be the last row in the window.
+With a centered window the window will be centered on the current row.
+For even window sizes, the window will be centered between the current row, and the previous row.
+<ul>
+<li><strong>Mean</strong> - Calculates the moving mean or running average.</li>
+<li><strong>Stddev</strong> - Calculates the moving standard deviation.</li>
+<li><strong>Variance</strong> - Calculates the moving variance.</li>
+</ul>
+</li>
+<li><strong>Row index</strong> - Insert a field with the row index.</li>
+</ul>
+</li>
+<li><strong>Field name</strong> - Select the names of fields you want to use in the calculation for the new field.</li>
+<li><strong>Calculation</strong> - If you select <strong>Reduce row</strong> mode, then the <strong>Calculation</strong> field appears. Click in the field to see a list of calculation choices you can use to create the new field. For information about available calculations, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a>.</li>
+<li><strong>Operation</strong> - If you select <strong>Binary operation</strong> or <strong>Unary operation</strong> mode, then the <strong>Operation</strong> fields appear. These fields allow you to apply basic math operations on values in a single row from selected fields. You can also use numerical values for binary operations.
+<ul>
+<li><strong>All number fields</strong> - Set the left side of a <strong>Binary operation</strong> to apply the calculation to all number fields.</li>
+</ul>
+</li>
+<li><strong>As percentile</strong> - If you select <strong>Row index</strong> mode, then the <strong>As percentile</strong> switch appears. This switch allows you to transform the row index as a percentage of the total number of rows.</li>
+<li><strong>Alias</strong> - (Optional) Enter the name of your new field. If you leave this blank, then the field will be named to match the calculation.
+<blockquote>
+<p><strong>Note:</strong> If a variable is used in this transformation, the default alias will be interpolated with the value of the variable. If you want an alias to be unaffected by variable changes, explicitly define the alias.</p></blockquote>
+</li>
+<li><strong>Replace all fields</strong> - (Optional) Select this option if you want to hide all other fields and display only your calculated field in the visualization.</li>
+</ul>
+<p>In the example below, we added two fields together and named them Sum.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png"data-srcset="/static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png?w=320 320w, /static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png?w=550 550w, /static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png?w=750 750w, /static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png?w=900 900w, /static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png?w=1040 1040w, /static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png?w=1240 1240w, /static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A stat visualization including one field called Sum"width="1846"height="962"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/add-field-from-calc-stat-example-7-0.png"
+            alt="A stat visualization including one field called Sum"width="1846"height="962"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h3 id="concatenate-fields">Concatenate fields</h3>
+<p>Use this transformation to combine all fields from all frames into one result.</p>
+<p>For example, if you have separate queries retrieving temperature and uptime data (Query A) and air quality index and error information (Query B), applying the concatenate transformation yields a consolidated data frame with all relevant information in one view.</p>
+<p>Consider the following:</p>
+<p><strong>Query A:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Temp</th>
+          <th>Uptime</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>15.4</td>
+          <td>1230233</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Query B:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>AQI</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>3.2</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>After you concatenate the fields, the data frame would be:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Temp</th>
+          <th>Uptime</th>
+          <th>AQI</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>15.4</td>
+          <td>1230233</td>
+          <td>3.2</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation simplifies the process of merging data from different sources, providing a comprehensive view for analysis and visualization.</p>
+<h3 id="config-from-query-results">Config from query results</h3>
+<p>Use this transformation to select a query and extract standard options, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Unit</strong>, and <strong>Thresholds</strong>, and apply them to other query results. This feature enables dynamic visualization configuration based on the data returned by a specific query.</p>
+<h4 id="options">Options</h4>
+<ul>
+<li><strong>Config query</strong> - Select the query that returns the data you want to use as configuration.</li>
+<li><strong>Apply to</strong> - Select the fields or series to which the configuration should be applied.</li>
+<li><strong>Apply to options</strong> - Specify a field type or use a field name regex, depending on your selection in <strong>Apply to</strong>.</li>
+</ul>
+<h4 id="field-mapping-table">Field mapping table</h4>
+<p>Below the configuration options, you&rsquo;ll find the field mapping table. This table lists all fields found in the data returned by the config query, along with <strong>Use as</strong> and <strong>Select</strong> options. It provides control over mapping fields to config properties, and for multiple rows, it allows you to choose which value to select.</p>
+<h4 id="example">Example</h4>
+<p>Input[0] (From query: A, name: ServerA)</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1626178119127</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>1626178119129</td>
+          <td>30</td>
+      </tr>
+  </tbody>
+</table>
+<p>Input[1] (From query: B)</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1626178119127</td>
+          <td>100</td>
+      </tr>
+      <tr>
+          <td>1626178119129</td>
+          <td>100</td>
+      </tr>
+  </tbody>
+</table>
+<p>Output (Same as Input[0] but now with config on the Value field)</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Value (config: Max=100)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1626178119127</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>1626178119129</td>
+          <td>30</td>
+      </tr>
+  </tbody>
+</table>
+<p>Each row in the source data becomes a separate field. Each field now has a maximum configuration option set. Options such as <strong>Min</strong>, <strong>Max</strong>, <strong>Unit</strong>, and <strong>Thresholds</strong> are part of the field configuration. If set, they are used by the visualization instead of any options manually configured in the panel editor options pane.</p>
+<h4 id="value-mappings">Value mappings</h4>
+<p>You can also transform a query result into value mappings. With this option, every row in the configuration query result defines a single value mapping row. See the following example.</p>
+<p>Config query result:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Value</th>
+          <th>Text</th>
+          <th>Color</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>L</td>
+          <td>Low</td>
+          <td>blue</td>
+      </tr>
+      <tr>
+          <td>M</td>
+          <td>Medium</td>
+          <td>green</td>
+      </tr>
+      <tr>
+          <td>H</td>
+          <td>High</td>
+          <td>red</td>
+      </tr>
+  </tbody>
+</table>
+<p>In the field mapping specify:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>Use as</th>
+          <th>Select</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Value mappings / Value</td>
+          <td>All values</td>
+      </tr>
+      <tr>
+          <td>Text</td>
+          <td>Value mappings / Text</td>
+          <td>All values</td>
+      </tr>
+      <tr>
+          <td>Color</td>
+          <td>Value mappings / Color</td>
+          <td>All values</td>
+      </tr>
+  </tbody>
+</table>
+<p>Grafana builds value mappings from your query result and applies them to the real data query results. You should see values being mapped and colored according to the config query results.</p>
+<blockquote>
+<p><strong>Note:</strong> When you use this transformation for thresholds, the visualization continues to use the panel&rsquo;s base threshold.</p></blockquote>
+<h3 id="convert-field-type">Convert field type</h3>
+<p>Use this transformation to modify the field type of a specified field.</p>
+<p>This transformation has the following options:</p>
+<ul>
+<li><strong>Field</strong> - Select from available fields</li>
+<li><strong>as</strong> - Select the FieldType to convert to
+<ul>
+<li><strong>Numeric</strong> - attempts to make the values numbers</li>
+<li><strong>String</strong> - will make the values strings</li>
+<li><strong>Time</strong> - attempts to parse the values as time
+<ul>
+<li>The input will be parsed according to the <a href="https://momentjs.com/docs/#/parsing/" target="_blank" rel="noopener noreferrer">Moment.js parsing format</a></li>
+<li>It will parse the numeric input as a Unix epoch timestamp in milliseconds.
+You must multiply your input by 1000 if it&rsquo;s in seconds.</li>
+<li>Will show an option to specify a DateFormat as input by a string like yyyy-mm-dd or DD MM YYYY hh:mm:ss</li>
+</ul>
+</li>
+<li><strong>Boolean</strong> - will make the values booleans</li>
+<li><strong>Enum</strong> - will make the values enums
+<ul>
+<li>Will show a table to manage the enums</li>
+</ul>
+</li>
+<li><strong>Other</strong> - attempts to parse the values as JSON</li>
+</ul>
+</li>
+</ul>
+<p>For example, consider the following query that could be modified by selecting the time field as Time and specifying Date Format as YYYY.</p>
+<h4 id="sample-query">Sample Query</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Mark</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2017-07-01</td>
+          <td>above</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2018-08-02</td>
+          <td>below</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2019-09-02</td>
+          <td>below</td>
+          <td>29</td>
+      </tr>
+      <tr>
+          <td>2020-10-04</td>
+          <td>above</td>
+          <td>22</td>
+      </tr>
+  </tbody>
+</table>
+<p>The result:</p>
+<h4 id="transformed-query">Transformed Query</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Mark</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2017-01-01 00:00:00</td>
+          <td>above</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2018-01-01 00:00:00</td>
+          <td>below</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2019-01-01 00:00:00</td>
+          <td>below</td>
+          <td>29</td>
+      </tr>
+      <tr>
+          <td>2020-01-01 00:00:00</td>
+          <td>above</td>
+          <td>22</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation allows you to flexibly adapt your data types, ensuring compatibility and consistency in your visualizations.</p>
+<h3 id="extract-fields">Extract fields</h3>
+<p>Use this transformation to select a source of data and extract content from it in different formats. This transformation has the following fields:</p>
+<ul>
+<li><strong>Source</strong> - Select the field for the source of data.</li>
+<li><strong>Format</strong> - Choose one of the following:
+<ul>
+<li><strong>JSON</strong> - Parse JSON content from the source.</li>
+<li><strong>Key+value pairs</strong> - Parse content in the format &lsquo;a=b&rsquo; or &lsquo;c:d&rsquo; from the source.</li>
+<li><strong>RegExp</strong> - Parse content using a regular expression with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Named_capturing_group" target="_blank" rel="noopener noreferrer">named capturing group(s)</a> like <code>/(?&lt;NewField&gt;.*)/</code>.
+<figure
+        class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+        style="max-width: 1100px;"
+        itemprop="associatedMedia"
+        itemscope=""
+        itemtype="http://schema.org/ImageObject"
+      ><a
+            class="lightbox-link"
+            href="/media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png"
+            itemprop="contentUrl"
+          ><div class="img-wrapper w-100p h-auto"><img
+              class="lazyload "
+              data-src="/media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png?w=1920 1920w"
+              data-sizes="auto"alt="Example of a regular expression"width="500"height="171"/>
+            <noscript>
+              <img
+                src="/media/docs/grafana/panels-visualizations/screenshot-regexp-detail-v11.3-2.png"
+                alt="Example of a regular expression"width="500"height="171"class="docs-image--no-shadow"/>
+            </noscript></div></a></figure></li>
+<li><strong>Auto</strong> - Discover fields automatically.</li>
+</ul>
+</li>
+<li><strong>Replace All Fields</strong> - (Optional) Select this option to hide all other fields and display only your calculated field in the visualization.</li>
+<li><strong>Keep Time</strong> - (Optional) Available only if <strong>Replace All Fields</strong> is true. Keeps the time field in the output.</li>
+</ul>
+<p>Consider the following dataset:</p>
+<h4 id="dataset-example">Dataset Example</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>json_data</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1636678740000000000</td>
+          <td>{&ldquo;value&rdquo;: 1}</td>
+      </tr>
+      <tr>
+          <td>1636678680000000000</td>
+          <td>{&ldquo;value&rdquo;: 5}</td>
+      </tr>
+      <tr>
+          <td>1636678620000000000</td>
+          <td>{&ldquo;value&rdquo;: 12}</td>
+      </tr>
+  </tbody>
+</table>
+<p>You could prepare the data to be used by a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series panel</a> with this configuration:</p>
+<ul>
+<li>Source: json_data</li>
+<li>Format: JSON
+<ul>
+<li>Field: value</li>
+<li>Alias: my_value</li>
+</ul>
+</li>
+<li>Replace all fields: true</li>
+<li>Keep time: true</li>
+</ul>
+<p>This will generate the following output:</p>
+<h4 id="transformed-data">Transformed Data</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>my_value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1636678740000000000</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>1636678680000000000</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>1636678620000000000</td>
+          <td>12</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation allows you to extract and format data in various ways. You can customize the extraction format based on your specific data needs.</p>
+<h3 id="lookup-fields-from-resource">Lookup fields from resource</h3>
+<p>Use this transformation to enrich a field value by looking up additional fields from an external source.</p>
+<p>This transformation has the following fields:</p>
+<ul>
+<li><strong>Field</strong> - Select a text field from your dataset.</li>
+<li><strong>Lookup</strong> - Choose from <strong>Countries</strong>, <strong>USA States</strong>, and <strong>Airports</strong>.</li>
+</ul>
+<p>This transformation currently supports spatial data.</p>
+<p>For example, if you have this data:</p>
+<h4 id="dataset-example-1">Dataset Example</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Location</th>
+          <th>Values</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>AL</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>AK</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>Arizona</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>Arkansas</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>Somewhere</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>With this configuration:</p>
+<ul>
+<li>Field: location</li>
+<li>Lookup: USA States</li>
+</ul>
+<p>You&rsquo;ll get the following output:</p>
+<h4 id="transformed-data-1">Transformed Data</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Location</th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Lng</th>
+          <th>Lat</th>
+          <th>Values</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>AL</td>
+          <td>AL</td>
+          <td>Alabama</td>
+          <td>-80.891064</td>
+          <td>12.448457</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>AK</td>
+          <td>AK</td>
+          <td>Arkansas</td>
+          <td>-100.891064</td>
+          <td>24.448457</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>Arizona</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>Arkansas</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>Somewhere</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation lets you augment your data by fetching additional information from external sources, providing a more comprehensive dataset for analysis and visualization.</p>
+<h3 id="filter-data-by-query-refid">Filter data by query refId</h3>
+<p>Use this transformation to hide one or more queries in panels that have multiple queries.</p>
+<p>Grafana displays the query identification letters in dark gray text. Click a query identifier to toggle filtering. If the query letter is white, then the results are displayed. If the query letter is dark, then the results are hidden.</p>
+<blockquote>
+<p><strong>Note:</strong> This transformation is not available for Graphite because this data source does not support correlating returned data with queries.</p></blockquote>
+<p>In the example below, the panel has three queries (A, B, C). We removed the B query from the visualization.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/filter-by-query-stat-example-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/filter-by-query-stat-example-7-0.png"data-srcset="/static/img/docs/transformations/filter-by-query-stat-example-7-0.png?w=320 320w, /static/img/docs/transformations/filter-by-query-stat-example-7-0.png?w=550 550w, /static/img/docs/transformations/filter-by-query-stat-example-7-0.png?w=750 750w, /static/img/docs/transformations/filter-by-query-stat-example-7-0.png?w=900 900w, /static/img/docs/transformations/filter-by-query-stat-example-7-0.png?w=1040 1040w, /static/img/docs/transformations/filter-by-query-stat-example-7-0.png?w=1240 1240w, /static/img/docs/transformations/filter-by-query-stat-example-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A stat visualization with results from two queries, A and C"width="1841"height="672"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/filter-by-query-stat-example-7-0.png"
+            alt="A stat visualization with results from two queries, A and C"width="1841"height="672"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h3 id="filter-data-by-values">Filter data by values</h3>
+<p>Use this transformation to selectively filter data points directly within your visualization. This transformation provides options to include or exclude data based on one or more conditions applied to a selected field.</p>
+<p>This transformation is very useful if your data source does not natively filter by values. You might also use this to narrow values to display if you are using a shared query.</p>
+<p>The available conditions for all fields are:</p>
+<ul>
+<li><strong>Regex</strong> - Match a regex expression.</li>
+<li><strong>Is Null</strong> - Match if the value is null.</li>
+<li><strong>Is Not Null</strong> - Match if the value is not null.</li>
+<li><strong>Equal</strong> - Match if the value is equal to the specified value.</li>
+<li><strong>Different</strong> - Match if the value is different than the specified value.</li>
+</ul>
+<p>The available conditions for string fields are:</p>
+<ul>
+<li><strong>Contains substring</strong> - Match if the value contains the specified substring (case insensitive).</li>
+<li><strong>Does not contain substring</strong> - Match if the value doesn&rsquo;t contain the specified substring (case insensitive).</li>
+</ul>
+<p>The available conditions for number and time fields are:</p>
+<ul>
+<li><strong>Greater</strong> - Match if the value is greater than the specified value.</li>
+<li><strong>Lower</strong> - Match if the value is lower than the specified value.</li>
+<li><strong>Greater or equal</strong> - Match if the value is greater or equal.</li>
+<li><strong>Lower or equal</strong> - Match if the value is lower or equal.</li>
+<li><strong>Range</strong> - Match a range between a specified minimum and maximum, min and max included. A time field will pre-populate with variables to filter by selected time.</li>
+</ul>
+<p>Consider the following dataset:</p>
+<h4 id="dataset-example-2">Dataset Example</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Temperature</th>
+          <th>Altitude</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:23</td>
+          <td>32</td>
+          <td>101</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:22</td>
+          <td>28</td>
+          <td>125</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:21</td>
+          <td>26</td>
+          <td>110</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>23</td>
+          <td>98</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:24</td>
+          <td>31</td>
+          <td>95</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>20</td>
+          <td>85</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>19</td>
+          <td>101</td>
+      </tr>
+  </tbody>
+</table>
+<p>If you <strong>Include</strong> the data points that have a temperature below 30°C, the configuration will look as follows:</p>
+<ul>
+<li>Filter Type: &lsquo;Include&rsquo;</li>
+<li>Condition: Rows where &lsquo;Temperature&rsquo; matches &lsquo;Lower Than&rsquo; &lsquo;30&rsquo;</li>
+</ul>
+<p>And you will get the following result, where only the temperatures below 30°C are included:</p>
+<h4 id="transformed-data-2">Transformed Data</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Temperature</th>
+          <th>Altitude</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:22</td>
+          <td>28</td>
+          <td>125</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:21</td>
+          <td>26</td>
+          <td>110</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>23</td>
+          <td>98</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>20</td>
+          <td>85</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>19</td>
+          <td>101</td>
+      </tr>
+  </tbody>
+</table>
+<p>You can add more than one condition to the filter. For example, you might want to include the data only if the altitude is greater than 100. To do so, add that condition to the following configuration:</p>
+<ul>
+<li>Filter type: &lsquo;Include&rsquo; rows that &lsquo;Match All&rsquo; conditions</li>
+<li>Condition 1: Rows where &lsquo;Temperature&rsquo; matches &lsquo;Lower&rsquo; than &lsquo;30&rsquo;</li>
+<li>Condition 2: Rows where &lsquo;Altitude&rsquo; matches &lsquo;Greater&rsquo; than &lsquo;100&rsquo;</li>
+</ul>
+<p>When you have more than one condition, you can choose if you want the action (include/exclude) to be applied on rows that <strong>Match all</strong> conditions or <strong>Match any</strong> of the conditions you added.</p>
+<p>In the example above, we chose <strong>Match all</strong> because we wanted to include the rows that have a temperature lower than 30°C <em>AND</em> an altitude higher than 100. If we wanted to include the rows that have a temperature lower than 30°C <em>OR</em> an altitude higher than 100 instead, then we would select <strong>Match any</strong>. This would include the first row in the original data, which has a temperature of 32°C (does not match the first condition) but an altitude of 101 (which matches the second condition), so it is included.</p>
+<p>Conditions that are invalid or incompletely configured are ignored.</p>
+<p>This versatile data filtering transformation lets you to selectively include or exclude data points based on specific conditions. Customize the criteria to tailor your data presentation to meet your unique analytical needs.</p>
+<h3 id="filter-fields-by-name">Filter fields by name</h3>
+<p>Use this transformation to selectively remove parts of your query results. There are three ways to filter field names:</p>
+<ul>
+<li><a href="#use-a-regular-expression">Using a regular expression</a></li>
+<li><a href="#manually-select-included-fields">Manually selecting included fields</a></li>
+<li><a href="#use-a-dashboard-variable">Using a dashboard variable</a></li>
+</ul>
+<h4 id="use-a-regular-expression">Use a regular expression</h4>
+<p>When you filter using a regular expression, field names that match the regular expression are included.</p>
+<p>For example, from the input data:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>dev-eu-west</th>
+          <th>dev-eu-north</th>
+          <th>prod-eu-west</th>
+          <th>prod-eu-north</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2023-03-04 23:56:23</td>
+          <td>23.5</td>
+          <td>24.5</td>
+          <td>22.2</td>
+          <td>20.2</td>
+      </tr>
+      <tr>
+          <td>2023-03-04 23:56:23</td>
+          <td>23.6</td>
+          <td>24.4</td>
+          <td>22.1</td>
+          <td>20.1</td>
+      </tr>
+  </tbody>
+</table>
+<p>The result from using the regular expression &lsquo;prod.*&rsquo; would be:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>prod-eu-west</th>
+          <th>prod-eu-north</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2023-03-04 23:56:23</td>
+          <td>22.2</td>
+          <td>20.2</td>
+      </tr>
+      <tr>
+          <td>2023-03-04 23:56:23</td>
+          <td>22.1</td>
+          <td>20.1</td>
+      </tr>
+  </tbody>
+</table>
+<p>The regular expression can include an interpolated dashboard variable by using the ${variableName} syntax.</p>
+<h4 id="manually-select-included-fields">Manually select included fields</h4>
+<p>Click and uncheck the field names to remove them from the result. Fields that are matched by the regular expression are still included, even if they&rsquo;re unchecked.</p>
+<h4 id="use-a-dashboard-variable">Use a dashboard variable</h4>
+<p>Enable &lsquo;From variable&rsquo; to let you select a dashboard variable that&rsquo;s used to include fields. By setting up a 
+    <a href="/docs/grafana/latest/dashboards/variables/">dashboard variable</a> with multiple choices, the same fields can be displayed across multiple visualizations.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/filter-name-table-before-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/filter-name-table-before-7-0.png"data-srcset="/static/img/docs/transformations/filter-name-table-before-7-0.png?w=320 320w, /static/img/docs/transformations/filter-name-table-before-7-0.png?w=550 550w, /static/img/docs/transformations/filter-name-table-before-7-0.png?w=750 750w, /static/img/docs/transformations/filter-name-table-before-7-0.png?w=900 900w, /static/img/docs/transformations/filter-name-table-before-7-0.png?w=1040 1040w, /static/img/docs/transformations/filter-name-table-before-7-0.png?w=1240 1240w, /static/img/docs/transformations/filter-name-table-before-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A table visualization with time, value, Min, and Max columns"width="1181"height="338"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/filter-name-table-before-7-0.png"
+            alt="A table visualization with time, value, Min, and Max columns"width="1181"height="338"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>Here&rsquo;s the table after we applied the transformation to remove the Min field.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/filter-name-table-after-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/filter-name-table-after-7-0.png"data-srcset="/static/img/docs/transformations/filter-name-table-after-7-0.png?w=320 320w, /static/img/docs/transformations/filter-name-table-after-7-0.png?w=550 550w, /static/img/docs/transformations/filter-name-table-after-7-0.png?w=750 750w, /static/img/docs/transformations/filter-name-table-after-7-0.png?w=900 900w, /static/img/docs/transformations/filter-name-table-after-7-0.png?w=1040 1040w, /static/img/docs/transformations/filter-name-table-after-7-0.png?w=1240 1240w, /static/img/docs/transformations/filter-name-table-after-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A table visualization with time, value, and Max columns"width="1545"height="680"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/filter-name-table-after-7-0.png"
+            alt="A table visualization with time, value, and Max columns"width="1545"height="680"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>Here is the same query using a Stat visualization.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/filter-name-stat-after-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/filter-name-stat-after-7-0.png"data-srcset="/static/img/docs/transformations/filter-name-stat-after-7-0.png?w=320 320w, /static/img/docs/transformations/filter-name-stat-after-7-0.png?w=550 550w, /static/img/docs/transformations/filter-name-stat-after-7-0.png?w=750 750w, /static/img/docs/transformations/filter-name-stat-after-7-0.png?w=900 900w, /static/img/docs/transformations/filter-name-stat-after-7-0.png?w=1040 1040w, /static/img/docs/transformations/filter-name-stat-after-7-0.png?w=1240 1240w, /static/img/docs/transformations/filter-name-stat-after-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A stat visualization with value and Max fields"width="1830"height="730"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/filter-name-stat-after-7-0.png"
+            alt="A stat visualization with value and Max fields"width="1830"height="730"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>This transformation provides flexibility in tailoring your query results to focus on the specific fields you need for effective analysis and visualization.</p>
+<h3 id="format-string">Format string</h3>
+<p>Use this transformation to customize the output of a string field. This transformation has the following fields:</p>
+<ul>
+<li><strong>Upper case</strong> - Formats the entire string in uppercase characters.</li>
+<li><strong>Lower case</strong> - Formats the entire string in lowercase characters.</li>
+<li><strong>Sentence case</strong> - Formats the first character of the string in uppercase.</li>
+<li><strong>Title case</strong> - Formats the first character of each word in the string in uppercase.</li>
+<li><strong>Pascal case</strong> - Formats the first character of each word in the string in uppercase and doesn&rsquo;t include spaces between words.</li>
+<li><strong>Camel case</strong> - Formats the first character of each word in the string in uppercase, except the first word, and doesn&rsquo;t include spaces between words.</li>
+<li><strong>Snake case</strong> - Formats all characters in the string in lowercase and uses underscores instead of spaces between words.</li>
+<li><strong>Kebab case</strong> - Formats all characters in the string in lowercase and uses dashes instead of spaces between words.</li>
+<li><strong>Trim</strong> - Removes all leading and trailing spaces from the string.</li>
+<li><strong>Substring</strong> - Returns a substring of the string, using the specified start and end positions.</li>
+</ul>
+<p>This transformation provides a convenient way to standardize and tailor the presentation of string data for better visualization and analysis.</p>
+<h3 id="format-time">Format time</h3>
+<p>Use this transformation to customize the output of a time field. Output can be formatted using <a href="https://momentjs.com/docs/#/displaying/" target="_blank" rel="noopener noreferrer">Moment.js format strings</a>. For example, if you want to display only the year of a time field, the format string &lsquo;YYYY&rsquo; can be used to show the calendar year (for example, 1999 or 2012).</p>
+<p><strong>Before Transformation:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>Event</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1636678740000000000</td>
+          <td>System Start</td>
+      </tr>
+      <tr>
+          <td>1636678680000000000</td>
+          <td>User Login</td>
+      </tr>
+      <tr>
+          <td>1636678620000000000</td>
+          <td>Data Updated</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>After applying &lsquo;YYYY-MM-DD HH:mm:ss&rsquo;:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>Event</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2021-11-12 14:25:40</td>
+          <td>System Start</td>
+      </tr>
+      <tr>
+          <td>2021-11-12 14:24:40</td>
+          <td>User Login</td>
+      </tr>
+      <tr>
+          <td>2021-11-12 14:23:40</td>
+          <td>Data Updated</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation lets you tailor the time representation in your visualizations, providing flexibility and precision in displaying temporal data.</p>
+<blockquote>
+<p><strong>Note:</strong> This transformation is available in Grafana 10.1+ as an alpha feature.</p></blockquote>
+<h3 id="group-by">Group by</h3>
+<p>Use this transformation to group the data by a specified field (column) value and process calculations on each group. Click to see a list of calculation choices. For information about available calculations, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a>.</p>
+<p>Here&rsquo;s an example of original data.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server ID</th>
+          <th>CPU Temperature</th>
+          <th>Server Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>server 1</td>
+          <td>80</td>
+          <td>Shutdown</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>server 3</td>
+          <td>62</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>server 2</td>
+          <td>90</td>
+          <td>Overload</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>server 3</td>
+          <td>55</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>server 3</td>
+          <td>62</td>
+          <td>Rebooting</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:05</td>
+          <td>server 2</td>
+          <td>88</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:28:06</td>
+          <td>server 1</td>
+          <td>80</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:25:05</td>
+          <td>server 2</td>
+          <td>88</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:23:07</td>
+          <td>server 1</td>
+          <td>86</td>
+          <td>OK</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation goes in two steps. First you specify one or multiple fields to group the data by. This will group all the same values of those fields together, as if you sorted them. For instance if we group by the Server ID field, then it would group the data this way:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server ID</th>
+          <th>CPU Temperature</th>
+          <th>Server Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td><strong>server 1</strong></td>
+          <td>80</td>
+          <td>Shutdown</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:28:06</td>
+          <td><strong>server 1</strong></td>
+          <td>80</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:23:07</td>
+          <td><strong>server 1</strong></td>
+          <td>86</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>server 2</td>
+          <td>90</td>
+          <td>Overload</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:05</td>
+          <td>server 2</td>
+          <td>88</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:25:05</td>
+          <td>server 2</td>
+          <td>88</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td><strong><em>server 3</em></strong></td>
+          <td>62</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td><strong><em>server 3</em></strong></td>
+          <td>55</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td><strong><em>server 3</em></strong></td>
+          <td>62</td>
+          <td>Rebooting</td>
+      </tr>
+  </tbody>
+</table>
+<p>All rows with the same value of Server ID are grouped together. Optionally, you can add a count of how may values fall in the selected group.</p>
+<p>After choosing which field you want to group your data by, you can add various calculations on the other fields, and apply the calculation to each group of rows. For instance, we could want to calculate the average CPU temperature for each of those servers. So we can add the <em>mean</em> calculation applied on the CPU Temperature field to get the following:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Server ID</th>
+          <th>CPU Temperature (mean)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>server 1</td>
+          <td>82</td>
+      </tr>
+      <tr>
+          <td>server 2</td>
+          <td>88.6</td>
+      </tr>
+      <tr>
+          <td>server 3</td>
+          <td>59.6</td>
+      </tr>
+  </tbody>
+</table>
+<p>If you had added the count stat to the group by transformation, there would be an extra column showing that the count of each server from above was 3.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Server ID</th>
+          <th>CPU Temperature (mean)</th>
+          <th>Server ID (count)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>server 1</td>
+          <td>82</td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td>server 2</td>
+          <td>88.6</td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td>server 3</td>
+          <td>59.6</td>
+          <td>3</td>
+      </tr>
+  </tbody>
+</table>
+<p>And we can add more than one calculation. For instance:</p>
+<ul>
+<li>For field Time, we can calculate the <em>Last</em> value, to know when the last data point was received for each server</li>
+<li>For field Server Status, we can calculate the <em>Last</em> value to know what is the last state value for each server</li>
+<li>For field Temperature, we can also calculate the <em>Last</em> value to know what is the latest monitored temperature for each server</li>
+</ul>
+<p>We would then get:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Server ID</th>
+          <th>CPU Temperature (mean)</th>
+          <th>CPU Temperature (last)</th>
+          <th>Time (last)</th>
+          <th>Server Status (last)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>server 1</td>
+          <td>82</td>
+          <td>80</td>
+          <td>2020-07-07 11:34:20</td>
+          <td>Shutdown</td>
+      </tr>
+      <tr>
+          <td>server 2</td>
+          <td>88.6</td>
+          <td>90</td>
+          <td>2020-07-07 10:32:20</td>
+          <td>Overload</td>
+      </tr>
+      <tr>
+          <td>server 3</td>
+          <td>59.6</td>
+          <td>62</td>
+          <td>2020-07-07 11:34:20</td>
+          <td>OK</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation allows you to extract essential information from your time series and present it conveniently.</p>
+<h3 id="grouping-to-matrix">Grouping to matrix</h3>
+<p>Use this transformation to combine three fields—which are used as input for the <strong>Column</strong>, <strong>Row</strong>, and <strong>Cell value</strong> fields from the query output—and generate a matrix. The matrix is calculated as follows:</p>
+<p><strong>Original data</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Server ID</th>
+          <th>CPU Temperature</th>
+          <th>Server Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>server 1</td>
+          <td>82</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>server 2</td>
+          <td>88.6</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>server 3</td>
+          <td>59.6</td>
+          <td>Shutdown</td>
+      </tr>
+  </tbody>
+</table>
+<p>We can generate a matrix using the values of &lsquo;Server Status&rsquo; as column names, the &lsquo;Server ID&rsquo; values as row names, and the &lsquo;CPU Temperature&rsquo; as content of each cell. The content of each cell will appear for the existing column (&lsquo;Server Status&rsquo;) and row combination (&lsquo;Server ID&rsquo;). For the rest of the cells, you can select which value to display between: <strong>Null</strong>, <strong>True</strong>, <strong>False</strong>, or <strong>Empty</strong>.</p>
+<p><strong>Output</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Server IDServer Status</th>
+          <th>OK</th>
+          <th>Shutdown</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>server 1</td>
+          <td>82</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>server 2</td>
+          <td>88.6</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>server 3</td>
+          <td></td>
+          <td>59.6</td>
+      </tr>
+  </tbody>
+</table>
+<p>Use this transformation to construct a matrix by specifying fields from your query results. The matrix output reflects the relationships between the unique values in these fields. This helps you present complex relationships in a clear and structured matrix format.</p>
+<h3 id="group-to-nested-tables">Group to nested tables</h3>
+<p>Use this transformation to group the data by a specified field (column) value and process calculations on each group. Records are generated that share the same grouped field value, to be displayed in a nested table.</p>
+<p>To calculate a statistic for a field, click the selection box next to it and select the <strong>Calculate</strong> option:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/nested-table-select-calculation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/nested-table-select-calculation.png"data-srcset="/static/img/docs/transformations/nested-table-select-calculation.png?w=320 320w, /static/img/docs/transformations/nested-table-select-calculation.png?w=550 550w, /static/img/docs/transformations/nested-table-select-calculation.png?w=750 750w, /static/img/docs/transformations/nested-table-select-calculation.png?w=900 900w, /static/img/docs/transformations/nested-table-select-calculation.png?w=1040 1040w, /static/img/docs/transformations/nested-table-select-calculation.png?w=1240 1240w, /static/img/docs/transformations/nested-table-select-calculation.png?w=1920 1920w"
+          data-sizes="auto"alt="A select box showing the Group and Calculate options for the transformation."width="526"height="230"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/nested-table-select-calculation.png"
+            alt="A select box showing the Group and Calculate options for the transformation."width="526"height="230"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>Once <strong>Calculate</strong> has been selected, another selection box will appear next to the respective field which will allow statistics to be selected:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/nested-table-select-stat.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/nested-table-select-stat.png"data-srcset="/static/img/docs/transformations/nested-table-select-stat.png?w=320 320w, /static/img/docs/transformations/nested-table-select-stat.png?w=550 550w, /static/img/docs/transformations/nested-table-select-stat.png?w=750 750w, /static/img/docs/transformations/nested-table-select-stat.png?w=900 900w, /static/img/docs/transformations/nested-table-select-stat.png?w=1040 1040w, /static/img/docs/transformations/nested-table-select-stat.png?w=1240 1240w, /static/img/docs/transformations/nested-table-select-stat.png?w=1920 1920w"
+          data-sizes="auto"alt="A select box showing available statistic calculations once the calculate option for the field has been selected."width="1802"height="410"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/nested-table-select-stat.png"
+            alt="A select box showing available statistic calculations once the calculate option for the field has been selected."width="1802"height="410"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>For information about available calculations, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a>.</p>
+<p>Here&rsquo;s an example of original data:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server ID</th>
+          <th>CPU Temperature</th>
+          <th>Server Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>server 1</td>
+          <td>80</td>
+          <td>Shutdown</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>server 3</td>
+          <td>62</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>server 2</td>
+          <td>90</td>
+          <td>Overload</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>server 3</td>
+          <td>55</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>server 3</td>
+          <td>62</td>
+          <td>Rebooting</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:05</td>
+          <td>server 2</td>
+          <td>88</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:28:06</td>
+          <td>server 1</td>
+          <td>80</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:25:05</td>
+          <td>server 2</td>
+          <td>88</td>
+          <td>OK</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:23:07</td>
+          <td>server 1</td>
+          <td>86</td>
+          <td>OK</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation has two steps. First, specify one or more fields by which to group the data. This groups all the same values of those fields together, as if you sorted them. For instance, if you group by the Server ID field, Grafana groups the data this way:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Server ID</th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>server 1</td>
+          <td><table><th><tr><td>Time</td><td>CPU Temperature</td><td>Server Status</td></tr></th><tbody><tr><td>2020-07-07 11:34:20</td><td>80</td><td>Shutdown</td></tr><tr><td>2020-07-07 09:28:06</td><td>80</td><td>OK</td></tr><tr><td>2020-07-07 09:23:07</td><td>86</td><td>OK</td></tr></tbody></table></td>
+      </tr>
+      <tr>
+          <td>server 2</td>
+          <td><table><th><tr><td>Time</td><td>CPU Temperature</td><td>Server Status</td></tr></th><tbody><tr><td>2020-07-07 10:32:20</td><td>90</td><td>Overload</td></tr><tr><td>2020-07-07 09:30:05</td><td>88</td><td>OK</td></tr><tr><td>2020-07-07 09:25:05</td><td>88</td><td>OK</td></tr></tbody></table></td>
+      </tr>
+      <tr>
+          <td>server 3</td>
+          <td><table><th><tr><td>Time</td><td>CPU Temperature</td><td>Server Status</td></tr></th><tbody><tr><td>2020-07-07 11:34:20</td><td>62</td><td>OK</td></tr><tr><td>2020-07-07 10:31:22</td><td>55</td><td>OK</td></tr><tr><td>2020-07-07 09:30:57</td><td>62</td><td>Rebooting</td></tr></tbody></table></td>
+      </tr>
+  </tbody>
+</table>
+<p>After choosing the field by which you want to group your data, you can add various calculations on the other fields and apply the calculation to each group of rows. For instance, you might want to calculate the average CPU temperature for each of those servers. To do so, add the <strong>mean calculation</strong> applied on the CPU Temperature field to get the following result:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Server ID</th>
+          <th>CPU Temperatute (mean)</th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>server 1</td>
+          <td>82</td>
+          <td><table><th><tr><td>Time</td><td>Server Status</td></tr></th><tbody><tr><td>2020-07-07 11:34:20</td><td>Shutdown</td></tr><tr><td>2020-07-07 09:28:06</td><td>OK</td></tr><tr><td>2020-07-07 09:23:07</td><td>OK</td></tr></tbody></table></td>
+      </tr>
+      <tr>
+          <td>server 2</td>
+          <td>88.6</td>
+          <td><table><th><tr><td>Time</td><td>Server Status</td></tr></th><tbody><tr><td>2020-07-07 10:32:20</td><td>Overload</td></tr><tr><td>2020-07-07 09:30:05</td><td>OK</td></tr><tr><td>2020-07-07 09:25:05</td><td>OK</td></tr></tbody></table></td>
+      </tr>
+      <tr>
+          <td>server 3</td>
+          <td>59.6</td>
+          <td><table><th><tr><td>Time</td><td>Server Status</td></tr></th><tbody><tr><td>2020-07-07 11:34:20</td><td>OK</td></tr><tr><td>2020-07-07 10:31:22</td><td>OK</td></tr><tr><td>2020-07-07 09:30:57</td><td>Rebooting</td></tr></tbody></table></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="create-heatmap">Create heatmap</h3>
+<p>Use this transformation to prepare histogram data for visualizing trends over time. Similar to the heatmap visualization, this transformation converts histogram metrics into temporal buckets.</p>
+<h4 id="x-bucket">X Bucket</h4>
+<p>This setting determines how the x-axis is split into buckets.</p>
+<ul>
+<li><strong>Size</strong> - Specify a time interval in the input field. For example, a time range of &lsquo;1h&rsquo; creates cells one hour wide on the x-axis.</li>
+<li><strong>Count</strong> - For non-time-related series, use this option to define the number of elements in a bucket.</li>
+</ul>
+<h4 id="y-bucket">Y Bucket</h4>
+<p>This setting determines how the y-axis is split into buckets.</p>
+<ul>
+<li><strong>Linear</strong></li>
+<li><strong>Logarithmic</strong> - Choose between log base 2 or log base 10.</li>
+<li><strong>Symlog</strong> - Uses a symmetrical logarithmic scale. Choose between log base 2 or log base 10, allowing for negative values.</li>
+</ul>
+<p>Assume you have the following dataset:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2023-01-01 12:00:00</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 12:15:00</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 12:30:00</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 12:45:00</td>
+          <td>8</td>
+      </tr>
+  </tbody>
+</table>
+<ul>
+<li>With X Bucket set to &lsquo;Size: 15m&rsquo; and Y Bucket as &lsquo;Linear&rsquo;, the histogram organizes values into time intervals of 15 minutes on the x-axis and linearly on the y-axis.</li>
+<li>For X Bucket as &lsquo;Count: 2&rsquo; and Y Bucket as &lsquo;Logarithmic (base 10)&rsquo;, the histogram groups values into buckets of two on the x-axis and use a logarithmic scale on the y-axis.</li>
+</ul>
+<h3 id="histogram">Histogram</h3>
+<p>Use this transformation to generate a histogram based on input data, allowing you to visualize the distribution of values.</p>
+<ul>
+<li><strong>Bucket size</strong> - The range between the lowest and highest items in a bucket (xMin to xMax).</li>
+<li><strong>Bucket offset</strong> - The offset for non-zero-based buckets.</li>
+<li><strong>Combine series</strong> - Create a unified histogram using all available series.</li>
+</ul>
+<p><strong>Original data</strong></p>
+<p>Series 1:</p>
+<table>
+  <thead>
+      <tr>
+          <th>A</th>
+          <th>B</th>
+          <th>C</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>3</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>4</td>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>5</td>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>6</td>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>7</td>
+          <td>9</td>
+      </tr>
+  </tbody>
+</table>
+<p>Series 2:</p>
+<table>
+  <thead>
+      <tr>
+          <th>C</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>6</td>
+      </tr>
+      <tr>
+          <td>7</td>
+      </tr>
+      <tr>
+          <td>8</td>
+      </tr>
+      <tr>
+          <td>9</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Output</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>xMin</th>
+          <th>xMax</th>
+          <th>A</th>
+          <th>B</th>
+          <th>C</th>
+          <th>C</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>2</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>3</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>4</td>
+          <td>1</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>5</td>
+          <td>1</td>
+          <td>1</td>
+          <td>0</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>6</td>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>7</td>
+          <td>0</td>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td>8</td>
+          <td>0</td>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>8</td>
+          <td>9</td>
+          <td>0</td>
+          <td>0</td>
+          <td>1</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>9</td>
+          <td>10</td>
+          <td>0</td>
+          <td>0</td>
+          <td>1</td>
+          <td>1</td>
+      </tr>
+  </tbody>
+</table>
+<p>Visualize the distribution of values using the generated histogram, providing insights into the data&rsquo;s spread and density.</p>
+<h3 id="join-by-field">Join by field</h3>
+<p>Use this transformation to merge multiple results into a single table, enabling the consolidation of data from different queries.</p>
+<p>This is especially useful for converting multiple time series results into a single wide table with a shared time field.</p>
+<h4 id="inner-join-for-time-series-or-sql-like-data">Inner join (for Time Series or SQL-like data)</h4>
+<p>An inner join merges data from multiple tables where all tables share the same value from the selected field. This type of join excludes data where values do not match in every result.</p>
+<p>Use this transformation to combine the results from multiple queries (combining on a passed join field or the first time column) into one result, and drop rows where a successful join cannot occur. This is not optimized for large Time Series datasets.</p>
+<p>In the following example, two queries return Time Series data. It is visualized as two separate tables before applying the inner join transformation.</p>
+<p><strong>Query A:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Job</th>
+          <th>Uptime</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>node</td>
+          <td>25260122</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>postgre</td>
+          <td>123001233</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:14:20</td>
+          <td>postgre</td>
+          <td>345001233</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Query B:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>server 1</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>server 2</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:04:20</td>
+          <td>server 3</td>
+          <td>10</td>
+      </tr>
+  </tbody>
+</table>
+<p>The result after applying the inner join transformation looks like the following:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Job</th>
+          <th>Uptime</th>
+          <th>Server</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>node</td>
+          <td>25260122</td>
+          <td>server 1</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>postgre</td>
+          <td>123001233</td>
+          <td>server 2</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>This works in the same way for non-Time Series tabular data as well.</p>
+<p><strong>Students</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>StudentID</th>
+          <th>Name</th>
+          <th>Major</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>John</td>
+          <td>Computer Science</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>Emily</td>
+          <td>Mathematics</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Michael</td>
+          <td>Physics</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>Jennifer</td>
+          <td>Chemistry</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Enrollments</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>StudentID</th>
+          <th>CourseID</th>
+          <th>Grade</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>CS101</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>CS102</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>MATH201</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>PHYS101</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>HIST101</td>
+          <td>B</td>
+      </tr>
+  </tbody>
+</table>
+<p>The result after applying the inner join transformation looks like the following:</p>
+<table>
+  <thead>
+      <tr>
+          <th>StudentID</th>
+          <th>Name</th>
+          <th>Major</th>
+          <th>CourseID</th>
+          <th>Grade</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>John</td>
+          <td>Computer Science</td>
+          <td>CS101</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>John</td>
+          <td>Computer Science</td>
+          <td>CS102</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>Emily</td>
+          <td>Mathematics</td>
+          <td>MATH201</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Michael</td>
+          <td>Physics</td>
+          <td>PHYS101</td>
+          <td>B</td>
+      </tr>
+  </tbody>
+</table>
+<p>The inner join only includes rows where there is a match between the &ldquo;StudentID&rdquo; in both tables. In this case, the result does not include &ldquo;Jennifer&rdquo; from the &ldquo;Students&rdquo; table because there are no matching enrollments for her in the &ldquo;Enrollments&rdquo; table.</p>
+<h4 id="outer-join-for-time-series-data">Outer join (for Time Series data)</h4>
+<p>An outer join includes all data from an inner join and rows where values do not match in every input. While the inner join joins Query A and Query B on the time field, the outer join includes all rows that don&rsquo;t match on the time field.</p>
+<p>In the following example, two queries return table data. It is visualized as two tables before applying the outer join transformation.</p>
+<p><strong>Query A:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Job</th>
+          <th>Uptime</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>node</td>
+          <td>25260122</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>postgre</td>
+          <td>123001233</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:14:20</td>
+          <td>postgre</td>
+          <td>345001233</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Query B:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>server 1</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>server 2</td>
+          <td>5</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:04:20</td>
+          <td>server 3</td>
+          <td>10</td>
+      </tr>
+  </tbody>
+</table>
+<p>The result after applying the outer join transformation looks like the following:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Job</th>
+          <th>Uptime</th>
+          <th>Server</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:04:20</td>
+          <td></td>
+          <td></td>
+          <td>server 3</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:14:20</td>
+          <td>postgre</td>
+          <td>345001233</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>node</td>
+          <td>25260122</td>
+          <td>server 1</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>postgre</td>
+          <td>123001233</td>
+          <td>server 2</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>In the following example, a template query displays time series data from multiple servers in a table visualization. The results of only one query can be viewed at a time.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/join-fields-before-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/join-fields-before-7-0.png"data-srcset="/static/img/docs/transformations/join-fields-before-7-0.png?w=320 320w, /static/img/docs/transformations/join-fields-before-7-0.png?w=550 550w, /static/img/docs/transformations/join-fields-before-7-0.png?w=750 750w, /static/img/docs/transformations/join-fields-before-7-0.png?w=900 900w, /static/img/docs/transformations/join-fields-before-7-0.png?w=1040 1040w, /static/img/docs/transformations/join-fields-before-7-0.png?w=1240 1240w, /static/img/docs/transformations/join-fields-before-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A table visualization showing results for one server"width="1283"height="583"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/join-fields-before-7-0.png"
+            alt="A table visualization showing results for one server"width="1283"height="583"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>I applied a transformation to join the query results using the time field. Now I can run calculations, combine, and organize the results in this new table.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/join-fields-after-7-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/join-fields-after-7-0.png"data-srcset="/static/img/docs/transformations/join-fields-after-7-0.png?w=320 320w, /static/img/docs/transformations/join-fields-after-7-0.png?w=550 550w, /static/img/docs/transformations/join-fields-after-7-0.png?w=750 750w, /static/img/docs/transformations/join-fields-after-7-0.png?w=900 900w, /static/img/docs/transformations/join-fields-after-7-0.png?w=1040 1040w, /static/img/docs/transformations/join-fields-after-7-0.png?w=1240 1240w, /static/img/docs/transformations/join-fields-after-7-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A table visualization showing results for multiple servers"width="1236"height="641"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/join-fields-after-7-0.png"
+            alt="A table visualization showing results for multiple servers"width="1236"height="641"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h4 id="outer-join-for-sql-like-data">Outer join (for SQL-like data)</h4>
+<p>A tabular outer join combining tables so that the result includes matched and unmatched rows from either or both tables.</p>
+<table>
+  <thead>
+      <tr>
+          <th>StudentID</th>
+          <th>Name</th>
+          <th>Major</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>John</td>
+          <td>Computer Science</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>Emily</td>
+          <td>Mathematics</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Michael</td>
+          <td>Physics</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>Jennifer</td>
+          <td>Chemistry</td>
+      </tr>
+  </tbody>
+</table>
+<p>Can now be joined with:</p>
+<table>
+  <thead>
+      <tr>
+          <th>StudentID</th>
+          <th>CourseID</th>
+          <th>Grade</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>CS101</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>CS102</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>MATH201</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>PHYS101</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>HIST101</td>
+          <td>B</td>
+      </tr>
+  </tbody>
+</table>
+<p>The result after applying the outer join transformation looks like the following:</p>
+<table>
+  <thead>
+      <tr>
+          <th>StudentID</th>
+          <th>Name</th>
+          <th>Major</th>
+          <th>CourseID</th>
+          <th>Grade</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>John</td>
+          <td>Computer Science</td>
+          <td>CS101</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>John</td>
+          <td>Computer Science</td>
+          <td>CS102</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>Emily</td>
+          <td>Mathematics</td>
+          <td>MATH201</td>
+          <td>A</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Michael</td>
+          <td>Physics</td>
+          <td>PHYS101</td>
+          <td>B</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>Jennifer</td>
+          <td>Chemistry</td>
+          <td>NULL</td>
+          <td>NULL</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>NULL</td>
+          <td>NULL</td>
+          <td>HIST101</td>
+          <td>B</td>
+      </tr>
+  </tbody>
+</table>
+<p>Combine and analyze data from various queries with table joining for a comprehensive view of your information.</p>
+<h3 id="join-by-labels">Join by labels</h3>
+<p>Use this transformation to join multiple results into a single table.</p>
+<p>This is especially useful for converting multiple time series results into a single wide table with a shared <strong>Label</strong> field.</p>
+<ul>
+<li><strong>Join</strong> - Select the label to join by between the labels available or common across all time series.</li>
+<li><strong>Value</strong> - The name for the output result.</li>
+</ul>
+<h4 id="example-1">Example</h4>
+<h5 id="input">Input</h5>
+<p>series1{what=&ldquo;Temp&rdquo;, cluster=&ldquo;A&rdquo;, job=&ldquo;J1&rdquo;}</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>200</td>
+      </tr>
+  </tbody>
+</table>
+<p>series2{what=&ldquo;Temp&rdquo;, cluster=&ldquo;B&rdquo;, job=&ldquo;J1&rdquo;}</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>200</td>
+      </tr>
+  </tbody>
+</table>
+<p>series3{what=&ldquo;Speed&rdquo;, cluster=&ldquo;B&rdquo;, job=&ldquo;J1&rdquo;}</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>22</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>28</td>
+          <td>77</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="config">Config</h5>
+<p>value: &ldquo;what&rdquo;</p>
+<h5 id="output">Output</h5>
+<table>
+  <thead>
+      <tr>
+          <th>cluster</th>
+          <th>job</th>
+          <th>Temp</th>
+          <th>Speed</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>A</td>
+          <td>J1</td>
+          <td>10</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>A</td>
+          <td>J1</td>
+          <td>200</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>B</td>
+          <td>J1</td>
+          <td>10</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>B</td>
+          <td>J1</td>
+          <td>200</td>
+          <td>77</td>
+      </tr>
+  </tbody>
+</table>
+<p>Combine and organize time series data effectively with this transformation for comprehensive insights.</p>
+<h3 id="labels-to-fields">Labels to fields</h3>
+<p>Use this transformation to convert time series results with labels or tags into a table, including each label&rsquo;s keys and values in the result. Display labels as either columns or row values for enhanced data visualization.</p>
+<p>Given a query result of two time series:</p>
+<ul>
+<li>Series 1: labels Server=Server A, Datacenter=EU</li>
+<li>Series 2: labels Server=Server B, Datacenter=EU</li>
+</ul>
+<p>In &ldquo;Columns&rdquo; mode, the result looks like this:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server</th>
+          <th>Datacenter</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Server A</td>
+          <td>EU</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Server B</td>
+          <td>EU</td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<p>In &ldquo;Rows&rdquo; mode, the result has a table for each series and show each label value like this:</p>
+<table>
+  <thead>
+      <tr>
+          <th>label</th>
+          <th>value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Server</td>
+          <td>Server A</td>
+      </tr>
+      <tr>
+          <td>Datacenter</td>
+          <td>EU</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th>label</th>
+          <th>value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Server</td>
+          <td>Server B</td>
+      </tr>
+      <tr>
+          <td>Datacenter</td>
+          <td>EU</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="value-field-name">Value field name</h4>
+<p>If you selected Server as the <strong>Value field name</strong>, then you would get one field for every value of the Server label.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Datacenter</th>
+          <th>Server A</th>
+          <th>Server B</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>EU</td>
+          <td>1</td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="merging-behavior">Merging behavior</h4>
+<p>The labels to fields transformer is internally two separate transformations. The first acts on single series and extracts labels to fields. The second is the <a href="#merge">merge</a> transformation that joins all the results into a single table. The merge transformation tries to join on all matching fields. This merge step is required and cannot be turned off.</p>
+<p>To illustrate this, here is an example where you have two queries that return time series with no overlapping labels.</p>
+<ul>
+<li>Series 1: labels Server=ServerA</li>
+<li>Series 2: labels Datacenter=EU</li>
+</ul>
+<p>This will first result in these two tables:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>ServerA</td>
+          <td>10</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Datacenter</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>EU</td>
+          <td>20</td>
+      </tr>
+  </tbody>
+</table>
+<p>After merge:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Server</th>
+          <th>Value</th>
+          <th>Datacenter</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>ServerA</td>
+          <td>10</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td></td>
+          <td>20</td>
+          <td>EU</td>
+      </tr>
+  </tbody>
+</table>
+<p>Convert your time series data into a structured table format for a clearer and more organized representation.</p>
+<h3 id="limit">Limit</h3>
+<p>Use this transformation to restrict the number of rows displayed, providing a more focused view of your data. This is particularly useful when dealing with large datasets.</p>
+<p>Below is an example illustrating the impact of the <strong>Limit</strong> transformation on a response from a data source:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Metric</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Temperature</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Humidity</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>Humidity</td>
+          <td>29</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>Temperature</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>Humidity</td>
+          <td>33</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:05</td>
+          <td>Temperature</td>
+          <td>19</td>
+      </tr>
+  </tbody>
+</table>
+<p>Here is the result after adding a Limit transformation with a value of &lsquo;3&rsquo;:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Metric</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Temperature</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Humidity</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>Humidity</td>
+          <td>29</td>
+      </tr>
+  </tbody>
+</table>
+<p>Using a negative number, you can keep values from the end of the set. Here is the result after adding a Limit transformation with a value of &lsquo;-3&rsquo;:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Metric</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>Temperature</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>Humidity</td>
+          <td>33</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:05</td>
+          <td>Temperature</td>
+          <td>19</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation helps you tailor the visual presentation of your data to focus on the most relevant information.</p>
+<h3 id="merge-seriestables">Merge series/tables</h3>
+<p>Use this transformation to combine the results from multiple queries into a single result, which is particularly useful when using the table panel visualization. This transformation merges values into the same row if the shared fields contain the same data.</p>
+<p>Here&rsquo;s an example illustrating the impact of the <strong>Merge series/tables</strong> transformation on two queries returning table data:</p>
+<p><strong>Query A:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Job</th>
+          <th>Uptime</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>node</td>
+          <td>25260122</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>postgre</td>
+          <td>123001233</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Query B:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Job</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>node</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>postgre</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>Here is the result after applying the Merge transformation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Job</th>
+          <th>Errors</th>
+          <th>Uptime</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>node</td>
+          <td>15</td>
+          <td>25260122</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>postgre</td>
+          <td>5</td>
+          <td>123001233</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation combines values from Query A and Query B into a unified table, enhancing the presentation of data for better insights.</p>
+<h3 id="organize-fields-by-name">Organize fields by name</h3>
+<p>Use this transformation to provide the flexibility to rename, reorder, or hide fields returned by a single query in your panel. This transformation is applicable only to panels with a single query. If your panel has multiple queries, consider using an &ldquo;Outer join&rdquo; transformation or removing extra queries.</p>
+<h4 id="transforming-fields">Transforming fields</h4>
+<p>Grafana displays a list of fields returned by the query, allowing you to perform the following actions:</p>
+<ul>
+<li><strong>Set field order mode</strong> - If the mode is <strong>Manual</strong>, you can change the field order by hovering the cursor over a field and dragging the field to its new position. If it&rsquo;s <strong>Auto</strong>, use the <strong>OFF</strong>, <strong>ASC</strong>, and <strong>DESC</strong> options to order by any labels on the field or by the field name. For any field that is sorted <strong>ASC</strong> or <strong>DESC</strong>, you can drag the option to set the priority of the sorting.</li>
+<li><strong>Change field order</strong> - Hover over a field, and when your cursor turns into a hand, drag the field to its new position.</li>
+<li><strong>Hide or show a field</strong> - Use the eye icon next to the field name to toggle the visibility of a specific field.</li>
+<li><strong>Rename fields</strong> - Type a new name in the &ldquo;Rename <field>&rdquo; box to customize field names.</li>
+</ul>
+<h4 id="example-2">Example:</h4>
+<h5 id="original-query-result">Original Query Result</h5>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Metric</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Temperature</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Humidity</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>Humidity</td>
+          <td>29</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="after-applying-field-overrides">After Applying Field Overrides</h5>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Sensor</th>
+          <th>Reading</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Temperature</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Humidity</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>Humidity</td>
+          <td>29</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation lets you to tailor the display of query results, ensuring a clear and insightful representation of your data in Grafana.</p>
+<h3 id="partition-by-values">Partition by values</h3>
+<p>Use this transformation to streamline the process of graphing multiple series without the need for multiple queries with different &lsquo;WHERE&rsquo; clauses.</p>
+<p>This is particularly useful when dealing with a metrics SQL table, as illustrated below:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Region</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>US</td>
+          <td>1520</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>EU</td>
+          <td>2936</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>US</td>
+          <td>1327</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>EU</td>
+          <td>912</td>
+      </tr>
+  </tbody>
+</table>
+<p>With the <strong>Partition by values</strong> transformation, you can issue a single query and split the results by unique values in one or more columns (fields) of your choosing. The following example uses &lsquo;Region&rsquo;:</p>
+<p>&lsquo;SELECT Time, Region, Value FROM metrics WHERE Time &gt; &ldquo;2022-10-20&rdquo;&rsquo;</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Region</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>US</td>
+          <td>1520</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>US</td>
+          <td>1327</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Region</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>EU</td>
+          <td>2936</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>EU</td>
+          <td>912</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation simplifies the process and enhances the flexibility of visualizing multiple series within the same time series visualization.</p>
+<h3 id="prepare-time-series">Prepare time series</h3>
+<p>Use this transformation to address issues when a data source returns time series data in a format that isn&rsquo;t compatible with the desired visualization. This transformation allows you to convert time series data between wide and long formats, providing flexibility in data frame structures.</p>
+<h4 id="available-options">Available options</h4>
+<h5 id="wide-time-series">Wide time series</h5>
+<p>Select this option to transform the time series data frame from the long format to the wide format. If your data source returns time series data in a long format and your visualization requires a wide format, this transformation simplifies the process.</p>
+<p>A wide time series combines data into a single frame with one shared, ascending time field. Time fields do not repeat and multiple values extend in separate columns.</p>
+<p><strong>Example: Converting from long to wide format</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>Variable</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2023-01-01 00:00:00</td>
+          <td>Value1</td>
+          <td>10</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 00:00:00</td>
+          <td>Value2</td>
+          <td>20</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 01:00:00</td>
+          <td>Value1</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 01:00:00</td>
+          <td>Value2</td>
+          <td>25</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Transformed to:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>Value1</th>
+          <th>Value2</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2023-01-01 00:00:00</td>
+          <td>10</td>
+          <td>20</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 01:00:00</td>
+          <td>15</td>
+          <td>25</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="multi-frame-time-series">Multi-frame time series</h5>
+<p>Multi-frame time series break data into multiple frames that all contain two fields: a time field and a numeric value field. Time is always ascending. String values are represented as field labels.</p>
+<h5 id="long-time-series">Long time series</h5>
+<p>A long time series combines data into one frame, with the first field being an ascending time field. The time field might have duplicates. String values are in separate fields, and there might be more than one.</p>
+<p><strong>Example: Converting to long format</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Value1</th>
+          <th>Value2</th>
+          <th>Timestamp</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>10</td>
+          <td>20</td>
+          <td>2023-01-03 00:00:00</td>
+      </tr>
+      <tr>
+          <td>30</td>
+          <td>40</td>
+          <td>2023-01-02 00:00:00</td>
+      </tr>
+      <tr>
+          <td>50</td>
+          <td>60</td>
+          <td>2023-01-01 00:00:00</td>
+      </tr>
+      <tr>
+          <td>70</td>
+          <td>80</td>
+          <td>2023-01-01 00:00:00</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Transformed to:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamp</th>
+          <th>Value1</th>
+          <th>Value2</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2023-01-01 00:00:00</td>
+          <td>70</td>
+          <td>80</td>
+      </tr>
+      <tr>
+          <td>2023-01-01 01:00:00</td>
+          <td>50</td>
+          <td>60</td>
+      </tr>
+      <tr>
+          <td>2023-01-02 01:00:00</td>
+          <td>30</td>
+          <td>40</td>
+      </tr>
+      <tr>
+          <td>2023-01-03 01:00:00</td>
+          <td>10</td>
+          <td>20</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="reduce">Reduce</h3>
+<p>Use this transformation to apply a calculation to each field in the data frame and return a single value. This transformation is particularly useful for consolidating multiple time series data into a more compact, summarized format. Time fields are removed when applying this transformation.</p>
+<p>Consider the input:</p>
+<p><strong>Query A:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Temp</th>
+          <th>Uptime</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>12.3</td>
+          <td>256122</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>15.4</td>
+          <td>1230233</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Query B:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>AQI</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>6.5</td>
+          <td>15</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:24:20</td>
+          <td>3.2</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>The reduce transformer has two modes:</p>
+<ul>
+<li><strong>Series to rows</strong> - Creates a row for each field and a column for each calculation.</li>
+<li><strong>Reduce fields</strong> - Keeps the existing frame structure, but collapses each field into a single value.</li>
+</ul>
+<p>For example, if you used the <strong>First</strong> and <strong>Last</strong> calculation with a <strong>Series to rows</strong> transformation, then
+the result would be:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>First</th>
+          <th>Last</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Temp</td>
+          <td>12.3</td>
+          <td>15.4</td>
+      </tr>
+      <tr>
+          <td>Uptime</td>
+          <td>256122</td>
+          <td>1230233</td>
+      </tr>
+      <tr>
+          <td>AQI</td>
+          <td>6.5</td>
+          <td>3.2</td>
+      </tr>
+      <tr>
+          <td>Errors</td>
+          <td>15</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>The <strong>Reduce fields</strong> with the <strong>Last</strong> calculation,
+results in two frames, each with one row:</p>
+<p><strong>Query A:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Temp</th>
+          <th>Uptime</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>15.4</td>
+          <td>1230233</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Query B:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>AQI</th>
+          <th>Errors</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>3.2</td>
+          <td>5</td>
+      </tr>
+  </tbody>
+</table>
+<p>This flexible transformation simplifies the process of consolidating and summarizing data from multiple time series into a more manageable and organized format.</p>
+<h3 id="rename-by-regex">Rename by regex</h3>
+<p>Use this transformation to rename parts of the query results using a regular expression and replacement pattern.</p>
+<p>You can specify a regular expression, which is only applied to matches, along with a replacement pattern that support back references. For example, let&rsquo;s imagine you&rsquo;re visualizing CPU usage per host and you want to remove the domain name. You could set the regex to &lsquo;/^([^.]+).*/&rsquo; and the replacement pattern to &lsquo;$1&rsquo;, &lsquo;web-01.example.com&rsquo; would become &lsquo;web-01&rsquo;.</p>
+<blockquote>
+<p><strong>Note:</strong> The Rename by regex transformation was improved in Grafana v9.0.0 to allow global patterns of the form &lsquo;/<stringToReplace>/g&rsquo;. Depending on the regex match used, this may cause some transformations to behave slightly differently. You can guarantee the same behavior as before by wrapping the match string in forward slashes &lsquo;(/)&rsquo;, e.g. &lsquo;(.<em>)&rsquo; would become &lsquo;/(.</em>)/&rsquo;.</p></blockquote>
+<p>In the following example, we are stripping the &lsquo;A-&rsquo; prefix from field names. In the before image, you can see everything is prefixed with &lsquo;A-&rsquo;:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png?w=1920 1920w"
+          data-sizes="auto"alt="A time series with full series names"width="2782"height="1406"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-before-v11.0.png"
+            alt="A time series with full series names"width="2782"height="1406"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>With the transformation applied, you can see we are left with just the remainder of the string.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png?w=1920 1920w"
+          data-sizes="auto"alt="A time series with shortened series names"width="2782"height="1412"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-rename-by-regex-after-v11.0.png"
+            alt="A time series with shortened series names"width="2782"height="1412"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>This transformation lets you to tailor your data to meet your visualization needs, making your dashboards more informative and user-friendly.</p>
+<h3 id="rows-to-fields">Rows to fields</h3>
+<p>Use this transformation to convert rows into separate fields. This can be useful because fields can be styled and configured individually. It can also use additional fields as sources for dynamic field configuration or map them to field labels. The additional labels can then be used to define better display names for the resulting fields.</p>
+<p>This transformation includes a field table which lists all fields in the data returned by the configuration query. This table gives you control over what field should be mapped to each configuration property (the <strong>Use as</strong> option). You can also choose which value to select if there are multiple rows in the returned data.</p>
+<p>This transformation requires:</p>
+<ul>
+<li>
+<p>One field to use as the source of field names.</p>
+<p>By default, the transform uses the first string field as the source. You can override this default setting by selecting <strong>Field name</strong> in the <strong>Use as</strong> column for the field you want to use instead.</p>
+</li>
+<li>
+<p>One field to use as the source of values.</p>
+<p>By default, the transform uses the first number field as the source. But you can override this default setting by selecting <strong>Field value</strong> in the <strong>Use as</strong> column for the field you want to use instead.</p>
+</li>
+</ul>
+<p>Useful when visualizing data in:</p>
+<ul>
+<li>Gauge</li>
+<li>Stat</li>
+<li>Pie chart</li>
+</ul>
+<h4 id="map-extra-fields-to-labels">Map extra fields to labels</h4>
+<p>If a field does not map to config property Grafana will automatically use it as source for a label on the output field-</p>
+<p><strong>Example:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>DataCenter</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>ServerA</td>
+          <td>US</td>
+          <td>100</td>
+      </tr>
+      <tr>
+          <td>ServerB</td>
+          <td>EU</td>
+          <td>200</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Output:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>ServerA (labels: DataCenter: US)</th>
+          <th>ServerB (labels: DataCenter: EU)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>10</td>
+          <td>20</td>
+      </tr>
+  </tbody>
+</table>
+<p>The extra labels can now be used in the field display name provide more complete field names.</p>
+<p>If you want to extract config from one query and apply it to another you should use the config from query results transformation.</p>
+<h4 id="example-3">Example</h4>
+<p><strong>Input:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Value</th>
+          <th>Max</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>ServerA</td>
+          <td>10</td>
+          <td>100</td>
+      </tr>
+      <tr>
+          <td>ServerB</td>
+          <td>20</td>
+          <td>200</td>
+      </tr>
+      <tr>
+          <td>ServerC</td>
+          <td>30</td>
+          <td>300</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Output:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>ServerA (config: max=100)</th>
+          <th>ServerB (config: max=200)</th>
+          <th>ServerC (config: max=300)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>10</td>
+          <td>20</td>
+          <td>30</td>
+      </tr>
+  </tbody>
+</table>
+<p>As you can see each row in the source data becomes a separate field. Each field now also has a max config option set. Options like <strong>Min</strong>, <strong>Max</strong>, <strong>Unit</strong> and <strong>Thresholds</strong> are all part of field configuration and if set like this will be used by the visualization instead of any options manually configured in the panel editor options pane.</p>
+<p>This transformation enables the conversion of rows into individual fields, facilitates dynamic field configuration, and maps additional fields to labels.</p>
+<h3 id="series-to-rows">Series to rows</h3>
+<p>Use this transformation to combine the result from multiple time series data queries into one single result. This is helpful when using the table panel visualization.</p>
+<p>The result from this transformation will contain three columns: Time, Metric, and Value. The Metric column is added so you easily can see from which query the metric originates from. Customize this value by defining Label on the source query.</p>
+<p>In the example below, we have two queries returning time series data. It is visualized as two separate tables before applying the transformation.</p>
+<p><strong>Query A:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Temperature</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:05</td>
+          <td>19</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Query B:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Humidity</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>24</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>29</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>33</td>
+      </tr>
+  </tbody>
+</table>
+<p>Here is the result after applying the Series to rows transformation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Metric</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Temperature</td>
+          <td>25</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 11:34:20</td>
+          <td>Humidity</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:32:20</td>
+          <td>Humidity</td>
+          <td>29</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 10:31:22</td>
+          <td>Temperature</td>
+          <td>22</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:57</td>
+          <td>Humidity</td>
+          <td>33</td>
+      </tr>
+      <tr>
+          <td>2020-07-07 09:30:05</td>
+          <td>Temperature</td>
+          <td>19</td>
+      </tr>
+  </tbody>
+</table>
+<p>This transformation facilitates the consolidation of results from multiple time series queries, providing a streamlined and unified dataset for efficient analysis and visualization in a tabular format.</p>
+<h3 id="sort-by">Sort by</h3>
+<p>Use this transformation to sort each frame within a query result based on a specified field, making your data easier to understand and analyze. By configuring the desired field for sorting, you can control the order in which the data is presented in the table or visualization.</p>
+<p>Use the <strong>Reverse</strong> switch to inversely order the values within the specified field. This functionality is particularly useful when you want to quickly toggle between ascending and descending order to suit your analytical needs.</p>
+<p>For example, in a scenario where time-series data is retrieved from a data source, the <strong>Sort by</strong> transformation can be applied to arrange the data frames based on the timestamp, either in ascending or descending order, depending on the analytical requirements. This capability ensures that you can easily navigate and interpret time-series data, gaining valuable insights from the organized and visually coherent presentation.</p>
+<h3 id="spatial">Spatial</h3>
+<p>Use this transformation to apply spatial operations to query results.</p>
+<ul>
+<li><strong>Action</strong> - Select an action:
+<ul>
+<li><strong>Prepare spatial field</strong> - Set a geometry field based on the results of other fields.
+<ul>
+<li><strong>Location mode</strong> - Select a location mode (these options are shared by the <strong>Calculate value</strong> and <strong>Transform</strong> modes):
+<ul>
+<li><strong>Auto</strong> - Automatically identify location data based on default field names.</li>
+<li><strong>Coords</strong> - Specify latitude and longitude fields.</li>
+<li><strong>Geohash</strong> - Specify a geohash field.</li>
+<li><strong>Lookup</strong> - Specify Gazetteer location fields.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Calculate value</strong> - Use the geometry to define a new field (heading/distance/area).
+<ul>
+<li><strong>Function</strong> - Choose a mathematical operation to apply to the geometry:
+<ul>
+<li><strong>Heading</strong> - Calculate the heading (direction) between two points.</li>
+<li><strong>Area</strong> - Calculate the area enclosed by a polygon defined by the geometry.</li>
+<li><strong>Distance</strong> - Calculate the distance between two points.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Transform</strong> - Apply spatial operations to the geometry.
+<ul>
+<li><strong>Operation</strong> - Choose an operation to apply to the geometry:
+<ul>
+<li><strong>As line</strong> - Create a single line feature with a vertex at each row.</li>
+<li><strong>Line builder</strong> - Create a line between two points.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This transformation allows you to manipulate and analyze geospatial data, enabling operations such as creating lines between points, calculating spatial properties, and more.</p>
+<h3 id="time-series-to-table-transform">Time series to table transform</h3>
+<p>Use this transformation to convert time series results into a table, transforming a time series data frame into a <strong>Trend</strong> field which can then be used with the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/#sparkline">sparkline cell type</a>. If there are multiple time series queries, each will result in a separate table data frame. These can be joined using join or merge transforms to produce a single table with multiple sparklines per row.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/table-sparklines.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/table-sparklines.png"data-srcset="/static/img/docs/transformations/table-sparklines.png?w=320 320w, /static/img/docs/transformations/table-sparklines.png?w=550 550w, /static/img/docs/transformations/table-sparklines.png?w=750 750w, /static/img/docs/transformations/table-sparklines.png?w=900 900w, /static/img/docs/transformations/table-sparklines.png?w=1040 1040w, /static/img/docs/transformations/table-sparklines.png?w=1240 1240w, /static/img/docs/transformations/table-sparklines.png?w=1920 1920w"
+          data-sizes="auto"alt="A table panel showing multiple values and their corresponding sparklines."width="1472"height="610"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/table-sparklines.png"
+            alt="A table panel showing multiple values and their corresponding sparklines."width="1472"height="610"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>For each generated <strong>Trend</strong> field value, a calculation function can be selected. This value is displayed next to the sparkline and will be used for sorting table rows.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/transformations/timeseries-table-select-stat.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/transformations/timeseries-table-select-stat.png"data-srcset="/static/img/docs/transformations/timeseries-table-select-stat.png?w=320 320w, /static/img/docs/transformations/timeseries-table-select-stat.png?w=550 550w, /static/img/docs/transformations/timeseries-table-select-stat.png?w=750 750w, /static/img/docs/transformations/timeseries-table-select-stat.png?w=900 900w, /static/img/docs/transformations/timeseries-table-select-stat.png?w=1040 1040w, /static/img/docs/transformations/timeseries-table-select-stat.png?w=1240 1240w, /static/img/docs/transformations/timeseries-table-select-stat.png?w=1920 1920w"
+          data-sizes="auto"alt="A select box showing available statistics that can be calculated."width="456"height="484"/>
+        <noscript>
+          <img
+            src="/static/img/docs/transformations/timeseries-table-select-stat.png"
+            alt="A select box showing available statistics that can be calculated."width="456"height="484"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<blockquote>
+<p><strong>Note:</strong> This transformation is available in Grafana 9.5+ as an opt-in beta feature. Modify the Grafana 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">configuration file</a> to use it.</p></blockquote>
+<h3 id="transpose">Transpose</h3>
+<p>Use this transformation to pivot the data frame, converting rows into columns and columns into rows. This transformation is particularly useful when you want to switch the orientation of your data to better suit your visualization needs.
+If you have multiple types, it will default to string type. You can select how empty cells should be represented.</p>
+<p><strong>Before Transformation:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>env</th>
+          <th>January</th>
+          <th>February</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>prod</td>
+          <td>1</td>
+          <td>2</td>
+      </tr>
+      <tr>
+          <td>dev</td>
+          <td>3</td>
+          <td>4</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>After applying transpose transformation:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>prod</th>
+          <th>dev</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>January</td>
+          <td>1</td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td>February</td>
+          <td>2</td>
+          <td>4</td>
+      </tr>
+  </tbody>
+</table>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1100px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png"data-srcset="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=320 320w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=550 550w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=750 750w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=900 900w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=1040 1040w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=1240 1240w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=1920 1920w"
+          data-sizes="auto"alt="Before and after transpose transformation"width="1040"height="792"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png"
+            alt="Before and after transpose transformation"width="1040"height="792"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h3 id="trendline">Trendline</h3>
+<p>Use this transformation to create a new data frame containing values predicted by a statistical model. This is useful for finding a trend in chaotic data. It works by fitting a mathematical function to the data, using either linear or polynomial regression. The data frame can then be used in a visualization to display a trendline.</p>
+<p>There are two different models:</p>
+<ul>
+<li><strong>Linear</strong> - Fits a linear function to the data.
+<figure
+      class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+      style="max-width: 1100px;"
+      itemprop="associatedMedia"
+      itemscope=""
+      itemtype="http://schema.org/ImageObject"
+    ><a
+          class="lightbox-link"
+          href="/static/img/docs/transformations/linear-regression.png"
+          itemprop="contentUrl"
+        ><div class="img-wrapper w-100p h-auto"><img
+            class="lazyload "
+            data-src="/static/img/docs/transformations/linear-regression.png"data-srcset="/static/img/docs/transformations/linear-regression.png?w=320 320w, /static/img/docs/transformations/linear-regression.png?w=550 550w, /static/img/docs/transformations/linear-regression.png?w=750 750w, /static/img/docs/transformations/linear-regression.png?w=900 900w, /static/img/docs/transformations/linear-regression.png?w=1040 1040w, /static/img/docs/transformations/linear-regression.png?w=1240 1240w, /static/img/docs/transformations/linear-regression.png?w=1920 1920w"
+            data-sizes="auto"alt="A time series visualization with a straight line representing the linear function"width="406"height="154"/>
+          <noscript>
+            <img
+              src="/static/img/docs/transformations/linear-regression.png"
+              alt="A time series visualization with a straight line representing the linear function"width="406"height="154"class="docs-image--no-shadow"/>
+          </noscript></div></a></figure></li>
+<li><strong>Polynomial</strong> - Fits a polynomial function to the data.
+<figure
+      class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+      style="max-width: 1100px;"
+      itemprop="associatedMedia"
+      itemscope=""
+      itemtype="http://schema.org/ImageObject"
+    ><a
+          class="lightbox-link"
+          href="/static/img/docs/transformations/polynomial-regression.png"
+          itemprop="contentUrl"
+        ><div class="img-wrapper w-100p h-auto"><img
+            class="lazyload "
+            data-src="/static/img/docs/transformations/polynomial-regression.png"data-srcset="/static/img/docs/transformations/polynomial-regression.png?w=320 320w, /static/img/docs/transformations/polynomial-regression.png?w=550 550w, /static/img/docs/transformations/polynomial-regression.png?w=750 750w, /static/img/docs/transformations/polynomial-regression.png?w=900 900w, /static/img/docs/transformations/polynomial-regression.png?w=1040 1040w, /static/img/docs/transformations/polynomial-regression.png?w=1240 1240w, /static/img/docs/transformations/polynomial-regression.png?w=1920 1920w"
+            data-sizes="auto"alt="A time series visualization with a curved line representing the polynomial function"width="405"height="154"/>
+          <noscript>
+            <img
+              src="/static/img/docs/transformations/polynomial-regression.png"
+              alt="A time series visualization with a curved line representing the polynomial function"width="405"height="154"class="docs-image--no-shadow"/>
+          </noscript></div></a></figure></li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> This transformation was previously called regression analysis.</p></blockquote>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<h1 id="example-of-multi-dimensional-alerts-on-time-series-data">Example of multi-dimensional alerts on time series data</h1>
+<p>This example shows how a single alert rule can generate multiple alert instances — one for each label set (or time series). This is called <strong>multi-dimensional alerting</strong>: one alert rule, many alert instances.</p>
+<p>In Prometheus, each unique combination of labels defines a distinct time series. Grafana Alerting uses the same model: each label set is evaluated independently, and a separate alert instance is created for each series.</p>
+<p>This pattern is common in dynamic environments when monitoring a group of components like multiple CPUs, containers, or per-host availability. Instead of defining individual alert rules or aggregated alerts, you alert on <em>each dimension</em> — so you can detect particular issues and include that level of detail in notifications.</p>
+<p>For example, a query returns one series per CPU:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><code>cpu</code> label value</th>
+          <th style="text-align: left">CPU percent usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">cpu-0</td>
+          <td style="text-align: left">95</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">cpu-1</td>
+          <td style="text-align: left">30</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">cpu-2</td>
+          <td style="text-align: left">85</td>
+      </tr>
+  </tbody>
+</table>
+<p>With a threshold of <code>&gt; 80</code>, this would trigger two alert instances for <code>cpu-0</code> and one for <code>cpu-2</code>.</p>
+<h2 id="examples-overview">Examples overview</h2>
+<p>Imagine you want to trigger alerts when CPU usage goes above 80%, and you want to track each CPU core independently.</p>
+<p>You can use a Prometheus query like this:</p>
+<pre>sum by(cpu) (
+  rate(node_cpu_seconds_total{mode!=&#34;idle&#34;}[1m])
+)</pre>
+<p>This query returns the active CPU usage rate per CPU core, averaged over the past minute.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">CPU core</th>
+          <th style="text-align: left">Active usage rate</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">cpu-0</td>
+          <td style="text-align: left">95</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">cpu-1</td>
+          <td style="text-align: left">30</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">cpu-2</td>
+          <td style="text-align: left">85</td>
+      </tr>
+  </tbody>
+</table>
+<p>This produces one series for each existing CPU.</p>
+<p>When Grafana Alerting evaluates the query, it creates an individual alert instance for each returned series.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Alert instance</th>
+          <th style="text-align: left">Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">{cpu=&ldquo;cpu-0&rdquo;}</td>
+          <td style="text-align: left">95</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">{cpu=&ldquo;cpu-1&rdquo;}</td>
+          <td style="text-align: left">30</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">{cpu=&ldquo;cpu-2&rdquo;}</td>
+          <td style="text-align: left">85</td>
+      </tr>
+  </tbody>
+</table>
+<p>With a threshold condition like <code>$A &gt; 80</code>, Grafana evaluates each instance separately and fires alerts only where the condition is met:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Alert instance</th>
+          <th style="text-align: left">Value</th>
+          <th style="text-align: left">State</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">{cpu=&ldquo;cpu-0&rdquo;}</td>
+          <td style="text-align: left">95</td>
+          <td style="text-align: left">Firing</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">{cpu=&ldquo;cpu-1&rdquo;}</td>
+          <td style="text-align: left">30</td>
+          <td style="text-align: left">Normal</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">{cpu=&ldquo;cpu-2&rdquo;}</td>
+          <td style="text-align: left">85</td>
+          <td style="text-align: left">Firing</td>
+      </tr>
+  </tbody>
+</table>
+<p>Multi-dimensional alerts help you surface issues on individual components—problems that might be missed when alerting on aggregated data (like total CPU usage).</p>
+<p>Each alert instance targets a specific component, identified by its unique label set. This makes alerts more specific and actionable. For example, you can set a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#annotations"><code>summary</code> annotation</a> in your alert rule that identifies the affected CPU:</p>
+<pre>High CPU usage on {{$labels.cpu}}</pre>
+<p>In the previous example, the two firing alert instances would display summaries indicating the affected CPUs:</p>
+<ul>
+<li>High CPU usage on <code>cpu-0</code></li>
+<li>High CPU usage on <code>cpu-2</code></li>
+</ul>
+<h2 id="try-it-with-testdata">Try it with TestData</h2>
+<p>You can quickly experiment with multi-dimensional alerts using the 
+    <a href="/docs/grafana/latest/datasources/testdata/"><strong>TestData</strong> data source</a>, which can generate multiple random time series.</p>
+<ol>
+<li>
+<p>Add the <strong>TestData</strong> data source through the <strong>Connections</strong> menu.</p>
+</li>
+<li>
+<p>Go to <strong>Alerting</strong> and create an alert rule</p>
+</li>
+<li>
+<p>Select <strong>TestData</strong> as the data source.</p>
+</li>
+<li>
+<p>Configure the TestData scenario</p>
+<ul>
+<li>Scenario: <strong>Random Walk</strong></li>
+<li>Labels: <code>cpu=cpu-$seriesIndex</code></li>
+<li>Series count: 3</li>
+<li>Min: 70, Max: 100</li>
+<li>Spread: 2</li>
+</ul>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/alerting/testdata-random-series-v2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/alerting/testdata-random-series-v2.png"data-srcset="/media/docs/alerting/testdata-random-series-v2.png?w=320 320w, /media/docs/alerting/testdata-random-series-v2.png?w=550 550w, /media/docs/alerting/testdata-random-series-v2.png?w=750 750w, /media/docs/alerting/testdata-random-series-v2.png?w=900 900w, /media/docs/alerting/testdata-random-series-v2.png?w=1040 1040w, /media/docs/alerting/testdata-random-series-v2.png?w=1240 1240w, /media/docs/alerting/testdata-random-series-v2.png?w=1920 1920w"
+             data-sizes="auto"alt="Generating random time series data using the TestData data source"width="1165"height="676"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/testdata-random-series-v2.png"
+               alt="Generating random time series data using the TestData data source"width="1165"height="676"/>
+           </noscript></div></a></figure>
+</li>
+</ol>
+<h2 id="reduce-time-series-data-for-comparison">Reduce time series data for comparison</h2>
+<p>The example returns three time series like shown above with values across the selected time range.</p>
+<p>To alert on each series, you need to reduce the time series to a single value that the alert condition can evaluate and determine the alert instance state.</p>
+<p>Grafana Alerting provides several ways to reduce time series data:</p>
+<ul>
+<li><strong>Data source query functions</strong>. The earlier example used the Prometheus <code>sum</code> function to sum the rate results by <code>cpu,</code>producing a single value per CPU core.</li>
+<li><strong>Reduce expression</strong>. In the query and condition section, Grafana provides the <code>Reduce</code> expression to aggregate time series data.
+<ul>
+<li>In <strong>Default mode</strong>, the <strong>When</strong> input selects a reducer (like <code>last</code>, <code>mean</code>, or <code>min</code>), and the threshold compares that reduced value.</li>
+<li>In <strong>Advanced mode</strong>, you can add the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#reduce"><strong>Reduce</strong> expression</a> (e.g., <code>last()</code>, <code>mean()</code>) before defining the threshold (alert condition).</li>
+</ul>
+</li>
+</ul>
+<p>For demo purposes, this example uses the <strong>Advanced mode</strong> with a <strong>Reduce</strong> expression:</p>
+<ol>
+<li>
+<p>Toggle <strong>Advanced mode</strong> in the top right section of the query panel to enable adding additional expressions.</p>
+</li>
+<li>
+<p>Add the <strong>Reduce</strong> expression using a function like <code>mean()</code> to reduce each time series to a single value.</p>
+</li>
+<li>
+<p>Define the alert condition using a <strong>Threshold</strong> like <code>$reducer &gt; 80</code></p>
+</li>
+<li>
+<p>Click <strong>Preview</strong> to evaluate the alert rule.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/using-expressions-with-multiple-series.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/using-expressions-with-multiple-series.png"data-srcset="/media/docs/alerting/using-expressions-with-multiple-series.png?w=320 320w, /media/docs/alerting/using-expressions-with-multiple-series.png?w=550 550w, /media/docs/alerting/using-expressions-with-multiple-series.png?w=750 750w, /media/docs/alerting/using-expressions-with-multiple-series.png?w=900 900w, /media/docs/alerting/using-expressions-with-multiple-series.png?w=1040 1040w, /media/docs/alerting/using-expressions-with-multiple-series.png?w=1240 1240w, /media/docs/alerting/using-expressions-with-multiple-series.png?w=1920 1920w"
+             data-sizes="auto"alt="Alert preview using a Reduce expression and a threshold condition"width="1049"height="416"title="The alert condition evaluates the reduced value for each alert instance and shows whether each instance is Firing or Normal."/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/using-expressions-with-multiple-series.png"
+               alt="Alert preview using a Reduce expression and a threshold condition"width="1049"height="416"title="The alert condition evaluates the reduced value for each alert instance and shows whether each instance is Firing or Normal."/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">The alert condition evaluates the reduced value for each alert instance and shows whether each instance is Firing or Normal.</figcaption></a></figure>
+
+   <div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+     <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+     <div>
+       <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+       <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+   This feature can be seen on <a href="https://play.grafana.org/alerting/grafana/dep7osljedaf4a/view" target="_blank" rel="noopener noreferrer">this alert example</a>.</p>
+       <div class="mx-auto">
+         <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/alerting/grafana/dep7osljedaf4a/view">Try it</a>
+       </div>
+     </div>
+   </div>
+
+</li>
+</ol>
+<h2 id="learn-more">Learn more</h2>
+<p>This example shows how Grafana Alerting implements a multi-dimensional alerting model: one rule, many alert instances and why reducing time series data to a single value is required for evaluation.</p>
+<p>For additional learning resources, check out:</p>
+<ul>
+<li><a href="/tutorials/alerting-get-started-pt2/">Get started tutorial – Create multi-dimensional alerts and route them</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/best-practices/table-data/">Example of alerting on tabular data</a>
+Update the interval of a rule group or modify the rules of the group.</li>
+</ul>

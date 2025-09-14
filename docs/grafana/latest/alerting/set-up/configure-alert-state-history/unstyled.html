@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<h1 id="configure-alert-state-history">Configure alert state history</h1>
+<p>Alerting can record all alert rule state changes for your Grafana managed alert rules in a Loki or Prometheus instance, or in both.</p>
+<ul>
+<li>With Prometheus, you can query the <code>GRAFANA_ALERTS</code> metric for alert state changes in <strong>Grafana Explore</strong>.</li>
+<li>With Loki, you can query and view alert state changes in <strong>Grafana Explore</strong> and the 
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state-history/">Grafana Alerting History views</a>.</li>
+</ul>
+<h2 id="configure-loki-for-alert-state">Configure Loki for alert state</h2>
+<p>The following steps describe a basic configuration:</p>
+<ol>
+<li>
+<p><strong>Configure Loki</strong></p>
+<p>The default Loki settings might need some tweaking as the state history view might query up to 30 days of data.</p>
+<p>The following change to the default configuration should work for most instances, but look at the full Loki configuration settings and adjust according to your needs.</p>
+<pre>limits_config:
+  split_queries_by_interval: &#39;24h&#39;
+  max_query_parallelism: 32</pre>
+<p>As this might impact the performances of an existing Loki instance, use a separate Loki instance for the alert state history.</p>
+</li>
+<li>
+<p><strong>Configure Grafana</strong></p>
+<p>The following Grafana configuration instructs Alerting to write alert state history to a Loki instance:</p>
+<pre>[unified_alerting.state_history]
+enabled = true
+backend = loki
+
+# The URL of the Loki server
+loki_remote_url = http://localhost:3100</pre>
+</li>
+<li>
+<p><strong>Configure the Loki data source in Grafana</strong></p>
+<p>Add the 
+    <a href="/docs/grafana/latest/datasources/loki/">Loki data source</a> to Grafana.</p>
+</li>
+</ol>
+<p>If everything is set up correctly, you can access the 
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state-history/">History view and History page</a> to view and filter alert state history. You can also use <strong>Grafana Explore</strong> to query the Loki instance, see 
+    <a href="/docs/grafana/latest/alerting/monitor/">Alerting Meta monitoring</a> for details.</p>
+<h2 id="configure-prometheus-for-alert-state-grafana_alerts-metric">Configure Prometheus for alert state (GRAFANA_ALERTS metric)</h2>
+<p>You can also configure a Prometheus instance to store alert state changes for your Grafana-managed alert rules. However, this setup does not enable the <strong>Grafana Alerting History views</strong>, as Loki does.</p>
+<p>Instead, Grafana Alerting writes alert state data to the <code>GRAFANA_ALERTS</code> metric-similar to how Prometheus Alerting writes to the <code>ALERTS</code> metric.</p>
+<pre>GRAFANA_ALERTS{alertname=&#34;&#34;, alertstate=&#34;&#34;, grafana_alertstate=&#34;&#34;, grafana_rule_uid=&#34;&#34;, &lt;additional alert labels&gt;}</pre>
+<p>The following steps describe a basic configuration:</p>
+<ol>
+<li>
+<p><strong>Configure Prometheus</strong></p>
+<p>Enable the remote write receiver in your Prometheus instance by setting the <code>--web.enable-remote-write-receiver</code> command-line flag. This enables the endpoint to receive alert state data from Grafana Alerting.</p>
+</li>
+<li>
+<p><strong>Configure the Prometheus data source in Grafana</strong></p>
+<p>Add the 
+    <a href="/docs/grafana/latest/datasources/prometheus/">Prometheus data source</a> to Grafana.</p>
+<p>In the 
+    <a href="/docs/grafana/latest/datasources/prometheus/configure/">Prometheus data source configuration options</a>, set the <strong>Prometheus type</strong> to match your Prometheus instance type. Grafana Alerting uses this option to identify the remote write endpoint.</p>
+</li>
+<li>
+<p><strong>Configure Grafana</strong></p>
+<p>The following Grafana configuration instructs Alerting to write alert state history to a Prometheus instance:</p>
+<pre>[unified_alerting.state_history]
+enabled = true
+backend = prometheus
+# Target data source UID for writing alert state changes.
+prometheus_target_datasource_uid = &lt;DATA_SOURCE_UID&gt;
+
+# (Optional) Metric name for the alert state metric. Default is &#34;GRAFANA_ALERTS&#34;.
+# prometheus_metric_name = GRAFANA_ALERTS
+# (Optional)  Timeout for writing alert state data to the target data source. Default is 10s.
+# prometheus_write_timeout = 10s</pre>
+</li>
+</ol>
+<p>You can then use <strong>Grafana Explore</strong> to query the alert state metric. For details, refer to 
+    <a href="/docs/grafana/latest/alerting/monitor/">Alerting Meta monitoring</a>.</p>
+<pre>GRAFANA_ALERTS{alertstate=&#39;firing&#39;}</pre>
+<h2 id="configure-loki-and-prometheus-for-alert-state">Configure Loki and Prometheus for alert state</h2>
+<p>You can also configure both Loki and Prometheus to record alert state changes for your Grafana-managed alert rules.</p>
+<p>Start with the same setup steps as shown in the previous <a href="#configure-loki-for-alert-state">Loki</a> and <a href="#configure-prometheus-for-alert-state-alerts-metric">Prometheus</a> sections. Then, adjust your Grafana configuration as follows:</p>
+<pre>[unified_alerting.state_history]
+enabled = true
+backend = multiple
+
+primary = loki
+# URL of the Loki server.
+loki_remote_url = http://localhost:3100
+
+secondaries = prometheus
+# Target data source UID for writing alert state changes.
+prometheus_target_datasource_uid = &lt;DATA_SOURCE_UID&gt;</pre>

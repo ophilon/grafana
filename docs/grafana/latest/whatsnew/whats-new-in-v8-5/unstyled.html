@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v85">What&rsquo;s new in Grafana v8.5</h1>
+<p>We’re excited to announce Grafana v8.5, with a variety of improvements that focus on Grafana’s usability, performance, and security.</p>
+<p>We’ve summarized what’s new in the release here, but you might also be interested in the announcement blog post as well. If you’d like all the details you can check out the complete <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>.</p>
+<h2 id="oss">OSS</h2>
+<h3 id="alerting---group-names-for-grafana-managed-alert-rules">Alerting - group names for Grafana-managed alert rules</h3>
+<p>It’s been tricky to work with more than a small number of Grafana-managed alert rules without groups in namespaces. They’ve also been inconsistent with the <a href="https://github.com/prometheus/compliance/blob/main/alert_generator/specification.md" target="_blank" rel="noopener noreferrer">Prometheus Alert Generator Compliance Specification</a>, which made working with Grafana-managed and Prometheus-managed alerts a confusing experience. With this release, you can still see flattened Grafana-managed alerts in the “List” tab, or use the new “Grouped” tab to work with groups:</p>
+<p>Choose useful group names, and move alert rules between groups.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/alerting/unified/rule-grouping-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/alerting/unified/rule-grouping-8-5.png"data-srcset="/static/img/docs/alerting/unified/rule-grouping-8-5.png?w=320 320w, /static/img/docs/alerting/unified/rule-grouping-8-5.png?w=550 550w, /static/img/docs/alerting/unified/rule-grouping-8-5.png?w=750 750w, /static/img/docs/alerting/unified/rule-grouping-8-5.png?w=900 900w, /static/img/docs/alerting/unified/rule-grouping-8-5.png?w=1040 1040w, /static/img/docs/alerting/unified/rule-grouping-8-5.png?w=1240 1240w, /static/img/docs/alerting/unified/rule-grouping-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Rule group"width="1524"height="440"title="Rule group"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/unified/rule-grouping-8-5.png"
+            alt="Rule group"width="1524"height="440"title="Rule group"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Rule group</figcaption></a></figure>
+<p>Rules in a group are evaluated together, so you can also set the interval for the entire group.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/alerting/unified/rule-grouping-details-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/alerting/unified/rule-grouping-details-8-5.png"data-srcset="/static/img/docs/alerting/unified/rule-grouping-details-8-5.png?w=320 320w, /static/img/docs/alerting/unified/rule-grouping-details-8-5.png?w=550 550w, /static/img/docs/alerting/unified/rule-grouping-details-8-5.png?w=750 750w, /static/img/docs/alerting/unified/rule-grouping-details-8-5.png?w=900 900w, /static/img/docs/alerting/unified/rule-grouping-details-8-5.png?w=1040 1040w, /static/img/docs/alerting/unified/rule-grouping-details-8-5.png?w=1240 1240w, /static/img/docs/alerting/unified/rule-grouping-details-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Rule group details"width="1444"height="1548"title="Rule group details"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/unified/rule-grouping-details-8-5.png"
+            alt="Rule group details"width="1444"height="1548"title="Rule group details"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Rule group details</figcaption></a></figure>
+<h3 id="analytics">Analytics</h3>
+<p>You can now enable Grafana version update checking and Grafana plugins version update checking separately using <a href="/docs/grafana/latest/administration/configuration/#check_for_plugin_updates">a new configuration option to separately enable plugin version update checks</a>. The <a href="/docs/grafana/latest/administration/configuration/#check_for_updates">prior version update checking configuration</a> now only controls Grafana version update checks.</p>
+<p>When enabled, a check runs every 10 minutes. It will notify, via the UI, when a new version is available. The checks will not prompt any auto-updates of the Grafana software, nor will it send any sensitive information.</p>
+<p>Plugin update available:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 450px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/analytics/github-plugin-update-available-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/analytics/github-plugin-update-available-8-5.png"data-srcset="/static/img/docs/analytics/github-plugin-update-available-8-5.png?w=320 320w, /static/img/docs/analytics/github-plugin-update-available-8-5.png?w=550 550w, /static/img/docs/analytics/github-plugin-update-available-8-5.png?w=750 750w, /static/img/docs/analytics/github-plugin-update-available-8-5.png?w=900 900w, /static/img/docs/analytics/github-plugin-update-available-8-5.png?w=1040 1040w, /static/img/docs/analytics/github-plugin-update-available-8-5.png?w=1240 1240w, /static/img/docs/analytics/github-plugin-update-available-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana-update-available"width="890"height="432"title="Grafana-update-available"/>
+        <noscript>
+          <img
+            src="/static/img/docs/analytics/github-plugin-update-available-8-5.png"
+            alt="Grafana-update-available"width="890"height="432"title="Grafana-update-available"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana-update-available</figcaption></a></figure>
+<p>Grafana update available:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 450px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/analytics/github-plugin-version-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/analytics/github-plugin-version-8-5.png"data-srcset="/static/img/docs/analytics/github-plugin-version-8-5.png?w=320 320w, /static/img/docs/analytics/github-plugin-version-8-5.png?w=550 550w, /static/img/docs/analytics/github-plugin-version-8-5.png?w=750 750w, /static/img/docs/analytics/github-plugin-version-8-5.png?w=900 900w, /static/img/docs/analytics/github-plugin-version-8-5.png?w=1040 1040w, /static/img/docs/analytics/github-plugin-version-8-5.png?w=1240 1240w, /static/img/docs/analytics/github-plugin-version-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana-update-available"width="1070"height="100"title="Grafana-update-available"/>
+        <noscript>
+          <img
+            src="/static/img/docs/analytics/github-plugin-version-8-5.png"
+            alt="Grafana-update-available"width="1070"height="100"title="Grafana-update-available"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana-update-available</figcaption></a></figure>
+<h3 id="dashboard-panels">Dashboard Panels</h3>
+<p>In addition to RSS feeds, the News panel now supports Atom feeds, allowing you to display a wider range of data and information in Grafana.</p>
+<h4 id="scrolling-in-the-bar-gauge-panel">Scrolling in the Bar gauge panel</h4>
+<p>The Bar gauge panel now supports scrolling to support displaying large datasets while maintaining the readability of labels. You can set a min width or height for the bars (depending on the chart’s orientation), allowing the content to overflow in the container and become scrollable.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/bar-gauge-panel/vertical-view-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/bar-gauge-panel/vertical-view-8-5.png"data-srcset="/static/img/docs/bar-gauge-panel/vertical-view-8-5.png?w=320 320w, /static/img/docs/bar-gauge-panel/vertical-view-8-5.png?w=550 550w, /static/img/docs/bar-gauge-panel/vertical-view-8-5.png?w=750 750w, /static/img/docs/bar-gauge-panel/vertical-view-8-5.png?w=900 900w, /static/img/docs/bar-gauge-panel/vertical-view-8-5.png?w=1040 1040w, /static/img/docs/bar-gauge-panel/vertical-view-8-5.png?w=1240 1240w, /static/img/docs/bar-gauge-panel/vertical-view-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Vertical view"width="1614"height="678"title="Vertical view"/>
+        <noscript>
+          <img
+            src="/static/img/docs/bar-gauge-panel/vertical-view-8-5.png"
+            alt="Vertical view"width="1614"height="678"title="Vertical view"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Vertical view</figcaption></a></figure>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/bar-gauge-panel/horizontal-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/bar-gauge-panel/horizontal-8-5.png"data-srcset="/static/img/docs/bar-gauge-panel/horizontal-8-5.png?w=320 320w, /static/img/docs/bar-gauge-panel/horizontal-8-5.png?w=550 550w, /static/img/docs/bar-gauge-panel/horizontal-8-5.png?w=750 750w, /static/img/docs/bar-gauge-panel/horizontal-8-5.png?w=900 900w, /static/img/docs/bar-gauge-panel/horizontal-8-5.png?w=1040 1040w, /static/img/docs/bar-gauge-panel/horizontal-8-5.png?w=1240 1240w, /static/img/docs/bar-gauge-panel/horizontal-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Horizontal view"width="806"height="344"title="Horizontal view"/>
+        <noscript>
+          <img
+            src="/static/img/docs/bar-gauge-panel/horizontal-8-5.png"
+            alt="Horizontal view"width="806"height="344"title="Horizontal view"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Horizontal view</figcaption></a></figure>
+<h3 id="transformations">Transformations</h3>
+<h4 id="template-variable-substitution">Template variable substitution</h4>
+<p>We’ve added support to substitute template variables to transformations. This allows dashboards to be more interactive with transformations when a user inputs calculations and <code>$__interval</code> and <code>$__interval_ms</code>.</p>
+<h4 id="grouping-to-matrix">Grouping to matrix</h4>
+<p>A new transformation is available that helps you structure data in a matrix format, using the Grafana table plugin.</p>
+<h3 id="expanding-the-navigation-bar-beta">Expanding the navigation bar (Beta)</h3>
+<p>Available by switching on the ‘newNavigation’ feature toggle.
+You can expand the navigation bar for a better overview of Grafana’s features and installed integrations.
+This feature is currently in a beta version and we would appreciate your feedback. Sign up for a call with the Grafana team - it only takes 30 minutes, and you&rsquo;ll receive a $40 USD gift card as a token of appreciation for your time.
+US, UK, Canada, Australia, France, Germany, or South Africa: sign up <a href="https://www.userinterviews.com/projects/Hz3DyNNwWA/apply" target="_blank" rel="noopener noreferrer">here</a>;
+Everywhere else in the world: sign up <a href="https://www.userinterviews.com/projects/Hz3DyNNwWA/apply" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/navigation/new-navigation-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/navigation/new-navigation-8-5.png"data-srcset="/static/img/docs/navigation/new-navigation-8-5.png?w=320 320w, /static/img/docs/navigation/new-navigation-8-5.png?w=550 550w, /static/img/docs/navigation/new-navigation-8-5.png?w=750 750w, /static/img/docs/navigation/new-navigation-8-5.png?w=900 900w, /static/img/docs/navigation/new-navigation-8-5.png?w=1040 1040w, /static/img/docs/navigation/new-navigation-8-5.png?w=1240 1240w, /static/img/docs/navigation/new-navigation-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="New nav panel"width="1556"height="972"title="New nav panel"/>
+        <noscript>
+          <img
+            src="/static/img/docs/navigation/new-navigation-8-5.png"
+            alt="New nav panel"width="1556"height="972"title="New nav panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">New nav panel</figcaption></a></figure>
+<h3 id="notifications-list-for-error-alerts-beta">Notifications list for error alerts (Beta)</h3>
+<p>Available by switching on the ‘persistNotifications’ feature toggle.
+In order to support debugging issues in Grafana, error alerts that appear when viewing a dashboard now include a trace ID, and these alerts can be accessed under Profile / Notifications.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/navigation/nav-profile-notification-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/navigation/nav-profile-notification-8-5.png"data-srcset="/static/img/docs/navigation/nav-profile-notification-8-5.png?w=320 320w, /static/img/docs/navigation/nav-profile-notification-8-5.png?w=550 550w, /static/img/docs/navigation/nav-profile-notification-8-5.png?w=750 750w, /static/img/docs/navigation/nav-profile-notification-8-5.png?w=900 900w, /static/img/docs/navigation/nav-profile-notification-8-5.png?w=1040 1040w, /static/img/docs/navigation/nav-profile-notification-8-5.png?w=1240 1240w, /static/img/docs/navigation/nav-profile-notification-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="New nav panel"width="456"height="616"title="New nav panel"/>
+        <noscript>
+          <img
+            src="/static/img/docs/navigation/nav-profile-notification-8-5.png"
+            alt="New nav panel"width="456"height="616"title="New nav panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">New nav panel</figcaption></a></figure>
+<h3 id="service-accounts-beta">Service accounts (beta)</h3>
+<p>Service accounts are a major evolution for machine access within Grafana. You can create multiple API tokens per service account with independent expiration dates, and temporarily disable a service account without deleting it. These benefits make Service Accounts a more flexible way for Terraform and other apps to authenticate with Grafana. Service accounts also work with <a href="/docs/grafana/latest/enterprise/access-control/">fine-grained access control</a> in <a href="/docs/grafana/latest/enterprise/">Grafana Enterprise</a>: you can improve security by granting service accounts specific roles to limit the functions they can perform. Service accounts are available in beta; you can try them out by enabling the <code>service-accounts</code> <a href="/docs/grafana/v8.5/administration/service-accounts/enable-service-accounts/">feature toggle</a> or, if you use Grafana Cloud, <a href="/orgs/raintank/tickets#">reaching out to our support team</a> for early access. Learn more about Service Accounts in our <a href="/docs/grafana/latest/administration/service-accounts/">docs</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/service-accounts/configure-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/service-accounts/configure-8-5.png"data-srcset="/static/img/docs/service-accounts/configure-8-5.png?w=320 320w, /static/img/docs/service-accounts/configure-8-5.png?w=550 550w, /static/img/docs/service-accounts/configure-8-5.png?w=750 750w, /static/img/docs/service-accounts/configure-8-5.png?w=900 900w, /static/img/docs/service-accounts/configure-8-5.png?w=1040 1040w, /static/img/docs/service-accounts/configure-8-5.png?w=1240 1240w, /static/img/docs/service-accounts/configure-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Configure service accounts"width="1558"height="738"title="Configure service accounts"/>
+        <noscript>
+          <img
+            src="/static/img/docs/service-accounts/configure-8-5.png"
+            alt="Configure service accounts"width="1558"height="738"title="Configure service accounts"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Configure service accounts</figcaption></a></figure>
+<h3 id="observability">Observability</h3>
+<h4 id="trace-to-logs-for-splunk">Trace to Logs for Splunk</h4>
+<p>With Trace to Logs, you can view relevant logs for a trace or span with one click. You can now link to Splunk logs from your tracing datasource. In your tracing datasource, configure Trace to Logs by selecting the Splunk datasource and relevant query options like tags to include in the query.</p>
+<h3 id="experimental-explore-to-dashboard-workflow">Experimental Explore to Dashboard workflow</h3>
+<p>Allows users to create panels directly from within explore.</p>
+<p>All queries in Explore get copied over to the new panel, the panel type is automatically selected based on queries’ response
+With multiple queries, it will view the response from the first, non hidden query to determine the visualization type</p>
+<p>This feature is behind the <code>explore2Dashboard</code> feature toggle and is enabled by default.</p>
+<h2 id="grafana-enterprise">Grafana Enterprise</h2>
+<h3 id="security">Security</h3>
+<h4 id="fine-grained-access-control-comes-to-alerting-beta">Fine-Grained Access Control comes to Alerting (beta)</h4>
+<p>Check the Grafana Enterprise / Security section below for more details, including how to enable this beta feature; we’ve implemented
+<a href="/docs/grafana/latest/enterprise/access-control/">fine-grained access control</a> for alerting rules, notification policies, and contact points in <a href="/docs/grafana/latest/enterprise/">Grafana Enterprise</a>. You can turn on fine-grained access control using the <code>accesscontrol</code> <a href="/docs/grafana/latest/enterprise/access-control/#enable-fine-grained-access-control">feature toggle</a>, or by <a href="/orgs/raintank/tickets#">reaching out to our support team</a> for early access if you use Grafana Cloud. For more information on fine-grained access control, visit our <a href="/docs/grafana/latest/enterprise/access-control/">docs</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/fine-grained-access-control-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/fine-grained-access-control-8-5.png"data-srcset="/static/img/docs/enterprise/fine-grained-access-control-8-5.png?w=320 320w, /static/img/docs/enterprise/fine-grained-access-control-8-5.png?w=550 550w, /static/img/docs/enterprise/fine-grained-access-control-8-5.png?w=750 750w, /static/img/docs/enterprise/fine-grained-access-control-8-5.png?w=900 900w, /static/img/docs/enterprise/fine-grained-access-control-8-5.png?w=1040 1040w, /static/img/docs/enterprise/fine-grained-access-control-8-5.png?w=1240 1240w, /static/img/docs/enterprise/fine-grained-access-control-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Fine grained access control"width="780"height="375"title="Fine grained access control"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/fine-grained-access-control-8-5.png"
+            alt="Fine grained access control"width="780"height="375"title="Fine grained access control"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Fine grained access control</figcaption></a></figure>
+<h4 id="control-access-to-dashboards-folders-and-annotations-beta">Control access to dashboards, folders, and annotations (beta)</h4>
+<p>You can now use fine-grained access control to manage which specific users, teams, and roles can create, read, update, or delete dashboards, folders, or annotations. These are the latest services to incorporate fine-grained access control, which helps you dial in the specific access your users should have in Grafana. Fine-grained access control is currently in beta, but general availability is just around the corner, planned for our 9.0 release. You can turn on fine-grained access control using the <code>accesscontrol</code> <a href="/docs/grafana/latest/enterprise/access-control/#enable-fine-grained-access-control">feature toggle</a>, or by <a href="/orgs/raintank/tickets#">reaching out to our support team</a> for early access if you use Grafana Cloud. For more information on fine-grained access control, visit our <a href="/docs/grafana/latest/enterprise/access-control/">docs</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/configure-role-access-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/configure-role-access-8-5.png"data-srcset="/static/img/docs/enterprise/configure-role-access-8-5.png?w=320 320w, /static/img/docs/enterprise/configure-role-access-8-5.png?w=550 550w, /static/img/docs/enterprise/configure-role-access-8-5.png?w=750 750w, /static/img/docs/enterprise/configure-role-access-8-5.png?w=900 900w, /static/img/docs/enterprise/configure-role-access-8-5.png?w=1040 1040w, /static/img/docs/enterprise/configure-role-access-8-5.png?w=1240 1240w, /static/img/docs/enterprise/configure-role-access-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Configure role access"width="780"height="469"title="Configure role access"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/configure-role-access-8-5.png"
+            alt="Configure role access"width="780"height="469"title="Configure role access"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Configure role access</figcaption></a></figure>
+<h4 id="configure-azure-key-vault-using-managed-identities">Configure Azure Key Vault using Managed Identities</h4>
+<p>You can already keep secrets in Grafana’s database (like data source credentials) safer by retrieving your database encryption key from a Key Management Service, like AWS KMS or Azure Key Vault. In Grafana v8.5, you can use an Azure Managed Identity to integrate with Azure Key Vault. This simplifies the Key Vault integration and keeps it consistent with Grafana data sources, like Azure Data Explorer.</p>
+<h3 id="configure-reports-more-easily">Configure reports more easily</h3>
+<p>Reports are a great way to share Grafana dashboards by email with users who don’t regularly sign in to Grafana. In 8.5, we’ve revamped the Report authoring UI to make it quicker and easier for you to create reports. View report details at a glance in list view, consider one configuration step at a time, and save reports for later. Also, Grafana will now emit a log every time a report is sent, so you can confirm its status or learn about send errors. Learn more about Reporting in our <a href="/docs/grafana/latest/enterprise/reporting/">docs</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/report-new-report-8-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/report-new-report-8-5.png"data-srcset="/static/img/docs/enterprise/report-new-report-8-5.png?w=320 320w, /static/img/docs/enterprise/report-new-report-8-5.png?w=550 550w, /static/img/docs/enterprise/report-new-report-8-5.png?w=750 750w, /static/img/docs/enterprise/report-new-report-8-5.png?w=900 900w, /static/img/docs/enterprise/report-new-report-8-5.png?w=1040 1040w, /static/img/docs/enterprise/report-new-report-8-5.png?w=1240 1240w, /static/img/docs/enterprise/report-new-report-8-5.png?w=1920 1920w"
+          data-sizes="auto"alt="New report"width="1538"height="1716"title="New report"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/report-new-report-8-5.png"
+            alt="New report"width="1538"height="1716"title="New report"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">New report</figcaption></a></figure>

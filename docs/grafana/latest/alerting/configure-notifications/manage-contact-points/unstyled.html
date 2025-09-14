@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<h1 id="configure-contact-points">Configure contact points</h1>
+<p>Use contact points to specify where to receive alert notifications. Contact points contain the configuration for sending alert notifications, including destinations like email, Slack, IRM, webhooks, and their notification messages.</p>
+<p>A contact point can have one or multiple destinations, known as <a href="#supported-contact-point-integrations">contact point integrations</a>. Alert notifications are sent to each integration within the chosen contact point.</p>
+<p>On the <strong>Contact Points</strong> tab, you can:</p>
+<ul>
+<li>Add, edit, and view contact points and integrations.</li>
+<li>Search for name and type of contact points and integrations.</li>
+<li>View how many notification policies each contact point is being used for and navigate directly to the linked notification policies.</li>
+<li>View the status of notification deliveries.</li>
+<li>Export individual contact points or all contact points in JSON, YAML, or Terraform format.</li>
+<li>Delete contact points. Note that you cannot delete contact points that are in use by a notification policy. To proceed, either delete the notification policy or update it to use another contact point.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Contact points are assigned to a 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alertmanager/">specific Alertmanager</a> and cannot be used by notification policies in other Alertmanagers.</p></blockquote></div>
+
+<h2 id="supported-contact-point-integrations">Supported contact point integrations</h2>
+<p>Each contact point integration has its own configuration options and setup process. The following list shows the contact point integrations supported by Grafana.</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-alertmanager/">Alertmanager</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-amazon-sns/">AWS SNS</a></li>
+<li>Cisco Webex Teams</li>
+<li>DingDing</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-discord/">Discord</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-email/">Email</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-google-chat/">Google Chat</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-irm/">Grafana IRM</a></li>
+<li>Kafka REST Proxy</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-jira/">Jira</a></li>
+<li>Line</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-teams/">Microsoft Teams</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-mqtt/">MQTT</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-opsgenie/">Opsgenie</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/pager-duty/">PagerDuty</a></li>
+<li>Pushover</li>
+<li>Sensu Go</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-slack/">Slack</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-telegram/">Telegram</a></li>
+<li>Threema Gateway</li>
+<li>VictorOps</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/">Webhook</a></li>
+<li>WeCom</li>
+</ul>
+
+</div>
+<p>Some of the integrations above are not supported by Prometheus Alertmanager. For the list of supported integrations, refer to the <a href="https://prometheus.io/docs/alerting/latest/configuration/#receiver-integration-settings" target="_blank" rel="noopener noreferrer">Prometheus Alertmanager receiver settings</a>.</p>
+<h2 id="add-a-contact-point">Add a contact point</h2>
+<p>Complete the following steps to add a contact point.</p>
+<ol>
+<li>In the left-side menu, click <strong>Alerts &amp; IRM</strong> and then <strong>Alerting</strong>.</li>
+<li>Click <strong>Contact points</strong>.</li>
+<li>From the <strong>Choose Alertmanager</strong> dropdown, select an Alertmanager. By default, <strong>Grafana Alertmanager</strong> is selected.</li>
+<li>On the <strong>Contact Points</strong> tab, click <strong>+ Add contact point</strong>.</li>
+<li>Enter a descriptive name for the contact point.</li>
+<li>From <strong>Integration</strong>, select a type and fill out mandatory fields. For example, if you choose email, enter the email addresses. Or if you choose Slack, enter the Slack channel and users who should be contacted.</li>
+<li>Some <a href="#supported-contact-point-integrations">contact point integrations</a>, like email or Webhook, have optional settings. In <strong>Optional settings</strong>, specify additional settings for the selected contact point integration.</li>
+<li>In Notification settings, optionally select <strong>Disable resolved message</strong> if you do not want to be notified when an alert resolves.</li>
+<li>Save your changes.</li>
+</ol>
+<h2 id="add-another-contact-point-integration">Add another contact point integration</h2>
+<p>A contact point can have multiple integrations, or destinations for sending notifications.</p>
+<p>To add another integration to a contact point, complete the following steps.</p>
+<ol>
+<li>Add or edit an existing contact point.</li>
+<li>Click <strong>Add contact point integration</strong> and repeat the same steps as <a href="#add-a-contact-point">Add a contact point</a>.
+<ul>
+<li>From <strong>Integration</strong>, select a type and fill out mandatory fields.</li>
+<li>In <strong>Optional settings</strong>, specify additional settings for the selected contact point integration.</li>
+</ul>
+</li>
+<li>Save your changes.</li>
+</ol>
+<h2 id="customize-notification-messages">Customize notification messages</h2>
+<p>In contact points, you can also customize notification messages. For example, when setting up an email contact point integration, click <strong>Message</strong> or <strong>Subject</strong> to modify it.</p>
+<p>By default, notification messages include common alert details, which are usually sufficient for most cases.</p>
+<p>If necessary, you can customize the content and format of notification messages. You can create a custom notification template, which can then be applied to one or more contact points.</p>
+<p>On the <strong>Notification templates</strong> tab, you can view, edit, copy or delete notification templates. Refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/manage-notification-templates/">manage notification templates</a> for instructions on selecting or creating a template for a contact point.</p>
+<h2 id="test-a-contact-point">Test a contact point</h2>
+<p>Testing a contact point is only available for Grafana Alertmanager. Complete the following steps to test a contact point.</p>
+<ol>
+<li>In the left-side menu, click <strong>Alerts &amp; IRM</strong> and then <strong>Alerting</strong>.</li>
+<li>Click <strong>Contact points</strong> to view a list of existing contact points.</li>
+<li>On the <strong>Contact Points</strong> tab, find the contact point you want to test, then click <strong>Edit</strong>. You can also create a new contact point if needed.</li>
+<li>Click <strong>Test</strong> to open the contact point testing dialog box.</li>
+<li>Choose whether to send a predefined test notification or choose custom to add your own custom annotations and labels to include in the notification.</li>
+<li>Click <strong>Send test notification</strong> to fire the alert.</li>
+</ol>
+<h2 id="enable-notifications-for-a-contact-point">Enable notifications for a contact point</h2>
+<p>After creating a contact point, you can enable it to receive alert notifications using one of the following methods:</p>
+<ul>
+<li><strong>Assign it to alert rules</strong> – Select the contact point in the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/">notifications options for Grafana-managed alert rules</a> to directly associate it with specific alerts.</li>
+<li><strong>Assign it to notification policies</strong> – Add the contact point to one or more 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">notification policies</a>, which manage the alert notifications you want the contact point to receive.</li>
+</ul>

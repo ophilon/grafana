@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<h1 id="alert-rule-state-and-health">Alert rule state and health</h1>
+<p>Each alert rule can generate one or more alert instances—one alert instance for each series or dimension, as shown in the 
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">multi-dimensional alert example</a>.</p>
+<p>Each alert instance of the same alert rule represents a different target and can be in a different state; for example, one alert instance may be <strong>Normal</strong> while another is <strong>Alerting</strong>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alert-rule-example-multiple-alert-instances.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alert-rule-example-multiple-alert-instances.png"data-srcset="/media/docs/alerting/alert-rule-example-multiple-alert-instances.png?w=320 320w, /media/docs/alerting/alert-rule-example-multiple-alert-instances.png?w=550 550w, /media/docs/alerting/alert-rule-example-multiple-alert-instances.png?w=750 750w, /media/docs/alerting/alert-rule-example-multiple-alert-instances.png?w=900 900w, /media/docs/alerting/alert-rule-example-multiple-alert-instances.png?w=1040 1040w, /media/docs/alerting/alert-rule-example-multiple-alert-instances.png?w=1240 1240w, /media/docs/alerting/alert-rule-example-multiple-alert-instances.png?w=1920 1920w"
+          data-sizes="auto"alt="Multi dimensional alert rule. The alert rule state and alert rule health are determined by the state of the alert instances."width="2582"height="900"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-rule-example-multiple-alert-instances.png"
+            alt="Multi dimensional alert rule. The alert rule state and alert rule health are determined by the state of the alert instances."width="2582"height="900"/>
+        </noscript></div></a></figure>
+<p>The alert rule state and alert rule health are determined by the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/nodata-and-error-states/#alert-instance-states">state of the alert instances</a>.</p>
+<h2 id="alert-rule-states">Alert rule states</h2>
+<p>An alert rule can be in either of the following states:</p>
+<table>
+  <thead>
+      <tr>
+          <th>State</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Normal</strong></td>
+          <td>None of the alert instances returned by the evaluation engine is in a <code>Pending</code> or <code>Alerting</code> state.</td>
+      </tr>
+      <tr>
+          <td><strong>Pending</strong></td>
+          <td>At least one alert instances returned by the evaluation engine is <code>Pending</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Firing</strong></td>
+          <td>At least one alert instances returned by the evaluation engine is <code>Alerting</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="alert-rule-health">Alert rule health</h2>
+<p>An alert rule can have one of the following health statuses:</p>
+<table>
+  <thead>
+      <tr>
+          <th>State</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Ok</strong></td>
+          <td>No error when evaluating the alert rule.</td>
+      </tr>
+      <tr>
+          <td><strong>Error</strong></td>
+          <td>An error occurred when evaluating the alert rule.</td>
+      </tr>
+      <tr>
+          <td><strong>No Data</strong></td>
+          <td>The alert rule query returns no data.</td>
+      </tr>
+      <tr>
+          <td><strong>{status}, KeepLast</strong></td>
+          <td>The rule would have received another status but was configured to keep the last state of the alert rule.</td>
+      </tr>
+  </tbody>
+</table>

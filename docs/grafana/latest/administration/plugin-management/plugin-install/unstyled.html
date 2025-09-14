@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<h1 id="install-a-plugin">Install a plugin</h1>
+<p>Besides the UI, you can use alternative methods to install a plugin depending on your environment or set-up.</p>
+<h2 id="install-a-plugin-using-grafana-cli">Install a plugin using Grafana CLI</h2>
+<p>The Grafana CLI allows you to install, upgrade, and manage your Grafana plugins using a command line tool. For more information about Grafana CLI plugin commands, refer to 
+    <a href="/docs/grafana/latest/cli/#plugins-commands">Plugin commands</a>.</p>
+<h2 id="install-a-plugin-from-a-zip-file">Install a plugin from a ZIP file</h2>
+<p>This method is typically used for plugins not available in the Plugin Catalog or in environments without internet access.</p>
+<p>Download the archive containing the plugin assets, and install it by extracting the archive into the plugin directory. For example:</p>
+<pre>unzip my-plugin-0.2.0.zip -d YOUR_PLUGIN_DIR/my-plugin</pre>
+<p>The path to the plugin directory is defined in the configuration file. For more information, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#plugins">Configuration</a>.</p>
+<h2 id="install-a-plugin-using-grafana-configuration">Install a plugin using Grafana configuration</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature requires Grafana 11.5.0 or later.</p></blockquote></div>
+
+<p>You can install plugins by adding the plugin ID to the <code>plugins.preinstall</code> section in the Grafana configuration file. This prevents the plugin from being accidentally uninstalled and can be auto-updated. For more information, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#preinstall">Configuration</a>.</p>
+<h2 id="install-a-plugin-in-air-gapped-environment">Install a plugin in air-gapped environment</h2>
+<p>Plugin installation usually requires an Internet connection. You can check which endpoints are used during the installation on your instance and add them to your instance’s allow list.</p>
+<p>If this is not possible try installing a plugin using the <a href="#install-a-plugin-using-grafana-cli">Grafana CLI</a> or as a <a href="#install-a-plugin-from-a-zip-file">ZIP file</a>.</p>
+<p>You can fetch any plugin from Grafana.com API following the download link referenced in the API.
+Here&rsquo;s an example based on <code>grafana-lokiexplore-app</code> plugins.</p>
+<ol>
+<li>Open <code>/api/plugins/grafana-lokiexplore-app</code> and look for <code>links</code> section</li>
+<li>Find a <code>download</code> url which looks something like <code>/api/plugins/grafana-lokiexplore-app/versions/1.0.2/download</code></li>
+<li>Use this URL to download the plugin ZIP file, which you can then install as described above.</li>
+</ol>
+<h2 id="install-plugins-using-the-grafana-helm-chart">Install plugins using the Grafana Helm chart</h2>
+<p>With the Grafana Helm chart, you can install plugins using one of the methods described in this section. All the YAML snippets install v1.9.0 of the Grafana OnCall App plugin and the Redis data source plugin. When installation is complete you&rsquo;ll get a confirmation message indicating that the plugins were successfully installed.</p>
+<h3 id="method-1-use-the-plugins-field">Method 1: Use the <code>plugins</code> field</h3>
+<p>Add the plugins you want to install as a list in your values file. For more information about the configuration, refer to <a href="https://github.com/grafana/helm-charts/tree/main/charts/grafana#configuration" target="_blank" rel="noopener noreferrer">the Helm chart configuration reference</a>.</p>
+<pre>plugins:
+  - /api/plugins/grafana-oncall-app/versions/v1.9.0/download;grafana-oncall-app
+  - redis-datasource</pre>
+<h3 id="method-2-use-gf_plugins_preinstall_sync">Method 2: Use <code>GF_PLUGINS_PREINSTALL_SYNC</code></h3>
+<p>Add the following to your <code>values.yaml</code> file:</p>
+<pre>env:
+  # Format: &lt;plugin ID&gt;@[&lt;plugin version&gt;]@&lt;url to plugin zip&gt;
+  GF_PLUGINS_PREINSTALL_SYNC: grafana-oncall-app@1.9.0@/api/plugins/grafana-oncall-app/versions/v1.9.0/download
+
+  # Or without version and URL (latest version will be used)
+  # GF_PLUGINS_PREINSTALL_SYNC: grafana-oncall-app
+
+  # Multiple plugins (comma-separated)
+  # GF_PLUGINS_PREINSTALL_SYNC: grafana-oncall-app,redis-datasource</pre>
+<h3 id="method-3-use-gf_plugins_install-deprecated-since-v1210">Method 3: Use <code>GF_PLUGINS_INSTALL</code> (Deprecated since v12.1.0)</h3>
+<p>Add the following to your <code>values.yaml</code> file:</p>
+<pre>env:
+  # Comma-separated list of plugin IDs
+  GF_PLUGINS_INSTALL: grafana-oncall-app,redis-datasource</pre>

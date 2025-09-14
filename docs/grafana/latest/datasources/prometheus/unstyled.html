@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<h1 id="prometheus-data-source">Prometheus data source</h1>
+<p>Prometheus is an open source database that uses a telemetry collector agent to scrape and store metrics used for monitoring and alerting.</p>
+<p>Grafana provides native support for Prometheus, so you don&rsquo;t need to install a plugin.</p>
+<p>The following documentation will help you get started working with Prometheus and Grafana:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/fundamentals/intro-to-prometheus/">What is Prometheus?</a></li>
+<li><a href="https://prometheus.io/docs/concepts/data_model/" target="_blank" rel="noopener noreferrer">Prometheus data model</a></li>
+<li><a href="https://prometheus.io/docs/prometheus/latest/getting_started/" target="_blank" rel="noopener noreferrer">Getting started</a></li>
+<li>
+    <a href="/docs/grafana/latest/datasources/prometheus/configure/">Configure the Prometheus data source</a></li>
+<li><a href="query-editor/">Prometheus query editor</a></li>
+<li><a href="template-variables/">Template variables</a></li>
+</ul>
+<h2 id="exemplars">Exemplars</h2>
+<p>In Prometheus, an <strong>exemplar</strong> is a specific trace that represents a measurement taken within a given time interval. While metrics provide an aggregated view of your system, and traces offer a detailed view of individual requests, exemplars serve as a bridge between the two, linking high-level metrics to specific traces for deeper insights.</p>
+<p>Exemplars associate higher-cardinality metadata from a specific event with traditional time series data. Refer to 
+    <a href="/docs/grafana/latest/fundamentals/exemplars/">Introduction to exemplars</a> in the Prometheus documentation for detailed information on how they work.</p>
+<p>Grafana can show exemplar data alongside a metric both in Explore and in Dashboards.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1834px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v74/exemplars.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v74/exemplars.png"data-srcset="/static/img/docs/v74/exemplars.png?w=320 320w, /static/img/docs/v74/exemplars.png?w=550 550w, /static/img/docs/v74/exemplars.png?w=750 750w, /static/img/docs/v74/exemplars.png?w=900 900w, /static/img/docs/v74/exemplars.png?w=1040 1040w, /static/img/docs/v74/exemplars.png?w=1240 1240w, /static/img/docs/v74/exemplars.png?w=1920 1920w"
+          data-sizes="auto"alt="Exemplar window"width="1834"height="840"title="Exemplar window"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v74/exemplars.png"
+            alt="Exemplar window"width="1834"height="840"title="Exemplar window"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Exemplar window</figcaption></a></figure>
+<p>You add exemplars when you configure the Prometheus data source.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/prometheus/exemplars-10-1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/prometheus/exemplars-10-1.png"data-srcset="/static/img/docs/prometheus/exemplars-10-1.png?w=320 320w, /static/img/docs/prometheus/exemplars-10-1.png?w=550 550w, /static/img/docs/prometheus/exemplars-10-1.png?w=750 750w, /static/img/docs/prometheus/exemplars-10-1.png?w=900 900w, /static/img/docs/prometheus/exemplars-10-1.png?w=1040 1040w, /static/img/docs/prometheus/exemplars-10-1.png?w=1240 1240w, /static/img/docs/prometheus/exemplars-10-1.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="746"height="344"/>
+        <noscript>
+          <img
+            src="/static/img/docs/prometheus/exemplars-10-1.png"
+            alt=""width="746"height="344"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="prometheus-api">Prometheus API</h2>
+<p>The Prometheus data source also works with other projects that implement the <a href="https://prometheus.io/docs/prometheus/latest/querying/api/" target="_blank" rel="noopener noreferrer">Prometheus querying API</a>.</p>
+<p>For more information on how to query other Prometheus-compatible projects from Grafana, refer to the specific product&rsquo;s documentation:</p>
+<ul>
+<li><a href="/docs/mimir/latest/">Grafana Mimir</a></li>
+<li><a href="https://thanos.io/tip/components/query.md/" target="_blank" rel="noopener noreferrer">Thanos</a></li>
+</ul>
+<h2 id="view-grafana-metrics-with-prometheus">View Grafana metrics with Prometheus</h2>
+<p>Grafana exposes metrics for Prometheus on the <code>/metrics</code> endpoint and includes a pre-built dashboard to help you start visualizing your metrics immediately.</p>
+<p>Complete the following steps to import the pre-built dashboard:</p>
+<ol>
+<li>Navigate to the Prometheus 
+    <a href="/docs/grafana/latest/datasources/prometheus/configure/">configuration page</a>.</li>
+<li>Click the <strong>Dashboards</strong> tab.</li>
+<li>Locate the <strong>Grafana metrics</strong> dashboard in the list and click <strong>Import</strong>.</li>
+</ol>
+<p>For details about these metrics, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/set-up-grafana-monitoring/">Internal Grafana metrics</a>.</p>
+<h2 id="amazon-managed-service-for-prometheus">Amazon Managed Service for Prometheus</h2>
+<p>Grafana has deprecated the Prometheus data source for Amazon Managed Service for Prometheus. Use the <a href="/grafana/plugins/grafana-amazonprometheus-datasource/">Amazon Managed Service for Prometheus data source</a> instead. The linked documentation outlines the migration steps.</p>
+<h2 id="get-the-most-out-of-the-prometheus-data-source">Get the most out of the Prometheus data source</h2>
+<p>After you install and configure Prometheus you can:</p>
+<ul>
+<li>Create a wide variety of 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/">visualizations</a></li>
+<li>Configure and use 
+    <a href="/docs/grafana/latest/dashboards/variables/">templates and variables</a></li>
+<li>Add 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/">transformations</a></li>
+<li>Add 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/">annotations</a></li>
+<li>Set up 
+    <a href="/docs/grafana/latest/alerting/">alerting</a></li>
+<li>Create 
+    <a href="/docs/grafana/latest/administration/recorded-queries/">recorded queries</a></li>
+</ul>

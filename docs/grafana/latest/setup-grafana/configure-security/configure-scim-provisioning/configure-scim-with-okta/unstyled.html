@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<h1 id="configure-scim-with-okta">Configure SCIM with Okta</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and to customers on select Grafana Cloud plans. For pricing information, visit <a href="/pricing/">pricing</a> or contact our sales team.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p><strong>Public Preview:</strong> SCIM provisioning is currently in Public Preview. While functional, the feature is actively being refined and may undergo changes. We recommend thorough testing in non-production environments before deploying to production systems.</p></blockquote></div>
+
+<p>This guide explains how to configure SCIM provisioning with Okta to automate user and team management in Grafana.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature is behind the <code>enableSCIM</code> feature toggle.
+You can enable feature toggles through configuration file or environment variables.</p>
+<p>For more information, refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#feature_toggles">feature toggles documentation</a>.</p></blockquote></div>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before configuring SCIM with Okta, ensure you have:</p>
+<ul>
+<li>Grafana Enterprise or a paid Grafana Cloud account with SCIM provisioning enabled.</li>
+<li>Admin access to both Grafana and Okta</li>
+<li><a href="../../configure-authentication/saml/configure-saml-with-okta/">SAML authentication configured with Okta</a></li>
+<li>SCIM feature enabled in Grafana</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p><strong>Important SAML and SCIM Configuration:</strong>
+When using SAML for authentication alongside SCIM provisioning with Okta, it is crucial to correctly align user identifiers.
+For detailed information on why this is critical for security and how to configure it, refer to the main <a href="../">SCIM provisioning documentation</a>.</p>
+<p>Ensure your Okta SAML application is configured to send a stable, unique identifier (that will map to the Grafana SCIM <code>externalId</code>) as a SAML claim. Then, configure the Grafana SAML settings to use this claim. For general Okta SAML setup, refer to <a href="../../configure-authentication/saml/configure-saml-with-okta/">Set up SAML with Okta</a>.</p></blockquote></div>
+
+<h2 id="configure-scim-in-grafana">Configure SCIM in Grafana</h2>
+<p>To enable SCIM provisioning in Grafana, create a service account and generate an access token that will be used to authenticate SCIM requests from Okta.</p>
+<h3 id="create-a-service-account">Create a service account</h3>
+<ol>
+<li>Navigate to <strong>Administration &gt; Users and access &gt; Service accounts</strong></li>
+<li>Click <strong>Add service account</strong></li>
+<li>Create a new service account with Admin role</li>
+<li>Create a new token for the newly created service account and save it securely
+<ul>
+<li>This token will be used in the Okta configuration</li>
+</ul>
+</li>
+</ol>
+<h2 id="configure-scim-in-okta">Configure SCIM in Okta</h2>
+<p>Configure both SAML authentication and SCIM provisioning in Okta to enable automated user and team synchronization with Grafana. Start by creating a SAML application, then enable and configure SCIM provisioning for that application.</p>
+<h3 id="enable-scim-provisioning">Enable SCIM provisioning</h3>
+<ol>
+<li>Navigate to the <strong>General</strong> tab of your SAML App Integration in Okta</li>
+<li>Enable SCIM provisioning
+<ul>
+<li>A new provisioning tab will appear</li>
+</ul>
+</li>
+</ol>
+<h3 id="configure-provisioning-settings">Configure provisioning settings</h3>
+<p>To enable user provisioning through SCIM, configure the SCIM integration settings in Grafana by specifying the connector URL, authentication mode, and supported provisioning actions. Follow these steps to complete the integration.</p>
+<h3 id="configure-scim-integration">Configure SCIM integration</h3>
+<p>In the <strong>Integration</strong> tab, configure:</p>
+<ul>
+<li><strong>SCIM Connector base URL:</strong>
+<ul>
+<li>For Grafana Cloud instances:
+<pre>https://{stack-name}.grafana.net/apis/scim.grafana.app/v0alpha1/namespaces/stacks-{stack-id}</pre>
+Replace <code>{stack-name}</code> and <code>{stack-id}</code> with your Grafana Cloud stack name and ID.</li>
+<li>For self-hosted instances:
+<pre>https://{your-grafana-domain}/apis/scim.grafana.app/v0alpha1/namespaces/default</pre>
+Replace <code>{your-grafana-domain}</code> with your Grafana instance&rsquo;s domain (e.g., <code>grafana.yourcompany.com</code>).</li>
+</ul>
+</li>
+<li><strong>Unique identifier field:</strong> userName</li>
+<li><strong>Supported provisioning actions:</strong>
+<ul>
+<li>Import New Users and Profile Updates</li>
+<li>Push New Users</li>
+<li>Push Profile Updates</li>
+</ul>
+</li>
+<li><strong>Authentication Mode:</strong> HTTP Header</li>
+<li><strong>Authorization:</strong> Bearer {your-grafana-service-account-token}</li>
+<li>Click <strong>Test Connector Configuration</strong> and then save the configuration</li>
+</ul>
+<p>In the <strong>To App</strong> tab, enable:</p>
+<ul>
+<li>Create Users</li>
+<li>Update User Attributes</li>
+<li>Deactivate Users</li>
+</ul>
+<p>After completing the configuration:</p>
+<ol>
+<li>Test the SCIM connector in Okta</li>
+<li>Assign a test user to the application</li>
+<li>Verify the user is provisioned in Grafana</li>
+</ol>

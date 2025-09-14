@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<h1 id="create-a-new-correlation">Create a new correlation</h1>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Make sure you have permission to add new correlations. Only users with write permissions to data sources can define new correlations.</p>
+<h2 id="create-a-correlation-in-explores-correlations-editor">Create a correlation in Explore&rsquo;s correlations editor</h2>
+<p>To learn more, refer to Explore&rsquo;s <a href="../../../explore/correlations-editor-in-explore/">documentation</a> about building correlations in Explore.</p>
+<h2 id="create-a-correlation-in-administration-page">Create a correlation in Administration page</h2>
+<ol>
+<li>Go to the <strong>Administration</strong> section in Grafana.</li>
+<li>Under <strong>Plugins and data</strong>, open the <strong>Correlations</strong> page.</li>
+<li>Click the “Add” button in the top right corner.</li>
+<li>Provide a <strong>label</strong> for the correlation.</li>
+<li>Provide an optional <strong>description</strong>.</li>
+<li>Go to the next page.</li>
+<li>Provide <strong>target data source</strong>.</li>
+<li>Provide <strong>target query</strong> using variables.</li>
+<li>Go to the next page.</li>
+<li>Provide <strong>source data source</strong>.</li>
+<li>Provide <strong>results field</strong>.</li>
+<li>Add transformations if you need variables that are not fields in the source data source.</li>
+<li>Click “Add” to add a new transformation.</li>
+<li>Select the type of a transformation.</li>
+<li>Configure transformation depending on the selected type.</li>
+<li>Save correlation.</li>
+</ol>
+<p>You can edit correlation in the same way, but you cannot change the selected data sources.</p>
+<h2 id="create-a-correlation-with-provisioning">Create a correlation with provisioning</h2>
+<p>Provision correlations by extending provisioned data sources. Correlations are defined as a subsection of the source data source configuration:</p>
+<pre>datasources:
+  - name: Data source name # source data source
+    ...
+    jsonData:
+    ...
+    correlations:
+      - targetUID: uid
+        label: &#34;test&#34;
+        description: &#34;...&#34;
+        type: query
+        config:
+          target:
+            expr: &#34;...&#34;
+          field: &#34;name&#34;
+          transformations:
+            - type: regex
+              field: &#34;test&#34;
+              expression: /\w+/
+              mapValue: &#34;other&#34;
+            - type: logfmt
+              field: &#34;test&#34;
+      - targetUID: uid2
+        label: &#34;test 2&#34;
+        description: &#34;...&#34;
+        type: external
+        config:
+          target:
+            url: &#34;http://${example}&#34;
+          field: &#34;name&#34;</pre>
+<p>Description of provisioning properties:</p>
+<dl>
+<dt><strong>targetUID</strong></dt>
+<dd>Target data source UID</dd>
+<dt><strong>label</strong></dt>
+<dd>Link label</dd>
+<dt><strong>description</strong></dt>
+<dd>Optional description</dd>
+<dt><strong>type</strong></dt>
+<dd>Correlation type. Valid values are &ldquo;query&rdquo; for linking to a data source query and &ldquo;external&rdquo; for linking to an external URL.</dd>
+<dt><strong>config</strong></dt>
+<dd>Config object</dd>
+<dt><strong>config.target</strong></dt>
+<dd><a href="#determine-target-query-model-structure">Target query model</a></dd>
+<dt><strong>config.field</strong></dt>
+<dd>Name of the field where link is shown</dd>
+<dt><strong>config.transformations (list)</strong></dt>
+<dd>List of transformation objects</dd>
+<dt><strong>transformation.type</strong></dt>
+<dd>regex, or logfmt</dd>
+<dt><strong>transformation.field</strong></dt>
+<dd>The field that will be transformed. If this is not defined, it will apply the transformation to the data from the correlation&rsquo;s config.field.</dd>
+<dt><strong>transformation.expression</strong></dt>
+<dd>Regex expression (regex transformation only)</dd>
+<dt><strong>transformation.mapValue</strong></dt>
+<dd>New name of the variable from the first regex match (regex transformation only)</dd>
+</dl>
+<h3 id="determine-target-query-model-structure">Determine target query model structure</h3>
+<p>When you set up a correlation with admin page you can use the target query editor. When you use provisioning you may need to know the structure of the target query which may not be well documented depending on the plugin. Here is a quick step-by-step guide on how to determine the target query model:</p>
+<ol>
+<li>
+<p>Open Explore.</p>
+</li>
+<li>
+<p>Select the data source you want to use as the target of the correlation.</p>
+</li>
+<li>
+<p>Open the inspector tab and select “Query”.</p>
+</li>
+<li>
+<p>Run a sample query.</p>
+</li>
+<li>
+<p>Inspect results.</p>
+</li>
+<li>
+<p>Look for the “queries” list object. Each object is created using the query model structure defined by the data source. You can use the same structure in your provisioning file.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 600px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png"data-srcset="/static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png?w=320 320w, /static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png?w=550 550w, /static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png?w=750 750w, /static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png?w=900 900w, /static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png?w=1040 1040w, /static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png?w=1240 1240w, /static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png?w=1920 1920w"
+             data-sizes="auto"alt="Query inspector with target query structure"width="1178"height="1574"title="Query inspector with target query structure"/>
+           <noscript>
+             <img
+               src="/static/img/docs/correlations/determine-target-query-structure-inspector-10-0.png"
+               alt="Query inspector with target query structure"width="1178"height="1574"title="Query inspector with target query structure"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Query inspector with target query structure</figcaption></a></figure>
+<p>The query model in this example is represented by the first entry in the queries list. Properties “refId” and “datasource” are added to all queries in runtime and can be omitted:</p>
+<pre>{
+  &#34;scenario_id&#34;: &#34;random_walk&#34;,
+  &#34;alias&#34;: &#34;app&#34;,
+  &#34;seriesCount: 2
+}</pre>
+</li>
+</ol>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<h1 id="configure-opsgenie-for-alerting">Configure Opsgenie for Alerting</h1>
+<p>Use the Grafana Alerting - Opsgenie integration to receive alert notifications in your Opsgenie alert dashboard when your Grafana alert rules are triggered and resolved.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Create an API key to enable Grafana to send alert notifications to Opsgenie alert dashboard.</p>
+<p>To create an API key in Opsgenie, complete the following steps.</p>
+<ol>
+<li>
+<p>Follow the steps in the <a href="https://support.atlassian.com/opsgenie/docs/create-a-default-api-integration/" target="_blank" rel="noopener noreferrer">API integration guide</a>.</p>
+<p>Make sure you turn on the integration.</p>
+</li>
+<li>
+<p>Copy the API key.</p>
+</li>
+</ol>
+<h2 id="procedure">Procedure</h2>
+<p>To create your Opsgenie integration in Grafana Alerting, complete the following steps.</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>Enter a contact point name.</p>
+</li>
+<li>
+<p>From the <strong>Integration</strong> list, select <strong>Opsgenie</strong>.</p>
+</li>
+<li>
+<p>In the <strong>API key</strong> field, paste in your API key.</p>
+</li>
+<li>
+<p>Configure the <strong>Alert API URL</strong>.</p>
+<ol>
+<li>For Grafana Alertmanager, enter <code>https://api.opsgenie.com/v2/alerts</code>.</li>
+<li>For other Alertmanagers, enter the host for sending Opsgenie API requests, depending on the hosted region.</li>
+</ol>
+</li>
+<li>
+<p>Click <strong>Test</strong> to check that your integration works.</p>
+<p><strong>For Grafana Alertmanager only.</strong></p>
+<p>A test alert notification is sent to the Alerts page in Opsgenie.</p>
+</li>
+<li>
+<p>Click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>The Opsgenie contact point is ready to receive alert notifications.</p>
+<p>To add this contact point to your alert rule, complete the following steps:</p>
+<ol>
+<li>In Grafana, navigate to <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Edit or create a new alert rule.</li>
+<li>Scroll down to the <strong>Configure labels and notifications</strong> section.</li>
+<li>Under <strong>Notifications</strong>, click <strong>Select contact point</strong>.</li>
+<li>From the drop-down menu, select the previously created contact point.</li>
+<li>Click <strong>Save rule and exit</strong>.</li>
+</ol>

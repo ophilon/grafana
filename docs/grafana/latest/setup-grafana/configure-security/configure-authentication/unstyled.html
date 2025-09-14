@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<h1 id="configure-authentication">Configure authentication</h1>
+<p>Grafana provides many ways to authenticate users. Some authentication integrations also enable syncing user permissions and org memberships.</p>
+<p>The following table shows all supported authentication methods and the features available for them. <a href="../configure-team-sync/">Team sync</a> and <a href="enhanced-ldap/#active-ldap-synchronization">active sync</a> are only available in Grafana Enterprise.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Authentication method</th>
+          <th style="text-align: left">Multi Org Mapping</th>
+          <th style="text-align: left">Enforce Sync</th>
+          <th style="text-align: left">Role Mapping</th>
+          <th style="text-align: left">Grafana Admin Mapping</th>
+          <th style="text-align: left">Team Sync</th>
+          <th style="text-align: left">Allowed groups</th>
+          <th style="text-align: left">Active Sync</th>
+          <th style="text-align: left">Skip OrgRole mapping</th>
+          <th style="text-align: left">Auto Login</th>
+          <th style="text-align: left">Single Logout</th>
+          <th style="text-align: left">SCIM support</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><a href="anonymous-auth/">Anonymous access</a></td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="auth-proxy/">Auth Proxy</a></td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="azuread/">Azure AD OAuth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="grafana/">Basic auth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="passwordless/">Passwordless auth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="generic-oauth/">Generic OAuth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="github/">GitHub OAuth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="gitlab/">GitLab OAuth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="google/">Google OAuth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="grafana-cloud/">Grafana.com OAuth</a></td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="okta/">Okta OAuth</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="saml/">SAML</a> (Enterprise only)</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="ldap/">LDAP</a></td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><a href="jwt/">JWT Proxy</a></td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">yes</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">no</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+          <td style="text-align: left">N/A</td>
+      </tr>
+  </tbody>
+</table>
+<p>Fields explanation:</p>
+<p><strong>Multi Org Mapping:</strong> Able to add a user and map roles to multiple organizations</p>
+<p><strong>Enforce Sync:</strong> If the information provided by the identity provider is empty, does the integration skip setting that user’s field or does it enforce a default.</p>
+<p><strong>Role Mapping:</strong> Able to map a user’s role in the default org</p>
+<p><strong>Grafana Admin Mapping:</strong> Able to map a user’s admin role in the default org</p>
+<p><strong>Team Sync:</strong> Able to sync teams from a predefined group/team in a your IdP</p>
+<p><strong>Allowed Groups:</strong> Only allow members of certain groups to login</p>
+<p><strong>Active Sync:</strong> Add users to teams and update their profile without requiring them to log in</p>
+<p><strong>Skip OrgRole Sync:</strong> Able to modify org role for users and not sync it back to the IdP</p>
+<p><strong>Auto Login:</strong> Automatically redirects to provider login page if user is not logged in * for OAuth; Only works if it&rsquo;s the only configured provider</p>
+<p><strong>Single Logout:</strong> Logging out from Grafana also logs you out of provider session</p>
+<p><strong>SCIM support:</strong> Support for SCIM provisioning. Supported Identity Providers are Azure AD and Okta.</p>
+<h2 id="configuring-multiple-identity-providers">Configuring multiple identity providers</h2>
+<p>Grafana allows you to configure more than one authentication provider, however it is not possible to configure the same type of authentication provider twice.
+For example, you can have <a href="saml/">SAML</a> (Enterprise only) and <a href="generic-oauth/">Generic OAuth</a> configured, but you can not have two different <a href="generic-oauth/">Generic OAuth</a> configurations.</p>
+<blockquote>
+<p>Note: Grafana does not support multiple identity providers resolving the same user. Ensure there are no user account overlaps between the different providers</p></blockquote>
+<p>In scenarios where you have multiple identity providers of the same type, there are a couple of options:</p>
+<ul>
+<li>Use different Grafana instances each configured with a given identity provider.</li>
+<li>Check if the identity provider supports account federation. In such cases, you can configure it once and let your identity provider federate the accounts from different providers.</li>
+<li>If SAML is supported by the identity provider, you can configure one <a href="generic-oauth/">Generic OAuth</a> and one <a href="saml/">SAML</a> (Enterprise only).</li>
+</ul>
+<h2 id="using-the-same-email-address-to-login-with-different-identity-providers">Using the same email address to login with different identity providers</h2>
+<p>If users want to use the same email address with multiple identity providers (for example, Grafana.Com OAuth and Google OAuth), you can configure Grafana to use the email address as the unique identifier for the user. This is done by enabling the <code>oauth_allow_insecure_email_lookup</code> option, which is disabled by default. Please note that enabling this option can lower the security of your Grafana instance. If you enable this option, you should also ensure that the <code>Allowed organization</code>, <code>Allowed groups</code> and <code>Allowed domains</code> settings are configured correctly to prevent unauthorized access.</p>
+<p>To enable this option, refer to the <a href="#enable-email-lookup">Enable email lookup</a> section.</p>
+<h2 id="multi-factor-authentication-mfa2fa">Multi-factor authentication (MFA/2FA)</h2>
+<p>Grafana and the Grafana Cloud portal currently do not include built-in support for multi-factor authentication (MFA).</p>
+<p>We strongly recommend integrating an external identity provider (IdP) that supports MFA, such as Okta, Azure AD, or Google Workspace. By configuring your Grafana instances to use an external IdP, you can leverage MFA to protect your accounts and resources effectively.</p>
+<h2 id="login-and-short-lived-tokens">Login and short-lived tokens</h2>
+<blockquote>
+<p>The following applies when using Grafana&rsquo;s basic authentication, LDAP (without Auth proxy) or OAuth integration.</p></blockquote>
+<p>Grafana uses short-lived tokens as a mechanism for verifying authenticated users.
+These short-lived tokens are rotated on an interval specified by <code>token_rotation_interval_minutes</code> for active authenticated users.</p>
+<p>Inactive authenticated users will remain logged in for a duration specified by <code>login_maximum_inactive_lifetime_duration</code>.
+This means that a user can close a Grafana window and return before <code>now + login_maximum_inactive_lifetime_duration</code> to continue their session.
+This is true as long as the time since last user login is less than <code>login_maximum_lifetime_duration</code>.</p>
+<h2 id="session-handling-with-sso">Session handling with SSO</h2>
+<p>When using SSO (Single Sign-On) authentication methods, Grafana handles sessions differently based on the configuration:</p>
+<h3 id="oauthopenid-connect">OAuth/OpenID Connect</h3>
+<ul>
+<li>Without refresh tokens (default):
+<ul>
+<li>Grafana creates a session valid for up to <code>login_maximum_lifetime_duration</code> (default: 30 days).</li>
+<li>During this time, the session remains valid even if the user loses access at the IdP.</li>
+</ul>
+</li>
+<li>With refresh tokens enabled:
+<ul>
+<li>The user receives a JWT refresh token. When the JWT expires and the refresh token is used to obtain a new token, Grafana will revalidate access with the IdP.</li>
+<li>If the user has been removed from required groups or access has been revoked, the refresh will fail and the session will be invalidated.</li>
+</ul>
+</li>
+</ul>
+<h3 id="saml">SAML</h3>
+<ul>
+<li>After successful SAML authentication, Grafana creates a session with the default session lifetime.</li>
+<li>If SAML Single Logout (SLO) is properly configured, the session will be revoked when the user&rsquo;s access is revoked on the IdP side.</li>
+<li>If SAML Single Logout (SLO) is properly configured, the session will be revoked when the user&rsquo;s access is revoked on the IdP side. For more information on configuring SAML and SLO, refer to the <a href="./saml/#configure-single-logout">SAML configuration documentation</a>.</li>
+</ul>
+<h2 id="settings">Settings</h2>
+<p>Example:</p>
+<pre>[auth]
+
+# Login cookie name
+login_cookie_name = grafana_session
+
+# The maximum lifetime (duration) an authenticated user can be inactive before being required to login at next visit. Default is 7 days (7d). This setting should be expressed as a duration, e.g. 5m (minutes), 6h (hours), 10d (days), 2w (weeks), 1M (month). The lifetime resets at each successful token rotation (token_rotation_interval_minutes).
+login_maximum_inactive_lifetime_duration =
+
+# The maximum lifetime (duration) an authenticated user can be logged in since login time before being required to login. Default is 30 days (30d). This setting should be expressed as a duration, e.g. 5m (minutes), 6h (hours), 10d (days), 2w (weeks), 1M (month).
+login_maximum_lifetime_duration =
+
+# How often should auth tokens be rotated for authenticated users when being active. The default is every 10 minutes.
+token_rotation_interval_minutes = 10
+
+# The maximum lifetime (seconds) an API key can be used. If it is set all the API keys should have limited lifetime that is lower than this value.
+api_key_max_seconds_to_live = -1
+
+# Enforce user lookup based on email instead of the unique ID provided by the IdP.
+oauth_allow_insecure_email_lookup = false</pre>
+<h2 id="extended-authentication-settings">Extended authentication settings</h2>
+<h3 id="enable-email-lookup">Enable email lookup</h3>
+<p>By default, Grafana identifies users based on the unique ID provided by the identity provider (IdP).
+In certain cases, however, enabling user lookups by email can be a feasible option, such as when:</p>
+<ul>
+<li>The identity provider is a single-tenant setup.</li>
+<li>Unique, validated, and non-editable emails are provided by the IdP.</li>
+<li>The infrastructure allows email-based identification without compromising security.</li>
+</ul>
+<p><strong>Important note</strong>: While it is possible to configure Grafana to allow email-based user lookups, we strongly recommend against this approach in most cases due to potential security risks.
+If you still choose to proceed, the following configuration can be applied to enable email lookup.</p>
+<pre>[auth]
+oauth_allow_insecure_email_lookup = true</pre>
+<p>You can also enable email lookup using the API:</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in <a href="../../../introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="../../../introduction/grafana-cloud/">Grafana Cloud</a> since Grafana v10.4.</p></blockquote></div>
+
+<pre>curl --request PUT \
+  --url http://{slug}.grafana.com/api/admin/settings \
+  --header &#39;Authorization: Bearer glsa_yourserviceaccounttoken&#39; \
+  --header &#39;Content-Type: application/json&#39; \
+  --data &#39;{ &#34;updates&#34;: { &#34;auth&#34;: { &#34;oauth_allow_insecure_email_lookup&#34;: &#34;true&#34; }}}&#39;</pre>
+<p>Finally, you can also enable it using the UI by going to <strong>Administration -&gt; Authentication -&gt; Auth settings</strong>.</p>
+<h3 id="automatic-oauth-login">Automatic OAuth login</h3>
+<p>Set to true to attempt login with specific OAuth provider automatically, skipping the login screen.
+This setting is ignored if multiple auth providers are configured to use auto login.
+Defaults to <code>false</code>.</p>
+<pre>[auth.generic_oauth]
+auto_login = true</pre>
+<h3 id="avoid-automatic-login">Avoid automatic login</h3>
+<p>The <code>disableAutoLogin=true</code> URL parameter allows users to bypass the automatic login feature in scenarios where incorrect configuration changes prevent normal login functionality.
+This feature is especially helpful when you need to access the login screen to troubleshoot and fix misconfigurations.</p>
+<h4 id="how-to-use">How to use</h4>
+<ol>
+<li>Add <code>disableAutoLogin=true</code> as a query parameter to your Grafana URL.
+<ul>
+<li>Example: <code>grafana.example.net/login?disableAutoLogin=true</code> or <code>grafana.example.net/login?disableAutoLogin</code></li>
+</ul>
+</li>
+<li>This will redirect you to the standard login screen, bypassing the automatic login mechanism.</li>
+<li>Fix any configuration issues and test your login setup.</li>
+</ol>
+<p>This feature is available for both for OAuth and SAML. Ensure that after fixing the issue, you remove the parameter or revert the configuration to re-enable the automatic login feature, if desired.</p>
+<h3 id="hide-sign-out-menu">Hide sign-out menu</h3>
+<p>Set the option detailed below to true to hide sign-out menu link. Useful if you use an auth proxy or JWT authentication.</p>
+<pre>[auth]
+disable_signout_menu = true</pre>
+<h3 id="url-redirect-after-signing-out">URL redirect after signing out</h3>
+<p>URL to redirect the user to after signing out from Grafana. This can for example be used to enable signout from an OAuth provider.</p>
+<p>Example for Generic OAuth:</p>
+<pre>[auth.generic_oauth]
+signout_redirect_url =</pre>
+<h3 id="remote-logout">Remote logout</h3>
+<p>You can log out from other devices by removing login sessions from the bottom of your profile page. If you are
+a Grafana admin user, you can also do the same for any user from the Server Admin / Edit User view.</p>
+<h3 id="protected-roles">Protected roles</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in <a href="../../../introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="../../../introduction/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>By default, after you configure an authorization provider, Grafana will adopt existing users into the new authentication scheme. For example, if you have created a user with basic authentication having the login <code>jsmith@example.com</code>, then set up SAML authentication where <code>jsmith@example.com</code> is an account, the user&rsquo;s authentication type will be changed to SAML if they perform a SAML sign-in.</p>
+<p>You can disable this user adoption for certain roles using the <code>protected_roles</code> property:</p>
+<pre>[auth.security]
+protected_roles = server_admins org_admins</pre>
+<p>The value of <code>protected_roles</code> should be a list of roles to protect, separated by spaces. Valid roles are <code>viewers</code>, <code>editors</code>, <code>org_admins</code>, <code>server_admins</code>, and <code>all</code> (a superset of the other roles).</p>

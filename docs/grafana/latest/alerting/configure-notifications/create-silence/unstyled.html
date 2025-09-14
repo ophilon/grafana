@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<h1 id="configure-silences">Configure silences</h1>
+<p>Silences stop notifications from being created for a specified time window but do not interrupt alert evaluation. Use them to temporarily prevent alert notifications, such as during incident response or a maintenance window.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Silences are assigned to a 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alertmanager/">specific Alertmanager</a> and only suppress notifications for alerts managed by that Alertmanager.</p></blockquote></div>
+
+<h2 id="mute-and-active-timings-vs-silences">Mute and active timings vs silences</h2>
+<p>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/mute-timings/">Mute and active timings</a> and 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-silence/">silences</a> are distinct methods to suppress notifications. They do not prevent alert rules from being evaluated or stop alert instances from appearing in the user interface; they only prevent notifications from being created.</p>
+<p>The following table highlights the key differences between mute timings and silences.</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>Mute timing</th>
+          <th>Silence</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Setup</strong></td>
+          <td>Created and then added to notification policies</td>
+          <td>Matches alerts using labels to determine whether to silence them</td>
+      </tr>
+      <tr>
+          <td><strong>Period</strong></td>
+          <td>Uses time interval definitions that can repeat periodically</td>
+          <td>Has a fixed start and end time</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="add-silences">Add silences</h2>
+<p>To add a silence, complete the following steps.</p>
+<ol>
+<li>
+<p>In the left-side menu, click <strong>Alerts &amp; IRM</strong> and then <strong>Alerting</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Silences</strong>.</p>
+</li>
+<li>
+<p>From the <strong>Alertmanager</strong> dropdown, select an external Alertmanager to create and manage silences for the external data source. Otherwise, keep the default option of Grafana.</p>
+</li>
+<li>
+<p>Click <strong>Create silence</strong> to open the Create silence page.</p>
+</li>
+<li>
+<p>In <strong>Silence start and end</strong>, select the start and end date to indicate when the silence should go into effect and expire.</p>
+</li>
+<li>
+<p>Optionally, in <strong>Duration</strong>, specify how long the silence is enforced. This automatically updates the end time in the <strong>Silence start and end</strong> field.</p>
+</li>
+<li>
+<p>In the <strong>Label</strong> and <strong>Value</strong> fields, enter one or more <em>Matching Labels</em> to determine which alerts the silence applies to.</p>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>How label matching works</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <p>Use 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/">labels</a> and label matchers to link alert rules to 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">notification policies</a> and 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-silence/">silences</a>. This allows for a flexible way to manage your alert instances, specify which policy should handle them, and which alerts to silence.</p>
+<p>A label matchers consists of 3 distinct parts, the <strong>label</strong>, the <strong>value</strong> and the <strong>operator</strong>.</p>
+<ul>
+<li>
+<p>The <strong>Label</strong> field is the name of the label to match. It must exactly match the label name.</p>
+</li>
+<li>
+<p>The <strong>Value</strong> field matches against the corresponding value for the specified <strong>Label</strong> name. How it matches depends on the <strong>Operator</strong> value.</p>
+</li>
+<li>
+<p>The <strong>Operator</strong> field is the operator to match against the label value. The available operators are:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Operator</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>=</code></td>
+          <td>Select labels that are exactly equal to the value.</td>
+      </tr>
+      <tr>
+          <td><code>!=</code></td>
+          <td>Select labels that are not equal to the value.</td>
+      </tr>
+      <tr>
+          <td><code>=~</code></td>
+          <td>Select labels that regex-match the value.</td>
+      </tr>
+      <tr>
+          <td><code>!~</code></td>
+          <td>Select labels that do not regex-match the value.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ul>
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you are using multiple label matchers, they are combined using the AND logical operator. This means that all matchers must match in order to link a rule to a policy.</p></blockquote></div>
+<p><strong>Label matching example</strong></p>
+<p>If you define the following set of labels for your alert:</p>
+<p><code>{ foo=bar, baz=qux, id=12 }</code></p>
+<p>then:</p>
+<ul>
+<li>A label matcher defined as <code>foo=bar</code> matches this alert rule.</li>
+<li>A label matcher defined as <code>foo!=bar</code> does <em>not</em> match this alert rule.</li>
+<li>A label matcher defined as <code>id=~[0-9]+</code> matches this alert rule.</li>
+<li>A label matcher defined as <code>baz!~[0-9]+</code> matches this alert rule.</li>
+<li>Two label matchers defined as <code>foo=bar</code> and <code>id=~[0-9]+</code> match this alert rule.</li>
+</ul>
+<p><strong>Exclude labels</strong></p>
+<p>You can also write label matchers to exclude labels.</p>
+<p>Here is an example that shows how to exclude the label <code>Team</code>. You can choose between any of the values below to exclude labels.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Label</th>
+          <th>Operator</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>team</code></td>
+          <td><code>=</code></td>
+          <td><code>&quot;&quot;</code></td>
+      </tr>
+      <tr>
+          <td><code>team</code></td>
+          <td><code>!~</code></td>
+          <td><code>.+</code></td>
+      </tr>
+      <tr>
+          <td><code>team</code></td>
+          <td><code>=~</code></td>
+          <td><code>^$</code></td>
+      </tr>
+  </tbody>
+</table>
+
+    </div>
+  </div>
+</div>
+
+</li>
+</ol>
+<p>Any matching alerts (in the firing state only) display under <strong>Affected alert instances</strong>.</p>
+<ol>
+<li>In <strong>Comment</strong>, add details about the silence.</li>
+<li>Click <strong>Submit</strong>.</li>
+</ol>
+<h2 id="edit-silences">Edit silences</h2>
+<p>To edit a silence, complete the following steps.</p>
+<ol>
+<li>In the left-side menu, click <strong>Alerts &amp; IRM</strong> and then <strong>Alerting</strong>.</li>
+<li>Click <strong>Silences</strong> to view the list of existing silences.</li>
+<li>Find the silence you want to edit, then click <strong>Edit</strong> (pen icon).</li>
+<li>Make the desired changes, then click <strong>Submit</strong> to save your changes.</li>
+</ol>
+<h2 id="remove-silences">Remove silences</h2>
+<p>To remove a silence, complete the following steps.</p>
+<ol>
+<li>In the left-side menu, click <strong>Alerts &amp; IRM</strong> and then <strong>Alerting</strong>.</li>
+<li>Click <strong>Silences</strong> to view the list of existing silences.</li>
+<li>Select the silence you want to end, then click <strong>Unsilence</strong>.</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> You cannot remove a silence manually. Silences that have ended are retained and listed for five days.</p></blockquote>
+<h2 id="rule-specific-silences">Rule-specific silences</h2>
+<p>Rule-specific silences are silences that apply only to a specific alert rule. They&rsquo;re created when you silence an alert rule directly using the <strong>Silence notifications</strong> action in the UI.</p>
+<p>As opposed to general silences, rule-specific silence access is tied directly to the alert rule they act on. They can be created manually by including the specific label matcher: <code>__alert_rule_uid__=&lt;alert rule UID&gt;</code>.</p>
+<h2 id="url-link-to-a-silence-form">URL link to a silence form</h2>
+<p>Default notification messages often include a link to silence alerts.</p>
+<p>In custom notification templates, you can use 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/#alert"><code>.Alert.SilenceURL</code></a> to redirect users to the UI where they can silence the given alert.</p>
+<p>If 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/#alert"><code>.Alert.SilenceURL</code></a> doesn’t fit your specific use case, you can also create a custom silence link for your custom templates.</p>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Create a custom silence link</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <p>When linking to a silence form, provide the default matching labels and comment via <code>matcher</code> and <code>comment</code> query parameters. The <code>matcher</code> parameter should be in the following format <code>[label][operator][value]</code> where the <code>operator</code> parameter can be one of the following: <code>=</code> (equals, not regular expression), <code>!=</code> (not equals, not regular expression), <code>=~</code> (equals, regular expression), <code>!~</code> (not equals, regular expression).
+The URL can contain many query parameters with the key <code>matcher</code>.
+For example, to link to silence form with matching labels <code>severity=critical</code> &amp; <code>cluster!~europe-.*</code> and comment <code>Silence critical EU alerts</code>, create a URL <code>https://mygrafana/alerting/silence/new?matcher=severity%3Dcritical&amp;matcher=cluster!~europe-*&amp;comment=Silence%20critical%20EU%20alert</code>.</p>
+<p>To link to a new silence page for an external Alertmanager, add a <code>alertmanager</code> query parameter with the Alertmanager data source name.</p>
+
+    </div>
+  </div>
+</div>
+
+<h2 id="inhibition-rules">Inhibition rules</h2>
+<p>Inhibition rules are supported in the Prometheus Alertmanager. You can 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alertmanager/">configure a Prometheus Alertmanager</a> to handle the notification of alerts and suppress notifications via inhibition rules.</p>
+<p>Inhibition rules are not currently supported in the Grafana Alertmanager. For tracking the progress of this feature request, follow <a href="https://github.com/grafana/grafana/issues/68822" target="_blank" rel="noopener noreferrer">this GitHub issue</a>.</p>

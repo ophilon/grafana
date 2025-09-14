@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<h1 id="configure-the-microsoft-sql-server-data-source">Configure the Microsoft SQL Server data source</h1>
+<p>This document provides instructions for configuring the Microsoft SQL Server data source and explains available configuration options. For general information on adding and managing data sources, refer to 
+    <a href="/docs/grafana/latest/datasources/">Grafana data sources</a> and 
+    <a href="/docs/grafana/latest/administration/data-source-management/">Data source management</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>
+<p>Grafana comes with a built-in MSSQL data source plugin, eliminating the need to install a plugin.</p>
+</li>
+<li>
+<p>You must have the <code>Organization administrator</code> role to configure the MSSQL data source. Organization administrators can also <a href="#provision-the-data-source">configure the data source via YAML</a> with the Grafana provisioning system.</p>
+</li>
+<li>
+<p>Familiarize yourself with your MSSQL security configuration and gather any necessary security certificates and client keys.</p>
+</li>
+<li>
+<p>Verify that data from MSSQL is being written to your Grafana instance.</p>
+</li>
+</ul>
+<h2 id="add-the-mssql-data-source">Add the MSSQL data source</h2>
+<p>To add the MSSQL data source, complete the following steps:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu.</li>
+<li>Click <strong>Add new connection</strong></li>
+<li>Type <code>Microsoft SQL Server</code> in the search bar.</li>
+<li>Select <strong>Microsoft SQL Server</strong> under data source.</li>
+<li>Click <strong>Add new data source</strong> in the upper right.</li>
+</ol>
+<p>Grafana takes you to the <strong>Settings</strong> tab, where you will set up your Microsoft SQL Server configuration.</p>
+<h2 id="configure-the-data-source-in-the-ui">Configure the data source in the UI</h2>
+<p>Following are configuration options for the Microsoft SQL Server data source.</p>
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>Kerberos is not supported in Grafana Cloud.</p></blockquote></div>
+
+<table>
+  <thead>
+      <tr>
+          <th><strong>Setting</strong></th>
+          <th><strong>Description</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Name</strong></td>
+          <td>The data source name. Sets the name you use to refer to the data source in panels and queries. Examples: <code>MSSQL-1</code>, <code>MSSQL_Sales1</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Default</strong></td>
+          <td>Toggle to select as the default name in dashboard panels. When you go to a dashboard panel, this will be the default selected data source.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Connection:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Host</strong></td>
+          <td>Sets the IP address or hostname (and optional port) of your MSSQL instance. The default port is <code>0</code>, which uses the driver&rsquo;s default. <br> You can include additional connection properties (e.g., <code>ApplicationIntent</code>) by separating them with semicolons (<code>;</code>).</td>
+      </tr>
+      <tr>
+          <td><strong>Database</strong></td>
+          <td>Sets the name of the MSSQL database to connect to.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>TLS/SSL Auth:</strong></p>
+<p>Encrypt - Determines whether or to which extent a secure SSL TCP/IP connection will be negotiated with the server.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Encrypt Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Disable</strong></td>
+          <td>Data sent between the client and server is <strong>not encrypted</strong>.</td>
+      </tr>
+      <tr>
+          <td><strong>False</strong></td>
+          <td>The default setting. Only the login packet is encrypted; <strong>all other data is sent unencrypted</strong>.</td>
+      </tr>
+      <tr>
+          <td><strong>True</strong></td>
+          <td><strong>All data</strong> sent between the client and server is <strong>encrypted</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you&rsquo;re using an older version of Microsoft SQL Server like 2008 and 2008R2, you may need to disable encryption to be able to connect.</p></blockquote></div>
+
+<p><strong>Authentication:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Authentication Type</th>
+          <th>Description</th>
+          <th>Credentials / Fields</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>SQL Server Authentication</strong></td>
+          <td>Default method to connect to MSSQL. Use a SQL Server or Windows login in <code>DOMAIN\User</code> format.</td>
+          <td>- <strong>Username</strong>: SQL Server username<br>- <strong>Password</strong>: SQL Server password</td>
+      </tr>
+      <tr>
+          <td><strong>Windows Authentication</strong><br>(Integrated Security)</td>
+          <td>Uses the logged-in Windows user&rsquo;s credentials via single sign-on. Available only when SQL Server allows Windows Authentication.</td>
+          <td>No input required; uses the logged-in Windows user&rsquo;s credentials</td>
+      </tr>
+      <tr>
+          <td><strong>Windows AD</strong><br>(Username/Password)</td>
+          <td>Authenticates a domain user with their Active Directory username and password.</td>
+          <td>- <strong>Username</strong>: <code>user@example.com</code><br>- <strong>Password</strong>: Active Directory password</td>
+      </tr>
+      <tr>
+          <td><strong>Windows AD</strong><br>(Keytab)</td>
+          <td>Authenticates a domain user using a keytab file.</td>
+          <td>- <strong>Username</strong>: <code>user@example.com</code><br>- <strong>Keytab file path</strong>: Path to your keytab file</td>
+      </tr>
+      <tr>
+          <td><strong>Windows AD</strong><br>(Credential Cache)</td>
+          <td>Uses a Kerberos credential cache already loaded in memory (e.g., from a prior <code>kinit</code> command). No file needed.</td>
+          <td>- <strong>Credential cache path</strong>: Path to in-memory credential (e.g., <code>/tmp/krb5cc_1000</code>)</td>
+      </tr>
+      <tr>
+          <td><strong>Windows AD</strong><br>(Credential Cache File)</td>
+          <td>Authenticates a domain user using a credential cache file (<code>.ccache</code>).</td>
+          <td>- <strong>Username</strong>: <code>user@example.com</code><br>- <strong>Credential cache file path</strong>: e.g., <code>/home/grot/cache.json</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Additional settings:</strong></p>
+<p>Additional settings are optional settings you configure for more control over your data source. This includes connection limits, connection timeout, group-by time interval, and Secure Socks Proxy.</p>
+<p><strong>Connection limits</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Max open</strong></td>
+          <td>The maximum number of open connections to the database. If set to <code>0</code>, there is no limit. If <code>max open</code> is greater than <code>0</code> and less than <code>max idle</code>, <code>max idle</code> is adjusted to match.</td>
+      </tr>
+      <tr>
+          <td><strong>Auto max idle</strong></td>
+          <td>When enabled, automatically sets <code>max idle</code> to match <code>max open</code>. If <code>max open</code> isn’t set, it defaults to <code>100</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Max idle</strong></td>
+          <td>The maximum number of idle connections in the pool. If <code>max open</code> is set and is lower than <code>max idle</code>, then <code>max idle</code> is reduced to match. If set to <code>0</code>, no idle connections are retained.</td>
+      </tr>
+      <tr>
+          <td><strong>Max lifetime</strong></td>
+          <td>The maximum time (in seconds) a connection can be reused before being closed and replaced. If set to <code>0</code>, connections are reused indefinitely.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Connection details:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th><strong>Setting</strong></th>
+          <th><strong>Description</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Min time interval</strong></td>
+          <td>Specifies the lower bound for the auto-generated <code>GROUP BY</code> time interval. Grafana recommends matching this value to your data&rsquo;s write frequency—for example, <code>1m</code> if data is written every minute. Refer to <a href="#min-time-interval">Min time interval</a> for details.</td>
+      </tr>
+      <tr>
+          <td><strong>Connection timeout</strong></td>
+          <td>Specifies the maximum number of seconds to wait when attempting to connect to the database before timing out. A value of <code>0</code> (the default) disables the timeout.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Windows ADS Advanced Settings</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Description</th>
+          <th>Default</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>UDP Preference Limit</strong></td>
+          <td>Defines the maximum packet size (in bytes) that Kerberos libraries will attempt to send over UDP before retrying with TCP. A value of <code>1</code> forces all communication to use TCP.</td>
+          <td><code>1</code> (always use TCP)</td>
+      </tr>
+      <tr>
+          <td><strong>DNS Lookup KDC</strong></td>
+          <td>Controls whether DNS <code>SRV</code> records are used to locate <a href="https://web.mit.edu/kerberos/krb5-latest/doc/admin/realm_config.html#key-distribution-centers" target="_blank" rel="noopener noreferrer">Key Distribution Centers (KDCs)</a> and other servers for the realm.</td>
+          <td><code>true</code></td>
+      </tr>
+      <tr>
+          <td><strong>krb5 config file path</strong></td>
+          <td>Specifies the path to the Kerberos configuration file used by the <a href="https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html" target="_blank" rel="noopener noreferrer">MIT krb5 package</a>.</td>
+          <td><code>/etc/krb5.conf</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Private data source connect</strong> - <em>Only for Grafana Cloud users.</em></p>
+<p>Private data source connect, or PDC, allows you to establish a private, secured connection between a Grafana Cloud instance, or stack, and data sources secured within a private network. Click the drop-down to locate the URL for PDC. For more information regarding Grafana PDC refer to <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect (PDC)</a> and <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/configure-pdc/#configure-grafana-private-data-source-connect-pdc">Configure Grafana private data source connect (PDC)</a> for instructions on setting up a PDC connection.</p>
+<p>Click <strong>Manage private data source connect</strong> to open your PDC connection page and view your configuration details.</p>
+<p>After configuring your MSSQL data source options, click <strong>Save &amp; test</strong> at the bottom to test the connection. You should see a confirmation dialog box that says:</p>
+<p><strong>Database Connection OK</strong></p>
+<h3 id="min-time-interval">Min time interval</h3>
+<p>The <strong>Min time interval</strong> setting defines a lower limit for the 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#__interval"><code>$__interval</code></a> and [<code>$__interval_ms</code>][add-template-variables-interval_ms] variables.</p>
+<p>This value <em>must</em> be formatted as a number followed by a valid time identifier:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Identifier</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>y</code></td>
+          <td>year</td>
+      </tr>
+      <tr>
+          <td><code>M</code></td>
+          <td>month</td>
+      </tr>
+      <tr>
+          <td><code>w</code></td>
+          <td>week</td>
+      </tr>
+      <tr>
+          <td><code>d</code></td>
+          <td>day</td>
+      </tr>
+      <tr>
+          <td><code>h</code></td>
+          <td>hour</td>
+      </tr>
+      <tr>
+          <td><code>m</code></td>
+          <td>minute</td>
+      </tr>
+      <tr>
+          <td><code>s</code></td>
+          <td>second</td>
+      </tr>
+      <tr>
+          <td><code>ms</code></td>
+          <td>millisecond</td>
+      </tr>
+  </tbody>
+</table>
+<p>Grafana recommends setting this value to match your Microsoft SQL Server write frequency.
+For example, use <code>1m</code> if Microsoft SQL Server writes data every minute.</p>
+<p>You can also override this setting in a dashboard panel under its data source options.</p>
+<h3 id="database-user-permissions">Database user permissions</h3>
+<p>When adding a data source, ensure the database user you specify has only SELECT permissions on the relevant database and tables. Grafana does not validate the safety of queries, which means they can include potentially harmful SQL statements, such as <code>USE otherdb</code>; or <code>DROP TABLE user;</code>, which could get executed. To minimize this risk, Grafana strongly recommends creating a dedicated MySQL user with restricted permissions.</p>
+<pre>CREATE USER grafanareader WITH PASSWORD &#39;password&#39;
+GRANT SELECT ON dbo.YourTable3 TO grafanareader</pre>
+<p>Also, ensure that the user doesn&rsquo;t have any unwanted privileges from the public role.</p>
+<h3 id="diagnose-connection-issues">Diagnose connection issues</h3>
+<p>If you use older versions of Microsoft SQL Server, such as 2008 and 2008R2, you might need to disable encryption before you can connect the data source.</p>
+<p>Grafana recommends that you use the latest available service pack for optimal compatibility.</p>
+<h3 id="provision-the-data-source">Provision the data source</h3>
+<p>You can define and configure the data source in YAML files as part of the Grafana provisioning system. For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/">Provision Grafana</a>.</p>
+<h4 id="provisioning-example">Provisioning example</h4>
+<pre>apiVersion: 1
+
+datasources:
+  - name: MSSQL
+    type: mssql
+    url: localhost:1433
+    user: grafana
+    jsonData:
+      database: grafana
+      maxOpenConns: 100
+      maxIdleConns: 100
+      maxIdleConnsAuto: true
+      connMaxLifetime: 14400
+      connectionTimeout: 0
+      encrypt: &#39;false&#39;
+    secureJsonData:
+      password: &#39;Password!&#39;</pre>

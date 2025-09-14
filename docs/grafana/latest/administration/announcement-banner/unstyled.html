@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<h1 id="create-an-announcement-banner">Create an announcement banner</h1>
+<p>An announcement banner shows at the top of every page in Grafana. You can use the announcement banner to communicate information to your users, such as maintenance windows, new features, or other important updates.</p>
+<h2 id="create-or-update-an-announcement-banner">Create or update an announcement banner</h2>
+<p>By default, only organization administrators can create announcement banners. You can customize who can create announcement banners with 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">Role-based access control</a>.</p>
+<p>To create or update an announcement banner, follow these steps:</p>
+<ol>
+<li>
+<p>Click <strong>Administration &gt; General &gt; Announcement banner</strong> in the side navigation menu.</p>
+<p>The <strong>Announcement banner</strong> page allows you to view, create, and update the settings for an announcement banner.
+Only one banner can be active at a time.</p>
+</li>
+<li>
+<p>Toggle the <strong>Enable</strong> switch on to enable the announcement banner.
+You can disable the banner at any time with this toggle.</p>
+</li>
+<li>
+<p>Enter the <strong>Message</strong> for the announcement banner.
+The message field supports Markdown.</p>
+<p>To add a header, use the following syntax:</p>
+<pre>### Header</pre>
+<p>To add a link, use the following syntax:</p>
+<pre>[link text](https://www.example.com)</pre>
+<p>The preview of the configured banner appears on top of the form, under the <strong>Preview</strong> section.</p>
+</li>
+<li>
+<p>Select the banner&rsquo;s start date and time in the <strong>Starts at</strong> field.
+By default, the banner starts being displayed immediately.
+You can set a future date and time for the banner to start displaying.</p>
+</li>
+<li>
+<p>Select the banner&rsquo;s end date and time in the <strong>Ends at</strong> field.
+By default, the banner is displayed indefinitely.
+You can set a date and time for the banner to stop displaying.</p>
+</li>
+<li>
+<p>Select the type of banner in the <strong>Variant</strong> field.
+This determines the color of the banner&rsquo;s background.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> to save the banner settings.
+The banner displays at the top of every page in Grafana between the start and end dates.</p>
+</li>
+</ol>

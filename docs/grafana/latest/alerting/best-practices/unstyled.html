@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<h1 id="grafana-alerting-best-practices">Grafana Alerting best practices</h1>
+<p>This section provides a set of guides and examples of best practices for Grafana Alerting. Here you can learn more about how to handle common alert management problems and you can see examples of more advanced usage of Grafana Alerting.</p>
+<ul><li>
+    <a href="/docs/grafana/latest/alerting/best-practices/connectivity-errors/">Handle connectivity errors in alerts</a></li><li>
+    <a href="/docs/grafana/latest/alerting/best-practices/missing-data/">Handle missing data in Grafana Alerting</a></li><li>
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">Example of multi-dimensional alerts on time series data</a></li><li>
+    <a href="/docs/grafana/latest/alerting/best-practices/table-data/">Example of alerting on tabular data</a></li><li>
+    <a href="/docs/grafana/latest/alerting/best-practices/dynamic-thresholds/">Example of dynamic thresholds per dimension</a></li><li>
+    <a href="/docs/grafana/latest/alerting/best-practices/dynamic-labels/">Example of dynamic labels in alert instances</a></li><li>
+    <a href="/docs/grafana/latest/alerting/best-practices/tutorials/">Grafana Alerting tutorials</a></li></ul>
+<p>Designing and configuring an alert management set up that works takes time. Here are some additional tips on how to create an effective alert management set up:</p>
+<p><strong>Which are the key metrics for your business that you want to monitor and alert on?</strong></p>
+<ul>
+<li>Find events that are important to know about and not so trivial or frequent that recipients ignore them.</li>
+<li>Alerts should only be created for big events that require immediate attention or intervention.</li>
+<li>Consider quality over quantity.</li>
+</ul>
+<p><strong>How do you want to organize your alerts and notifications?</strong></p>
+<ul>
+<li>Be selective about who you set to receive alerts. Consider sending them to the right teams, whoever is on call, and the specific channels.</li>
+<li>Think carefully about priority and severity levels.</li>
+<li>Automate as far as possible provisioning Alerting resources with the API or Terraform.</li>
+</ul>
+<p><strong>Which information should you include in notifications?</strong></p>
+<ul>
+<li>Consider who the alert receivers and responders are.</li>
+<li>Share information that helps responders identify and address potential issues.</li>
+<li>Link alerts to dashboards to guide responders on which data to investigate.</li>
+</ul>
+<p><strong>How can you reduce alert fatigue?</strong></p>
+<ul>
+<li>Avoid noisy, unnecessary alerts by using silences, mute timings, or pausing alert rule evaluation.</li>
+<li>Continually tune your alert rules to review effectiveness. Remove alert rules to avoid duplication or ineffective alerts.</li>
+<li>Continually review your thresholds and evaluation rules.</li>
+</ul>
+
+

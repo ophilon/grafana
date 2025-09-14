@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<h1 id="alert-list">Alert list</h1>
+<p>Alert lists allow you to display a list of important alerts that you want to track. You can configure the alert list to show the current state of your alert, such as firing, pending, or normal. Learn more about alerts in 
+    <a href="/docs/grafana/latest/alerting/">Grafana Alerting overview</a>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-alert-list-v11.3.png"
+  alt="An alert list visualization" width="864"
+     height="338"/></p>
+<p>On each dashboard load, this visualization queries the alert list, always providing the most up-to-date results.</p>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/bdodlcyou483ke/" target="_blank" rel="noopener noreferrer">Alert List</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/bdodlcyou483ke/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="configure-an-alert-list">Configure an alert list</h2>
+<p>Once you’ve 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">created a dashboard</a>, the following video shows you how to configure an alert list visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=o4rK7_AXZ9Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="options">Options</h3>
+<p>Use the following options to refine your alert list visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>View mode</td>
+          <td>Choose between <strong>List</strong> to display alerts in a detailed list format with comprehensive information, or <strong>Stat</strong> to show alerts as a summarized single-value statistic.</td>
+      </tr>
+      <tr>
+          <td>Group mode</td>
+          <td>Choose between <strong>Default grouping</strong> to show alert instances grouped by their alert rule, or <strong>Custom grouping</strong> to show alert instances grouped by a custom set of labels.</td>
+      </tr>
+      <tr>
+          <td>Max items</td>
+          <td>Sets the maximum number of alerts to list. By default, Grafana sets this value to 10.</td>
+      </tr>
+      <tr>
+          <td><a href="#sort-order">Sort order</a></td>
+          <td>Select how to order the alerts displayed.</td>
+      </tr>
+      <tr>
+          <td>Alerts linked to this dashboard</td>
+          <td>Toggle the switch on to only show alerts from the dashboard the alert list is in.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="sort-order">Sort order</h4>
+<p>Select how to order the alerts displayed. Choose from:</p>
+<ul>
+<li><strong>Alphabetical (asc)</strong> - Alphabetical order.</li>
+<li><strong>Alphabetical (desc)</strong> - Reverse alphabetical order.</li>
+<li><strong>Importance</strong> - By importance according to the following values, with 1 being the highest:
+<ul>
+<li>alerting: 1</li>
+<li>firing: 1</li>
+<li>no_data: 2</li>
+<li>pending: 3</li>
+<li>ok: 4</li>
+<li>paused: 5</li>
+<li>inactive: 5</li>
+</ul>
+</li>
+<li><strong>Time (asc)</strong> - Newest active alert instances first.</li>
+<li><strong>Time (desc)</strong> - Oldest active alert instances first.</li>
+</ul>
+<h3 id="filter-options">Filter options</h3>
+<p>These options allow you to limit alerts shown to only those that match the query, folder, or tags you choose.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Alert name</td>
+          <td>Filter alerts by name.</td>
+      </tr>
+      <tr>
+          <td>Alert instance label</td>
+          <td>Filter alert instances using 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/">label</a> querying. For example,<code>{severity=&quot;critical&quot;, instance=~&quot;cluster-us-.+&quot;}</code>.</td>
+      </tr>
+      <tr>
+          <td>Datasource</td>
+          <td>Filter alerts from the selected data source.</td>
+      </tr>
+      <tr>
+          <td>Folder</td>
+          <td>Filter alerts by the selected folder. Only alerts from dashboards in this folder are displayed.</td>
+      </tr>
+      <tr>
+          <td>Show alerts with 0 instances</td>
+          <td>Filter for alert rules with no instances. Alert rules with 0 (zero) instances are hidden by default. You can choose to show them by toggling this switch. Because these rules have no instances, they remain hidden if the <strong>Alert instance label</strong> filter is configured.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="alert-state-filter-options">Alert state filter options</h3>
+<p>Choose which alert states to display in this visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Alerting / Firing</td>
+          <td>Shows alerts that are currently active and triggering an alert condition.</td>
+      </tr>
+      <tr>
+          <td>Pending</td>
+          <td>Shows alerts that are in a transitional state, waiting for conditions to be met before triggering.</td>
+      </tr>
+      <tr>
+          <td>No Data</td>
+          <td>Shows alerts where the data source is not returning any data, which could indicate an issue with data collection.</td>
+      </tr>
+      <tr>
+          <td>Normal</td>
+          <td>Shows alerts that are in a normal or resolved state, where no alert condition is currently met.</td>
+      </tr>
+      <tr>
+          <td>Error</td>
+          <td>Shows alerts where an error has occurred, typically related to an issue in the alerting process.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->

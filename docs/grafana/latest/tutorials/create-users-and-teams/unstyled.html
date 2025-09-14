@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<h2 id="introduction">Introduction</h2>
+<p>This tutorial is for admins or anyone that wants to learn how to manage
+users in Grafana. You&rsquo;ll add multiple local users, organize them into teams,
+and make sure they&rsquo;re only able to access the resources they need.</p>
+<h3 id="scenario">Scenario</h3>
+<p><em>Graphona</em>, a fictional telemarketing company, has asked you to configure Grafana
+for their teams.</p>
+<p>In this scenario, you&rsquo;ll:</p>
+<ul>
+<li>Create users and organize them into teams.</li>
+<li>Manage resource access for each user and team through roles and folders.</li>
+</ul>
+<div class="prerequisite-section" style="">
+	<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Grafana 7.0 or newer, this tutorial was tested with Grafana 8.5.</li>
+<li>A user with the Admin or Server Admin role.</li>
+</ul>
+</div>
+<h2 id="add-users">Add users</h2>
+<p>In Grafana, all users are granted an <em>organization role</em> that determines what
+resources they can access.</p>
+<p>There are three types of organization roles in Grafana. The <strong>Grafana Admin</strong> is
+a global role, the default <code>admin</code> user has this role.</p>
+<ul>
+<li><strong>Grafana Admin -</strong> Manage organizations, users, and view server-wide settings.</li>
+<li><strong>Organization Administrator -</strong> Manage data sources, teams, and users within an organization.</li>
+<li><strong>Editor -</strong> Create and edit dashboards.</li>
+<li><strong>Viewer -</strong> View dashboards.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can also configure Grafana to allow <a href="/docs/grafana/latest/auth/overview/#anonymous-authentication">anonymous access</a>, to make dashboards available even to those who don&rsquo;t have a Grafana user account. That&rsquo;s how Grafana Labs made <a href="https://play.grafana.org" target="_blank" rel="noopener noreferrer">https://play.grafana.org</a> publicly available.</p></blockquote></div>
+
+<h3 id="exercise">Exercise</h3>
+<p>Graphona has asked you to add a group of early adopters that work in the Marketing and Engineering teams. They&rsquo;ll need to be able to edit their own team&rsquo;s dashboards, but want to have view access to dashboards that belong to the other team.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Username</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Almaz Russom</td>
+          <td><a href="mailto:almaz.russom@example.com">almaz.russom@example.com</a></td>
+          <td>almaz.russom</td>
+      </tr>
+      <tr>
+          <td>Brenda Tilman</td>
+          <td><a href="mailto:brenda.tilman@example.com">brenda.tilman@example.com</a></td>
+          <td>brenda.tilman</td>
+      </tr>
+      <tr>
+          <td>Mada Rawdha Tahan</td>
+          <td><a href="mailto:mada.rawdha.tahan@example.com">mada.rawdha.tahan@example.com</a></td>
+          <td>mada.rawdha.tahan</td>
+      </tr>
+      <tr>
+          <td>Yuan Yang</td>
+          <td><a href="mailto:yuan.yang@example.com">yuan.yang@example.com</a></td>
+          <td>yuan.yang</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="add-users-1">Add users</h4>
+<p>Repeat the following steps for each of the employees in the table above to create the new user accounts:</p>
+<ol>
+<li>Log in as a user that has the <strong>Server Admin</strong> role.</li>
+<li>On the sidebar, click the <strong>Server Admin</strong> (shield) icon.</li>
+<li>Choose <strong>Users</strong> from the menu drop-down, then click <strong>New User</strong>.</li>
+<li>Enter the <strong>Name</strong>, <strong>Email</strong>, <strong>Username</strong>, and <strong>Password</strong> from the table above.</li>
+<li>Click the <strong>Create User</strong> button to create the account.</li>
+</ol>
+<p>When you create a user they are granted the Viewer role by default, which means that they won&rsquo;t be able to make any changes to any of the resources in Grafana. That&rsquo;s ok for now, you&rsquo;ll grant more user permissions by adding users to <em>teams</em> in the next step.</p>
+<h2 id="assign-users-to-teams">Assign users to teams</h2>
+<p>Teams let you grant permissions to a group of users, instead of granting permissions to individual users one at a time.</p>
+<p>Teams are useful when onboarding new colleagues. When you add a user to a team, they get access to all resources assigned to that team.</p>
+<h3 id="exercise-1">Exercise</h3>
+<p>In this step, you&rsquo;ll create two teams and assign users to them.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Username</th>
+          <th>Team</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>brenda.tilman</td>
+          <td>Marketing</td>
+      </tr>
+      <tr>
+          <td>mada.rawdha.tahan</td>
+          <td>Marketing</td>
+      </tr>
+      <tr>
+          <td>almaz.russom</td>
+          <td>Engineering</td>
+      </tr>
+      <tr>
+          <td>yuan.yang</td>
+          <td>Engineering</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="create-a-team">Create a team</h4>
+<p>Create the <em>Marketing</em> and <em>Engineering</em> teams.</p>
+<ol>
+<li>In the sidebar, hover your mouse over the <strong>Configuration</strong> (gear) icon and
+then click <strong>Teams</strong>.</li>
+<li>Click <strong>New team</strong>.</li>
+<li>In <strong>Name</strong>, enter the name of the team: either <em>Marketing</em> or <em>Engineering</em>.
+You do not need to enter an email.</li>
+<li>Click <strong>Create</strong>.</li>
+<li>Click on the <strong>Teams</strong> link at the top of the page to return to teams page and create the second team.</li>
+</ol>
+<h4 id="add-a-user-to-a-team">Add a user to a team</h4>
+<p>Repeat these steps for each user to assign them to their team. Refer to the table above for team assignments.</p>
+<ol>
+<li>Click the team name <em>Marketing</em> or <em>Engineering</em> to add members to that team.</li>
+<li>Click <strong>Add member</strong>.</li>
+<li>In the <strong>Add team member</strong> box, click the drop-down arrow to choose the user you want to add to the team .</li>
+<li>Click <strong>Add to team</strong>.</li>
+</ol>
+<p>When you&rsquo;re done, you&rsquo;ll have two teams with two users assigned to each.</p>
+<h2 id="manage-resource-access-with-folders">Manage resource access with folders</h2>
+<p>It&rsquo;s a good practice to use folders to organize collections of related dashboards. You can assign permissions at the folder level to individual users or teams.</p>
+<h3 id="exercise-2">Exercise</h3>
+<p>The Marketing team is going to use Grafana for analytics, while the Engineering team wants to monitor the application they&rsquo;re building.</p>
+<p>You&rsquo;ll create two folders, <em>Analytics</em> and <em>Application</em>, where each team can add their own dashboards. The teams still want to be able to view each other&rsquo;s dashboards.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Folder</th>
+          <th>Team</th>
+          <th>Permissions</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Analytics</td>
+          <td>Marketing</td>
+          <td>Edit</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td>Engineering</td>
+          <td>View</td>
+      </tr>
+      <tr>
+          <td>Application</td>
+          <td>Marketing</td>
+          <td>View</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td>Engineering</td>
+          <td>Edit</td>
+      </tr>
+  </tbody>
+</table>
+<p>Repeat the following steps for each folder. You&rsquo;ll move through all three steps for each folder before moving on to the next one.</p>
+<h4 id="add-a-folder-for-each-team">Add a folder for each team</h4>
+<ol>
+<li>In the sidebar, hover your cursor over the <strong>Dashboards</strong> (four squares) icon and then click <strong>Browse</strong>.</li>
+<li>To create a folder, click <strong>New Folder</strong>.</li>
+<li>In <strong>Name</strong>, enter the folder name.</li>
+<li>Click <strong>Create</strong>.</li>
+<li>Stay in the folder view and move on to the next sections to edit permissions for this folder.</li>
+</ol>
+<h4 id="remove-the-viewer-role-from-folder-permissions">Remove the viewer role from folder permissions</h4>
+<p>By default, when you create a folder, all users with the Viewer role are granted permission to view the folder.</p>
+<p>In this example, Graphona wants to explicitly grant teams access to folders. To support this, you need to remove the Viewer role from the list of permissions:</p>
+<ol>
+<li>Go to the <strong>Permissions</strong> tab.</li>
+<li>Remove the Viewer role from the list, by clicking the red button on the right.</li>
+<li>Stay in the permissions tab and move on to the next section to grant folder permissions for each team.</li>
+</ol>
+<h4 id="grant-folder-permissions-to-a-team">Grant folder permissions to a team:</h4>
+<ol>
+<li>Click <strong>Add Permission</strong>.</li>
+<li>In the <strong>Add Permission For</strong> dialog, make sure &ldquo;Team&rdquo; is selected in the first box.</li>
+<li>In the second box, select the team to grant access to.</li>
+<li>In the third box, select the access you want to grant.</li>
+<li>Click <strong>Save</strong>.</li>
+<li>Repeat for the other team.</li>
+<li>Click the <strong>Dashboards</strong> link at the top of the page to return to the dashboard list.</li>
+</ol>
+<p>When you&rsquo;re finished, you&rsquo;ll have two empty folders, the contents of which can only be viewed by members of the Marketing or Engineering teams. Only Marketing team members can edit the contents of the Analytics folder, only Engineering team members can edit the contents of the Application folder.</p>
+<h2 id="define-granular-permissions">Define granular permissions</h2>
+<p>By using folders and teams, you avoid having to manage permissions for individual users.</p>
+<p>However, there are times when you need to configure permissions on a more granular level. For these cases, Grafana allows you to override permissions for specific dashboards.</p>
+<h3 id="exercise-3">Exercise</h3>
+<p>Graphona has hired a consultant to assist the Marketing team. The consultant should only be able to access the SEO dashboard in the Analytics folder.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Username</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Luc Masson</td>
+          <td><a href="mailto:luc.masson@exampleconsulting.com">luc.masson@exampleconsulting.com</a></td>
+          <td>luc.masson</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="add-a-new-user">Add a new user</h4>
+<ol>
+<li>In the sidebar, click the <strong>Server Admin</strong> (shield) icon.</li>
+<li>In the Users tab, click <strong>New user</strong>.</li>
+<li>In <strong>Name</strong>, enter the name of the user.</li>
+<li>In <strong>E-mail</strong>, enter the email of the user.</li>
+<li>In <strong>Username</strong>, enter the username that the user will use to log in.</li>
+<li>In <strong>Password</strong>, enter a password. The user can change their password once they log in.</li>
+<li>Click <strong>Create user</strong> to create the user account.</li>
+</ol>
+<h4 id="create-a-dashboard">Create a dashboard</h4>
+<ol>
+<li>In the sidebar, click the <strong>Create</strong> (plus) icon to create a new dashboard.</li>
+<li>In the top right corner, click the cog icon to go to <strong>Dashboard settings</strong>.</li>
+<li>In <strong>Name</strong>, enter <strong>SEO</strong>.</li>
+<li>Click <strong>Save Dashboard</strong>.</li>
+<li>In the <strong>Save dashboard as&hellip;</strong> pop-up, choose the <strong>Analytics</strong> folder from the drop-down and click <strong>Save</strong>.</li>
+</ol>
+<h4 id="grant-a-user-permission-to-view-dashboard">Grant a user permission to view dashboard</h4>
+<ol>
+<li>In the top right corner of your dashboard, click the cog icon to go to <strong>Dashboard settings</strong>.</li>
+<li>Go to the <strong>Permissions</strong> tab, and click <strong>Add Permission</strong>.</li>
+<li>In the <strong>Add Permission For</strong> dialog, select <strong>User</strong> in the first box.</li>
+<li>In the second box, select the user to grant access to: Luc Masson.</li>
+<li>In the third box, select <strong>View</strong>.</li>
+<li>Click <strong>Save</strong>.</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Add a note about giving Luc Masson Viewer permission for the dashboard and then click <strong>Save</strong>.</li>
+</ol>
+<p>You&rsquo;ve created a new user and given them unique permissions to view a single dashboard within a folder.</p>
+<h4 id="check-your-work">Check your work</h4>
+<p>You can repeat these steps to log in as the other users you&rsquo;ve created see the differences in the viewer and editor roles.</p>
+<p>For this example, you can log in as the user <code>luc.masson</code> to see that they can only access the SEO dashboard.</p>
+<ol>
+<li>Click the profile (avatar) button in the bottom left corner, choose <strong>Sign out</strong>.</li>
+<li>Enter <code>luc.masson</code> as the username.</li>
+<li>Enter the password you created for Luc.</li>
+<li>Click <strong>Log in</strong>.</li>
+<li>In the sidebar, hover your cursor over the <strong>Dashboards</strong> (four squares) icon and then click <strong>Browse</strong>.</li>
+<li>You&rsquo;ll notice that you won&rsquo;t see the <strong>Analytics</strong> folder in the folder view because we did not give Luc folder permission.</li>
+<li>Click on the list icon (3 lines) to see the dashboard list.</li>
+<li>Click on the <strong>SEO dashboard</strong>, there shouldn&rsquo;t be any editing permissions since we assigned Luc the viewer role.</li>
+</ol>
+<h2 id="summary">Summary</h2>
+<p>In this tutorial, you&rsquo;ve configured Grafana for an organization:</p>
+<ul>
+<li>You added users to your organization.</li>
+<li>You created teams to manage permissions for groups of users.</li>
+<li>You configured permissions for folders and dashboard.</li>
+</ul>
+<h3 id="learn-more">Learn more</h3>
+<ul>
+<li><a href="/docs/grafana/next/administration/manage-users-and-permissions/about-users-and-permissions/#organization-roles">Organization Roles</a></li>
+<li><a href="/docs/grafana/latest/administration/manage-users-and-permissions/about-users-and-permissions/#about-users-and-permissions">Permissions Overview</a></li>
+</ul>

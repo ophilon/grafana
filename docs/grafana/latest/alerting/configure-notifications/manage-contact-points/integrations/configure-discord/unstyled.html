@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<h1 id="configure-discord-for-alerting">Configure Discord for Alerting</h1>
+<p>Use the Grafana Alerting - Discord integration to receive alert notifications in your Discord channels when your Grafana alert rules are triggered and resolved.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Create a Webhook to enable Grafana to send alert notifications to Discord channels.
+To create a Webhook in Discord, complete the following steps.</p>
+<ol>
+<li>Follow the steps in the <a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks" target="_blank" rel="noopener noreferrer">Intro to Webhooks guide</a>.</li>
+<li>Copy the Webhook URL.</li>
+</ol>
+<h2 id="procedure">Procedure</h2>
+<p>To create your Discord integration in Grafana Alerting, complete the following steps.</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>Enter a contact point name.</p>
+</li>
+<li>
+<p>From the Integration list, select <strong>Discord</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Webhook URL</strong> field, paste in your Webhook URL.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong> to check that your integration works.</p>
+<p>** For Grafana Alertmanager only.**</p>
+<p>A test alert notification should be sent to the Discord channel that you associated with the Webhook.</p>
+</li>
+<li>
+<p>Click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>The Discord contact point is ready to receive alert notifications.</p>
+<p>To add this contact point to your alert, complete the following steps.</p>
+<ol>
+<li>In Grafana, navigate to <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Edit or create a new alert rule.</li>
+<li>Scroll down to the <strong>Configure labels and notifications</strong> section.</li>
+<li>Under <strong>Notifications</strong> click <strong>Select contact point</strong>.</li>
+<li>From the drop-down menu, select the previously created contact point.</li>
+<li>Click <strong>Save rule and exit</strong>.</li>
+</ol>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<h1 id="install-grafana-on-windows">Install Grafana on Windows</h1>
+<p>The following video demonstrates how to install Grafana using the Windows standalone installer as outlined in this document:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=js2bZijbhJM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>You install Grafana using the Windows installer or using the standalone Windows binary file.</p>
+<ol>
+<li>
+<p>Navigate to the <a href="/grafana/download">Grafana download page</a>.</p>
+</li>
+<li>
+<p>Select the Grafana version you want to install.</p>
+<ul>
+<li>The most recent Grafana version is selected by default.</li>
+<li>The <strong>Version</strong> field displays only tagged releases. If you want to install a nightly build, click <strong>Nightly Builds</strong> and then select a version.</li>
+</ul>
+</li>
+<li>
+<p>Select an <strong>Edition</strong>.</p>
+<ul>
+<li><strong>Enterprise:</strong> This is the recommended version. It is functionally identical to the open source version, but includes features you can unlock with a license, if you so choose.</li>
+<li><strong>Open Source:</strong> This version is functionally identical to the Enterprise version, but you will need to download the Enterprise version if you want Enterprise features.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Windows</strong>.</p>
+</li>
+<li>
+<p>To use the Windows installer, complete the following steps:</p>
+<p>a. Click <strong>Download the installer</strong>.</p>
+<p>b. Open and run the installer.</p>
+</li>
+<li>
+<p>To install the standalone Windows binary, complete the following steps:</p>
+<p>a. Click <strong>Download the zip file</strong>.</p>
+<p>b. Right-click the downloaded file, select <strong>Properties</strong>, select the <code>unblock</code> checkbox, and click <code>OK</code>.</p>
+<p>c. Extract the ZIP file to any folder.</p>
+</li>
+</ol>
+<p>Start Grafana by executing <code>grafana-server.exe</code>, located in the <code>bin</code> directory, preferably from the command line. If you want to run Grafana as a Windows service, then download
+<a href="https://nssm.cc/" target="_blank" rel="noopener noreferrer">NSSM</a>. It is very easy to add Grafana as a Windows service using that tool.</p>
+<ol>
+<li>
+<p>To run Grafana, open your browser and go to the Grafana port (http://localhost:3000/ is default) and then follow the instructions in <a href="../../../getting-started/build-first-dashboard/">Getting Started</a>.</p>
+<blockquote>
+<p><strong>Note:</strong> The default Grafana port is <code>3000</code>. This port might require extra permissions on Windows. If it does not appear in the default port, you can change the port number.</p></blockquote>
+</li>
+<li>
+<p>To change the port, perform the following steps:</p>
+<p>a. Open the <code>conf</code> directory and copy <code>sample.ini</code> to <code>custom.ini</code>.</p>
+<blockquote>
+<p><strong>Note:</strong> You should edit <code>custom.ini</code>, never <code>defaults.ini</code>.</p></blockquote>
+<p>b. Edit <code>custom.ini</code> and uncomment the <code>http_port</code> configuration option.</p>
+<p><code>;</code> is the comment character in ini files.</p>
+<p>c. Change the port to <code>8080</code> or something similar.</p>
+<p>Port <code>8080</code> should not require extra Windows privileges.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><a href="../../start-restart-grafana/">Start the Grafana server</a></li>
+</ul>

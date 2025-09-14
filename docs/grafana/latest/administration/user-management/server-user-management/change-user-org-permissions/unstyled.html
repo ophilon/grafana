@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<h1 id="change-a-users-organization-permissions">Change a user&rsquo;s organization permissions</h1>
+<p>Update organization permissions when you want to enhance or restrict a user&rsquo;s access to organization resources. For more information about organization permissions, refer to <a href="../../../roles-and-permissions/#organization-roles">Organization roles</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li><a href="../add-remove-user-to-org/">Add a user to an organization</a></li>
+<li>Ensure you have Grafana server administrator privileges</li>
+</ul>
+<p><strong>To change a user&rsquo;s organization permissions</strong>:</p>
+<ol>
+<li>Sign in to Grafana as a server administrator.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and then <strong>Users</strong>.</li>
+<li>Click a user.</li>
+<li>In the Organizations section, click <strong>Change role</strong> for the role you want to change</li>
+<li>Select another role.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In order for the change to take effect and be reflected within the instance, the account where permissions were altered will need to sign out fully and back in. Role assignment is evaluated during sign in, so if a user has not signed back in after their role was adjusted the instance will continue to reflect their previous role.</p></blockquote></div>
+

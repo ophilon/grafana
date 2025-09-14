@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<h1 id="canvas">Canvas</h1>
+<p>Canvases combine the power of Grafana with the flexibility of custom elements.
+They are extensible visualizations that allow you to add and arrange elements wherever you want within unstructured static and dynamic layouts.
+This lets you design custom visualizations and overlay data in ways that aren&rsquo;t possible with standard Grafana visualizations, all within the Grafana UI.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/static/img/docs/canvas-panel/canvas-beta-overview-9-2-0.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<p>If you&rsquo;ve used popular UI and web design tools, then designing canvases will feel very familiar.
+With all of these dynamic elements, there&rsquo;s almost no limit to what a canvas can display.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>We&rsquo;d love your feedback on the canvas visualization. Please check out the <a href="https://github.com/grafana/grafana/issues?page=1&amp;q=is%3Aopen&#43;is%3Aissue&#43;label%3Aarea%2Fpanel%2Fcanvas" target="_blank" rel="noopener noreferrer">open Github issues</a> and <a href="https://github.com/grafana/grafana/issues/new?assignees=&amp;labels=type%2Ffeature-request,area%2Fpanel%2Fcanvas&amp;title=Canvas:&amp;projects=grafana-dataviz&amp;template=1-feature_requests.md" target="_blank" rel="noopener noreferrer">submit a new feature request</a> as needed.</p></blockquote></div>
+
+<h2 id="configure-a-canvas-visualization">Configure a canvas visualization</h2>
+<p>The following video shows you how to create and configure a canvas visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=b7AYKoFcPpY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>The canvas visualization is unique in that it doesn&rsquo;t have any specific data requirements. You can even start adding and configuring visual elements without providing any data. However, any data you plan to consume should be accessible through supported Grafana data sources and structured in a way that ensures smooth integration with your custom elements.</p>
+<p>If your canvas is going to update in real time, your data should support refreshes at your desired intervals without degrading the user experience.</p>
+<p>You can tie <a href="#elements">Elements</a> and <a href="#connections">Connections</a> to data through options like text, colors, and background pattern images, etc. available in the canvas visualization.</p>
+<h2 id="elements">Elements</h2>
+<p>Elements are the basic building blocks of a canvas and they help you visualize data with different shapes and options. You can rotate and move elements around the canvas. When you move elements, snapping and alignment guides help you create more precise layouts.</p>
+<p>Add elements in the <a href="#layer-options">Layer</a> section of canvas options.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Element snapping and alignment only works when the canvas is not zoomed in.</p></blockquote></div>
+
+<h3 id="element-types">Element types</h3>
+<p>When you select an element that you&rsquo;ve added to a canvas, you can access <a href="#selected-element-options">configuration options</a> for it that are dependent on the element type.</p>
+<p>The following sections describe the different elements available.</p>
+<div class="column-list">
+  <ul>
+<li><a href="#metric-value">Metric value</a></li>
+<li><a href="#text">Text</a></li>
+<li><a href="#basic-shapes">Ellipse</a></li>
+<li><a href="#basic-shapes">Rectangle</a></li>
+<li><a href="#icon">Icon</a></li>
+<li><a href="#server">Server</a></li>
+<li><a href="#basic-shapes">Triangle</a></li>
+<li><a href="#basic-shapes">Cloud</a></li>
+<li><a href="#basic-shapes">Parallelogram</a></li>
+<li><a href="#button">Button</a></li>
+</ul>
+
+</div>
+<h4 id="basic-shapes">Basic shapes</h4>
+<p>A basic shape element can display text (both fixed and field data) and its background color can be changed based on data thresholds. You can add the following basic shapes to a canvas:</p>
+<ul>
+<li>Cloud</li>
+<li>Ellipse</li>
+<li>Parallelogram</li>
+<li>Rectangle</li>
+<li>Triangle</li>
+</ul>
+<h4 id="metric-value">Metric value</h4>
+<p>The metric value element lets you select the data you want to display on a canvas. This element has a unique “edit” mode that can be triggered either through the context menu “Edit” option or by double clicking. When in edit mode you can select which field data that you want to display.</p>
+<h4 id="text">Text</h4>
+<p>The text element lets you add text to the canvas. The element also supports an editing mode, triggered via either double clicking or the edit menu option in the context menu.</p>
+<h4 id="icon">Icon</h4>
+<p>The icon element lets you add a supported icon to the canvas. Icons can have their color set based on thresholds or value mappings.</p>
+<h5 id="add-a-custom-icon">Add a custom icon</h5>
+<p>You can add a custom icon by referencing an SVG file. To add a custom icon, follow these steps:</p>
+<ol>
+<li>
+<p>Under <strong>Icon &gt; SVG Path</strong>, if it&rsquo;s not already selected, select <strong>Fixed</strong> as your file source.</p>
+</li>
+<li>
+<p>Click <strong>Select a value</strong> in the field below.</p>
+</li>
+<li>
+<p>In the dialog box that opens, click the <strong>URL</strong> tab.</p>
+</li>
+<li>
+<p>Enter the URL in the field below the <strong>URL</strong> tab.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 250px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=1920 1920w"
+             data-sizes="auto"alt="Add a custom image URL"width="320"height="402"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png"
+               alt="Add a custom image URL"width="320"height="402"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Click <strong>Select</strong>.</p>
+</li>
+<li>
+<p>(Optional) Add a background image to your icon with the <strong>Background (icon)</strong> option by following the steps to <a href="#add-custom-images-to-elements">add a custom image</a>.</p>
+</li>
+</ol>
+<p>If you don&rsquo;t have an SVG file, you can use a rectangle element instead of an icon and set its background image to an image file type. To add a custom image for another element type, follow the steps to <a href="#add-custom-images-to-elements">add a custom image</a>.</p>
+<h4 id="server">Server</h4>
+<p>The server element lets you easily represent a single server, a stack of servers, a database, or a terminal. Server elements support status color, bulb color, and a bulb blink rate all configurable by fixed or field values.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 650px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/canvas-server-element-9-4-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/canvas-server-element-9-4-0.png"data-srcset="/media/docs/grafana/canvas-server-element-9-4-0.png?w=320 320w, /media/docs/grafana/canvas-server-element-9-4-0.png?w=550 550w, /media/docs/grafana/canvas-server-element-9-4-0.png?w=750 750w, /media/docs/grafana/canvas-server-element-9-4-0.png?w=900 900w, /media/docs/grafana/canvas-server-element-9-4-0.png?w=1040 1040w, /media/docs/grafana/canvas-server-element-9-4-0.png?w=1240 1240w, /media/docs/grafana/canvas-server-element-9-4-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Canvas server element"width="1894"height="1158"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/canvas-server-element-9-4-0.png"
+            alt="Canvas server element"width="1894"height="1158"/>
+        </noscript></div></a></figure>
+<h4 id="button">Button</h4>
+<p>The button element lets you add a basic button to the canvas. Button elements support triggering basic, unauthenticated API calls. <a href="#button-api-options">API settings</a> are found in the button element editor. You can also pass template variables in the API editor.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>A button click will only trigger an API call when <a href="#inline-editing">inline editing</a> is disabled.</p></blockquote></div>
+
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="650px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/2023-20-10-Canvas-Button-Element-Enablement-Video.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/c9ea65f5-ed5a-45cf-8fb7-f82af7c3afdf/" target="_blank" rel="noopener noreferrer">Canvas Visualization: Buttons</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/c9ea65f5-ed5a-45cf-8fb7-f82af7c3afdf/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h5 id="button-api-options">Button API options</h5>
+<p>The following options let you configure basic, unauthenticated API calls:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Endpoint</td>
+          <td>Enter the endpoint URL.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Choose from <strong>GET</strong>, <strong>POST</strong>, and <strong>PUT</strong>.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select an option in the drop-down list. Choose from: JSON, Text, JavaScript, HTML, XML, and x-www-form-urlencoded.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td>Enter as many <strong>Key</strong>, <strong>Value</strong> pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Header parameters</td>
+          <td>Enter as many <strong>Key</strong>, <strong>Value</strong> pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Payload</td>
+          <td>Enter the body of the API call.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="add-custom-images-to-elements">Add custom images to elements</h3>
+<p>You can add custom background images to all elements except <strong>Button</strong> by referencing an image URL.
+The image must be hosted at a URL that allows requests from your Grafana instance.</p>
+<p>To upload a custom image, follow these steps:</p>
+<ol>
+<li>
+<p>Under <strong>Background (&lt;ELEMENT TYPE&gt;)</strong>, if it&rsquo;s not already selected, select <strong>Fixed</strong> as your image source.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 300px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png?w=1920 1920w"
+             data-sizes="auto"alt="Custom image source selection"width="419"height="298"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-src-v11.3.png"
+               alt="Custom image source selection"width="419"height="298"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Click <strong>Select a value</strong> in the field below.</p>
+</li>
+<li>
+<p>In the dialog box that opens, click the <strong>URL</strong> tab.</p>
+</li>
+<li>
+<p>Enter the URL in the field below the <strong>URL</strong> tab.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 250px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png?w=1920 1920w"
+             data-sizes="auto"alt="Add a custom image URL"width="320"height="402"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/panels-visualizations/screenshot-canvas-custom-image-v11.3.png"
+               alt="Add a custom image URL"width="320"height="402"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Click <strong>Select</strong>.</p>
+</li>
+</ol>
+<h2 id="connections">Connections</h2>
+<p>When building a canvas, you can connect elements together to create more complex visualizations. You can also create connections to the background of the canvas.</p>
+<p>To create a connection, follow these steps:</p>
+<ol>
+<li>
+<p>In the panel edit pane, expand the <strong>Canvas</strong> options section.</p>
+</li>
+<li>
+<p>Toggle on the <strong>Inline editing</strong> switch.</p>
+</li>
+<li>
+<p>Hover the cursor over an element you want to connect to display the connection anchors:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-connection-anchors-v11.3.png"
+  alt="Element with connection anchors displayed" width="299"
+     height="89"/></p>
+</li>
+<li>
+<p>Drag the cursor from a connection anchor on that element to one on another element.</p>
+</li>
+</ol>
+<p>To remove a connection, click the connection and then press the <code>Delete</code> or <code>Backspace</code> key.</p>
+<h3 id="connection-adjustments">Connection adjustments</h3>
+<p>You can adjust connections, adding angles to them, to fit the canvas you&rsquo;re working in. When you move connected elements, the connection resizes to fit the space.</p>
+<ul>
+<li>To adjust a connection, click it to display the midpoint controls and move those as needed.</li>
+<li>To make a connection a straight line again, move the midpoint back until the midpoint controls disappear.</li>
+</ul>
+<p>If you move a connection so that it&rsquo;s almost a right angle or a straight line, the connection snaps into that angle or into a straight line.</p>
+<h3 id="connection-styles">Connection styles</h3>
+<p>You can set the size, color, direction, and style of connections based on fixed or field values. To do so, enter into panel edit mode, select the connection, and modify the connection&rsquo;s properties in the panel editor. For more information on connection styles, refer to <a href="#selected-connection-options">Selected connection options</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=0iO2gqv0XNA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="canvas-editing">Canvas editing</h2>
+<p>You can make changes to a canvas visualization while in the context of the dashboard, or in dashboard mode. The following sections describe the editing options available in dashboard mode.</p>
+<h3 id="inline-editor">Inline editor</h3>
+<p>You can edit your canvas inline while in dashboard mode. The inline editor menu displays the options relevant to the part of the canvas that you&rsquo;ve selected. You can also move the editor window around.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/static/img/docs/canvas-panel/canvas-inline-editor-9-2-0.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h3 id="context-menu">Context menu</h3>
+<p>The context menu lets you perform common tasks quickly and efficiently. Supported functionality includes opening and closing the inline editor, duplicating an element, deleting an element, and more.</p>
+<p>The context menu is triggered by a right click action over the panel or over a given canvas element. When right clicking the panel, you are able to set a background image and easily add elements to the canvas.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png"data-srcset="/static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png?w=320 320w, /static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png?w=550 550w, /static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png?w=750 750w, /static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png?w=900 900w, /static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png?w=1040 1040w, /static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png?w=1240 1240w, /static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Canvas panel context menu"width="622"height="502"/>
+        <noscript>
+          <img
+            src="/static/img/docs/canvas-panel/canvas-panel-context-menu-9-3-0.png"
+            alt="Canvas panel context menu"width="622"height="502"/>
+        </noscript></div></a></figure>
+<p>When right clicking an element, you are able to edit, delete, duplicate, and modify the element&rsquo;s layer positioning.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 250px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png"data-srcset="/static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png?w=320 320w, /static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png?w=550 550w, /static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png?w=750 750w, /static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png?w=900 900w, /static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png?w=1040 1040w, /static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png?w=1240 1240w, /static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Canvas element context menu"width="392"height="534"/>
+        <noscript>
+          <img
+            src="/static/img/docs/canvas-panel/canvas-context-menu-9-2-0.png"
+            alt="Canvas element context menu"width="392"height="534"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="canvas-options">Canvas options</h3>
+<h4 id="inline-editing">Inline editing</h4>
+<p>The inline editing toggle lets you lock or unlock the canvas. When turned off the canvas becomes “locked”, freezing elements in place and preventing unintended modifications.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/static/img/docs/canvas-panel/canvas-inline-editing-toggle-9-2-0.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h4 id="experimental-element-types">Experimental Element types</h4>
+<p>Toggle the switch to include experimental element types in the available selections.</p>
+<h4 id="pan-and-zoom">Pan and zoom</h4>
+<p>You can enable panning and zooming in a canvas. This allows you to both create and navigate more complex designs.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Canvas pan and zoom is currently in <a href="/docs/release-life-cycle/">public preview</a>. Grafana Labs offers limited support, and breaking changes might occur prior to the feature being made generally available.</p>
+<p>To use this feature, enable the <code>canvasPanelPanZoom</code> feature toggle in your Grafana configuration file or at <strong>Administration &gt; General &gt; Feature toggles</strong> in Grafana Cloud.</p></blockquote></div>
+
+
+<p>Use the following pointer and keyboard strokes:</p>
+<ul>
+<li><strong>Zoom in</strong> - Scroll up</li>
+<li><strong>Zoom out</strong> - Scroll down</li>
+<li><strong>Pan</strong> - Middle mouse/wheel + drag OR Control + right-click + drag</li>
+<li><strong>Reset</strong> - Double-click</li>
+</ul>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/2024-01-05-Canvas-Pan-&amp;-Zoom-Enablement-Video.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h5 id="zoom-to-content">Zoom to content</h5>
+<p>When you toggle on the <strong>Zoom to content</strong> switch, Grafana automatically adjusts the view to fit all visible elements in your canvas visualization into the viewport, adding a small margin around the edges. This makes it easy to reset your view, present content, or switch between devices without losing your framing. The content will re‑fit even if you resize the panel.</p>
+<h5 id="infinite-panning">Infinite panning</h5>
+<p>You can enable infinite panning in a canvas when pan and zoom is enabled. This allows you to pan and zoom the canvas and uncover larger designs.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Infinite panning is an experimental feature that may not work as expected in all scenarios. For example, elements that are not top-left constrained may experience unexpected movement when panning.</p></blockquote></div>
+
+<h3 id="tooltip-options">Tooltip options</h3>
+<p>The <strong>Tooltip mode</strong> setting controls the display of tooltips when hovering over canvas elements that are connected to data, data links, or actions.
+The options are:</p>
+<ul>
+<li><strong>Enabled</strong> - Show a tooltip when the cursor hovers over an element.</li>
+<li><strong>Disabled</strong> - Tooltips are not shown on hover.</li>
+</ul>
+<p>The <strong>Disable for one-click elements</strong> setting allows hiding tooltips on elements that have one-click functionality enabled. This prevents tooltips from interfering with one-click interactions while still allowing tooltips on other elements.</p>
+<h3 id="layer-options">Layer options</h3>
+<p>The <strong>Layer</strong> options let you add elements to the canvas and control its appearance:</p>
+<ul>
+<li><a href="#elements-layer">Elements</a></li>
+<li><a href="#background-canvas">Background</a></li>
+<li><a href="#border-canvas">Border</a></li>
+</ul>
+<h4 id="elements-layer">Elements (layer)</h4>
+<p>Use the <strong>Add item</strong> button to open the <a href="#element-types">element type</a> drop-down list. Elements are listed in the reverse order that you add them to the canvas:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-canvas-elements-v11.3.png"
+  alt="Canvas elements added in the Layer options" width="458"
+     height="230"/></p>
+<p>By default, elements have numbered names, like &ldquo;Element 1&rdquo;, and those numbers correspond to the order in which the elements were added, but you can <a href="#rename-an-element">change the default names</a>.</p>
+<p>You can also take the following actions on elements:</p>
+<ul>
+<li>Change the order of elements by clicking and holding the row of the element while moving it up and down in the element list.</li>
+<li>Duplicate or remove elements by clicking the icons on the element row.</li>
+<li>Access the element editing options by clicking the element row. This displays the <a href="#selected-element-options">Selected element</a> section of options. Click <strong>Clear selection</strong> to remove the element from focus and stop displaying that section of options.</li>
+</ul>
+<h5 id="rename-an-element">Rename an element</h5>
+<p>To update the name of an element, follow these steps:</p>
+<ol>
+<li>Hover the cursor over the element name so the <strong>Edit layer name</strong> (pencil) icon is displayed.</li>
+<li>Click the <strong>Edit layer name</strong> icon.</li>
+<li>Enter a new name.</li>
+<li>Click outside of the name field.</li>
+</ol>
+<h4 id="background-canvas">Background (canvas)</h4>
+<p>Use the following options to control the background of the canvas:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Color</td>
+          <td>Set the background color.</td>
+      </tr>
+      <tr>
+          <td>Image</td>
+          <td>Use one of the provided background images or <a href="#add-custom-images-to-elements">add your own custom image</a>.</td>
+      </tr>
+      <tr>
+          <td>Image size</td>
+          <td>Control the size of the image or set it as a tile.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="border-canvas">Border (canvas)</h4>
+<p>Use the following options to control the border of the canvas:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Width</td>
+          <td>Set the border width in pixels.</td>
+      </tr>
+      <tr>
+          <td>Color</td>
+          <td>Set the border color. This option is only displayed when the border width is greater than zero.</td>
+      </tr>
+      <tr>
+          <td>Radius</td>
+          <td>Add rounded corners to the border and control the degree of curve.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="selected-element-options">Selected element options</h3>
+<p>The following options allow you to control the appearance of the element you&rsquo;ve selected. To access an element so that you can edit it, expand the <strong>Layer</strong> section and select the desired element.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#element-type">Element type</a></td>
+          <td>Change the selected element type.</td>
+      </tr>
+      <tr>
+          <td><a href="#element">Element</a></td>
+          <td>Control the appearance of text on the element. This section is named based on the element type.</td>
+      </tr>
+      <tr>
+          <td><a href="#layout">Layout</a></td>
+          <td>Control the placement of elements on the canvas.</td>
+      </tr>
+      <tr>
+          <td><a href="#background-element">Background (element)</a></td>
+          <td>Set the background of the element.</td>
+      </tr>
+      <tr>
+          <td><a href="#border-element">Border (element)</a></td>
+          <td>Set the border of the element.</td>
+      </tr>
+      <tr>
+          <td><a href="#data-links-and-actions">Data links and actions</a></td>
+          <td>Configure data links and actions for elements.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="element-type">Element type</h4>
+<p>You can change element type by making a new selection in the drop-down list:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-element-type-select-v11.3.png"
+  alt="Cursor on the element type selection drop-down" width="462"
+     height="119"/></p>
+<h4 id="element">Element</h4>
+<p>This section is named based on the element type. Control the appearance of text on the element with the following options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Style</td>
+          <td>Buttons only. Select an option in the <strong>Variant</strong> drop-down list to indicate what kind of action the button initiates. Choose from <strong>primary</strong>, <strong>secondary</strong>, <strong>success</strong>, and <strong>destructive</strong>.</td>
+      </tr>
+      <tr>
+          <td>Text</td>
+          <td>Select a <strong>Source</strong>. Choose from <strong>Fixed</strong> or <strong>Field</strong>. If you selected <strong>Fixed</strong>, enter text in the <strong>Value</strong> field. If you selected <strong>Field</strong>, choose the field.</td>
+      </tr>
+      <tr>
+          <td>Text color</td>
+          <td>Choose a text color.</td>
+      </tr>
+      <tr>
+          <td>Align text</td>
+          <td>Set the horizontal alignment of text within the element. Choose from <strong>Left</strong>, <strong>Center</strong>, and <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Vertical align</td>
+          <td>Set the vertical alignment of the text within the element. Choose from <strong>Top</strong>, <strong>Middle</strong>, and <strong>Bottom</strong>.</td>
+      </tr>
+      <tr>
+          <td>Text size</td>
+          <td>Set the text size. Leave the field empty to allow Grafana to automatically set the text size.</td>
+      </tr>
+      <tr>
+          <td>API</td>
+          <td>Buttons only. Configure API options. For more information, refer to <a href="#button-api-options">Button API options</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<!--prettier-ignore-end -->
+<!-- prettier-ignore-start -->
+<p>Icons don&rsquo;t have text, so they have different options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>SVG Path</td>
+          <td>Choose whether the icon SVG file source is <strong>Fixed</strong> or <strong>Field</strong>. If you selected <strong>Fixed</strong>, choose a provided option or <a href="#add-a-custom-icon">add a custom icon</a>. If you selected <strong>Field</strong>, choose a field.</td>
+      </tr>
+      <tr>
+          <td>Fill color</td>
+          <td>Choose a fill color for the icon.</td>
+      </tr>
+  </tbody>
+</table>
+<!--prettier-ignore-end -->
+<h4 id="layout">Layout</h4>
+<p>Control the placement of elements on the canvas with the following options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Quick placement</td>
+          <td>Select an alignment option to automatically place the element. Choose from:<ul><li>Align left</li><li>Align horizontal centers</li><li>Align right</li><li>Align top</li><li>Align vertical centers</li><li>Align bottom</li></ul></td>
+      </tr>
+      <tr>
+          <td>Constraints</td>
+          <td>Set element constraints. Choose from: <strong>Left</strong>, <strong>Right</strong>, <strong>Left &amp; Right</strong>, <strong>Center</strong>, and <strong>Scale</strong>.<br></br>Use the <strong>Scale</strong> option to ensure that elements are automatically resized when the panel size changes.</td>
+      </tr>
+      <tr>
+          <td>Position</td>
+          <td>Use these settings to manually set the position of an element. Set any or all of the following options: <strong>top</strong>, <strong>left</strong>, <strong>width</strong>, <strong>height</strong>, and <strong>rotation</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="background-element">Background (element)</h4>
+<p>Use the following options to set the background of the element:</p>
+<ul>
+<li><strong>Color</strong> - Set the background color.</li>
+<li><strong>Image</strong> - Use one of the provided background images or <a href="#add-custom-images-to-elements">add your own custom image</a>.</li>
+</ul>
+<p>This option doesn&rsquo;t apply to the button element.</p>
+<h4 id="border-element">Border (element)</h4>
+<p>Use the following options to set the border of the element:</p>
+<ul>
+<li><strong>Width</strong> - Set the border width in pixels.</li>
+<li><strong>Color</strong> - Set the border color. This option is only displayed when the border width is greater than zero.</li>
+<li><strong>Radius</strong> - Add rounded corners to the element border and control the degree of curve.</li>
+</ul>
+<h4 id="data-links-and-actions">Data links and actions</h4>
+<p>Canvases support 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">data links</a> and actions for all elements.</p>
+<p>If you add multiple data links or actions to an element, you can control the order in which they appear in the element tooltip.
+To do this, click and drag the link or action to the desired position.</p>
+<p>The following tasks describe how to configure data links and actions.</p>
+
+
+
+
+  <div class="br-4 base-border border-color-gray-3 docs_tabs">
+    <div x-data="app_content_tabs([&#34;Add data links&#34;,&#34;Add actions&#34;], '173990478d1670431874647276853915')" x-init="init()">
+      <div class="d-flex w-100p flex-direction-row align-items-center justify-content-flex-start d-md-none">
+        <select class="docs_tabs--select w-100p base-border-bottom border-color-gray-3" @change="toggle($event.target.value)">
+          
+          
+            <option value="Add data links" :selected="active === 'Add data links'">Add data links</option>
+          
+          
+            <option value="Add actions" :selected="active === 'Add actions'">Add actions</option>
+          
+        </select> 
+      </div>
+      <nav class="docs_tabs--navigation base-border-bottom border-color-gray-3 d-none d-md-block" role="tablist" data-codetoggle="true">
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Add data links')"
+            :class="{ 'docs_tabs--label-active': active === 'Add data links' }"
+          >
+            Add data links
+          </button>
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Add actions')"
+            :class="{ 'docs_tabs--label-active': active === 'Add actions' }"
+          >
+            Add actions
+          </button>
+        
+      </nav>
+      <div class="docs_tabs--content-container">
+        
+
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Add data links' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <p>To add a data link, follow these steps:</p>
+<ol>
+<li>
+<p>Enable inline editing.</p>
+</li>
+<li>
+<p>Click the element to which you want to add the data link.</p>
+</li>
+<li>
+<p>In either the inline editor or panel editor, expand the <strong>Selected element</strong> editor.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>Data links and actions</strong> section and expand it.</p>
+</li>
+<li>
+<p>Click <strong>+ Add link</strong>.</p>
+</li>
+<li>
+<p>In the dialog box that opens, enter a <strong>Title</strong>.</p>
+<p>This is a human-readable label for the link displayed in the UI. This is a required field.</p>
+</li>
+<li>
+<p>Enter the <strong>URL</strong> or variable to which you want to link.</p>
+<p>To add a data link variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables. This is a required field.</p>
+</li>
+<li>
+<p>If you want the link to open in a new tab, toggle the <strong>Open in a new tab</strong> switch.</p>
+</li>
+<li>
+<p>If you want the data link to open with a single click on the element, toggle the <strong>One click</strong> switch.</p>
+<p>Only one data link or action can have <strong>One click</strong> enabled at a time.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> to save changes and close the dialog box.</p>
+</li>
+<li>
+<p>Disable inline editing.</p>
+</li>
+</ol>
+
+</div>
+
+   
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Add actions' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <p>To add an action, by follow these steps:</p>
+<ol>
+<li>
+<p>Enable inline editing.</p>
+</li>
+<li>
+<p>Click the element to which you want to add the data link.</p>
+</li>
+<li>
+<p>In either the inline editor or panel editor, expand the <strong>Selected element</strong> editor.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>Data links and actions</strong> section and expand it.</p>
+</li>
+<li>
+<p>Click <strong>+ Add action</strong>.
+In the dialog box that opens, set the action options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>A human-readable label for the action that&rsquo;s displayed in the UI.</td>
+      </tr>
+      <tr>
+          <td>Confirmation message</td>
+          <td>A descriptive prompt to confirm or cancel the action.</td>
+      </tr>
+      <tr>
+          <td>One click</td>
+          <td>If you want the action to be triggered by a single click on the element, toggle the switch.</p><p>Only one data link or action can have <strong>One click</strong> enabled at a time.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Select from <strong>POST</strong>, <strong>PUT</strong>, or <strong>GET</strong>.</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>The request URL or variable to which you want to link.</p><p>To add a variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables.</td>
+      </tr>
+      <tr>
+          <td>Variables</td>
+          <td><strong>Key</strong> and <strong>Name</strong> pairs with a type selection. Click the <strong>+</strong> icon to add as many variables as you need. To add a variable to the request, prefix the key with <code>$</code>. You can set the values for the variables when performing an action.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td><strong>Key</strong> and <strong>Value</strong> pairs. Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Headers</td>
+          <td>Comprised of <strong>Key</strong> and <strong>Value</strong> pairs and a <strong>Content-Type</strong>.</p><p>Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select from the following: <strong>application/json</strong>, <strong>text/plain</strong>, <strong>application/XML</strong>, and <strong>application/x-www-form-urlencoded</strong>.</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>The body of the request.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p>Click <strong>Save</strong> to save changes and close the dialog box.</p>
+</li>
+<li>
+<p>Disable inline editing.</p>
+</li>
+</ol>
+
+</div>
+
+   
+      </div>
+    </div>
+  </div>
+
+
+<h3 id="selected-connection-options">Selected connection options</h3>
+<p>You can style the selected connection using the following options:</p>
+<ul>
+<li>
+<p><strong>Color</strong> - Set the connection color.</p>
+</li>
+<li>
+<p><strong>Size</strong> - Control the size of the connection by entering a number in the <strong>Value</strong> field.</p>
+</li>
+<li>
+<p><strong>Radius</strong> - Add curve to the connection by entering a value to represent the degree.</p>
+</li>
+<li>
+<p><strong>Direction</strong> - Control the appearance of the arrow head. Choose your source from <strong>Fixed</strong> or <strong>Field</strong>. The default value is <strong>Forward</strong> regardless of the source type.</p>
+<p>If the direction source is <strong>Fixed</strong>, choose from:</p>
+<ul>
+<li><strong>Forward</strong> - The arrow head points in the direction in which the connection was drawn.</li>
+<li><strong>Reverse</strong> - The arrow head points in the opposite direction of which the connection was drawn.</li>
+<li><strong>Both</strong> - Adds arrow heads to both ends of the connection.</li>
+<li><strong>None</strong> - Removes the arrow head.</li>
+</ul>
+<p>If the direction source is <strong>Field</strong>, select a field that contains numeric values:</p>
+<ul>
+<li><strong>Positive values</strong> - Display forward arrows.</li>
+<li><strong>Negative values</strong> - Display reverse arrows.</li>
+<li><strong>Zero</strong> - Display no arrow heads.</li>
+</ul>
+</li>
+<li>
+<p><strong>Line style</strong> - Choose from the following line styles: <strong>Solid</strong>, <strong>Dashed</strong>, and <strong>Dotted</strong>.</p>
+</li>
+</ul>
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-2.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        

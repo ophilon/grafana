@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<h1 id="grafana-data-sources">Grafana data sources</h1>
+<p>Grafana comes with built-in support for many <em>data sources</em>.
+If you need other data sources, you can also install one of the many data source plugins.
+If the plugin you need doesn&rsquo;t exist, you can develop a custom plugin.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=cqHO0oYW6Ic" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>Each data source comes with a <em>query editor</em>,
+which formulates custom queries according to the source&rsquo;s structure.
+After you add and configure a data source, you can use it as an input for many operations, including:</p>
+<ul>
+<li>Query the data with 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</li>
+<li>Visualize it in 
+    <a href="/docs/grafana/latest/panels-visualizations/">panels</a>.</li>
+<li>Create rules for 
+    <a href="/docs/grafana/latest/alerting/">alerts</a>.</li>
+</ul>
+<p>This documentation describes how to manage data sources in general,
+and how to configure or query the built-in data sources.
+For other data sources, refer to the list of <a href="/grafana/plugins/">datasource plugins</a>.</p>
+<p>To develop a custom plugin, refer to <a href="#create-a-data-source-plugin">Create a data source plugin</a>.</p>
+<h2 id="manage-data-sources">Manage data sources</h2>
+<p>Only users with the 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#organization-roles">organization administrator role</a> can add or remove data sources.
+To access data source management tools in Grafana as an administrator, navigate to <strong>Configuration &gt; Data Sources</strong> in the Grafana sidebar.</p>
+<p>For details on data source management, including instructions on how configure user permissions for queries, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.</p>
+<h2 id="add-a-data-source">Add a data source</h2>
+<p>Before you can create your first dashboard, you need to add your data source.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Only users with the organization admin role can add data sources.</p></blockquote></div>
+
+<p><strong>To add a data source:</strong></p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu.</li>
+<li>Enter the name of a specific data source in the search dialog. You can filter by <strong>Data source</strong> to only see data sources.</li>
+<li>Click the data source you want to add.</li>
+<li>Configure the data source following instructions specific to that data source.</li>
+</ol>
+<h2 id="use-query-editors">Use query editors</h2>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1000px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/queries/influxdb-query-editor-7-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/queries/influxdb-query-editor-7-2.png"data-srcset="/static/img/docs/queries/influxdb-query-editor-7-2.png?w=320 320w, /static/img/docs/queries/influxdb-query-editor-7-2.png?w=550 550w, /static/img/docs/queries/influxdb-query-editor-7-2.png?w=750 750w, /static/img/docs/queries/influxdb-query-editor-7-2.png?w=900 900w, /static/img/docs/queries/influxdb-query-editor-7-2.png?w=1040 1040w, /static/img/docs/queries/influxdb-query-editor-7-2.png?w=1240 1240w, /static/img/docs/queries/influxdb-query-editor-7-2.png?w=1920 1920w"
+          data-sizes="auto"alt="The InfluxDB query editor"width="1016"height="419"title="The InfluxDB query editor"/>
+        <noscript>
+          <img
+            src="/static/img/docs/queries/influxdb-query-editor-7-2.png"
+            alt="The InfluxDB query editor"width="1016"height="419"title="The InfluxDB query editor"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">The InfluxDB query editor</figcaption></a></figure>
+<p>Each data source&rsquo;s <strong>query editor</strong> provides a customized user interface that helps you write queries that take advantage of its unique capabilities.
+You use a data source&rsquo;s query editor when you create queries in 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">dashboard panels</a> or 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<p>Because of the differences between query languages, each data source query editor looks and functions differently.
+Depending on your data source, the query editor might provide auto-completion features, metric names, variable suggestions, or a visual query-building interface.</p>
+<p>For example, this video demonstrates the visual Prometheus query builder:</p>
+
+
+
+
+
+  
+  
+  
+
+<div
+x-data="{ vimeo_is_up: false, responded: false }"
+x-init="fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/720004179`)
+    .then(response => {
+      responded = true;
+      response && response.status === 200 ? vimeo_is_up = true : vimeo_is_up = false;
+    })
+    .catch(error => {
+      responded = true;
+    })"
+x-cloak>
+  <figure class="p-0 m-0">
+
+    <template x-if="vimeo_is_up">
+      <div class="my-1" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+        <iframe src="https://player.vimeo.com/video/720004179?transparent=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="vimeo video" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+      </div>
+    </template>
+    <template x-if="responded && !vimeo_is_up">
+      <p class="bg-gray-17 p-1">There&rsquo;s supposed to be a video here, but for some reason there isn&rsquo;t. Either we entered the id wrong (oops!), or Vimeo is down. If it&rsquo;s the latter, we&rsquo;d expect they&rsquo;ll be back up and running soon. In the meantime, <a href="/blog/">check out our blog</a>!</p>
+    </template>
+
+    
+  </figure>
+</div>
+<p>For general information about querying in Grafana, and common options and user interface elements across all query editors, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<h2 id="special-data-sources">Special data sources</h2>
+<p>Grafana includes three special data sources:</p>
+<h3 id="grafana">Grafana</h3>
+<p>A built-in data source that generates random walk data and can poll the <a href="testdata/">Testdata</a> data source. Additionally, it can list files and get other data from a Grafana installation. This can be helpful for testing visualizations and running experiments.</p>
+<h3 id="mixed">Mixed</h3>
+<p>An abstraction that lets you query multiple data sources in the same panel. When you select Mixed, you can then select a different data source for each new query that you add.</p>
+<ul>
+<li>The first query uses the data source that was selected before you selected <strong>Mixed</strong>.</li>
+<li>You can&rsquo;t change an existing query to use the <strong>Mixed</strong> data source.</li>
+</ul>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/000000100/" target="_blank" rel="noopener noreferrer">Mixed Datasources Example</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/000000100/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h3 id="dashboard">Dashboard</h3>
+<p>A data source that uses the result set from another panel in the same dashboard. The dashboard data source can use data either directly from the selected panel or from annotations attached to the selected panel.</p>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/ede8zps8ndb0gc/" target="_blank" rel="noopener noreferrer">Panel as a Data Source</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/ede8zps8ndb0gc/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="built-in-core-data-sources">Built-in core data sources</h2>
+<p>These built-in core data sources are also included in the Grafana documentation:</p>
+<div class="column-list">
+  <ul>
+<li><a href="alertmanager/">Alertmanager</a></li>
+<li><a href="aws-cloudwatch/">AWS CloudWatch</a></li>
+<li><a href="azure-monitor/">Azure Monitor</a></li>
+<li><a href="elasticsearch/">Elasticsearch</a></li>
+<li><a href="google-cloud-monitoring/">Google Cloud Monitoring</a></li>
+<li><a href="graphite/">Graphite</a></li>
+<li><a href="influxdb/">InfluxDB</a></li>
+<li><a href="jaeger/">Jaeger</a></li>
+<li><a href="loki/">Loki</a></li>
+<li><a href="mssql/">Microsoft SQL Server (MSSQL)</a></li>
+<li><a href="mysql/">MySQL</a></li>
+<li><a href="opentsdb/">OpenTSDB</a></li>
+<li><a href="postgres/">PostgreSQL</a></li>
+<li><a href="prometheus/">Prometheus</a></li>
+<li><a href="pyroscope/">Pyroscope</a></li>
+<li><a href="tempo/">Tempo</a></li>
+<li><a href="testdata/">Testdata</a></li>
+<li><a href="zipkin/">Zipkin</a></li>
+</ul>
+
+</div>
+<h2 id="add-additional-data-source-plugins">Add additional data source plugins</h2>
+<p>You can add additional data sources as plugins (that are not available in core Grafana), which you can install or create yourself.</p>
+<h3 id="find-data-source-plugins-in-the-plugin-catalog">Find data source plugins in the plugin catalog</h3>
+<p>To view available data source plugins, go to the <a href="/grafana/plugins/?type=datasource">plugin catalog</a> and select the &ldquo;Data sources&rdquo; filter.
+For details about the plugin catalog, refer to 
+    <a href="/docs/grafana/latest/administration/plugin-management/">Plugin management</a>.</p>
+<p>You can further filter the plugin catalog&rsquo;s results for data sources provided by the Grafana community, Grafana Labs, and partners.
+If you use 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a>, you can also filter by Enterprise-supported plugins.</p>
+<p>For more documentation on a specific data source plugin&rsquo;s features, including its query language and editor, refer to its plugin catalog page.</p>
+<h3 id="create-a-data-source-plugin">Create a data source plugin</h3>
+<p>To build your own data source plugin, refer to the <a href="/developers/plugin-tools/tutorials/build-a-data-source-plugin">Build a data source plugin</a> tutorial and <a href="/developers/plugin-tools">Plugin tools</a>.</p>

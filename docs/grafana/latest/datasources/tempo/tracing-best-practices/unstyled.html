@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<h1 id="best-practices-for-tracing">Best practices for tracing</h1>
+<p>This page provides some general best practices for tracing.</p>
+
+
+<div data-shared="best-practices-traces.md">
+            <h2 id="span-and-resource-attributes">Span and resource attributes</h2>
+<p>
+    <a href="/docs/tempo/latest/introduction/">Traces</a> are built from spans, which denote units of work such as a call to, or from, an upstream service. Spans are constructed primarily of span and resource attributes.
+Spans also have a hierarchy, where parent spans can have children or siblings.</p>
+<p>In the screenshot below, the left side of the screen (1) shows the list of results for the query. The right side (2) lists each span that makes up the selected trace.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/tempo/screenshot-trace-explore-spans-g10.png"
+  alt="Traces example with query results and spans" width="1474"
+     height="788"/></p>
+<p>A <strong>span attribute</strong> is a key/value pair that provides context for its span. For example, if the span deals with calling another service via HTTP, an attribute could include the HTTP URL (maybe as the span attribute key <code>http.url</code>) and the HTTP status code returned (as the span attribute <code>http.status_code</code>). Span attributes can consist of varying, non-null types.</p>
+<p>Unlike a span attribute, a <strong>resource attribute</strong> is a key/value pair that describes the context of how the span was collected. Generally, these attributes describe the process that created the span.
+This could be a set of resource attributes concerning a Kubernetes cluster, in which case you may see resource attributes, for example: <code>k8s.namespace</code>, <code>k8s.container_name</code>, and <code>k8s.cluster</code>.
+These can also include information on the libraries that were used to instrument the spans for a trace, or any other infrastructure information.</p>
+<p>For more information, read the <a href="https://opentelemetry.io/docs/specs/otel/overview/" target="_blank" rel="noopener noreferrer">Attribute and Resource</a> sections in the OpenTelemetry specification.</p>
+<h3 id="naming-conventions-for-span-and-resource-attributes">Naming conventions for span and resource attributes</h3>
+<p>The OpenTelemetry project defines a number of semantic conventions for attributes, which can help you to determine which attributes are most important to include in your spans. These conventions provide a common vocabulary for describing different types of entities, which can help to ensure that your data is consistent and meaningful.</p>
+<p>When naming attributes, use consistent, nested namespaces to ensures that attribute keys are obvious to anyone observing the spans of a trace and that common attributes can be shared by spans.
+Using our example from above, the <code>http</code> prefix of the attribute is the namespace, and <code>url</code> and <code>status_code</code> are keys within that namespace.
+Attributes can also be nested, for example <code>http.url.protocol</code> might be <code>HTTP</code> or <code>HTTPS</code>, whereas <code>http.url.path</code> might be <code>/api/v1/query</code>.</p>
+<p>For more details around semantic naming conventions, refer to the <a href="https://opentelemetry.io/docs/specs/otel/common/attribute-naming/#recommendations-for-opentelemetry-authors" target="_blank" rel="noopener noreferrer">Recommendations for OpenTelemetry Authors</a> and <a href="https://github.com/open-telemetry/semantic-conventions/blob/main/docs/README.md" target="_blank" rel="noopener noreferrer">OpenTelemetry Semantic Conventions</a> documentation.</p>
+<p>Some third-party libraries provide auto-instrumentation that generate span and span attributes when included in a source base.</p>
+<p>For more information about instrumenting your app for tracing, refer to the <a href="/docs/tempo/latest/getting-started/instrumentation/">Instrument for distributed tracing</a> documentation.</p>
+<h3 id="how-many-attributes-should-spans-have">How many attributes should spans have?</h3>
+<p>The decision of how many attributes to include in your spans is up to you. There is no hard and fast rule.
+Keep the number of attributes to a minimum, as each attribute adds overhead to the tracing system.
+In Grafana Cloud, this results in higher tracing costs.</p>
+<p>Only include attributes that are relevant to the operation that the span represents. For example, if you are tracing an HTTP request, you might include attributes such as the request method, the URL, and the response status code.</p>
+<p>If you are unsure whether or not to include an attribute, it is always better to err on the side of caution and leave it out. You can always add additional attributes later if you need them.</p>
+<p>In general, consider the following guidelines:</p>
+<ul>
+<li>Don&rsquo;t include metrics or logs as attributes in your spans.</li>
+<li>Don&rsquo;t use redundant attributes.</li>
+<li>When determining which attributes to add, consider an application&rsquo;s service flow, and execution in the context of only the current span.</li>
+</ul>
+<p>The OpenTelemetry project doesn&rsquo;t specify a maximum number of attributes that a span can have.
+However, the default limits for the number of attributes per span is <a href="https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/#attribute-limits" target="_blank" rel="noopener noreferrer">128 entries</a>, so you will have to adjust that. There are also default limits on attribute value and name character lengths.</p>
+<h2 id="determining-where-to-add-spans">Determining where to add spans</h2>
+<p>When instrumenting, determine the smallest piece of work that you need to observe in a trace to be of value to ensure that you don’t over (or under) instrument.</p>
+<p>Creating a new span for any work that has a relatively significant duration allows the observation of a trace to immediately show where significant amounts of time are spent during the processing of a request into your application or system.</p>
+<p>For example, adding a span for a call to another services (either instrumented or not) may take an unknown amount of time to complete, and therefore being able to separate this work shows when services are taking longer than expected.</p>
+<p>Adding a span for a piece of work that might call many other functions in a loop is a good signal of how long that loop is taking (you might add a span attribute that counts how many time the loop runs to determine if the duration is acceptable).
+However, adding a span for each method or function call in that loop might not, as it might produce hundreds or thousands of worthless spans.</p>
+<h2 id="span-length">Span length</h2>
+<p>While there are some (high) default limits to the length that a span (and by definition, the traces they belong to) can be, these can be adjusted by 
+    <a href="/docs/tempo/latest/configuration/#ingestion-limits">these configurations</a>.
+Traces that include a large number of spans and/or long-running spans can have an impact on the time taken to query them once stored.
+Cloud Traces users should contact Grafana Support to modify overrides.</p>
+<p>For long-running spans and traces, the best way to see this impact on requests is to send a few test cases and see what the performance looks like and to evaluate the trace size.</p>
+<p>From there, you can modify the configuration for Tempo or determine ways to re-architect how the trace is produced.</p>
+<p>You can consider breaking up the spans in several ways:</p>
+<ul>
+<li>Decompose the query
+<ul>
+<li>For example, if a complex SQL query involves multiple operations (for example, uses joins, subqueries, or unions), consider creating separate spans for each significant operation.</li>
+</ul>
+</li>
+<li>Improve granulation of long-running spans
+<ul>
+<li>For long-running operations, you could create a new span for every predetermined interval of execution time.
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This requires time-based tracking in your application&rsquo;s code and is more complex to implement.</p></blockquote></div>
+</li>
+</ul>
+</li>
+<li>Use span linking
+<ul>
+<li>Should data flow hit bottlenecks where further operations on that data might be batched at a later time, the use of <a href="https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/overview.md#links-between-spans" target="_blank" rel="noopener noreferrer">span links</a> can help keep traces constrained to an acceptable time range, while sharing context with other traces that work on the same data. This can also improve the readability of traces.</li>
+</ul>
+</li>
+</ul>
+</div>
+
+        

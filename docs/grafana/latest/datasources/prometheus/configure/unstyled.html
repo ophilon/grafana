@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<h1 id="configure-the-prometheus-data-source">Configure the Prometheus data source</h1>
+<p>This document provides instructions for configuring the Prometheus data source and explains the available configuration options. Grafana includes built-in support for Prometheus, so you don&rsquo;t need to install a plugin. For general information on adding a data source to Grafana, refer to 
+    <a href="/docs/grafana/latest/datasources/#add-a-data-source">Add a data source</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<ul>
+<li>
+<p>You must have the <code>Organization administrator</code> role to add a data source. Administrators can also configure a data source via YAML files.</p>
+</li>
+<li>
+<p>Know which Prometheus-compatible database you are using.</p>
+</li>
+<li>
+<p>Familiarize yourself with your Prometheus security configuration and gather any necessary security certificates and client keys.</p>
+</li>
+<li>
+<p>Verify that data from Prometheus is being written to your Grafana instance.</p>
+</li>
+</ul>
+<h2 id="configure-the-data-source-using-the-ui">Configure the data source using the UI</h2>
+<p>To add the Prometheus data source, complete the following steps:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu.</li>
+<li>Under <strong>Connections</strong>, click <strong>Add new connection</strong>.</li>
+<li>Enter <code>Prometheus</code> in the search bar.</li>
+<li>Click <strong>Prometheus data source</strong>.</li>
+<li>Click <strong>Add new data source</strong> in the upper right.</li>
+</ol>
+
+<p>Grafana takes you to the <strong>Settings</strong> tab where you will set up your Prometheus configuration.</p>
+<h2 id="configuration-options">Configuration options</h2>
+<p>Following is a list of configuration options for Prometheus.</p>
+<ul>
+<li><strong>Name</strong> - The data source name. Sets the name you use to refer to the data source in panels and queries. Examples: prometheus-1, prom-metrics.</li>
+<li><strong>Default</strong> - Toggle to select as the default name in dashboard panels. When you go to a dashboard panel this will be the default selected data source.</li>
+</ul>
+<p><strong>Connection:</strong></p>
+<ul>
+<li><strong>Prometheus server URL</strong> - The URL of your Prometheus server. <p>If Prometheus is running locally, use <code>http://localhost:9090</code>. If it&rsquo;s hosted on a networked server, provide the server’s URL along with the port where Prometheus is running. Example: <code>http://prometheus.example.orgname:9090</code>.</p>
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When running Grafana and Prometheus in separate containers, localhost refers to each container’s own network namespace. This means that <code>localhost:9090</code> points to port 9090 inside the Grafana container, not on the host machine.</p>
+<p>Use the IP address of the Prometheus container, or the hostname if you are using Docker Compose. Alternatively, you can use <code>http://host.docker.internal:9090</code> to reference the host machine.</p></blockquote></div>
+
+</li>
+</ul>
+<p><strong>Authentication:</strong></p>
+<p>There are three authentication options for the Prometheus data source.</p>
+<ul>
+<li>
+<p><strong>Basic authentication</strong> - The most common authentication method.</p>
+<ul>
+<li><strong>User</strong> - The username you use to connect to the data source.</li>
+<li><strong>Password</strong> - The password you use to connect to the data source.</li>
+</ul>
+</li>
+<li>
+<p><strong>Forward OAuth identity</strong> - Forward the OAuth access token (and also the OIDC ID token if available) of the user querying the data source.</p>
+</li>
+<li>
+<p><strong>No authentication</strong> - Allows access to the data source without any authentication.</p>
+</li>
+</ul>
+<p><strong>TLS settings:</strong></p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use TLS (Transport Layer Security) for an additional layer of security when working with Prometheus. For information on setting up TLS encryption with Prometheus refer to <a href="https://prometheus.io/docs/guides/tls-encryption/" target="_blank" rel="noopener noreferrer">Securing Prometheus API and UI Endpoints Using TLS Encryption</a>. You must add TLS settings to your Prometheus configuration file <strong>prior</strong> to setting these options in Grafana.</p></blockquote></div>
+
+<ul>
+<li><strong>Add self-signed certificate</strong> - Check the box to authenticate with a CA certificate. Follow the instructions of the CA (Certificate Authority) to download the certificate file. Required for verifying self-signed TLS certificates.
+<ul>
+<li><strong>CA certificate</strong> - Add your certificate.</li>
+</ul>
+</li>
+<li><strong>TLS client authentication</strong> - Check the box to enable TLS client authentication.
+<ul>
+<li><strong>Server name</strong> - Add the server name, which is used to verify the hostname on the returned certificate.</li>
+<li><strong>Client certificate</strong> - The client certificate is generated from a Certificate Authority or its self-signed. Follow the instructions of the CA (Certificate Authority) to download the certificate file.</li>
+<li><strong>Client key</strong> - Add your client key, which can also be generated from a Certificate Authority (CA) or be self-signed. The client key encrypts data between the client and server.</li>
+</ul>
+</li>
+<li><strong>Skip TLS verify</strong> - Toggle on to bypass TLS certificate validation. Skipping TLS certificate validation is not recommended unless absolutely necessary or for testing purposes.</li>
+</ul>
+<p><strong>HTTP headers:</strong></p>
+<p>Pass along additional information and metadata about the request or response.</p>
+<ul>
+<li><strong>Header</strong> - Add a custom header. This allows custom headers to be passed based on the needs of your Prometheus instance.</li>
+<li><strong>Value</strong> - The value of the header.</li>
+</ul>
+<p><strong>Advanced settings:</strong></p>
+<p>Following are optional configuration settings you can configure for more control over your data source.</p>
+<ul>
+<li><strong>Advanced HTTP settings:</strong>
+<ul>
+<li><strong>Allowed cookies</strong> - Specify cookies by name that should be forwarded to the data source. The Grafana proxy deletes all forwarded cookies by default.</li>
+<li><strong>Timeout</strong> - The HTTP request timeout, must be in seconds.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Alerting:</strong></p>
+<ul>
+<li>
+<p><strong>Manage alerts via Alerting UI</strong> -Toggled on by default. This enables 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/">data source-managed rules in Grafana Alerting</a> for this data source. For <code>Mimir</code>, it enables managing data source-managed rules and alerts. For <code>Prometheus</code>, it only supports viewing existing rules and alerts, which are displayed as data source-managed. Change this by setting the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#default_manage_alerts_ui_toggle"><code>default_manage_alerts_ui_toggle</code></a> option in the <code>grafana.ini</code> configuration file.</p>
+</li>
+<li>
+<p><strong>Allow as recording rules target</strong> - Toggled on by default. This allows the data source to be selected as a target destination for writing 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-recording-rules/create-grafana-managed-recording-rules/">Grafana-managed recording rules</a>. When enabled, this data source will appear in the target data source list when creating or importing recording rules. When disabled, the data source will be filtered out from recording rules target selection. Change this by setting the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#default_allow_recording_rules_target_alerts_ui_toggle"><code>default_allow_recording_rules_target_alerts_ui_toggle</code></a> option in the <code>grafana.ini</code> configuration file.</p>
+</li>
+</ul>
+<p><strong>Interval behavior:</strong></p>
+<ul>
+<li><strong>Scrape interval</strong> - Sets the standard scrape and evaluation interval in Prometheus. The default is <code>15s</code>. This interval determines how often Prometheus scrapes targets. Set it to match the typical scrape and evaluation interval in your Prometheus configuration file. If you set a higher value than your Prometheus configuration, Grafana will evaluate data at this interval, resulting in fewer data points.</li>
+<li><strong>Query timeout</strong> - Sets the Prometheus query timeout. The default is <code>60s</code>. Without a timeout, complex or inefficient queries can run indefinitely, consuming CPU and memory resources.</li>
+</ul>
+<p><strong>Query editor:</strong></p>
+<ul>
+<li><strong>Default editor</strong> - Sets the default query editor. Options are <code>Builder</code> or <code>Code</code>. <code>Builder</code> mode helps you build queries using a visual interface. <code>Code</code> mode is geared for the experienced Prometheus user with prior expertise in PromQL. For more details on editor types refer to 
+    <a href="/docs/grafana/latest/datasources/prometheus/query-editor/">Prometheus query editor</a>. You can switch easily code editors in the Query editor UI.</li>
+<li><strong>Disable metrics lookup</strong> - Toggle on to disable the metrics chooser and metric and label support in the query field&rsquo;s autocomplete. This can improve performance for large Prometheus instances.</li>
+</ul>
+<p><strong>Performance:</strong></p>
+<ul>
+<li><strong>Prometheus type</strong> - Select the type of your Prometheus-compatible database, such as Prometheus, Cortex, Mimir, or Thanos. Changing this setting will save your current configuration. Different database types support different APIs. For example, some allow <code>regex</code> matching for label queries to improve performance, while others provide a metadata API. Setting this incorrectly may cause unexpected behavior when querying metrics and labels. Refer to your Prometheus documentation to ensure you select the correct type.</li>
+<li><strong>Cache level</strong> - Sets the browser caching level for editor queries. There are four options: <code>Low</code>, <code>Medium</code>, <code>High</code>, or <code>None</code>. Higher cache settings are recommended for high cardinality data sources.</li>
+<li><strong>Incremental querying (beta)</strong> - Toggle on to enable incremental querying. Enabling this feature changes the default behavior of relative queries. Instead of always requesting fresh data from the Prometheus instance, Grafana will cache query results and only fetch new records. This helps reduce database and network load.
+<ul>
+<li><strong>Query overlap window</strong> - If you are using incremental querying, specify a duration (e.g., 10m, 120s, or 0s). The default is <code>10m</code>. This is a buffer of time added to incremental queries and this value is added to the duration of each incremental request.</li>
+</ul>
+</li>
+<li><strong>Disable recording rules (beta)</strong> - Toggle on to disable the recording rules. When recording rules are disabled, Grafana won&rsquo;t fetch and parse recording rules from Prometheus, improving dashboard performance by reducing processing overhead..</li>
+</ul>
+<p><strong>Other settings:</strong></p>
+<ul>
+<li><strong>Custom query parameters</strong> - Add custom parameters to the Prometheus query URL, which allow for more control over how queries are executed. Examples: <code>timeout</code>, <code>partial_response</code>, <code>dedup</code>, or <code>max_source_resolution</code>. Multiple parameters should be joined using <code>&amp;</code>.</li>
+<li><strong>HTTP method</strong> - Select either the <code>POST</code> or <code>GET</code> HTTP method to query your data source. <code>POST</code>is recommended and selected by default, as it supports larger queries. Select <code>GET</code> if you&rsquo;re using Prometheus version 2.1 or older, or if your network restricts <code>POST</code> requests.
+Toggle on</li>
+<li><strong>Series limit</strong> - Number of maximum returned series. The limit applies to all resources (metrics, labels, and values) for both endpoints (series and labels). Leave the field empty to use the default limit (40000). Set to 0 to disable the limit and fetch everything — this may cause performance issues. Default limit is 40000.</li>
+<li><strong>Use series endpoint</strong> - Enabling this option makes Grafana use the series endpoint (/api/v1/series) with the match[] parameter instead of the label values endpoint (/api/v1/label/&lt;label_name&gt;/values). While the label values endpoint is generally more performant, some users may prefer the series endpoint because it supports the <code>POST</code> method, whereas the label values endpoint only allows <code>GET</code> requests.</li>
+</ul>
+<p><strong>Exemplars:</strong></p>
+<p>Support for exemplars is available only for the Prometheus data source. For more information on exemplars refer to 
+    <a href="/docs/grafana/latest/fundamentals/exemplars/">Introduction to exemplars</a>. An exemplar is a trace that represents a specific measurement taken within a given time interval.</p>
+<p>Click the <strong>+ sign</strong> to add exemplars.</p>
+<ul>
+<li><strong>Internal link</strong> - Toggle on to enable an internal link. This will display the data source selector, where you can choose the backend tracing data store for your exemplar data.</li>
+<li><strong>URL</strong> - <em>(Visible if you <strong>disable</strong> <code>Internal link</code>)</em> Defines the external link&rsquo;s URL trace backend. You can interpolate the value from the field by using the 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/#value-variables"><code>${__value.raw}</code> macro</a>.</li>
+<li><strong>Data source</strong> - <em>(Visible when<code>Internal link</code> is enabled.)</em> Select the data source that the exemplar will link to from the drop-down.</li>
+<li><strong>URL label</strong> - Adds a custom display label to override the value of the <code>Label name</code> field.</li>
+<li><strong>Label name</strong> - The name of the field in the <code>labels</code> object used to obtain the traceID property.</li>
+<li><strong>Remove exemplar link</strong> - Click the <strong>X</strong> to remove existing links.</li>
+</ul>
+<p>You can add multiple exemplars.</p>
+<ul>
+<li><strong>Private data source connect</strong> - <em>Only for Grafana Cloud users.</em> Private data source connect, or PDC, allows you to establish a private, secured connection between a Grafana Cloud instance, or stack, and data sources secured within a private network. Click the drop-down to locate the URL for PDC. For more information regarding Grafana PDC refer to <a href="docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect (PDC)</a> and <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/configure-pdc/#configure-grafana-private-data-source-connect-pdc">Configure Grafana private data source connect (PDC)</a> for steps on setting up a PDC connection.</li>
+</ul>
+<p>Click <strong>Manage private data source connect</strong> to be taken to your PDC connection page, where you’ll find your PDC configuration details.</p>
+<p>After you have configured your Prometheus data source options, click <strong>Save &amp; test</strong> at the bottom to test out your data source connection.</p>
+<p>You should see a confirmation dialog box that says:</p>
+<p><strong>Successfully queried the Prometheus API.</strong></p>
+<p><strong>Next, you can start to visualize data by building a dashboard, or by querying data in the Explore view.</strong></p>
+<p>You can also remove a connection by clicking <strong>Delete</strong>.</p>
+<h2 id="provision-the-prometheus-data-source">Provision the Prometheus data source</h2>
+<p>You can define and configure the data source in YAML files as part of the Grafana provisioning system. For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/">Provision Grafana</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>After you have provisioned a data source you cannot edit it.</p></blockquote></div>
+
+<p><strong>Example of a Prometheus data source configuration:</strong></p>
+<pre><code>```yaml
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://localhost:9090
+    jsonData:
+      httpMethod: POST
+      manageAlerts: true
+      allowAsRecordingRulesTarget: true
+      prometheusType: Prometheus
+      prometheusVersion: 3.3.0
+      cacheLevel: 'High'
+      disableRecordingRules: false
+      timeInterval: 10s   # Prometheus scrape interval
+      incrementalQueryOverlapWindow: 10m
+      exemplarTraceIdDestinations:
+        # Field with internal link pointing to data source in Grafana.
+        # datasourceUid value can be anything, but it should be unique across all defined data source uids.
+        - datasourceUid: my_jaeger_uid
+          name: traceID
+
+        # Field with external link.
+        - name: traceID
+          url: 'http://localhost:3000/explore?orgId=1&amp;left=%5B%22now-1h%22,%22now%22,%22Jaeger%22,%7B%22query%22:%22$${__value.raw}%22%7D%5D'
+```
+</code></pre>
+<h2 id="azure-authentication-settings">Azure authentication settings</h2>
+<p>The Prometheus data source works with Azure authentication. To configure Azure authentication refer to 
+    <a href="/docs/grafana/latest/datasources/azure-monitor/#configure-azure-active-directory-ad-authentication">Configure Azure Active Directory (AD) authentication</a>.</p>
+<p>In Grafana Enterprise, you need to update the .ini configuration file. Refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">Configuration file location</a> to locate your .ini file.</p>
+<p>Add the following setting in the <strong>[auth]</strong> section of the .ini configuration file:</p>
+<pre>[auth]
+azure_auth_enabled = true</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you are using Azure authentication, don&rsquo;t enable <code>Forward OAuth identity</code>. Both methods use the same HTTP authorization headers, and the OAuth token will override your Azure credentials.</p></blockquote></div>
+
+<h2 id="recording-rules-beta">Recording rules (beta)</h2>
+<p>You can configure the Prometheus data source to disable recording rules in the data source configuration or provisioning file under <code>disableRecordingRules</code> in jsonData.</p>
+<h2 id="troubleshooting-configuration-issues">Troubleshooting configuration issues</h2>
+<p>Refer to the following troubleshooting information as needed.</p>
+<p><strong>Data doesn&rsquo;t appear in Metrics Drilldown:</strong></p>
+<p>If you have successfully tested the connection to a Prometheus data source or are sending metrics to Grafana Cloud and there is no metric data appearing in Explore, make sure you&rsquo;ve selected the correct data source from the data source drop-down menu. When using <code>remote_write</code> to send metrics to Grafana Cloud, the data source name follows the convention <code>grafanacloud-stackname-prom</code>.</p>

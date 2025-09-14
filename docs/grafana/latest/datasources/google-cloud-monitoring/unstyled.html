@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<h1 id="google-cloud-monitoring-data-source">Google Cloud Monitoring data source</h1>
+<p>Grafana ships with built-in support for Google Cloud Monitoring.
+This topic describes queries, templates, variables, and other configuration specific to the Google Cloud Monitoring data source.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.
+Only users with the organization administrator role can add data sources.</p>
+<p>Once you&rsquo;ve added the Google Cloud Monitoring data source, you can <a href="#configure-the-data-source">configure it</a> so that your Grafana instance&rsquo;s users can create queries in its <a href="query-editor/">query editor</a> and apply <a href="#annotations">annotations</a> when they 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build dashboards</a> and use 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Complete the following before you configure the data source.</p>
+<h3 id="configure-google-authentication">Configure Google authentication</h3>
+<p>Before you can request data from Google Cloud Monitoring, you must configure authentication.
+All requests to Google APIs are performed on the server-side by the Grafana backend.</p>
+<p>For authentication options and configuration details, refer to <a href="google-authentication/">Google authentication</a>.</p>
+<p>When configuring Google authentication, keep in mind the following additional steps related to Google Cloud Monitoring.</p>
+<h4 id="configure-a-gcp-service-account">Configure a GCP Service Account</h4>
+<p>When you <a href="google-authentication/#create-a-gcp-service-account-and-key-file">create a Google Cloud Platform (GCP) Service Account and key file</a>, the Service Account must have the <strong>Monitoring Viewer</strong> role (<strong>Role &gt; Select a role &gt; Monitoring &gt; Monitoring Viewer</strong>):</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v71/cloudmonitoring_service_account_choose_role.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v71/cloudmonitoring_service_account_choose_role.png"data-srcset="/static/img/docs/v71/cloudmonitoring_service_account_choose_role.png?w=320 320w, /static/img/docs/v71/cloudmonitoring_service_account_choose_role.png?w=550 550w, /static/img/docs/v71/cloudmonitoring_service_account_choose_role.png?w=750 750w, /static/img/docs/v71/cloudmonitoring_service_account_choose_role.png?w=900 900w, /static/img/docs/v71/cloudmonitoring_service_account_choose_role.png?w=1040 1040w, /static/img/docs/v71/cloudmonitoring_service_account_choose_role.png?w=1240 1240w, /static/img/docs/v71/cloudmonitoring_service_account_choose_role.png?w=1920 1920w"
+          data-sizes="auto"alt="Choose role"width="1076"height="743"title="Choose role"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v71/cloudmonitoring_service_account_choose_role.png"
+            alt="Choose role"width="1076"height="743"title="Choose role"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Choose role</figcaption></a></figure>
+<h4 id="grant-the-gce-default-service-account-scope">Grant the GCE Default Service Account scope</h4>
+<p>If Grafana is running on a Google Compute Engine (GCE) virtual machine, when you <a href="google-authentication/#configure-a-gce-default-service-account">Configure a GCE Default Service Account</a>, you must also grant that Service Account access to the &ldquo;Cloud Monitoring API&rdquo; scope.</p>
+<h3 id="enable-necessary-google-cloud-platform-apis">Enable necessary Google Cloud Platform APIs</h3>
+<p>Before you can request data from Google Cloud Monitoring, you must first enable necessary APIs on the Google end.</p>
+<ol>
+<li>
+<p>Open the Monitoring and Cloud Resource Manager API pages:</p>
+<ul>
+<li><a href="https://console.cloud.google.com/apis/library/monitoring.googleapis.com" target="_blank" rel="noopener noreferrer">Monitoring API</a></li>
+<li><a href="https://console.cloud.google.com/apis/library/cloudresourcemanager.googleapis.com" target="_blank" rel="noopener noreferrer">Cloud Resource Manager API</a></li>
+</ul>
+</li>
+<li>
+<p>On each page, click the <code>Enable</code> button.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 450px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/static/img/docs/v71/cloudmonitoring_enable_api.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/static/img/docs/v71/cloudmonitoring_enable_api.png"data-srcset="/static/img/docs/v71/cloudmonitoring_enable_api.png?w=320 320w, /static/img/docs/v71/cloudmonitoring_enable_api.png?w=550 550w, /static/img/docs/v71/cloudmonitoring_enable_api.png?w=750 750w, /static/img/docs/v71/cloudmonitoring_enable_api.png?w=900 900w, /static/img/docs/v71/cloudmonitoring_enable_api.png?w=1040 1040w, /static/img/docs/v71/cloudmonitoring_enable_api.png?w=1240 1240w, /static/img/docs/v71/cloudmonitoring_enable_api.png?w=1920 1920w"
+             data-sizes="auto"alt="Enable GCP APIs"width="696"height="373"title="Enable GCP APIs"/>
+           <noscript>
+             <img
+               src="/static/img/docs/v71/cloudmonitoring_enable_api.png"
+               alt="Enable GCP APIs"width="696"height="373"title="Enable GCP APIs"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Enable GCP APIs</figcaption></a></figure>
+</li>
+</ol>
+<h2 id="configure-the-data-source">Configure the data source</h2>
+<p>To configure basic settings for the data source, complete the following steps:</p>
+<ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>Google Cloud Monitoring</code> in the search bar.</p>
+</li>
+<li>
+<p>Click <strong>Google Cloud Monitoring</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+<li>
+<p>Set the data source&rsquo;s basic configuration options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Name</strong></td>
+          <td>Sets the name you use to refer to the data source in panels and queries.</td>
+      </tr>
+      <tr>
+          <td><strong>Default</strong></td>
+          <td>Sets whether the data source is pre-selected for new panels.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ol>
+<h3 id="provision-the-data-source">Provision the data source</h3>
+<p>You can define and configure the data source in YAML files as part of the Grafana provisioning system.
+For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+<h4 id="provisioning-examples">Provisioning examples</h4>
+<p><strong>Using the JWT (Service Account key file) authentication type:</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Google Cloud Monitoring
+    type: stackdriver
+    access: proxy
+    jsonData:
+      tokenUri: https://oauth2.googleapis.com/token
+      clientEmail: stackdriver@myproject.iam.gserviceaccount.com
+      authenticationType: jwt
+      defaultProject: my-project-name
+    secureJsonData:
+      privateKey: |
+        -----BEGIN PRIVATE KEY-----
+        POSEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCb1u1Srw8ICYHS
+        ...
+        yA+23427282348234=
+        -----END PRIVATE KEY-----</pre>
+<p><strong>Using the JWT (Service Account private key path) authentication type:</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Google Cloud Monitoring
+    type: stackdriver
+    access: proxy
+    jsonData:
+      tokenUri: https://oauth2.googleapis.com/token
+      clientEmail: stackdriver@myproject.iam.gserviceaccount.com
+      authenticationType: jwt
+      defaultProject: my-project-name
+      privateKeyPath: /etc/secrets/gce.pem</pre>
+<p><strong>Using GCE Default Service Account authentication:</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: Google Cloud Monitoring
+    type: stackdriver
+    access: proxy
+    jsonData:
+      authenticationType: gce</pre>
+<h2 id="import-pre-configured-dashboards">Import pre-configured dashboards</h2>
+<p>The Google Cloud Monitoring data source ships with pre-configured dashboards for some of the most popular GCP services.
+These curated dashboards are based on similar dashboards in the GCP dashboard samples repository.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 650px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png"data-srcset="/static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png?w=320 320w, /static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png?w=550 550w, /static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png?w=750 750w, /static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png?w=900 900w, /static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png?w=1040 1040w, /static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png?w=1240 1240w, /static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Curated dashboards for Google Cloud Monitoring"width="932"height="668"title="Curated dashboards for Google Cloud Monitoring"/>
+        <noscript>
+          <img
+            src="/static/img/docs/google-cloud-monitoring/curated-dashboards-7-4.png"
+            alt="Curated dashboards for Google Cloud Monitoring"width="932"height="668"title="Curated dashboards for Google Cloud Monitoring"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Curated dashboards for Google Cloud Monitoring</figcaption></a></figure>
+<p><strong>To import curated dashboards:</strong></p>
+<ol>
+<li>
+<p>Navigate to the data source&rsquo;s <a href="#configure-the-data-source">configuration page</a>.</p>
+</li>
+<li>
+<p>Select the <strong>Dashboards</strong> tab.</p>
+<p>This displays the curated selection of importable dashboards.</p>
+</li>
+<li>
+<p>Select <strong>Import</strong> for the dashboard to import.</p>
+</li>
+</ol>
+<p>The dashboards include a <a href="template-variables/">template variable</a> populated with the projects accessible by the configured <a href="google-authentication/">Service Account</a> each time you load the dashboard.
+After Grafana loads the dashboard, you can select a project from the dropdown list.</p>
+<p><strong>To customize an imported dashboard:</strong></p>
+<p>To customize one of these dashboards, we recommend that you save it under a different name.
+If you don&rsquo;t, upgrading Grafana can overwrite the customized dashboard with the new version.</p>
+<h2 id="query-the-data-source">Query the data source</h2>
+<p>The Google Cloud Monitoring query editor helps you build two types of queries: <strong>Metric</strong> and <strong>Service Level Objective (SLO)</strong>.</p>
+<p>For details, refer to the <a href="query-editor/">query editor documentation</a>.</p>
+<h2 id="use-template-variables">Use template variables</h2>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For details, see the <a href="template-variables/">template variables documentation</a>.</p>

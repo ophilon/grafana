@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<!-- INTERACTIVE page intro.md START -->
+<h2 id="introduction">Introduction</h2>
+<p>In this tutorial, you&rsquo;ll learn how to use Grafana to set up a monitoring solution for your application, and:</p>
+<ul>
+<li>Explore metrics and logs</li>
+<li>Build dashboards</li>
+<li>Annotate dashboards</li>
+<li>Set up alert rules</li>
+</ul>
+<!-- INTERACTIVE ignore START -->
+<p>Alternatively, you can also watch our Grafana for Beginners series where we discuss fundamental concepts to help you get started with Grafana.</p>
+<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden">
+   <iframe src="https://www.youtube.com/embed/videoseries?si=ueLa_QEXz20IWnGt&amp;list=PLDGkOdUX1Ujo27m6qiTPPCpFHVfyKq9jT" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+   </iframe>
+</div>
+<div class="prerequisite-section" style="">
+	<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><a href="https://docs.docker.com/install/" target="_blank" rel="noopener noreferrer">Docker</a></li>
+<li><a href="https://docs.docker.com/compose/" target="_blank" rel="noopener noreferrer">Docker Compose</a> (included in Docker for Desktop for macOS and Windows)</li>
+<li><a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer">Git</a></li>
+</ul>
+</div>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>Alternatively, you can try out this example in our interactive learning environment: <a href="https://killercoda.com/grafana-labs/course/grafana/grafana-fundamentals" target="_blank" rel="noopener noreferrer">Grafana Fundamentals</a>.</p>
+<p>It&rsquo;s a fully configured environment with all the dependencies already installed.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/full-stack-ile.png"
+  alt="Interactive" width="2000"
+     height="600"/></p>
+<p>Provide feedback, report bugs, and raise issues in the <a href="https://github.com/grafana/killercoda" target="_blank" rel="noopener noreferrer">Grafana Killercoda repository</a>.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+<!-- INTERACTIVE page intro.md END -->
+<!-- INTERACTIVE page step1.md START -->
+<h2 id="set-up-the-sample-application">Set up the sample application</h2>
+<p>This tutorial uses a sample application to demonstrate some of the features in Grafana. To complete the exercises in this tutorial, you need to download the files to your local machine.</p>
+<p>In this step, you&rsquo;ll set up the sample application, as well as supporting services, such as <a href="/oss/loki/">Loki</a>.</p>
+<blockquote>
+<p><strong>Note:</strong> <a href="https://prometheus.io/" target="_blank" rel="noopener noreferrer">Prometheus</a>, a popular time series database (TSDB), has already been configured as a data source as part of this tutorial.</p></blockquote>
+<ol>
+<li>
+<p>Clone the <a href="https://github.com/grafana/tutorial-environment" target="_blank" rel="noopener noreferrer">github.com/grafana/tutorial-environment</a> repository.</p>
+<pre>git clone https://github.com/grafana/tutorial-environment.git</pre>
+</li>
+<li>
+<p>Change to the directory where you cloned this repository:</p>
+<pre>cd tutorial-environment</pre>
+</li>
+<li>
+<p>Make sure Docker is running:</p>
+<pre>docker ps</pre>
+<p>No errors means it is running. If you get an error, then start Docker and then run the command again.</p>
+</li>
+<li>
+<p>Start the sample application:</p>
+<pre>docker-compose up -d</pre>
+<p>The first time you run <code>docker-compose up -d</code>, Docker downloads all the necessary resources for the tutorial. This might take a few minutes, depending on your internet connection.</p>
+<blockquote>
+<p><strong>Note:</strong> If you already have Grafana, Loki, or Prometheus running on your system, then you might see errors because the Docker image is trying to use ports that your local installations are already using. Stop the services, then run the command again.</p></blockquote>
+</li>
+<li>
+<p>Ensure all services are up-and-running:</p>
+<pre>docker-compose ps</pre>
+<p>In the <strong>State</strong> column, it should say <code>Up</code> for all services.</p>
+</li>
+<li>
+<p>Browse to the sample application on <a href="http://localhost:8081" target="_blank" rel="noopener noreferrer">http://localhost:8081</a>.</p>
+</li>
+</ol>
+<h3 id="grafana-news">Grafana News</h3>
+<p>The sample application, Grafana News, lets you post links and vote for the ones you like.</p>
+<p>To add a link:</p>
+<ol>
+<li>
+<p>In <strong>Title</strong>, enter <strong>Example</strong>.</p>
+</li>
+<li>
+<p>In <strong>URL</strong>, enter <strong><a href="https://example.com" target="_blank" rel="noopener noreferrer">https://example.com</a></strong>.</p>
+</li>
+<li>
+<p>Click <strong>Submit</strong> to add the link.</p>
+<p>The link appears in the list under the Grafana News heading.</p>
+</li>
+</ol>
+<p>To vote for a link, click the triangle icon next to the name of the link.</p>
+<!-- INTERACTIVE page step1.md END -->
+<!-- INTERACTIVE page step2.md START -->
+<h2 id="open-grafana">Open Grafana</h2>
+<p>Grafana is an open source platform for monitoring and observability that lets you visualize and explore the state of your systems.</p>
+<!-- INTERACTIVE ignore START -->
+<ol>
+<li>Open a new tab.</li>
+<li>Browse to <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a>.</li>
+</ol>
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This demo does not require a login page or credentials. However, if you choose to install Grafana locally, you need to log in and provide credentials. In that case, the default username and password is <code>admin</code>.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore START -->
+
+<p>The first thing you see is the Home dashboard, which helps you get started.</p>
+<p>In the top left corner, you can see the menu icon. Clicking it opens the <em>sidebar</em>, the main menu for navigating Grafana.</p>
+<!-- INTERACTIVE page step2.md END -->
+<!-- INTERACTIVE page step3.md START -->
+<h2 id="explore-your-metrics">Explore your metrics</h2>
+<p>Grafana Explore is a workflow for troubleshooting and data exploration. In this step, you&rsquo;ll be using Explore to create ad-hoc queries to understand the metrics exposed by the sample application. Specifically, you&rsquo;ll explore requests received by the sample application.</p>
+<blockquote>
+<p>Ad-hoc queries are queries that are made interactively, with the purpose of exploring data. An ad-hoc query is commonly followed by another, more specific query.</p></blockquote>
+<ol>
+<li>
+<p>Click the menu icon and, in the sidebar, click <strong>Explore</strong>. A dropdown menu for the list of available data sources is on the upper-left side. The Prometheus data source should already be selected. If not, choose Prometheus.</p>
+</li>
+<li>
+<p>Confirm that you&rsquo;re in code mode by checking the <strong>Builder/Code</strong> toggle at the top right corner of the query panel.</p>
+</li>
+<li>
+<p>In the query editor, where it says <em>Enter a PromQL query…</em>, enter <code>tns_request_duration_seconds_count</code> and then press Shift + Enter.
+A graph appears.</p>
+</li>
+<li>
+<p>In the top right corner, click the dropdown arrow on the <strong>Run Query</strong> button, and then select <strong>5s</strong>. Grafana runs your query and updates the graph every 5 seconds.</p>
+<p>You just made your first <em>PromQL</em> query! <a href="https://prometheus.io/docs/prometheus/latest/querying/basics/" target="_blank" rel="noopener noreferrer">PromQL</a> is a powerful query language that lets you select and aggregate time series data stored in Prometheus.</p>
+<p><code>tns_request_duration_seconds_count</code> is a <em>counter</em>, a type of metric whose value only ever increases. Rather than visualizing the actual value, you can use counters to calculate the <em>rate of change</em>, i.e. how fast the value increases.</p>
+</li>
+<li>
+<p>Add the <a href="https://prometheus.io/docs/prometheus/latest/querying/functions/#rate" target="_blank" rel="noopener noreferrer"><code>rate</code></a> function to your query to visualize the rate of requests per second. Enter the following in the query editor and then press Shift + Enter.</p>
+<pre>rate(tns_request_duration_seconds_count[5m])</pre>
+<p>Immediately below the graph there&rsquo;s an area where each time series is listed with a colored icon next to it. This area is called the <em>legend</em>.</p>
+<p>PromQL lets you group the time series by their labels, using the <a href="https://prometheus.io/docs/prometheus/latest/querying/operators/#aggregation-operators" target="_blank" rel="noopener noreferrer"><code>sum</code></a> aggregation operator.</p>
+</li>
+<li>
+<p>Add the <code>sum</code> aggregation operator to your query to group time series by route:</p>
+<pre>sum(rate(tns_request_duration_seconds_count[5m])) by(route)</pre>
+</li>
+<li>
+<p>Go back to the <a href="http://localhost:8081" target="_blank" rel="noopener noreferrer">sample application</a> and generate some traffic by adding new links, voting, or just refresh the browser.</p>
+</li>
+<li>
+<p>Back in Grafana, in the upper-right corner, click the <em>time picker</em>, and select <strong>Last 5 minutes</strong>. By zooming in on the last few minutes, it&rsquo;s easier to see when you receive new data.</p>
+</li>
+</ol>
+<p>Depending on your use case, you might want to group on other labels. Try grouping by other labels, such as <code>status_code</code>, by changing the <code>by(route)</code> part of the query to <code>by(status_code)</code>.</p>
+<!-- INTERACTIVE page step3.md END -->
+<!-- INTERACTIVE page step4.md START -->
+<h2 id="add-a-logging-data-source">Add a logging data source</h2>
+<p>Grafana supports log data sources, like <a href="/oss/loki/">Loki</a>. Just like for metrics, you first need to add your data source to Grafana.</p>
+<ol>
+<li>Click the menu icon and, in the sidebar, click <strong>Connections</strong> and then <strong>Data sources</strong>.</li>
+<li>Click <strong>+ Add new data source</strong>.</li>
+<li>In the list of data sources, click <strong>Loki</strong>.</li>
+<li>In the URL box, enter <code>http://loki:3100</code></li>
+<li>Scroll to the bottom of the page and click <strong>Save &amp; Test</strong> to save your changes.</li>
+</ol>
+<p>You should see the message &ldquo;Data source successfully connected.&rdquo; Loki is now available as a data source in Grafana.</p>
+<!-- INTERACTIVE page step4.md END -->
+<!-- INTERACTIVE page step5.md START -->
+<h2 id="explore-your-logs">Explore your logs</h2>
+<p>Grafana Explore not only lets you make ad-hoc queries for metrics, but lets you explore your logs as well.</p>
+<ol>
+<li>
+<p>Click the menu icon and, in the sidebar, click <strong>Explore</strong>.</p>
+</li>
+<li>
+<p>In the data source list at the top, select the <strong>Loki</strong> data source.</p>
+</li>
+<li>
+<p>Confirm that you&rsquo;re in code mode by checking the <strong>Builder/Code</strong> toggle at the top right corner of the query panel.</p>
+</li>
+<li>
+<p>Enter the following in the query editor, and then press Shift + Enter:</p>
+<pre>{filename=&#34;/var/log/tns-app.log&#34;}</pre>
+</li>
+<li>
+<p>Grafana displays all logs within the log file of the sample application. The height of each bar in the graph encodes the number of logs that were generated at that time.</p>
+</li>
+<li>
+<p>Click and drag across the bars in the graph to filter logs based on time.</p>
+</li>
+</ol>
+<p>Not only does Loki let you filter logs based on labels, but on specific occurrences.</p>
+<p>Let&rsquo;s generate an error, and analyze it with Explore.</p>
+<ol>
+<li>
+<p>In the <a href="http://localhost:8081" target="_blank" rel="noopener noreferrer">sample application</a>, post a new link without a URL to generate an error in your browser that says <code>empty url</code>.</p>
+</li>
+<li>
+<p>Go back to Grafana and enter the following query to filter log lines based on a substring:</p>
+<pre>{filename=&#34;/var/log/tns-app.log&#34;} |= &#34;error&#34;</pre>
+</li>
+<li>
+<p>Click the log line that says <code>level=error msg=&quot;empty url&quot;</code> to see more information about the error.</p>
+<blockquote>
+<p><strong>Note:</strong> If you&rsquo;re in Live mode, clicking logs does not show more information about the error. Instead, stop and exit the live stream, then click the log line there.</p></blockquote>
+</li>
+</ol>
+<p>Logs are helpful for understanding what went wrong. Later in this tutorial, you&rsquo;ll see how you can correlate logs with metrics from Prometheus to better understand the context of the error.</p>
+<!-- INTERACTIVE page step5.md END -->
+<!-- INTERACTIVE page step6.md START -->
+<h2 id="build-a-dashboard">Build a dashboard</h2>
+<p>A <em>dashboard</em> gives you an at-a-glance view of your data and lets you track metrics through different visualizations.</p>
+<p>Dashboards consist of <em>panels</em>, each representing a part of the story you want your dashboard to tell.</p>
+<p>Every panel consists of a <em>query</em> and a <em>visualization</em>. The query defines <em>what</em> data you want to display, whereas the visualization defines <em>how</em> the data is displayed.</p>
+<ol>
+<li>
+<p>Click the menu icon and, in the sidebar, click <strong>Dashboards</strong>.</p>
+</li>
+<li>
+<p>On the <strong>Dashboards</strong> page, click <strong>New</strong> in top right corner and select <strong>New Dashboard</strong> in the drop-down.</p>
+</li>
+<li>
+<p>Click <strong>+ Add visualization</strong>.</p>
+</li>
+<li>
+<p>In the modal that opens, select the Prometheus data source that you just added.</p>
+</li>
+<li>
+<p>In the <strong>Query</strong> tab below the graph, enter the query from earlier and then press Shift + Enter:</p>
+<pre>sum(rate(tns_request_duration_seconds_count[5m])) by(route)</pre>
+</li>
+<li>
+<p>In the panel editor on the right, under <strong>Panel options</strong>, change the panel title to &ldquo;Traffic&rdquo;.</p>
+</li>
+<li>
+<p>Click <strong>Apply</strong> in the top-right corner to save the panel and go back to the dashboard view.</p>
+</li>
+<li>
+<p>Click the <strong>Save dashboard</strong> (disk) icon at the top of the dashboard to save your dashboard.</p>
+</li>
+<li>
+<p>Enter a name in the <strong>Dashboard name</strong> field and then click <strong>Save</strong>.</p>
+<p>You should now have a panel added to your dashboard.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1660px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/tutorials/grafana-fundamentals-dashboard.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/tutorials/grafana-fundamentals-dashboard.png"data-srcset="/media/tutorials/grafana-fundamentals-dashboard.png?w=320 320w, /media/tutorials/grafana-fundamentals-dashboard.png?w=550 550w, /media/tutorials/grafana-fundamentals-dashboard.png?w=750 750w, /media/tutorials/grafana-fundamentals-dashboard.png?w=900 900w, /media/tutorials/grafana-fundamentals-dashboard.png?w=1040 1040w, /media/tutorials/grafana-fundamentals-dashboard.png?w=1240 1240w, /media/tutorials/grafana-fundamentals-dashboard.png?w=1920 1920w"
+             data-sizes="auto"alt="A panel in a Grafana dashboard"width="1660"height="674"title="A panel in a Grafana dashboard"/>
+           <noscript>
+             <img
+               src="/media/tutorials/grafana-fundamentals-dashboard.png"
+               alt="A panel in a Grafana dashboard"width="1660"height="674"title="A panel in a Grafana dashboard"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">A panel in a Grafana dashboard</figcaption></a></figure>
+</li>
+</ol>
+<!-- INTERACTIVE page step6.md END -->
+<!-- INTERACTIVE page step7.md START -->
+<h2 id="annotate-events">Annotate events</h2>
+<p>When things go bad, it often helps if you understand the context in which the failure occurred. Time of last deploy, system changes, or database migration can offer insight into what might have caused an outage. Annotations allow you to represent such events directly on your graphs.</p>
+<p>In the next part of the tutorial, we simulate some common use cases that someone would add annotations for.</p>
+<ol>
+<li>
+<p>To manually add an annotation, click anywhere in your graph, then click <strong>Add annotation</strong>.
+Note: you might need to save the dashboard first.</p>
+</li>
+<li>
+<p>In <strong>Description</strong>, enter <strong>Migrated user database</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+<p>Grafana adds your annotation to the graph. Hover your mouse over the base of the annotation to read the text.</p>
+</li>
+</ol>
+<p>Grafana also lets you annotate a time interval, with <em>region annotations</em>.</p>
+<p>Add a region annotation:</p>
+<ol>
+<li>Press Ctrl (or Cmd on macOS) and hold, then click and drag across the graph to select an area.</li>
+<li>In <strong>Description</strong>, enter <strong>Performed load tests</strong>.</li>
+<li>In <strong>Tags</strong>, enter <strong>testing</strong>.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="using-annotations-to-correlate-logs-with-metrics">Using annotations to correlate logs with metrics</h3>
+<p>Manually annotating your dashboard is fine for those single events. For regularly occurring events, such as deploying a new release, Grafana supports querying annotations from one of your data sources. Let&rsquo;s create an annotation using the Loki data source we added earlier.</p>
+<ol>
+<li>
+<p>At the top of the dashboard, click the <strong>Dashboard settings</strong> (gear) icon.</p>
+</li>
+<li>
+<p>Go to <strong>Annotations</strong> and click <strong>Add annotation query</strong>.</p>
+</li>
+<li>
+<p>In <strong>Name</strong>, enter <strong>Errors</strong>.</p>
+</li>
+<li>
+<p>In <strong>Data source</strong>, select <strong>Loki</strong>.</p>
+</li>
+<li>
+<p>In <strong>Query</strong>, enter the following query:</p>
+<pre>{filename=&#34;/var/log/tns-app.log&#34;} |= &#34;error&#34;</pre>
+</li>
+<li>
+<p>Click <strong>Apply</strong>. Grafana displays the Annotations list, with your new annotation.</p>
+</li>
+<li>
+<p>Click your dashboard name to return to your dashboard.</p>
+</li>
+<li>
+<p>At the top of your dashboard, there is now a toggle to display the results of the newly created annotation query. Press it if it&rsquo;s not already enabled.</p>
+</li>
+<li>
+<p>Click the <strong>Save dashboard</strong> (disk) icon to save the changes.</p>
+</li>
+<li>
+<p>To test the changes, go back to the <a href="http://localhost:8081" target="_blank" rel="noopener noreferrer">sample application</a>, post a new link without a URL to generate an error in your browser that says <code>empty url</code>.</p>
+</li>
+</ol>
+<p>The log lines returned by your query are now displayed as annotations in the graph.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1718px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/tutorials/annotations-grafana-dashboard.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/tutorials/annotations-grafana-dashboard.png"data-srcset="/media/tutorials/annotations-grafana-dashboard.png?w=320 320w, /media/tutorials/annotations-grafana-dashboard.png?w=550 550w, /media/tutorials/annotations-grafana-dashboard.png?w=750 750w, /media/tutorials/annotations-grafana-dashboard.png?w=900 900w, /media/tutorials/annotations-grafana-dashboard.png?w=1040 1040w, /media/tutorials/annotations-grafana-dashboard.png?w=1240 1240w, /media/tutorials/annotations-grafana-dashboard.png?w=1920 1920w"
+          data-sizes="auto"alt="A panel in a Grafana dashboard with log queries from Loki displayed as annotations"width="1718"height="802"title="Displaying log queries from Loki as annotations"/>
+        <noscript>
+          <img
+            src="/media/tutorials/annotations-grafana-dashboard.png"
+            alt="A panel in a Grafana dashboard with log queries from Loki displayed as annotations"width="1718"height="802"title="Displaying log queries from Loki as annotations"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Displaying log queries from Loki as annotations</figcaption></a></figure>
+<p>Being able to combine data from multiple data sources in one graph allows you to correlate information from both Prometheus and Loki.</p>
+<p>Annotations also work very well alongside alert rules. In the next and final section, we set up an alert rules for our app <code>grafana.news</code> and then we trigger it. This provides a quick intro to our new Alerting platform.</p>
+<!-- INTERACTIVE page step7.md END -->
+<!-- INTERACTIVE page step8.md START -->
+<h2 id="create-a-grafana-managed-alert-rule">Create a Grafana-managed alert rule</h2>
+<p>Alert rules allow you to identify problems in your system moments after they occur. By quickly identifying unintended changes in your system, you can minimize disruptions to your services.</p>
+<p>Grafana&rsquo;s new alerting platform debuted with Grafana 8. A year later, with Grafana 9, it became the default alerting method. In this step we create a Grafana-managed alert rule. Then we trigger our new alert rule and send a test message to a dummy endpoint.</p>
+<p>The most basic alert rule consists of two parts:</p>
+<ol>
+<li>
+<p>A <em>Contact point</em> - A Contact point defines how Grafana delivers an alert instance. When the conditions of an <em>alert rule</em> are met, Grafana notifies the contact points, or channels, configured for that alert rule.</p>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>An <a href="/docs/grafana/latest/alerting/fundamentals/#alert-instances">alert instance</a> is a specific occurrence that matches a condition defined by an alert rule, such as when the rate of requests for a specific route suddenly increases.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<p>Some popular channels include:</p>
+<ul>
+<li><a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-email/">Email</a></li>
+<li><a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/webhook-notifier/">Webhooks</a></li>
+<li><a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-telegram/">Telegram</a></li>
+<li><a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/configure-slack/">Slack</a></li>
+<li><a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/integrations/pager-duty/">PagerDuty</a></li>
+</ul>
+</li>
+<li>
+<p>An <em>Alert rule</em> - An Alert rule defines one or more <em>conditions</em> that Grafana regularly evaluates. When these evaluations meet the rule&rsquo;s criteria, the alert rule is triggered.</p>
+</li>
+</ol>
+<p>To begin, let&rsquo;s set up a webhook contact point. Once we have a usable endpoint, we write an alert rule and trigger a notification.</p>
+<!-- INTERACTIVE page step8.md END -->
+<!-- INTERACTIVE page step9.md START -->
+<h3 id="create-a-contact-point-for-grafana-managed-alert-rules">Create a contact point for Grafana-managed alert rules</h3>
+<p>In this step, we set up a new contact point. This contact point uses the <em>webhooks</em> channel. In order to make this work, we also need an endpoint for our webhook channel to receive the alert notification. We can use <a href="https://webhook.site/" target="_blank" rel="noopener noreferrer">Webhook.site</a> to quickly set up that test endpoint. This way we can make sure that our alert manager is actually sending a notification somewhere.</p>
+<ol>
+<li>Browse to <a href="https://webhook.site/" target="_blank" rel="noopener noreferrer">Webhook.site</a>.</li>
+<li>Copy Your unique URL.</li>
+</ol>
+<p>Your webhook endpoint is now waiting for the first request.</p>
+<p>Next, let&rsquo;s configure a Contact Point in Grafana&rsquo;s Alerting UI to send notifications to our webhook endpoint.</p>
+<ol>
+<li>
+<p>Return to Grafana. In Grafana&rsquo;s sidebar, hover over the <strong>Alerting</strong> (bell) icon and then click <strong>Manage Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>In <strong>Name</strong>, write <strong>Webhook</strong>.</p>
+</li>
+<li>
+<p>In <strong>Integration</strong>, choose <strong>Webhook</strong>.</p>
+</li>
+<li>
+<p>In <strong>URL</strong>, paste the endpoint to your webhook endpoint.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong>, and then click <strong>Send test notification</strong> to send a test alert notification to your webhook endpoint.</p>
+</li>
+<li>
+<p>Navigate back to the webhook endpoint you created earlier. On the left side, there&rsquo;s now a <code>POST /</code> entry. Click it to see what information Grafana sent.</p>
+</li>
+<li>
+<p>Return to Grafana and click <strong>Save contact point</strong>.</p>
+</li>
+</ol>
+<p>We have now created a dummy webhook endpoint and created a new Alerting Contact Point in Grafana. Now we can create an alert rule and link it to this new channel.</p>
+<!-- INTERACTIVE page step9.md END -->
+<!-- INTERACTIVE page step10.md START -->
+<h3 id="add-an-alert-rule-to-grafana">Add an alert rule to Grafana</h3>
+<p>Now that Grafana knows how to notify us, it&rsquo;s time to set up an alert rule:</p>
+<ol>
+<li>
+<p>In Grafana&rsquo;s sidebar, hover over the <strong>Alerting</strong> (bell) icon and then click <strong>Alert rules</strong>.</p>
+<p>In this tutorial, we use the advanced options for Grafana-managed alert rule creation. The advanced options let us define queries, expressions (used to manipulate the data), and the condition that must be met for the alert to be triggered (the default condition is the threshold).</p>
+</li>
+<li>
+<p>Click <strong>+ New alert rule</strong>.</p>
+</li>
+<li>
+<p>For <strong>Section 1</strong>, name the rule <code>fundamentals-test</code>.</p>
+</li>
+<li>
+<p>For <strong>Section 2</strong>, toggle the <strong>Advanced options</strong> button.</p>
+</li>
+<li>
+<p>Find the <strong>query A</strong> box, and choose your Prometheus data source.</p>
+</li>
+<li>
+<p>Enter the same Prometheus query that we used in our earlier panel:</p>
+<pre>sum(rate(tns_request_duration_seconds_count[5m])) by(route)</pre>
+</li>
+<li>
+<p>Keep expressions <strong>B</strong> and <strong>C</strong> as they are. These expressions (Reduce and Threshold, respectively) are included by default when creating a new rule. Enter <code>0.2</code> as threshold value. You can read more about queries and conditions <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#expression-queries">here</a>.</p>
+</li>
+<li>
+<p>Scroll down to bottom of section #2 and click the <strong>Preview</strong> button. You should see some data returned.</p>
+</li>
+<li>
+<p>In <strong>Section 3</strong>, in Folder, create a new folder, by clicking <code>New folder</code> and typing a name for the folder. This folder contains our alert rules. For example: <code>fundamentals</code>. Then, click <code>create</code>.</p>
+</li>
+<li>
+<p>In the Evaluation group, repeat the above step to create a new one. Name it <code>fundamentals</code> too.</p>
+</li>
+<li>
+<p>Choose an Evaluation interval (how often the alert rule are evaluated). For example, every <code>10s</code> (10 seconds).</p>
+</li>
+<li>
+<p>Set the pending period. This is the time that a condition has to be met until the alert instance enters in Firing state and a notification is sent. Enter <code>0s</code>. For the purposes of this tutorial, the evaluation interval is intentionally short. This makes it easier to test. This setting makes Grafana wait until an alert instance has fired for a given time before Grafana sends the notification.</p>
+</li>
+<li>
+<p>In <strong>Section 4</strong>, choose <strong>Webhook</strong> as the <strong>Contact point</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save rule and exit</strong> at the top of the page.</p>
+</li>
+</ol>
+<h3 id="trigger-a-grafana-managed-alert-rule">Trigger a Grafana-managed alert rule</h3>
+<p>We have now configured an alert rule and a contact point. Now let&rsquo;s see if we can trigger a Grafana-managed alert rule by generating some traffic on our sample application.</p>
+<ol>
+<li>Browse to <a href="http://localhost:8081" target="_blank" rel="noopener noreferrer">localhost:8081</a>.</li>
+<li>Add a new title and URL, repeatedly click the vote button, or refresh the page to generate a traffic spike.</li>
+</ol>
+<p>Once the query <code>sum(rate(tns_request_duration_seconds_count[5m])) by(route)</code> returns a value greater than <code>0.2</code> Grafana triggers our alert rule. Browse to the webhook endpoint we created earlier and find the sent Grafana alert notification with details and metadata.</p>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The alert rule may be triggered by the <code>/metrics</code> endpoint which is frequently accessed by Grafana when pulling metrics from the application. If this happens, you can increase the <strong>Threshold</strong> value in <strong>Section 2</strong> for testing purposes.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore START -->
+
+<h3 id="display-grafana-managed-alert-rules-to-your-dashboard">Display Grafana-managed alert rules to your dashboard</h3>
+<p>In most cases, it&rsquo;s also valuable to display Grafana alert instances as annotations to your dashboard. Check out the video tutorial below to learn how to display alerting to your dashboard.</p>
+<!-- INTERACTIVE ignore START -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=ClLp-iSoaSY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<!-- INTERACTIVE ignore END -->
+<p>Let&rsquo;s see how we can configure this.</p>
+<ol>
+<li>
+<p>In Grafana&rsquo;s sidebar, hover over the <strong>Alerting</strong> (bell) icon and then click <strong>Alert rules</strong>.</p>
+</li>
+<li>
+<p>Expand the <code>fundamentals &gt; fundamentals</code> folder to view our created alert rule.</p>
+</li>
+<li>
+<p>Click the <strong>Edit</strong> icon and scroll down to <strong>Section 5</strong>.</p>
+</li>
+<li>
+<p>Click the <strong>Link dashboard and panel</strong> button and select the dashboard and panel to which you want the alert instance to be added as an annotation.</p>
+</li>
+<li>
+<p>Click <strong>Confirm</strong> and <strong>Save rule and exit</strong> to save all the changes.</p>
+</li>
+<li>
+<p>In Grafana&rsquo;s sidebar, navigate to the dashboard by clicking <strong>Dashboards</strong> and selecting the dashboard you created.</p>
+</li>
+<li>
+<p>To test the changes, follow the steps listed to <a href="#trigger-a-grafana-managed-alert">trigger a Grafana-managed alert rule</a>.</p>
+<p>You should now see a red, broken heart icon beside the panel name, indicating that the alert rule has been triggered. An annotation for the alert instance, represented as a vertical red line, is also displayed.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 2022px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/tutorials/grafana-alert-on-dashboard.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/tutorials/grafana-alert-on-dashboard.png"data-srcset="/media/tutorials/grafana-alert-on-dashboard.png?w=320 320w, /media/tutorials/grafana-alert-on-dashboard.png?w=550 550w, /media/tutorials/grafana-alert-on-dashboard.png?w=750 750w, /media/tutorials/grafana-alert-on-dashboard.png?w=900 900w, /media/tutorials/grafana-alert-on-dashboard.png?w=1040 1040w, /media/tutorials/grafana-alert-on-dashboard.png?w=1240 1240w, /media/tutorials/grafana-alert-on-dashboard.png?w=1920 1920w"
+             data-sizes="auto"alt="A panel in a Grafana dashboard with alerting and annotations configured"width="2022"height="774"title="Displaying Grafana-managed alert rules on a dashboard"/>
+           <noscript>
+             <img
+               src="/media/tutorials/grafana-alert-on-dashboard.png"
+               alt="A panel in a Grafana dashboard with alerting and annotations configured"width="2022"height="774"title="Displaying Grafana-managed alert rules on a dashboard"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Displaying Grafana-managed alert rules on a dashboard</figcaption></a></figure>
+</li>
+</ol>
+<!-- INTERACTIVE ignore START -->
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>In <a href="http://www.grafana.com/tutorials/alerting-get-started-pt2/" target="_blank" rel="noopener noreferrer">Get started with Grafana Alerting - Part 2</a> you can advance your skills by exploring alert instances and notification routing.</p></blockquote></div>
+
+<!-- INTERACTIVE ignore END -->
+
+<!-- INTERACTIVE page step10.md END -->
+<!-- INTERACTIVE page finish.md START -->
+<h2 id="summary">Summary</h2>
+<!-- INTERACTIVE ignore START -->
+<p>In this tutorial you learned about fundamental features of Grafana. To do so, we ran several Docker containers on your local machine. When you are ready to clean up this local tutorial environment, run the following command:</p>
+<pre>docker-compose down -v</pre>
+<!-- INTERACTIVE ignore END -->
+
+<h3 id="learn-more">Learn more</h3>
+<p>Check out the links below to continue your learning journey with Grafana&rsquo;s LGTM stack.</p>
+<ul>
+<li><a href="/docs/grafana/latest/features/datasources/prometheus/">Prometheus</a></li>
+<li><a href="/docs/grafana/latest/features/datasources/loki/">Loki</a></li>
+<li><a href="/docs/grafana/latest/explore/">Explore</a></li>
+<li><a href="/docs/grafana/latest/alerting/">Alerting Overview</a></li>
+<li><a href="/docs/grafana/latest/alerting/create-alerts/">Alert rules</a></li>
+<li><a href="/docs/grafana/latest/alerting/fundamentals/contact-points/">Contact points</a></li>
+</ul>
+<!-- INTERACTIVE page finish.md END -->

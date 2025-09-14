@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<h1 id="template-notifications">Template notifications</h1>
+<p>You can use notification templates to change the title, message, and format of notifications.</p>
+<p>Grafana provides a <strong>default template</strong> for notification titles (<code>default.title</code>) and one default template for notification messages (<code>default.message</code>). Both templates display common alert details.</p>
+<p>You can also create a notification template to customize the content and format of your notification messages. For example:</p>
+<ul>
+<li>Personalize the subject of an email or the title of a message.</li>
+<li>Modify text within notifications, like selecting or omitting certain labels, annotations, and links.</li>
+<li>Format text with bold and italic styles, and add or remove line breaks.</li>
+</ul>
+<p>However, there are limitations. You cannot:</p>
+<ul>
+<li>Modify Visual Appearance: Add HTML or CSS to email notifications for visual changes. Alter the design of notifications in messaging services like Slack or Microsoft Teams, such as adding custom blocks or adaptive cards.</li>
+<li>Manage Media and Data: Customize the data structure or format passed to the templates, like adding new JSON fields or sending XML data for webhooks. Modify HTTP headers in webhooks beyond those defined in the configuration, or adjust the number, size, or placement of images.</li>
+</ul>
+<p>Here&rsquo;s an 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/examples/">example</a> that displays the summary and description annotations for each alert in the notification:</p>
+<pre>{{ define &#34;custom.alerts&#34; -}}
+{{ len .Alerts }} alert(s)
+{{ range .Alerts -}}
+  {{ template &#34;alert.summary_and_description&#34; . -}}
+{{ end -}}
+{{ end -}}
+{{ define &#34;alert.summary_and_description&#34; }}
+  Summary: {{.Annotations.summary}}
+  Status: {{ .Status }}
+  Description: {{.Annotations.description}}
+{{ end -}}</pre>
+<p>The notification message would look like this:</p>
+<pre>2 alert(s)
+
+  Summary: The database server db1 has exceeded 75% of available disk space.
+  Status: firing
+  Description: This alert fires when a database server is at risk of running out of disk space. You should take measures to increase the maximum available disk space as soon as possible to avoid possible corruption.
+
+  Summary: The web server web1 has been responding to 5% of HTTP requests with 5xx errors for the last 5 minutes.
+  Status: resolved
+  Description: This alert fires when a web server responds with more 5xx errors than is expected. This could be an issue with the web server or a backend service.</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Avoid adding extra information about alert instances in notification templates, as this information will only be visible in the notification message.</p>
+<p>Instead, you should 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">use annotations or labels</a> to add information directly to the alert, ensuring it&rsquo;s also visible in the alert state and alert history within Grafana. You can then print the new alert annotation or label in notification templates.</p></blockquote></div>
+
+<h4 id="select-a-notification-template-for-a-contact-point">Select a notification template for a contact point</h4>
+<p>Notification templates are not tied to specific contact point integrations, such as email or Slack, and the same template can be shared across multiple contact points.</p>
+<p>The notification template is assigned to the contact point to determine the notification message sent to contact point integrations.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1200px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/how-notification-templates-works.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/how-notification-templates-works.png"data-srcset="/media/docs/alerting/how-notification-templates-works.png?w=320 320w, /media/docs/alerting/how-notification-templates-works.png?w=550 550w, /media/docs/alerting/how-notification-templates-works.png?w=750 750w, /media/docs/alerting/how-notification-templates-works.png?w=900 900w, /media/docs/alerting/how-notification-templates-works.png?w=1040 1040w, /media/docs/alerting/how-notification-templates-works.png?w=1240 1240w, /media/docs/alerting/how-notification-templates-works.png?w=1920 1920w"
+          data-sizes="auto"alt="A flow of the alert notification process, from querying the alert rule to sending the alert notification message."width="1072"height="699"title="A flow of the alert notification process, from querying the alert rule to sending the alert notification message."/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/how-notification-templates-works.png"
+            alt="A flow of the alert notification process, from querying the alert rule to sending the alert notification message."width="1072"height="699"title="A flow of the alert notification process, from querying the alert rule to sending the alert notification message."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">A flow of the alert notification process, from querying the alert rule to sending the alert notification message.</figcaption></a></figure>
+<p>By default, Grafana provides default templates, such as <code>{{define &quot;default.title&quot;}}</code> and <code>{{define &quot;default.message&quot;}}</code>, to format notification messages.</p>
+<h2 id="more-information">More information</h2>
+<p>For further details on how to write notification templates, refer to:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/manage-notification-templates/">Select, create, and preview a notification template</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/reference/">Notification template reference</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/examples/">Notification template examples</a></li>
+</ul>
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>For a practical example of templating, refer to our <a href="/tutorials/alerting-get-started-pt4/">Getting Started with Templating tutorial</a>.</p></blockquote></div>
+

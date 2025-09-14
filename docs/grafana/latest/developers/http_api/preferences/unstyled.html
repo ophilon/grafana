@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<h1 id="user-and-org-preferences-api">User and Org Preferences API</h1>
+<p>Keys:</p>
+<ul>
+<li><strong>theme</strong> - One of: <code>light</code>, <code>dark</code>, or an empty string for the default theme</li>
+<li><strong>homeDashboardId</strong> - Deprecated. Use <code>homeDashboardUID</code> instead.</li>
+<li><strong>homeDashboardUID</strong>: The <code>:uid</code> of a dashboard</li>
+<li><strong>timezone</strong> - One of: <code>utc</code>, <code>browser</code>, or an empty string for the default</li>
+</ul>
+<p>Omitting a key will cause the current value to be replaced with the
+system default value.</p>
+<h2 id="get-current-user-prefs">Get Current User Prefs</h2>
+<p><code>GET /api/user/preferences</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/user/preferences HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;theme&#34;: &#34;&#34;,
+    &#34;homeDashboardId&#34;: 217,
+    &#34;homeDashboardUID&#34;: &#34;jcIIG-07z&#34;,
+    &#34;timezone&#34;: &#34;utc&#34;,
+    &#34;weekStart&#34;: &#34;&#34;,
+    &#34;navbar&#34;: {
+        &#34;bookmarkUrls&#34;: null
+    },
+    &#34;queryHistory&#34;: {
+        &#34;homeTab&#34;: &#34;&#34;
+    }
+}</pre>
+<h2 id="update-current-user-prefs">Update Current User Prefs</h2>
+<p><code>PUT /api/user/preferences</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>PUT /api/user/preferences HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;theme&#34;: &#34;&#34;,
+  &#34;homeDashboardUID&#34;:&#34;home&#34;,
+  &#34;timezone&#34;:&#34;utc&#34;
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: text/plain; charset=utf-8
+
+{&#34;message&#34;:&#34;Preferences updated&#34;}</pre>
+<h2 id="patch-current-user-prefs">Patch Current User Prefs</h2>
+<p>Update one or more preferences without modifying the others.</p>
+<p><code>PATCH /api/user/preferences</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>PATCH /api/user/preferences HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;theme&#34;: &#34;dark&#34;
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: text/plain; charset=utf-8
+
+{&#34;message&#34;:&#34;Preferences updated&#34;}</pre>
+<h2 id="get-current-org-prefs">Get Current Org Prefs</h2>
+<p><code>GET /api/org/preferences</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/org/preferences HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;theme&#34;: &#34;&#34;,
+    &#34;homeDashboardId&#34;: 0,
+    &#34;homeDashboardUID&#34;: &#34;&#34;,
+    &#34;timezone&#34;: &#34;&#34;,
+    &#34;weekStart&#34;: &#34;&#34;,
+    &#34;navbar&#34;: {
+        &#34;bookmarkUrls&#34;: null
+    },
+    &#34;queryHistory&#34;: {
+        &#34;homeTab&#34;: &#34;&#34;
+    }
+}</pre>
+<h2 id="update-current-org-prefs">Update Current Org Prefs</h2>
+<p><code>PUT /api/org/preferences</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>PUT /api/org/preferences HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;theme&#34;: &#34;&#34;,
+  &#34;homeDashboardUID&#34;:&#34;home&#34;,
+  &#34;timezone&#34;:&#34;utc&#34;
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: text/plain; charset=utf-8
+
+{&#34;message&#34;:&#34;Preferences updated&#34;}</pre>
+<h2 id="patch-current-org-prefs">Patch Current Org Prefs</h2>
+<p>Update one or more preferences without modifying the others.</p>
+<p><code>PATCH /api/org/preferences</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>PATCH /api/org/preferences HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;theme&#34;: &#34;dark&#34;
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: text/plain; charset=utf-8
+
+{&#34;message&#34;:&#34;Preferences updated&#34;}</pre>

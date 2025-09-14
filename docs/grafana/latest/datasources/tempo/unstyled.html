@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<h1 id="tempo-data-source">Tempo data source</h1>
+<p>Grafana ships with built-in support for 
+    <a href="/docs/tempo/latest/">Tempo</a>, a high-volume, minimal-dependency trace storage, open source tracing solution from Grafana Labs.</p>
+<p>To learn more about traces, refer to 
+    <a href="/docs/tempo/latest/introduction/">Introduction to tracing</a>.</p>
+<p>To use traces, you need you have an application or service that is instrumented to emit traces.
+Refer to the 
+    <a href="/docs/tempo/latest/getting-started/instrumentation/">Instrument for tracing</a> for more information.</p>
+<h2 id="add-a-data-source">Add a data source</h2>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.
+Only users with the organization administrator role can add data sources.
+Administrators can also 
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#provision-the-data-source">configure the data source via YAML</a> with Grafana&rsquo;s provisioning system.</p>
+<p>This video explains how to add data sources, including Loki, Tempo, and Mimir, to Grafana and Grafana Cloud. Tempo data source set up starts at 4:58 in the video.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=cqHO0oYW6Ic" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="learn-more">Learn more</h2>
+<p>After you&rsquo;ve added the data source, you can <a href="./configure-tempo-data-source/">configure it</a> so that your Grafana instance&rsquo;s users can create queries in its <a href="./query-editor/">query editor</a> when they 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">build dashboards</a> and use 
+    <a href="/docs/grafana/latest/explore/">Explore</a>.</p>
+<ul><li>
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/">Configure the Tempo data source</a><br>Guide for configuring Tempo in Grafana</li><li>
+    <a href="/docs/grafana/latest/datasources/tempo/tracing-best-practices/">Best practices for tracing</a><br>Use best practices to plan how you implement tracing.</li><li>
+    <a href="/docs/grafana/latest/datasources/tempo/traces-in-grafana/">Use traces in Grafana</a><br>Learn about how you can use tracing data in Grafana Cloud to query data, generate metrics, and link your tracing data with logs, metrics, and profiles.</li><li>
+    <a href="/docs/grafana/latest/datasources/tempo/query-editor/">Query tracing data</a><br>Guide for using the Tempo data source&#39;s query editor</li><li>
+    <a href="/docs/grafana/latest/datasources/tempo/service-graph/">Service Graph and Service Graph view</a><br>Use the Service Graph and Service Graph view</li><li>
+    <a href="/docs/grafana/latest/datasources/tempo/span-filters/">Span filters</a><br>Use span filters to filter spans in the timeline viewer</li></ul>

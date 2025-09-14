@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /api
+Allow: /docs/grafana/latest
+Sitemap: /sitemap.xml
+Disallow: /*.yml$
+Disallow: /*.json$
+Disallow: /*.md$
+Disallow: /*.river$
+Disallow: /*.yaml$
+Disallow: /legal/grafanalabs-external-access-lite-msa/

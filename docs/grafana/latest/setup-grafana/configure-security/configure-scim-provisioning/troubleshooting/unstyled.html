@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<h1 id="troubleshoot-scim-provisioning">Troubleshoot SCIM provisioning</h1>
+<p>This page provides solutions for common issues you might encounter when configuring and using SCIM provisioning in Grafana.</p>
+<h2 id="user-provisioning-issues">User provisioning issues</h2>
+<h3 id="error-invalid-namespace">Error: &ldquo;invalid namespace&rdquo;</h3>
+<p><strong>Cause:</strong> The SCIM endpoint URL is incorrectly formatted.</p>
+<p><strong>Solution:</strong> Verify your URL follows the correct format:</p>
+<pre>https://{$GRAFANA_URL}/apis/scim.grafana.app/v0alpha1/namespaces/{$STACK_ID}/Users</pre>
+<p>Where:</p>
+<ul>
+<li><code>{$GRAFANA_URL}</code> is your Grafana URL (subdomain format)</li>
+<li><code>{$STACK_ID}</code> is your Grafana stack ID:
+<ul>
+<li><strong>Grafana Cloud:</strong> Format like <code>stack-123</code> (found in your Grafana Cloud dashboard)</li>
+<li><strong>On-premises:</strong> Use <code>default</code> or the name of the organization</li>
+</ul>
+</li>
+</ul>
+<h2 id="authentication-issues">Authentication issues</h2>
+<h3 id="error-http-403-forbidden">Error: &ldquo;HTTP 403 Forbidden&rdquo;</h3>
+<p><strong>Cause:</strong> Either incorrect token or insufficient permissions.</p>
+<p><strong>Solution:</strong></p>
+<ol>
+<li><strong>Check token:</strong> Generate a new token from the Service Account details page</li>
+<li><strong>Verify permissions:</strong> Ensure the service account has <code>Editor</code> or <code>Admin</code> role in the Grafana instance</li>
+</ol>
+<h3 id="error-http-401-unauthorized">Error: &ldquo;HTTP 401 Unauthorized&rdquo;</h3>
+<p><strong>Cause:</strong> Invalid or expired authentication token.</p>
+<p><strong>Solution:</strong> Generate a new token from the Service Account details page in Grafana.</p>
+<h2 id="login-issues">Login issues</h2>
+<h3 id="error-user-sync-failed">Error: &ldquo;User sync failed&rdquo;</h3>
+<p><strong>Cause:</strong> The user&rsquo;s unique identifier field is not correctly configured in SAML assertions.</p>
+<p><strong>Solution:</strong> Add the required SAML assertion based on your identity provider:</p>
+<table>
+  <thead>
+      <tr>
+          <th>SAML Assertion</th>
+          <th>Identity Provider</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>userUID</code></td>
+          <td>Azure AD</td>
+          <td><code>objectId</code></td>
+      </tr>
+      <tr>
+          <td><code>userUID</code></td>
+          <td>Okta</td>
+          <td><code>user.getInternalProperty(&quot;id&quot;)</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><a href="../manage-users-teams/">Manage users and teams with SCIM provisioning</a></li>
+<li><a href="../configure-scim-with-azuread/">Configure SCIM with Azure AD</a></li>
+<li><a href="../configure-scim-with-okta/">Configure SCIM with Okta</a></li>
+</ul>

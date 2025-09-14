@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<h1 id="notification-template-reference">Notification template reference</h1>
+<p>By default, Grafana provides predefined templates to format notification messages.</p>
+<p>You can also customize your notifications with custom templates, which are based on the 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/language/">Go template language</a>.</p>
+<p>This documentation lists the data available for use in notification templates.</p>
+<h2 id="notification-data">Notification Data</h2>
+<p>In notification templates, dot (<code>.</code>) is initialized with the following data:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Receiver</code></td>
+          <td>string</td>
+          <td>The name of the contact point sending the notification</td>
+      </tr>
+      <tr>
+          <td><code>Status</code></td>
+          <td>string</td>
+          <td>The status is <code>firing</code> if at least one alert is firing, otherwise <code>resolved</code>.</td>
+      </tr>
+      <tr>
+          <td><code>Alerts</code></td>
+          <td>[]<a href="#alert">Alert</a></td>
+          <td>List of all firing and resolved alerts in this notification.</td>
+      </tr>
+      <tr>
+          <td><code>Alerts.Firing</code></td>
+          <td>[]<a href="#alert">Alert</a></td>
+          <td>List of all firing alerts in this notification.</td>
+      </tr>
+      <tr>
+          <td><code>Alerts.Resolved</code></td>
+          <td>[]<a href="#alert">Alert</a></td>
+          <td>List of all resolved alerts in this notification.</td>
+      </tr>
+      <tr>
+          <td><code>GroupLabels</code></td>
+          <td><a href="#kv">KV</a></td>
+          <td>The labels that group these alerts in this notification based on the <code>Group by</code> option.</td>
+      </tr>
+      <tr>
+          <td><code>CommonLabels</code></td>
+          <td><a href="#kv">KV</a></td>
+          <td>The labels common to all alerts in this notification.</td>
+      </tr>
+      <tr>
+          <td><code>CommonAnnotations</code></td>
+          <td><a href="#kv">KV</a></td>
+          <td>The annotations common to all alerts in this notification.</td>
+      </tr>
+      <tr>
+          <td><code>ExternalURL</code></td>
+          <td>string</td>
+          <td>A link to Grafana, or the Alertmanager that sent this notification if using an external Alertmanager.</td>
+      </tr>
+      <tr>
+          <td><code>GroupKey</code></td>
+          <td>string</td>
+          <td>The key used to identify this alert group.</td>
+      </tr>
+      <tr>
+          <td><code>TruncatedAlerts</code></td>
+          <td>integer</td>
+          <td>The number of alerts, if any, that were truncated in the notification. Supported by Webhook and OnCall.</td>
+      </tr>
+  </tbody>
+</table>
+<p>It&rsquo;s important to remember that 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/">a single notification can group multiple alerts</a> to reduce the number of alerts you receive. <code>Alerts</code> is an array that includes all the alerts in the notification.</p>
+<p>Here&rsquo;s an example that prints all available notification data from dot (<code>.</code>):</p>
+<pre>{{ define &#34;custom_template&#34; }}
+  {{ .Receiver }}
+  {{ .Status }}
+  There are {{ len .Alerts }} alerts
+  There are {{ len .Alerts.Firing }} firing alerts
+  There are {{ len .Alerts.Resolved }} resolved alerts
+  {{ .GroupLabels }}
+  {{ .CommonLabels }}
+  {{ .CommonAnnotations }}
+  {{ .ExternalURL }}
+{{ end }}</pre>
+<p>You can execute this template by passing the dot (<code>.</code>):</p>
+<pre>{{ template &#34;custom_template&#34; . }}</pre>
+<h2 id="alert">Alert</h2>
+<p><code>Alert</code> contains data for an individual alert:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Status</code></td>
+          <td>string</td>
+          <td>Firing or resolved.</td>
+      </tr>
+      <tr>
+          <td><code>Labels</code></td>
+          <td><a href="#kv">KV</a></td>
+          <td>The labels associated with this alert. <br/> It includes all 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#label-types">types of labels</a>, but only query labels used in the alert condition.</td>
+      </tr>
+      <tr>
+          <td><code>Annotations</code></td>
+          <td><a href="#kv">KV</a></td>
+          <td>The annotations for this alert.</td>
+      </tr>
+      <tr>
+          <td><code>StartsAt</code></td>
+          <td><a href="#time">Time</a></td>
+          <td>The time the alert fired</td>
+      </tr>
+      <tr>
+          <td><code>EndsAt</code></td>
+          <td><a href="#time">Time</a></td>
+          <td>Only set if the end time of an alert is known. Otherwise set to a configurable timeout period from the time since the last alert was received.</td>
+      </tr>
+      <tr>
+          <td><code>GeneratorURL</code></td>
+          <td>string</td>
+          <td>A link to Grafana, or the source of the alert if using an external alert generator.</td>
+      </tr>
+      <tr>
+          <td><code>Fingerprint</code></td>
+          <td>string</td>
+          <td>A unique string that identifies the alert.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Grafana-managed alerts include these additional properties:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>DashboardURL</code></td>
+          <td>string</td>
+          <td>A link to the Grafana Dashboard if the alert has a Dashboard UID annotation, with time range from <code>1h</code> before alert start to end (or now if firing).</td>
+      </tr>
+      <tr>
+          <td><code>PanelURL</code></td>
+          <td>string</td>
+          <td>A link to the panel if the alert has a Panel ID annotation, with time range from <code>1h</code> before alert start to end (or now if firing).</td>
+      </tr>
+      <tr>
+          <td><code>SilenceURL</code></td>
+          <td>string</td>
+          <td>A link to silence the alert.</td>
+      </tr>
+      <tr>
+          <td><code>Values</code></td>
+          <td><a href="#kv">KV</a></td>
+          <td>The values of expressions used to evaluate the alert condition. Only relevant values are included.</td>
+      </tr>
+      <tr>
+          <td><code>ValueString</code></td>
+          <td>string</td>
+          <td>A string that contains the labels and value of each reduced expression in the alert.</td>
+      </tr>
+      <tr>
+          <td><code>OrgID</code></td>
+          <td>integer</td>
+          <td>The ID of the organization that owns the alert.</td>
+      </tr>
+  </tbody>
+</table>
+<p>This example iterates over the list of firing and resolved alerts (<code>.Alerts</code>) in the notification and prints the data for each alert:</p>
+<pre>{{ define &#34;custom_template&#34; }}
+{{ range .Alerts }}
+  {{ .Status }}
+  {{ .Labels }}
+  {{ .Annotations }}
+  {{ .StartsAt }}
+  {{ .EndsAt }}
+  {{ .GeneratorURL }}
+  {{ .Fingerprint }}
+
+  {{/* Only available for Grafana-managed alerts */}}
+  {{ .DashboardURL }}
+  {{ .PanelURL }}
+  {{ .SilenceURL }}
+  {{ .Values }}
+  {{ .ValueString }}
+{{ end }}
+{{ end }}</pre>
+<p>You can run this template by passing the dot (<code>.</code>):</p>
+<pre>{{ template &#34;custom_template&#34; . }}</pre>
+<h2 id="kv">KV</h2>
+<p><code>KV</code> is a set of key value pairs, where each key and value is a string.</p>
+<p>Similarly to accessing variable properties, you can use <code>.</code> to retrieve the value of a value. For example:</p>
+<pre>{{ define &#34;custom_template&#34; }}
+  {{ .CommonLabels.grafana_folder }}
+{{ end }}</pre>
+<p>If a KV happens to contain numbers or bools then these are string representations of the numeric or boolean value.</p>
+<p>Additionally, KV provides methods to sort the pairs, remove keys, and iterate over just the keys or values:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Method name</th>
+          <th>Description</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>SortedPairs</td>
+          <td>Returns a sorted list of key/value pairs.</td>
+          <td></td>
+          <td>Pairs</td>
+      </tr>
+      <tr>
+          <td>Remove</td>
+          <td>Returns a copy of the KV with the keys removed</td>
+          <td>[]string</td>
+          <td><a href="#kv">KV</a></td>
+      </tr>
+      <tr>
+          <td>Names</td>
+          <td>Return the names of the label names</td>
+          <td></td>
+          <td>[]string</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>Return a list of the values</td>
+          <td></td>
+          <td>[]string</td>
+      </tr>
+  </tbody>
+</table>
+<p>Here&rsquo;s an example of using these methods:</p>
+<pre>{{ define &#34;custom_template&#34; }}
+  {{ .CommonLabels.SortedPairs }}
+  {{ .CommonLabels.Names }}
+  {{ .CommonLabels.Values }}
+  {{ .CommonLabels.Remove (stringSlice &#34;grafana_folder&#34;) }}
+{{ end }}</pre>
+<h2 id="time">Time</h2>
+<p>Some template functions and properties return a <code>Time</code> object, which refers to the <a href="https://pkg.go.dev/time#Time" target="_blank" rel="noopener noreferrer">type <code>Time</code></a> in Go&rsquo;s time package.</p>
+<p>When accessing a <code>Time</code> object, you can use various <a href="https://pkg.go.dev/time#Time" target="_blank" rel="noopener noreferrer"><code>Time</code> functions</a> in your templates as follows.</p>
+<pre>{{ define &#34;custom_template&#34; }}
+  {{ range .Alerts }}
+    {{ .StartsAt  }}
+    {{ .StartsAt.Add 6000000000000  }}
+    {{ .StartsAt.Add -6000000000000  }}
+    {{ .StartsAt.AddDate 1 0 0  }}
+    {{ .StartsAt.Year   }}/{{ .StartsAt.Month   }}/{{ .StartsAt.Day   }}
+    {{ .StartsAt.Hour   }}:{{ .StartsAt.Minute   }}:{{ .StartsAt.Second   }}
+    {{ .StartsAt.YearDay   }}-{{ .StartsAt.Weekday   }}
+    {{ .StartsAt.Unix }} {{ .StartsAt.UnixMilli }}
+  {{ end}}
+{{ end }}</pre>
+<h2 id="functions">Functions</h2>
+<p>Functions can perform actions in templates such as transforming or formatting data.</p>
+<p>Note that the 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/language/#functions">functions provided by Go&rsquo;s template language</a>, such as <code>index</code>, <code>and</code>, <code>printf</code>, and <code>len</code>, are available, along with many others.</p>
+<p>In addition, the following functions are also available for templating notifications:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>title</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Capitalizes the first character of each word.</td>
+      </tr>
+      <tr>
+          <td><code>toUpper</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Returns all text in uppercase.</td>
+      </tr>
+      <tr>
+          <td><code>toLower</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Returns all text in lowercase.</td>
+      </tr>
+      <tr>
+          <td><code>trimSpace</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Removes leading and trailing white spaces.</td>
+      </tr>
+      <tr>
+          <td><code>match</code></td>
+          <td>pattern, text</td>
+          <td>boolean</td>
+          <td>Matches the text against a regular expression pattern.</td>
+      </tr>
+      <tr>
+          <td><code>reReplaceAll</code></td>
+          <td>pattern, replacement, text</td>
+          <td>string</td>
+          <td>Replaces text matching the regular expression.</td>
+      </tr>
+      <tr>
+          <td><code>join</code></td>
+          <td>sep string, s []string</td>
+          <td>string</td>
+          <td>Concatenates the elements of s to create a single string. The separator string sep is placed between elements in the resulting string.</td>
+      </tr>
+      <tr>
+          <td><code>safeHtml</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td>Marks string as HTML not requiring auto-escaping.</td>
+      </tr>
+      <tr>
+          <td><code>stringSlice</code></td>
+          <td>&hellip;string</td>
+          <td>string</td>
+          <td>Returns the passed strings as a slice of strings. auto-escaping.</td>
+      </tr>
+      <tr>
+          <td><code>date</code></td>
+          <td>string, <a href="#time">Time</a></td>
+          <td>string</td>
+          <td>Format a time in the specified format. For format options, refer to <a href="https://pkg.go.dev/time#pkg-constants" target="_blank" rel="noopener noreferrer">Go&rsquo;s time format documentation</a>.</td>
+      </tr>
+      <tr>
+          <td><code>tz</code></td>
+          <td>string, <a href="#time">Time</a></td>
+          <td><a href="#time">Time</a></td>
+          <td>Returns the time in the specified timezone, such as <code>Europe/Paris</code>. For available timezone options, refer to the <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank" rel="noopener noreferrer">list of tz database time zones</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Here&rsquo;s an example using some functions to format text:</p>
+<pre>{{ define &#34;custom_template&#34; }}
+  {{ title &#34;hello, world!&#34; }}
+  {{ toUpper &#34;Hello, world!&#34; }}
+  {{ toLower &#34;Hello, world!&#34; }}
+  {{ trimSpace &#34;Hello, world!&#34; }}
+  {{ match &#34;a.*&#34; &#34;abc&#34; }}
+  {{ reReplaceAll &#34;localhost:(.*)&#34; &#34;example.com:$1&#34; &#34;localhost:8080&#34; }}
+  {{ join &#34;-&#34; (stringSlice &#34;a&#34; &#34;b&#34; &#34;c&#34;) }}
+  {{ safeHtml &#34;&lt;b&gt;Text&lt;/b&gt;&#34;}}
+  {{ stringSlice &#34;a&#34; &#34;b&#34; &#34;c&#34; }}
+{{ end }}</pre>
+<p><code>date</code> and <code>tz</code> can format times. For example, to print the time an alert fired in the format <code>15:04:05 MST</code>:</p>
+<pre>{{ define &#34;custom_template&#34; }}
+  {{ range .Alerts }}
+    {{ .StartsAt | date &#34;15:04:05 MST&#34; }}
+  {{ end}}
+{{ end }}</pre>
+<p>You can then use <code>tz</code> to change the timezone from UTC to local time, such as <code>Europe/Paris</code>.</p>
+<pre>{{ define &#34;custom_template&#34; }}
+  {{ range .Alerts }}
+    {{ .StartsAt | tz &#34;Europe/Paris&#34; }}
+    {{ .StartsAt | tz &#34;Europe/Paris&#34; | date &#34;15:04:05 MST&#34; }}
+  {{ end}}
+{{ end }}</pre>
+<pre>2024-10-30 21:01:45.227 +0100 CET
+21:01:45 CET</pre>
+<h2 id="namespaced-functions">Namespaced Functions</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Namespaced Functions are not yet <a href="/docs/release-life-cycle/#general-availability">generally available</a> in Grafana Cloud.</p></blockquote></div>
+
+<p>In addition to the top-level functions, the following namespaced functions are also available:</p>
+<h3 id="collection-functions">Collection Functions</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>coll.Dict</code></td>
+          <td>key string, value any, &hellip;</td>
+          <td>map</td>
+          <td>Creates a map with string keys from key/value pairs. All keys are converted to strings. If an odd number of arguments is provided, the last key will have an empty string value.</td>
+      </tr>
+      <tr>
+          <td><code>coll.Slice</code></td>
+          <td>&hellip;any</td>
+          <td>[]any</td>
+          <td>Creates a slice (array/list) from the provided arguments. Useful for creating lists that can be iterated over with <code>range</code>.</td>
+      </tr>
+      <tr>
+          <td><code>coll.Append</code></td>
+          <td>value any, list []any</td>
+          <td>[]any</td>
+          <td>Creates a new list by appending a value to the end of an existing list. Does not modify the original list.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Example using collection functions:</p>
+<pre>{{ define &#34;collection.example&#34; }}
+{{- /* Create a dictionary of alert metadata */ -}}
+{{- $metadata := coll.Dict
+    &#34;severity&#34; &#34;critical&#34;
+    &#34;team&#34; &#34;infrastructure&#34;
+    &#34;environment&#34; &#34;production&#34;
+-}}
+
+{{- /* Create a slice of affected services */ -}}
+{{- $services := coll.Slice &#34;database&#34; &#34;cache&#34; &#34;api&#34; -}}
+
+{{- /* Append a new service to the list */ -}}
+{{- $services = coll.Append &#34;web&#34; $services -}}
+
+{{- /* Use the collections in a template */ -}}
+Affected Services: {{ range $services }}{{ . }},{{ end }}
+
+Alert Metadata:
+{{- range $k, $v := $metadata }}
+  {{ $k }}: {{ $v }}
+{{- end }}
+{{ end }}</pre>
+<p>Output:</p>
+<pre>Affected Services: database,cache,api,web,
+
+Alert Metadata:
+  environment: production
+  severity: critical
+  team: infrastructure</pre>
+<h3 id="data-functions">Data Functions</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>data.JSON</code></td>
+          <td>jsonString string</td>
+          <td>any</td>
+          <td>Parses a JSON string into an object that can be manipulated in the template. Works with both JSON objects and arrays.</td>
+      </tr>
+      <tr>
+          <td><code>data.ToJSON</code></td>
+          <td>obj any</td>
+          <td>string</td>
+          <td>Serializes any object (maps, arrays, etc.) into a JSON string. Useful for creating webhook payloads.</td>
+      </tr>
+      <tr>
+          <td><code>data.ToJSONPretty</code></td>
+          <td>indent string, obj any</td>
+          <td>string</td>
+          <td>Creates an indented JSON string representation of an object. The first argument specifies the indentation string (e.g., spaces).</td>
+      </tr>
+  </tbody>
+</table>
+<p>Example using data functions:</p>
+<pre>{{ define &#34;data.example&#34; }}
+{{- /* First, let&#39;s create some alert data as a JSON string */ -}}
+{{ $jsonString := `{
+  &#34;service&#34;: {
+    &#34;name&#34;: &#34;payment-api&#34;,
+    &#34;environment&#34;: &#34;production&#34;,
+    &#34;thresholds&#34;: {
+      &#34;error_rate&#34;: 5,
+      &#34;latency_ms&#34;: 100
+    }
+  }
+}` }}
+
+{{- /* Parse the JSON string into an object we can work with */ -}}
+{{ $config := $jsonString | data.JSON }}
+
+{{- /* Create a new alert payload */ -}}
+{{ $payload := coll.Dict
+    &#34;service&#34; $config.service.name
+    &#34;environment&#34; $config.service.environment
+    &#34;status&#34; .Status
+    &#34;errorThreshold&#34; $config.service.thresholds.error_rate
+}}
+
+{{- /* Output the payload in different JSON formats */ -}}
+Compact JSON: {{ $payload | data.ToJSON }}
+
+Pretty JSON with 2-space indent:
+{{ $payload | data.ToJSONPretty &#34;  &#34; }}
+{{ end }}</pre>
+<p>Output:</p>
+<pre>Compact JSON: {&#34;environment&#34;:&#34;production&#34;,&#34;errorThreshold&#34;:5,&#34;service&#34;:&#34;payment-api&#34;,&#34;status&#34;:&#34;resolved&#34;}
+
+Pretty JSON with 2-space indent:
+{
+  &#34;environment&#34;: &#34;production&#34;,
+  &#34;errorThreshold&#34;: 5,
+  &#34;service&#34;: &#34;payment-api&#34;,
+  &#34;status&#34;: &#34;resolved&#34;
+}</pre>
+<h3 id="template-functions">Template Functions</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>tmpl.Exec</code></td>
+          <td>name string, [context any]</td>
+          <td>string</td>
+          <td>Executes a named template and returns the result as a string. Similar to the <code>template</code> action but allows for post-processing of the result.</td>
+      </tr>
+      <tr>
+          <td><code>tmpl.Inline</code></td>
+          <td>template string, context any</td>
+          <td>string</td>
+          <td>Renders a string as a template.</td>
+      </tr>
+  </tbody>
+</table>
+<pre>{{ define &#34;template.example&#34; -}}
+{{ coll.Dict
+    &#34;info&#34; (tmpl.Exec `info` . | data.JSON)
+    &#34;severity&#34; (tmpl.Inline `{{ print &#34;critical&#34; | toUpper }}` . )
+    | data.ToJSONPretty &#34; &#34;}}
+{{- end }}
+
+{{- /* Define a sub-template */ -}}
+{{ define &#34;info&#34; -}}
+{{coll.Dict
+    &#34;team&#34; &#34;infrastructure&#34;
+    &#34;environment&#34; &#34;production&#34; | data.ToJSON }}
+{{- end }}</pre>
+<p>Output:</p>
+<pre>{
+  &#34;info&#34;: {
+    &#34;environment&#34;: &#34;production&#34;,
+    &#34;team&#34;: &#34;infrastructure&#34;
+  },
+  &#34;severity&#34;: &#34;CRITICAL&#34;
+}</pre>
+<h3 id="time-functions">Time Functions</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Arguments</th>
+          <th>Returns</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>time.Now</code></td>
+          <td></td>
+          <td>Time</td>
+          <td>Returns the current local time as a time.Time object. Can be formatted using Go&rsquo;s time formatting functions.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Example using time functions:</p>
+<pre>{{ define &#34;time.example&#34; }}
+{{- /* Get current time in different formats */ -}}
+Current Time (UTC): {{ (time.Now).UTC.Format &#34;2006-01-02 15:04:05 MST&#34; }}
+Current Time (Local): {{ (time.Now).Format &#34;Monday, January 2, 2006 at 15:04:05&#34; }}
+
+{{- /* Compare alert time with current time */ -}}
+{{ $timeAgo := (time.Now).Sub .StartsAt }}
+Alert fired: {{ $timeAgo }} ago
+{{ end }}</pre>
+<p>Output:</p>
+<pre>Current Time (UTC): 2025-03-08 18:14:27 UTC
+Current Time (Local): Saturday, March 8, 2025 at 14:14:27
+Alert fired: 25h49m32.78574723s ago</pre>
+<h2 id="differences-with-annotation-and-label-templates">Differences with annotation and label templates</h2>
+<p>In the alert rule, you can also template annotations and labels to include additional information. For example, you might add a <code>summary</code> annotation that displays the query value triggering the alert.</p>
+<p>Annotation and label templates add relevant information to individual alert instances, while notification templates inform about a group of alert instances.</p>
+<p>Since both types of templates operate in distinct contexts, the 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/reference/">functions and variables available in annotation and label templates</a> differ from those used in notification templates.</p>

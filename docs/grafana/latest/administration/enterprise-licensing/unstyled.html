@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<h1 id="grafana-enterprise-license">Grafana Enterprise license</h1>
+<p>When you become a Grafana Enterprise customer, you gain access to Grafana&rsquo;s premium observability features, including enterprise data source plugins, reporting, and role-based access control. In order to use these <a href="../../introduction/grafana-enterprise/">enhanced features of Grafana Enterprise</a>, you must purchase and activate a Grafana Enterprise license.</p>
+<p>To purchase a license directly from Grafana Labs, <a href="/contact?about=grafana-enterprise">Contact a Grafana Labs representative</a>. To activate an Enterprise license purchased from Grafana Labs, refer to <a href="#activate-an-enterprise-license">Activate an Enterprise license</a>.</p>
+<p>You can also purchase a Grafana Enterprise license through the AWS Marketplace. To learn more about activating a license purchased through AWS, refer to <a href="activate-aws-marketplace-license/">Activate a Grafana Enterprise license purchased through AWS Marketplace</a>.</p>
+<ul><li>
+    <a href="/docs/grafana/latest/administration/enterprise-licensing/activate-aws-marketplace-license/">Activate a Grafana Enterprise license purchased through AWS Marketplace</a></li></ul>
+<h2 id="activate-an-enterprise-license">Activate an Enterprise license</h2>
+<p>Follow these steps to activate your Grafana Enterprise license:</p>
+<h3 id="step-1-download-your-license-file">Step 1. Download your license file</h3>
+<p>To download your Grafana Enterprise license:</p>
+<ol>
+<li>Sign in to your <a href="/">Grafana Cloud</a> account.</li>
+<li>Go to <strong>My Account</strong> and select an organization from the drop-down menu at the top left of the page. On the Overview page for each organization, you can see a section for Grafana Enterprise licenses. Click <strong>Details</strong> next to a license.</li>
+<li>If the license shows &ldquo;License not configured&rdquo; or if the URL is listed as &ldquo;-&rdquo;, you need to update the details. This requires the Admin role.
+<ol>
+<li>Click <strong>Update</strong> next to License Details. <em>If the <strong>Update</strong> button isn&rsquo;t visible, contact the Grafana account team.</em></li>
+<li>Enter the URL. It must match the effective 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#root_url"><code>root_url</code></a> configuration setting (including the trailing slash) of the Grafana Enterprise instance. It should be the URL that users type in their browsers to access the frontend, not the node hostname. The URL must start with &ldquo;https://&rdquo;, and it can&rsquo;t be <code>localhost</code> or contain wildcards.</li>
+<li>(Optional) Edit the license name. This name is only used for display purposes.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+</li>
+<li>At the bottom of the license details page, select <strong>Download token</strong> to download the <code>license.jwt</code> file that contains your license.</li>
+</ol>
+<h3 id="step-2-add-your-license-to-a-grafana-instance">Step 2. Add your license to a Grafana instance</h3>
+<p>You must install a Grafana Enterprise build to use the enterprise features, which you can <a href="/grafana/download?edition=enterprise">download</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you already use Grafana OSS, you can replace it with the same version of Grafana Enterprise.
+Ensure that you back up the configuration and database before proceeding.
+For more information, refer to 
+    <a href="/docs/grafana/latest/administration/back-up-grafana/">Back up Grafana</a>.</p></blockquote></div>
+
+<p>There is more than one way to add the license to a Grafana instance:</p>
+<h4 id="upload-the-license-file-via-the-grafana-server-administrator-page">Upload the license file via the Grafana server administrator page</h4>
+<p>This is the preferred option for single instance installations of Grafana Enterprise.</p>
+<ol>
+<li>Sign in as a Grafana server administrator.</li>
+<li>Click <strong>Administration &gt; General &gt; Stats and license</strong> in the side navigation menu.</li>
+<li>Click <strong>Upload a new token</strong>.</li>
+<li>Select your license file, and upload it.</li>
+</ol>
+<h4 id="put-the-licensejwt-file-into-the-data-directory-of-grafana">Put the <code>license.jwt</code> file into the data directory of Grafana</h4>
+<p>On Linux systems, the data directory is usually at <code>/var/lib/grafana</code>.</p>
+<p>You can also configure a custom location for the license file using the grafana.ini setting:</p>
+<pre>[enterprise]
+license_path = /company/secrets/license.jwt</pre>
+<p>This setting can also be set with an environment variable, which is useful if you&rsquo;re running Grafana with Docker and have a custom volume where you have placed the license file. In this case, set the environment variable <code>GF_ENTERPRISE_LICENSE_PATH</code> to point to the location of your license file.</p>
+<h4 id="set-the-content-of-the-license-file-as-a-configuration-option">Set the content of the license file as a configuration option</h4>
+<p>You can add a license by pasting the content of the <code>license.jwt</code>
+to the grafana.ini configuration file:</p>
+<pre>[enterprise]
+license_text = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aGlzIjoiaXMiLCJub3QiOiJhIiwidmFsaWQiOiJsaWNlbnNlIn0.bxDzxIoJlYMwiEYKYT_l2s42z0Y30tY-6KKoyz9RuLE</pre>
+<p>This option can be set using the <code>GF_ENTERPRISE_LICENSE_TEXT</code>
+environment variable.</p>
+<h3 id="step-3-ensure-that-the-license-files-root-url-matches-the-root_url-configuration-option">Step 3. Ensure that the license file&rsquo;s root URL matches the root_url configuration option</h3>
+<p>Update the <a href="../../setup-grafana/configure-grafana/#root_url"><code>root_url</code></a> in your configuration. It should be the URL that users type in their browsers to access the frontend, not the node hostname(s).</p>
+<p>This is important, because as part of the validation checks at startup, Grafana compares the license URL to the <a href="../../setup-grafana/configure-grafana/#root_url"><code>root_url</code></a> in your configuration.</p>
+<p>In your configuration file:</p>
+<pre>[server]
+root_url = https://grafana.example.com/</pre>
+<p>Or with an environment variable:</p>
+<pre>GF_SERVER_ROOT_URL=https://grafana.example.com/</pre>
+<h3 id="step-4-restart-grafana">Step 4. Restart Grafana</h3>
+<p>To finalize the installation of Grafana Enterprise, restart Grafana to enable all Grafana Enterprise features. Refer to <a href="../../setup-grafana/start-restart-grafana/">restart Grafana</a> for more information.</p>
+<h2 id="license-expiration">License expiration</h2>
+<p>If your license has expired, most of Grafana keeps working as normal. Some enterprise functionality stops or runs with reduced functionality and Grafana displays a banner informing the users that Grafana is running on an expired license. Your Grafana admin needs to upload a new license file to restore full functionality.</p>
+<blockquote>
+<p>Replace your license as soon as possible. Running Grafana Enterprise with an expired license is unsupported and can lead to unexpected consequences.</p></blockquote>
+<h3 id="update-your-license">Update your license</h3>
+<ol>
+<li>
+<p>Locate your current <code>license.jwt</code> file. In a standard installation it is stored inside the Grafana data directory, which on a typical Linux installation is in <code>/var/lib/grafana/data</code>. This location might be overridden in the ini file <a href="../../setup-grafana/configure-grafana/">Configuration</a>.</p>
+<pre>[enterprise]
+license_path = /path/to/your/license.jwt</pre>
+<p>The configuration file&rsquo;s location may also be overridden by the <code>GF_ENTERPRISE_LICENSE_PATH</code> environment variable.</p>
+</li>
+<li>
+<p>Log in to your <a href="/login">Grafana Cloud Account</a> and make sure you&rsquo;re in the correct organization in the dropdown at the top of the page.</p>
+</li>
+<li>
+<p>Under the <strong>Grafana Enterprise</strong> section in the menu bar to the left, choose licenses and download the currently valid license with which you want to run Grafana. If you cannot see a valid license on Grafana.com, please contact your account manager at Grafana Labs to renew your subscription.</p>
+</li>
+<li>
+<p>Replace the current <code>license.jwt</code>-file with the one you&rsquo;ve just downloaded.</p>
+</li>
+<li>
+<p><a href="../../setup-grafana/start-restart-grafana/">Restart Grafana</a>.</p>
+</li>
+</ol>
+<h3 id="if-your-license-expires">If your license expires</h3>
+<p>If your Grafana Enterprise license expires, you can expect the following changes in feature behavior.</p>
+<h4 id="data-source-permissions">Data source permissions</h4>
+<p>Your current data source permissions will keep working as expected, but you&rsquo;ll be unable to add new data source permissions until the license has been renewed.</p>
+<h4 id="ldap-authentication">LDAP authentication</h4>
+<ul>
+<li>LDAP synchronization is not affected by an expired license.</li>
+<li>Team sync debugging is unavailable.</li>
+</ul>
+<h4 id="saml-authentication">SAML authentication</h4>
+<p>SAML authentication is not affected by an expired license.</p>
+<h4 id="role-based-access-control-rbac">Role-based access control (RBAC)</h4>
+<ul>
+<li>Creating, updating and deleting custom roles is not available.</li>
+<li>Modifying permissions for custom roles is not available.</li>
+</ul>
+<h4 id="reporting">Reporting</h4>
+<ul>
+<li>You&rsquo;re unable to configure new reports or generate previews.</li>
+<li>Existing reports continue to be sent.</li>
+</ul>
+<h4 id="enterprise-plugins">Enterprise plugins</h4>
+<p>Enterprise plugins might stop working.</p>
+<h4 id="custom-branding">Custom branding</h4>
+<p>The custom branding feature is turned off, meaning that any custom branding options will not have any effect.</p>
+<h4 id="usage-insights">Usage insights</h4>
+<p>Exporting usage insights logs to Loki will be turned off for licenses expired for more than 7 days.</p>
+<p>All the other usage insights features are turned off as soon as the license expires, meaning that you will not be able to see dashboard usage, presence indicators, or use improved search. Grafana continues to collect usage data and you will have access to it as soon as you update your license.</p>
+<h4 id="vault-integration">Vault integration</h4>
+<p>Vault integration is not affected by an expired license.</p>
+<h4 id="auditing">Auditing</h4>
+<p>Auditing is not affected by an expired license.</p>
+<h4 id="license-restrictions">License restrictions</h4>
+<p>The concurrent session limit remains active for seven days after the expiration date, after which it will be turned off.</p>
+<p>The active users limit is turned off immediately.</p>
+<h4 id="settings-updates-at-runtime">Settings updates at runtime</h4>
+<p>Settings updates at runtime are not affected by an expired license.</p>
+<h4 id="email-sharing">Email sharing</h4>
+<p>External users can&rsquo;t access dashboards shared via email anymore.
+These dashboards are now private but you can make them public and accessible to everyone if you want to.</p>
+<p>Grafana keeps your sharing configurations and restores them after you update your license.</p>
+<h2 id="grafana-enterprise-license-restrictions">Grafana Enterprise license restrictions</h2>
+<p>When you become a Grafana Enterprise customer, you receive a license that governs your use of Grafana Enterprise.</p>
+<h3 id="active-users-limit">Active users limit</h3>
+<p>Your Grafana license includes a maximum number of active users.</p>
+<ul>
+<li>An <em>active user</em> is a user who has signed in to Grafana within the last 30 days. This is a rolling window that is updated daily.</li>
+<li>When you reach the maximum number of active users, only currently active users (users who have signed in over the past 30 days) can sign in. When a new user or a previously-inactive user tries to sign in, the user will see an error message indicating that Grafana has reached its license limit.</li>
+<li>The user&rsquo;s role, number of dashboards that a user can view or edit, and the number of organizations that they can access does not affect the active user count.</li>
+<li>A license limit banner appears to administrators when Grafana reaches its active user limit; editors and viewers do not see the banner.</li>
+</ul>
+<h4 id="determine-the-number-of-active-users">Determine the number of active users</h4>
+<p>To determine the number of active users:</p>
+<ol>
+<li>
+<p>Sign in to Grafana Enterprise as a System Administrator.</p>
+</li>
+<li>
+<p>Click <strong>Administration</strong> in the side navigation menu.</p>
+</li>
+<li>
+<p>Click <strong>General</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Stats and license</strong>.</p>
+</li>
+<li>
+<p>Review the utilization count on the <strong>Utilization</strong> panel.</p>
+</li>
+</ol>
+<h3 id="tiered-licensing-deprecated">Tiered licensing (deprecated)</h3>
+<p>A tiered license defines dashboard viewers, and dashboard editors and administrators, as two distinct user types that each have their own user limit.</p>
+<p>Grafana only counts and enforces the <em>total</em> number of active users in your Grafana instance. For example, if you purchase 150 active users, you can have 20 admins, 70 editors, and 60 viewers, or you can have 150 admins. Grafana will enforce the total number of active users even if you use a license that grants a specific number of admins or editors and a certain number of viewers. This is a more permissive policy than before, which gives you the flexibility to change users&rsquo; roles.</p>
+<p>If you are running a pre-9.0 version of Grafana Enterprise, please refer to the documentation for that version to learn more about license enforcement in your current version.</p>
+<h3 id="additional-license-restrictions">Additional license restrictions</h3>
+<p>Your license is controlled by the following rules:</p>
+<p><strong>License expiration date:</strong> The license includes an expiration date, which is the date when a license becomes inactive.</p>
+<p>As the license expiration date approaches, you will see a banner in Grafana that encourages you to renew. To learn about how to renew your license and what happens in Grafana when a license expires, refer to <a href="#license-expiration">License expiration</a>.</p>
+<p><strong>License token expiration:</strong> Grafana Enterprise requires a valid token, which is automatically renewed.</p>
+<p>A license token is a digital key that activates your license. By default, the license token is renewed every 24 hours by calling the Grafana API. Short-lived license tokens enable more frequent validation that licenses are compliant, and allow for more frequent license updates - for example, adding users or invalidating a compromised license.</p>
+<p>To view the details of your license token, sign in to Grafana Enterprise as a Server Administrator and visit <strong>Administration</strong> &gt; <strong>General</strong> &gt; <strong>Statistics and licensing</strong>. Token details are in the Token section under License Details.</p>
+<p>License token renewal requires internet access, and requires that the <code>auto_refresh_license</code> <a href="/docs/grafana/latest/setup-grafana/configure-grafana/enterprise-configuration/#auto_refresh_license">configuration setting</a> be set to <code>true</code>. If your Grafana Enterprise instance cannot connect to the internet, contact your Grafana Labs account team for additional options for token renewal and license audit.</p>
+<p><strong>Grafana License URL:</strong> Your license does not work with an instance of Grafana with a different root URL.</p>
+<p>The License URL is the complete URL of your Grafana instance, for example <code>https://grafana.your-company.com/</code>. It is defined in the <a href="../../setup-grafana/configure-grafana/#root_url">root_url</a> configuration setting.</p>
+<p><strong>Concurrent sessions limit</strong>: As of Grafana Enterprise 7.5, users can initiate up to three concurrent sessions of Grafana.</p>
+<p>The system creates a session when a user signs in to Grafana from a new device, a different browser, or an incognito window. If a user signs in to Grafana from another tab or window within the same browser, only one session is used.</p>
+<p>When a user reaches the session limit, the fourth connection succeeds and the longest inactive session is signed out.</p>
+<h3 id="request-a-change-to-your-license">Request a change to your license</h3>
+<p>To increase the number of licensed users within Grafana, extend a license, or change your licensed URL, contact <a href="/profile/org#support">Grafana support</a> or your Grafana Labs account team. They will update your license, which you can activate from within Grafana.</p>
+<p>For instructions about how to activate your license after it is updated, refer to <a href="#activate-an-enterprise-license">Activate an Enterprise license</a>.</p>
+<h2 id="usage-billing">Usage billing</h2>
+<p>Standard Grafana Enterprise licenses include a certain number of seats that can be used, and prevent more users logging into Grafana than have been licensed. This makes sense if you prefer a predictable bill. It can however be a problem if you anticipate uneven usage patterns over time or when it&rsquo;s critical that no user ever be prevented from logging in to Grafana due to capacity constraints.</p>
+<p>For those use-cases we support usage-based billing, where your license includes a certain number of included users and you are billed on a monthly basis for any excess active users during the month.</p>
+<p>Usage billing involves a contractual agreement between you and Grafana Labs and an update to your license, and it is only available if Grafana Enterprise version 10.0.0 or higher is configured to <a href="../../setup-grafana/configure-grafana/enterprise-configuration/#auto_refresh_license">automatically refresh its license token</a>.</p>
+<h3 id="user-deduplication">User deduplication</h3>
+<p>If your organization has multiple Grafana Enterprise instances with usage billing enabled, then each active user counts only once toward your license, regardless of how many instances that user signs into. Each Grafana Enterprise instance submits a hashed list of users to Grafana Labs via API every day. Each user email address or anonymous device ID is hashed using a one-way sha256 algorithm, and submitted to Grafana where the hashed users are deduplicated across instances.</p>
+<h3 id="request-usage-billing">Request usage billing</h3>
+<p>To request usage billing, contact your Grafana Labs account team or <a href="/profile/org#support">submit a support ticket</a>.</p>

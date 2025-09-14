@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<h1 id="write-traceql-queries-with-the-editor">Write TraceQL queries with the editor</h1>
+
+
+<div data-shared="datasources/tempo-editor-traceql.md">
+            <!-- # Write TraceQL queries using the query editor -->
+<p>Inspired by PromQL and LogQL, TraceQL is a query language designed for selecting traces.
+TraceQL provides a method for formulating precise queries so you can zoom in to the data you need.
+Query results are returned faster because the queries limit what is searched.</p>
+<p>To learn more about how to query by TraceQL, refer to the <a href="/docs/tempo/latest/traceql/">TraceQL documentation</a>.</p>
+<p>The TraceQL query editor in Grafana <strong>Explore</strong> lets you search by trace ID and write TraceQL queries using autocomplete.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-traceql-v11.png"
+  alt="The TraceQL query editor" width="1007"
+     height="277"/></p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>This feature is automatically available in Grafana 10 (and newer) and Grafana Cloud.</p>
+<p>To use the TraceQL query editor in self-hosted Grafana 9.3.2 and older, you need to <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">enable the <code>traceqlEditor</code> feature toggle</a>.</p>
+<h3 id="streaming-and-grpc">Streaming and gRPC</h3>
+<p>If you&rsquo;re trying to query a self-managed Grafana Tempo or Grafana Enterprise Traces database with a gateway, such as nginx, in front of it from your hosted Grafana, that gateway (for example, nginx) must allow gRPC connections.
+If it doesn&rsquo;t, streaming won&rsquo;t work and queries will fail to return results.</p>
+<p>If you can&rsquo;t configure your gateway to allow gRPC, deactivate streaming in your hosted Grafana.
+In Grafana 11.2 and newer, you can deactivate the <strong>Streaming</strong> option in your Tempo data source settings from <strong>Connections</strong> &gt; <strong>Data sources</strong> in the Grafana main menu.
+You can also open a support escalation to request streaming query results be disabled in your hosted Grafana.</p>
+<h2 id="write-traceql-queries-using-the-query-editor">Write TraceQL queries using the query editor</h2>
+<p>The Tempo data source’s TraceQL query editor helps you query and display traces from Tempo in <strong>Explore</strong>.</p>
+<p>To access the query editor, follow these steps:</p>
+<ol>
+<li>
+<p>Sign into Grafana or Grafana Cloud.</p>
+</li>
+<li>
+<p>Select <strong>Explore</strong> from the main menu.</p>
+</li>
+<li>
+<p>Select a Tempo data source.</p>
+</li>
+<li>
+<p>Select the <strong>TraceQL</strong> tab.</p>
+</li>
+<li>
+<p>Start your query on the text line by entering <code>{</code>. For help with TraceQL syntax, refer to the <a href="/docs/tempo/latest/traceql/#construct-a-traceql-query">Construct a TraceQL query documentation</a>.</p>
+<p>Optional: Select <strong>Copy query from Search</strong> to transfer a builder query to the editor.</p>
+</li>
+<li>
+<p>Optional: Use the <strong>Time picker</strong> drop-down list to change the time and range for the query (refer to the <a href="/docs/grafana/latest/dashboards/use-dashboards/#set-dashboard-time-range">documentation for instructions</a>).</p>
+</li>
+<li>
+<p>Once you&rsquo;ve finished your query, select <strong>Run query</strong>.</p>
+</li>
+</ol>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-ed-example-v11-a.png"
+  alt="Query editor showing span results" width="1367"
+     height="908"/></p>
+<p>This video provides an example of creating a TraceQL query using the custom tag grouping.</p>
+
+
+  <div
+    class="youtube-lazyload responsive-video"
+    data-embed="fraepWra00Y"
+    data-url="https://www.youtube.com/embed/fraepWra00Y?autoplay=1"
+    data-title="YouTube Video"
+  >
+    <div class="play-button"></div>
+  </div>
+<h2 id="query-by-traceid">Query by TraceID</h2>
+<p>To query a particular trace by its trace ID:</p>
+<ol>
+<li>From the menu, choose <strong>Explore</strong>, select the desired Tempo data source, and navigate to the <strong>TraceQL</strong> tab.</li>
+<li>Enter the trace ID into the query field. For example: <code>41928b92edf1cdbe0ba6594baee5ae9</code></li>
+<li>Click <strong>Run query</strong> or use the keyboard shortcut Shift + Enter.</li>
+</ol>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-trace-id-v11.png"
+  alt="Search for a trace ID using the TraceQL query editor" width="1022"
+     height="693"/></p>
+<h2 id="use-autocomplete-to-write-queries">Use autocomplete to write queries</h2>
+<p>You can use the query editor’s autocomplete suggestions to write queries.
+The editor detects spansets to provide relevant autocomplete options.
+It uses regular expressions (regex) to detect where it&rsquo;s inside a spanset and provide attribute names, scopes, intrinsic names, logic operators, or attribute values from the Tempo API, depending on what&rsquo;s expected for the current situation.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-editor-autocomplete.png"
+  alt="Query editor showing the auto-complete feature" width="1014"
+     height="290"/></p>
+<h3 id="anchored-regular-expressions">Anchored regular expressions</h3>
+<p>Regular expressions are anchored at both ends.
+This anchoring makes the queries faster and matches the behavior of PromQL, where regular expressions are also fully anchored.</p>
+<p>An unanchored query, such as:
+<code>{ span.foo =~ &quot;bar&quot; }</code>
+is now treated as:
+<code>{ span.foo =~ &quot;^bar$&quot; }</code>.</p>
+<p>If you use TraceQL with regular expressions in your Grafana dashboards and you want the unanchored behavior, update the queries to use the unanchored version, such as <code>{ span.foo =~ &quot;.*bar.*&quot;}</code>.</p>
+<h3 id="create-a-query-with-autocomplete">Create a query with autocomplete</h3>
+<p>To create a query using autocomplete, follow these steps:</p>
+<ol>
+<li>
+<p>From the menu, choose <strong>Explore</strong>, select the desired Tempo data source, and navigate to the <strong>TraceQL</strong> tab.</p>
+</li>
+<li>
+<p>Enter your query. As you type your query, autocomplete suggestions appear as a drop-down. Each letter you enter refines the autocomplete options to match.</p>
+</li>
+<li>
+<p>Use your mouse or arrow keys to select any option you wish. When the desired option is highlighted, press Tab on your keyboard to add the selection to your query.</p>
+</li>
+<li>
+<p>Once your query is complete, select <strong>Run query</strong>.</p>
+</li>
+</ol>
+<h2 id="view-query-results">View query results</h2>
+<p>Query results appear in a table, such as <strong>Table - Traces</strong>, under the query editor.
+Each span (and the trace it belongs to) matching the query conditions is returned by the query.
+If there are no filter conditions, all spans are matching and thus returned with their associated traces.</p>
+<p>A query is performed against a defined time interval, relative (for example, the last 3 hours) or absolute (for example, from X date-time to Y date-time).
+The query response is also limited by the number of traces (<strong>Limit</strong>) and spans per spanset (<strong>Span Limit</strong>).</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/tempo/traceql/TraceQL-in-Grafana-v11.png"
+  alt="TraceQL in Grafana" width="3006"
+     height="1544"/></p>
+<ol>
+<li>TraceQL query editor</li>
+<li>Query options: <strong>Limit</strong>, <strong>Span Limit</strong> and <strong>Table Format</strong> (Traces or Spans).</li>
+<li>Trace (by Trace ID). The <strong>Name</strong> and <strong>Service</strong> columns are displaying the trace root span name and associated service.</li>
+<li>Spans associated with the Trace.</li>
+</ol>
+<p>Selecting the trace ID from the returned results opens a trace diagram.
+Selecting a span from the returned results opens a trace diagram and reveals the relevant span in the trace diagram.</p>
+<p>For more information on span details, refer to <a href="/docs/grafana/latest/explore/trace-integration/#span-details">Traces in Explore</a>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/query-editor/tempo-ds-query-span-details-v11.png"
+  alt="Selecting a trace ID or a span to view span details" width="1481"
+     height="1068"/></p>
+<p>Querying spansets with a large number of spans can negatively impact performance.
+You can use the <strong>Span Limit</strong> field in <strong>Options</strong> section of the TraceQL query editor.
+This field sets the maximum number of spans to return for each span set.
+By default, the maximum value that you can set for the <strong>Span Limit</strong> value (or the spss query) is 100.
+In Tempo configuration, this value is controlled by the <code>max_spans_per_span_set</code> parameter and can be modified by your Tempo administrator.
+Grafana Cloud users can contact Grafana Support to request a change.
+Entering a value higher than the default results in an error.</p>
+<h3 id="focus-on-traces-or-spans">Focus on traces or spans</h3>
+<p>Under <strong>Options</strong>, you can choose to display the table as <strong>Traces</strong> or <strong>Spans</strong> focused.</p>
+<p>When the <strong>Table Type</strong> option is set to <strong>Spans</strong>, the traces and spansets are flattened into a list of spans.
+The trace service and trace name are added to the row of each span to add context.</p>
+<p>Using the <strong>Spans</strong> option makes it easier access the spans to apply transformations and plot them in dashboards.</p>
+<h3 id="stream-results">Stream results</h3>
+<p>The Tempo data source supports streaming responses to TraceQL queries so you can see partial query results as they come in without waiting for the whole query to finish.</p>
+<p>Streaming is available for both the <strong>Search</strong> and <strong>TraceQL</strong> query types, and you&rsquo;ll get immediate visibility of incoming traces on the results table.</p>
+<p>To learn how to activate streaming, refer to 
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#streaming">Streaming</a> in the Tempo data source documentation.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/data-sources/tempo-streaming-v2.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+</div>
+
+        

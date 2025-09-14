@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<h1 id="queries-and-conditions">Queries and conditions</h1>
+<p>In Grafana, queries fetch and transform data from data sources, which include databases like MySQL or PostgreSQL, time series databases like Prometheus or InfluxDB, and services like Amazon CloudWatch or Azure Monitor.</p>
+<p>An alert rule defines the following components:</p>
+<ul>
+<li>A <a href="#data-source-queries">query</a> that specifies the data to retrieve from a data source, with the syntax depending on the type of data source used.</li>
+<li>A <a href="#alert-condition">condition</a> that must be met before the alert rule fires.</li>
+<li>Optional <a href="#advanced-options-expressions">expressions</a> to perform transformations on the retrieved data.</li>
+</ul>
+<p>Alerting periodically runs the queries and expressions, evaluating the condition. If the condition is breached, an alert instance is triggered for each time series.</p>
+<h2 id="data-source-queries">Data source queries</h2>
+<p>Alerting queries are the same as the queries used in Grafana panels, but Grafana-managed alerts are limited to querying <a href="/grafana/plugins/data-source-plugins/?features=alerting">data sources that have Alerting enabled</a>.</p>
+<p>Queries in Grafana can be applied in various ways, depending on the data source and query language being used. Each data source’s query editor provides a customized user interface to help you write queries that take advantage of its unique capabilities. For details about query editors and syntax in Grafana, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<p>Alerting can work with two types of data:</p>
+<ol>
+<li><strong>Time series data</strong> — The query returns a collection of time series, where each series must be <a href="#reduce">reduced</a> to a single numeric value for evaluating the alert condition.</li>
+<li><strong>Tabular data</strong> — The query must return data in a table format with only one numeric column. Each row must have a value in that column, used to evaluate the alert condition. See a 
+    <a href="/docs/grafana/latest/alerting/best-practices/table-data/">tabular data example</a>.</li>
+</ol>
+<p>Each time series or table row is evaluated as a separate 
+    <a href="/docs/grafana/latest/alerting/fundamentals/#alert-instances">alert instance</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alerting-query-conditions-default-options.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alerting-query-conditions-default-options.png"data-srcset="/media/docs/alerting/alerting-query-conditions-default-options.png?w=320 320w, /media/docs/alerting/alerting-query-conditions-default-options.png?w=550 550w, /media/docs/alerting/alerting-query-conditions-default-options.png?w=750 750w, /media/docs/alerting/alerting-query-conditions-default-options.png?w=900 900w, /media/docs/alerting/alerting-query-conditions-default-options.png?w=1040 1040w, /media/docs/alerting/alerting-query-conditions-default-options.png?w=1240 1240w, /media/docs/alerting/alerting-query-conditions-default-options.png?w=1920 1920w"
+          data-sizes="auto"alt="Alert query using the Prometheus query editor and alert condition"width="2146"height="792"title="Alert query using the Prometheus query editor and alert condition"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-query-conditions-default-options.png"
+            alt="Alert query using the Prometheus query editor and alert condition"width="2146"height="792"title="Alert query using the Prometheus query editor and alert condition"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Alert query using the Prometheus query editor and alert condition</figcaption></a></figure>
+<h2 id="alert-condition">Alert condition</h2>
+<p>The alert condition is the query or expression that determines whether the alert fires or not depending whether the value satisfies the specified comparison. There can be only one condition which determines the triggering of the alert.</p>
+<p>If the queried data meets the defined condition, Grafana fires the alert.</p>
+<p>When using <strong>Default options</strong>, the <code>When</code> input <a href="#reduce">reduces the query data</a>, and the last input defines the threshold condition.</p>
+<p>When using <strong>Advanced options</strong>, you have to choose one of your queries or expressions as the alert condition.</p>
+<h2 id="advanced-options-expressions">Advanced options: Expressions</h2>
+<p>Expressions are only available for Grafana-managed alerts and when the <strong>Advanced options</strong> are enabled.</p>
+<p>In Grafana, expressions allow you to perform calculations, transformations, or aggregations on queried data. They modify existing metrics through mathematical operations, functions, or logical expressions.</p>
+<p>With expression queries, you can perform tasks such as calculating the percentage change between two values, applying functions like logarithmic or trigonometric functions, aggregating data over specific time ranges or dimensions, and implementing conditional logic to handle different scenarios.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alert-rule-expressions.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alert-rule-expressions.png"data-srcset="/media/docs/alerting/alert-rule-expressions.png?w=320 320w, /media/docs/alerting/alert-rule-expressions.png?w=550 550w, /media/docs/alerting/alert-rule-expressions.png?w=750 750w, /media/docs/alerting/alert-rule-expressions.png?w=900 900w, /media/docs/alerting/alert-rule-expressions.png?w=1040 1040w, /media/docs/alerting/alert-rule-expressions.png?w=1240 1240w, /media/docs/alerting/alert-rule-expressions.png?w=1920 1920w"
+          data-sizes="auto"alt="Alert rule expressions"width="2392"height="660"title="Alert rule expressions"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-rule-expressions.png"
+            alt="Alert rule expressions"width="2392"height="660"title="Alert rule expressions"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Alert rule expressions</figcaption></a></figure>
+<p>The following expressions are available:</p>
+<h3 id="reduce">Reduce</h3>
+<p>Aggregates time series values within the selected time range into a single number.</p>
+<p>Reduce takes one or more time series and transform each series into a single number, which can then be compared in the alert condition.</p>
+<p>The following aggregations functions are included: <code>Min</code>, <code>Max</code>, <code>Mean</code>, <code>Median</code>, <code>Sum</code>, <code>Count</code>, and <code>Last</code>. For more details, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/expression-queries/#reduce">Reduce documentation</a>.</p>
+<h3 id="math">Math</h3>
+<p>Performs free-form math functions/operations on time series data and numbers. For example, <code>$A + 1</code> or <code>$A * 100</code>.</p>
+<p>If queries being compared have <strong>multiple series in their results</strong>, series from different queries are matched(joined) if they have the same labels. For example:</p>
+
+
+<div data-shared="alerts/math-example.md">
+            <ul>
+<li><code>$A</code> returns series <code>{host=&quot;web01&quot;} 30</code> and <code>{host=&quot;web02&quot;} 20</code>.</li>
+<li><code>$B</code> returns series <code>{host=&quot;web01&quot;} 10</code> and <code>{host=&quot;web02&quot;} 0</code>.</li>
+<li><code>$A + $B</code> returns <code>{host=&quot;web01&quot;} 40</code> and <code>{host=&quot;web02&quot;} 20</code>.</li>
+</ul>
+</div>
+
+        
+<p>In this case, only series with matching labels are joined, and the operation is calculated between them.</p>
+<p>For additional scenarios on how Math handles different data types, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/expression-queries/#math">Math documentation</a>.</p>
+<p>You can also use a Math expression to define the <strong>alert condition</strong>. For example:</p>
+<ul>
+<li><code>$B &gt; 70</code> should fire if the value of B (query or expression) is more than 70.</li>
+<li><code>$B &lt; $C * 100</code> should fire if the value of B is less than the value of C multiplied by 100.</li>
+<li>Compare matching series from two queries, as shown in the 
+    <a href="/docs/grafana/latest/alerting/best-practices/dynamic-thresholds/">dynamic threshold example</a>.</li>
+</ul>
+<h3 id="resample">Resample</h3>
+<p>Realigns a time range to a new set of timestamps, this is useful when comparing time series data from different data sources where the timestamps would otherwise not align.</p>
+<p>For more details, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/expression-queries/#resample">Resample documentation</a>.</p>
+<h3 id="threshold">Threshold</h3>
+<p>Compares single numbers from previous queries or expressions (e.g., <code>$A</code>, <code>$B</code>) to a specified condition. It&rsquo;s often used to define the alert condition.</p>
+<p>The threshold expression allows the comparison between two single values. Available threshold functions are:</p>
+<ul>
+<li><strong>Is above</strong>: <code>$A &gt; 5</code></li>
+<li><strong>Is below</strong>: <code>$B &lt; 3</code></li>
+<li><strong>Is equal to</strong>: <code>$A == 2</code></li>
+<li><strong>Is not equal to</strong>: <code>$B =! 4</code></li>
+<li><strong>Is above or equal to</strong>: <code>$A &gt;= 8</code></li>
+<li><strong>Is below or equal to</strong>: <code>$B &lt;= 16</code></li>
+<li><strong>Is within range</strong>: <code>$A &gt; 0 AND $A &lt; 10</code></li>
+<li><strong>Is outside range</strong>: <code>$B &lt; 0 OR $B &gt; 100</code></li>
+<li><strong>Is within range included</strong>: <code>$A &gt;= 0 AND $A &lt;= 10</code></li>
+<li><strong>Is outside range included</strong>: <code>$B &lt;= 0 OR $B &gt;= 100</code></li>
+</ul>
+<p>A threshold returns <code>0</code> when the condition is false and <code>1</code> when true.</p>
+<p>If the threshold is set as the alert condition, the alert fires when the threshold returns <code>1</code>.</p>
+<h3 id="recovery-threshold">Recovery threshold</h3>
+<p>To reduce the noise from flapping alerts, you can set a recovery threshold so that the alert returns to the <code>Normal</code> or <code>Recovering</code> state only after the recovery threshold is crossed.</p>
+<p>Flapping alerts occur when the query value repeatedly crosses above and below the alert threshold, causing frequent state changes. This results in a series of firing-resolved-firing notifications and a noisy alert state history.</p>
+<p>For example, if you have an alert for latency with a threshold of 1000ms and the number fluctuates around 1000 (say 980 -&gt; 1010 -&gt; 990 -&gt; 1020, and so on), then each of those might trigger a notification:</p>
+<ul>
+<li>980 -&gt; 1010 triggers a firing alert.</li>
+<li>1010 -&gt; 990 triggers a resolving alert.</li>
+<li>990 -&gt; 1020 triggers a firing alert again.</li>
+</ul>
+<p>To prevent this, you can set a recovery threshold to define two thresholds instead of one:</p>
+<ol>
+<li>An alert transitions to the <code>Pending</code> or <code>Alerting</code> state when it crosses the alert threshold.</li>
+<li>It then transitions to the <code>Recovering</code> or <code>Normal</code> state only when it crosses the recovery threshold.</li>
+</ol>
+<p>In the previous example, setting the recovery threshold to 900ms means the alert only resolves when the latency falls below 900ms:</p>
+<ul>
+<li>980 -&gt; 1010 triggers a firing alert.</li>
+<li>1010 -&gt; 990 does not resolve the alert, keeping it in the firing state.</li>
+<li>990 -&gt; 1020 keeps the alert in the firing state.</li>
+</ul>
+<p>The recovery threshold mitigates unnecessary alert state changes and reduces alert noise.</p>
+<div class="collapse" x-data="app_collapse()">
+  <button class="collapse-trigger" @click="toggle()">
+    <span>Classic condition (legacy)</span>
+    <span class="collapse-trigger__icon" :class="{ 'collapse-trigger__icon-open' : open }">
+      
+  <svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.2" d="M1.73047 12.8359C1.73047 19.4634 7.10305 24.8359 13.7305 24.8359C20.3579 24.8359 25.7305 19.4634 25.7305 12.8359C25.7305 6.20852 20.3579 0.835937 13.7305 0.835937C7.10305 0.835937 1.73047 6.20852 1.73047 12.8359Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18.2344 12.8359L9.23438 12.8359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.7344 8.33594L13.7344 17.3359" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+
+    </span>
+  </button>
+  <div class="collapse-content" x-ref="content" hidden="until-found">
+    <div class="collapse-content__inner" x-ref="content-inner">
+      <h4 id="classic-condition-legacy">Classic condition (legacy)</h4>
+<p>Classic conditions exist mainly for compatibility reasons and should be avoided if possible.</p>
+<p>Classic condition checks if any time series data matches the alert condition. It always produce one alert instance only, no matter how many time series meet the condition.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Condition operators</th>
+          <th>How it works</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>and</code></td>
+          <td>Two conditions before and after must be true for the overall condition to be true.</td>
+      </tr>
+      <tr>
+          <td><code>or</code></td>
+          <td>If one of conditions before and after are true, the overall condition is true.</td>
+      </tr>
+      <tr>
+          <td><code>logic-or</code></td>
+          <td>If the condition before <code>logic-or</code> is true, the overall condition is immediately true, without evaluating subsequent conditions. For instance, <code>TRUE and TRUE logic-or FALSE and FALSE</code> evaluate to <code>TRUE</code>, because the preceding condition returns <code>TRUE</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>The following aggregation functions are also available to further refine your query.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Function</th>
+          <th>What it does</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>avg</code></td>
+          <td>Displays the average of the values</td>
+      </tr>
+      <tr>
+          <td><code>min</code></td>
+          <td>Displays the lowest value</td>
+      </tr>
+      <tr>
+          <td><code>max</code></td>
+          <td>Displays the highest value</td>
+      </tr>
+      <tr>
+          <td><code>sum</code></td>
+          <td>Displays the sum of all values</td>
+      </tr>
+      <tr>
+          <td><code>count</code></td>
+          <td>Counts the number of values in the result</td>
+      </tr>
+      <tr>
+          <td><code>last</code></td>
+          <td>Displays the last value</td>
+      </tr>
+      <tr>
+          <td><code>median</code></td>
+          <td>Displays the median value</td>
+      </tr>
+      <tr>
+          <td><code>diff</code></td>
+          <td>Displays the difference between the newest and oldest value</td>
+      </tr>
+      <tr>
+          <td><code>diff_abs</code></td>
+          <td>Displays the absolute value of diff</td>
+      </tr>
+      <tr>
+          <td><code>percent_diff</code></td>
+          <td>Displays the percentage value of the difference between newest and oldest value</td>
+      </tr>
+      <tr>
+          <td><code>percent_diff_abs</code></td>
+          <td>Displays the absolute value of <code>percent_diff</code></td>
+      </tr>
+      <tr>
+          <td><code>count_non_null</code></td>
+          <td>Displays a count of values in the result set that aren&rsquo;t <code>null</code></td>
+      </tr>
+  </tbody>
+</table>
+
+    </div>
+  </div>
+</div>
+

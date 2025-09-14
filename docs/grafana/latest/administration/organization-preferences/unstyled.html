@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<h1 id="organization-preferences">Organization preferences</h1>
+<p>Grafana preferences are basic settings. They control the Grafana UI theme, home dashboard, time zone, and so on.</p>
+<p>Preferences are sometimes confusing because they can be set at four different levels, listed from highest level to lowest:</p>
+<ul>
+<li><strong>Server -</strong> Affects all users on the Grafana server. Set by a <a href="../roles-and-permissions/#grafana-server-administrators">Grafana server admin</a>.</li>
+<li><strong>Organization -</strong> Affects all users in an organization. Set by an <a href="../roles-and-permissions/#organization-roles">Organization admin</a>.</li>
+<li><strong>Team -</strong> Affects all users assigned to a team. Set by an Organization Admin or Team Admin. To learn more about these roles, refer to <a href="../roles-and-permissions/#teams-and-permissions">Teams and permissions</a>.</li>
+<li><strong>User account -</strong> Affects the individual user. Set by the user on their own account.</li>
+</ul>
+<p>The lowest level always takes precedence. For example, if a user sets their theme to <strong>Light</strong>, then their visualization of Grafana displays the light theme. Nothing at any higher level can override that.</p>
+<p>If the user is aware of the change and intended it, then that&rsquo;s great! But if the user is a Server Admin who made the change to their user preferences a long time ago, they might have forgotten they did that. Then, if that Server Admin is trying to change the theme at the server level, they&rsquo;ll get frustrated as none of their changes have any effect that they can see. (Also, the users on the server might be confused, because <em>they</em> can see the server-level changes!)</p>
+<h2 id="change-grafana-name-and-email">Change Grafana name and email</h2>
+<p>In Grafana, you can change your names and emails associated with groups or accounts in the Settings or Preferences. This topic provides instructions for each task.</p>
+<p>Some tasks require certain permissions. For more information about roles, refer to <a href="../roles-and-permissions/">Roles and permissions</a>.</p>
+<h3 id="change-organization-name">Change organization name</h3>
+<p>Grafana server administrators and organization administrators can change organization names.</p>
+<h4 id="grafana-server-admin-change-organization-name">Grafana Server Admin change organization name</h4>
+<p>Follow these instructions if you are a Grafana Server Admin.</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu.</li>
+<li>Click <strong>General</strong>.</li>
+<li>Click <strong>Organizations</strong>.</li>
+<li>In the organization list, click the name of the organization that you want to change.</li>
+<li>In <strong>Name</strong>, enter the new organization name.</li>
+<li>Click <strong>Update</strong>.</li>
+</ol>
+<h4 id="organization-admin-change-organization-name">Organization Admin change organization name</h4>
+<p>If you are an Organization Admin, follow these steps:</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu.</li>
+<li>Click <strong>General</strong>.</li>
+<li>Click <strong>Default preferences</strong>.</li>
+<li>In <strong>Organization name</strong>, enter the new name.</li>
+<li>Click <strong>Update organization name</strong>.</li>
+</ol>
+<h3 id="change-team-name-or-email">Change team name or email</h3>
+<p>Organization administrators and team administrators can change team names and email addresses.
+To change the team name or email, follow these steps:</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and select <strong>Team</strong>.</li>
+<li>In the team list, click the name of the team that you want to change.</li>
+<li>Click the <strong>Settings</strong> tab.</li>
+<li>In the Team details section, you can edit the following:
+<ul>
+<li><strong>Name -</strong> Edit this field to change the display name associated with the team.</li>
+<li><strong>Email -</strong> Edit this field to change the email address associated with the team.</li>
+</ul>
+</li>
+<li>Click <strong>Update</strong>.</li>
+</ol>
+<h3 id="change-user-name-or-email">Change user name or email</h3>
+<p>To learn how to edit your user information, refer to <a href="../user-management/user-preferences/#edit-your-profile">Edit your profile</a>.</p>
+<h2 id="change-grafana-ui-theme">Change Grafana UI theme</h2>
+<p>In Grafana, you can modify the UI theme configured in the Settings or Preferences. Set the UI theme for the server, an organization, a team, or your personal user account using the instructions in this topic.</p>
+<p>Some tasks require certain permissions. For more information about roles, refer to <a href="../roles-and-permissions/">Roles and permissions</a>.</p>
+<h3 id="theme-options">Theme options</h3>
+<p>The theme affects how Grafana displays graphs, menus, other UI elements.</p>
+<h4 id="default">Default</h4>
+<p><strong>Default</strong> is either the dark theme or the theme selected in a higher level. For example, if an Organization administrator set the <strong>Light</strong> theme, then that is the default for all the teams in that organization.</p>
+<h4 id="dark">Dark</h4>
+<p>Here is an example of the dark theme.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/preferences/dark-theme-7-4.png"
+  alt="Dark theme example" width="1200"
+     height="230"/></p>
+<h4 id="light">Light</h4>
+<p>Here is an example of the light theme.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/preferences/light-theme-7-4.png"
+  alt="Light theme example" width="1200"
+     height="228"/></p>
+<h4 id="experimental">Experimental</h4>
+<p>There are several experimental themes that you can also choose from.
+To see the color scheme of a theme before selecting it for your organization, click the user icon in the top-right corner of the page and select <strong>Change theme</strong>.
+This opens the <strong>Change theme</strong> drawer, where you can view all themes.</p>
+<h3 id="change-server-ui-theme">Change server UI theme</h3>
+<p>As a Grafana server administrator, you can change the default Grafana UI theme for all users who are on the server by setting the <a href="../../setup-grafana/configure-grafana/#default_theme">default_theme</a> option in the Grafana configuration file.</p>
+<p>To see what the current settings are, refer to <a href="../stats-and-license/#view-server-settings">View server settings</a>.</p>
+<h3 id="change-organization-ui-theme">Change organization UI theme</h3>
+<p>Organization administrators can change the UI theme for all users in an organization.</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu.</li>
+<li>Click <strong>General</strong>.</li>
+<li>Click <strong>Default preferences</strong>.</li>
+<li>In the Preferences section, select the UI theme.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="change-team-ui-theme">Change team UI theme</h3>
+<p>Organization and team administrators can change the UI theme for all users on a team.</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and select <strong>Teams</strong>.</li>
+<li>Click the team for which you want to change the UI theme.</li>
+<li>Click the <strong>Settings</strong> tab.</li>
+<li>In the Preferences section, select the UI theme.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="change-your-personal-ui-theme">Change your personal UI theme</h3>
+<p>You can change the UI theme for your user account. This setting overrides UI theme settings at higher levels.</p>
+<ol>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>In the Preferences section, select the UI theme.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h2 id="change-the-grafana-default-timezone">Change the Grafana default timezone</h2>
+<p>By default, Grafana uses the timezone in your web browser. However, you can override this setting at the server, organization, team, or individual user level. This topic provides instructions for each task.</p>
+<p>Some tasks require certain permissions. For more information about roles, refer to <a href="../roles-and-permissions/">Roles and permissions</a>.</p>
+<h3 id="set-server-timezone">Set server timezone</h3>
+<p>Grafana server administrators can choose a default timezone for all users on the server by setting the <a href="../../setup-grafana/configure-grafana/#default_timezone">default_timezone</a> option in the Grafana configuration file.</p>
+<h3 id="set-organization-timezone">Set organization timezone</h3>
+<p>Organization administrators can choose a default timezone for their organization.</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu.</li>
+<li>Click <strong>General</strong>.</li>
+<li>Click <strong>Default preferences</strong>.</li>
+<li>Click to select an option in the <strong>Timezone</strong> list. <strong>Default</strong> is either the browser local timezone or the timezone selected at a higher level.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="set-team-timezone">Set team timezone</h3>
+<p>Organization administrators and team administrators can choose a default timezone for all users on a team.</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and select <strong>Teams</strong>.</li>
+<li>Click the team for which you want to change the timezone.</li>
+<li>Click the <strong>Settings</strong> tab.</li>
+<li>Click to select an option in the <strong>Timezone</strong> list. <strong>Default</strong> is either the browser local timezone or the timezone selected at a higher level.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="set-your-personal-timezone">Set your personal timezone</h3>
+<p>You can change the timezone for your user account. This setting overrides timezone settings at higher levels.</p>
+<ol>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>Click to select an option in the <strong>Timezone</strong> list. <strong>Default</strong> is either the browser local timezone or the timezone selected at a higher level.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h2 id="change-the-default-home-dashboard">Change the default home dashboard</h2>
+<p>The home dashboard you set is the one all users will see by default when they log in. Click the Grafana icon or <strong>Home</strong> in the breadcrumb to return to it. You can set the home dashboard for the server, an organization, a team, or your personal user account. This topic provides instructions for each task.</p>
+<p>Some tasks require certain permissions. For more information about roles, refer to <a href="../roles-and-permissions/">Roles and permissions</a>.</p>
+<h3 id="set-the-home-dashboard-for-the-server">Set the home dashboard for the server</h3>
+<p>Users with the Grafana Server Admin flag on their account or access to the configuration file can define a JSON file to use as the home dashboard for all users on the server.</p>
+<h4 id="optional-convert-an-existing-dashboard-into-a-json-file">[Optional] Convert an existing dashboard into a JSON file</h4>
+<ol>
+<li>Navigate to the page of the dashboard you want to use as the home dashboard.</li>
+<li>Click the <strong>Share</strong> button at the top right of the screen.</li>
+<li>In the Export tab, click <strong>Save to file</strong>. Grafana converts the dashboard to a JSON file and saves it locally.</li>
+</ol>
+<h4 id="use-a-json-file-as-the-home-dashboard">Use a JSON file as the home dashboard</h4>
+<ol>
+<li>Save your JSON file somewhere that Grafana can access it. For example, in the Grafana <code>data</code> folder of Grafana.</li>
+<li>Update your configuration file to set the path to the JSON file. Refer to <a href="../../setup-grafana/configure-grafana/#default_home_dashboard_path">default_home_dashboard_path</a> for more information about modifying the Grafana configuration files.</li>
+</ol>
+<pre>[dashboards]
+# Path to the default home dashboard. If this value is empty, then Grafana uses StaticRootPath + &#34;dashboards/home.json&#34;
+default_home_dashboard_path = data/main-dashboard.json</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>On Linux, Grafana uses <code>/usr/share/grafana/public/dashboards/home.json</code> as the default home dashboard location.</p></blockquote></div>
+
+<h3 id="set-the-home-dashboard-for-your-organization">Set the home dashboard for your organization</h3>
+<p>Organization administrators can choose a default home dashboard for their organization.</p>
+<ol>
+<li>Navigate to the dashboard you want to set as the home dashboard.</li>
+<li>Click the star next to the dashboard title to mark the dashboard as a favorite if it is not already.</li>
+<li>Click <strong>Administration</strong> in the left-side menu.</li>
+<li>Click <strong>General</strong>.</li>
+<li>Click <strong>Default preferences</strong>.</li>
+<li>In the <strong>Home Dashboard</strong> field, select the dashboard that you want to use for your home dashboard. Options include all starred dashboards.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="set-home-dashboard-for-your-team">Set home dashboard for your team</h3>
+<p>Organization administrators and Team Admins can set a default home dashboard for all users on a team.</p>
+<ol>
+<li>Navigate to the dashboard you want to set as the home dashboard.</li>
+<li>Click the star next to the dashboard title to mark the dashboard as a favorite if it is not already.</li>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and select <strong>Teams</strong>.</li>
+<li>Click the team for which you want to change the home dashboard.</li>
+<li>Click the <strong>Settings</strong> tab.</li>
+<li>In the <strong>Home Dashboard</strong> field, select the dashboard that you want to use for your home dashboard. Options include all starred dashboards.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="set-your-personal-home-dashboard">Set your personal home dashboard</h3>
+<p>You can choose your own personal home dashboard. This setting overrides all home dashboards set at higher levels.</p>
+<ol>
+<li>Navigate to the dashboard you want to set as the home dashboard.</li>
+<li>Click the star next to the dashboard title to mark the dashboard as a favorite if it is not already.</li>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>In the <strong>Home Dashboard</strong> field, select the dashboard that you want to use for your home dashboard. Options include all starred dashboards.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h2 id="change-grafana-language">Change Grafana language</h2>
+<h3 id="change-server-language">Change server language</h3>
+<p>Grafana server administrators can change the default Grafana UI language for all users on the server by setting the <a href="../../setup-grafana/configure-grafana/#default_language">default_language</a> option in the Grafana configuration file.</p>
+<h3 id="change-organization-language">Change organization language</h3>
+<p>Organization administrators can change the language for all users in an organization.</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu.</li>
+<li>Click <strong>General</strong>.</li>
+<li>Click <strong>Default preferences</strong>.</li>
+<li>In the Preferences section, select an option in the <strong>Language</strong> dropdown.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="change-team-language">Change team language</h3>
+<p>Organization and team administrators can set a default language for all users on a team.</p>
+<ol>
+<li>Click <strong>Administration</strong> in the left-side menu, <strong>Users and access</strong>, and select <strong>Teams</strong>.</li>
+<li>Click the team for which you want to change the language.</li>
+<li>Click the <strong>Settings</strong> tab.</li>
+<li>In the Preferences section, select an option in the <strong>Language</strong> dropdown.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>
+<h3 id="change-your-personal-language">Change your personal language</h3>
+<p>You can change the language for your user account. This setting overrides language settings at higher levels.</p>
+<ol>
+<li>Click the user icon in the top right corner of the page and select <strong>Profile</strong>.</li>
+<li>In the Preferences section, select an option in the <strong>Language</strong> dropdown.</li>
+<li>Click <strong>Save</strong>.</li>
+</ol>

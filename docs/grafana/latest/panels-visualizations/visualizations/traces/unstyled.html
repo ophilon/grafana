@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<h1 id="traces">Traces</h1>
+Traces visualizations let you follow a request as it traverses the services in your infrastructure.
+The traces visualization displays traces data in a diagram that allows you to easily interpret it. Traces visualizations currently render one trace traversal based on the traceID used in TraceQL or using a variable.
+
+<p>For more information about traces and how to use them, refer to the following documentation:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/explore/trace-integration/">Tracing in Explore</a></li>
+<li>
+    <a href="/docs/grafana/latest/datasources/tempo/">Tempo data source</a></li>
+<li><a href="/docs/tempo/latest/getting-started/">Getting started with Tempo</a></li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of the trace view"width="804"height="411"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-traces-visualization-11.5.png"
+            alt="Screenshot of the trace view"width="804"height="411"/>
+        </noscript></div></a></figure>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/edodkfmj0tce8f/" target="_blank" rel="noopener noreferrer">Traces Panel</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/edodkfmj0tce8f/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="add-a-panel-with-tracing-visualizations">Add a panel with tracing visualizations</h2>
+<p>Once you have tracing data available in your Grafana stack, you can add tracing panels to your Grafana dashboards.</p>
+<p>Using a dashboard variable, <code>traceID</code>, lets you create a query to show specific traces for a given trace ID.
+For more information about dashboard variables, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/">Variables documentation</a>.</p>
+<h3 id="before-you-begin">Before you begin</h3>
+<p>To use this procedure, you need:</p>
+<ul>
+<li>A Grafana instance</li>
+<li>A 
+    <a href="/docs/grafana/latest/datasources/tempo/">Tempo data source</a> connected to your Grafana instance</li>
+</ul>
+<h3 id="add-the-traces-panel-query">Steps</h3>
+<p>To view and analyze traces data in a dashboard, you need to add the traces visualization to your dashboard and define a query using the panel editor.
+The query determines the data that is displayed in the visualization.
+For more information on the panel editor, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/panel-editor-overview/">Panel editor documentation</a>.</p>
+<p>This procedure uses dashboard variables and templates to allow you to enter trace IDs which can then be visualized. You&rsquo;ll use a variable called <code>traceId</code> and add it as a template query.</p>
+<ol>
+<li>
+<p>From your Grafana stack, create a new dashboard or go to an existing dashboard where you&rsquo;d like to add traces visualizations.</p>
+</li>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>New dashboard - Click <strong>+ Add visualization</strong>.</li>
+<li>Existing dashboard - Click <strong>Edit</strong> in the top-right corner and then select <strong>Visualization</strong> in the <strong>Add</strong> drop-down.</li>
+</ul>
+</li>
+<li>
+<p>Search for and select the appropriate tracing data source.</p>
+</li>
+<li>
+<p>In the top-right corner of the panel editor, select the <strong>Visualizations</strong> tab, search for, and select <strong>Traces</strong>.</p>
+</li>
+<li>
+<p>Under the <strong>Panel options</strong>, enter a <strong>Title</strong> for your trace panel or have Grafana create one using 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/#set-up-generative-ai-features-for-dashboards">generative AI features</a>.</p>
+<p>For more information on the panel editor, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options documentation</a>.</p>
+</li>
+<li>
+<p>In the query editor, click the <strong>TraceQL</strong> query type tab.</p>
+</li>
+<li>
+<p>Enter <code>${traceId}</code> in the TraceQL query field to create a dashboard variable. This variable is used as the template query.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 912px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/static/img/docs/panels/traces/screenshot-traces-template-query.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/static/img/docs/panels/traces/screenshot-traces-template-query.png"data-srcset="/static/img/docs/panels/traces/screenshot-traces-template-query.png?w=320 320w, /static/img/docs/panels/traces/screenshot-traces-template-query.png?w=550 550w, /static/img/docs/panels/traces/screenshot-traces-template-query.png?w=750 750w, /static/img/docs/panels/traces/screenshot-traces-template-query.png?w=900 900w, /static/img/docs/panels/traces/screenshot-traces-template-query.png?w=1040 1040w, /static/img/docs/panels/traces/screenshot-traces-template-query.png?w=1240 1240w, /static/img/docs/panels/traces/screenshot-traces-template-query.png?w=1920 1920w"
+             data-sizes="auto"alt="Add a template query"width="912"height="396"/>
+           <noscript>
+             <img
+               src="/static/img/docs/panels/traces/screenshot-traces-template-query.png"
+               alt="Add a template query"width="912"height="396"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Settings</strong> and go to the <strong>Variables</strong> tab.</p>
+</li>
+<li>
+<p>Add a new variable called <code>traceId</code>, of variable type <strong>Custom</strong>, giving it a label if required.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 400px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png?w=1920 1920w"
+             data-sizes="auto"alt="Add a template query"width="490"height="536"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/panels-visualizations/screenshot-traces-custom-variable-v11.5.png"
+               alt="Add a template query"width="490"height="536"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+<li>
+<p>Verify that the panel works by using a valid trace ID for the data source used for the trace panel and editing the ID in the dashboard variable.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1463px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/static/img/docs/panels/traces/screenshot-traces-traceid-panel.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/static/img/docs/panels/traces/screenshot-traces-traceid-panel.png"data-srcset="/static/img/docs/panels/traces/screenshot-traces-traceid-panel.png?w=320 320w, /static/img/docs/panels/traces/screenshot-traces-traceid-panel.png?w=550 550w, /static/img/docs/panels/traces/screenshot-traces-traceid-panel.png?w=750 750w, /static/img/docs/panels/traces/screenshot-traces-traceid-panel.png?w=900 900w, /static/img/docs/panels/traces/screenshot-traces-traceid-panel.png?w=1040 1040w, /static/img/docs/panels/traces/screenshot-traces-traceid-panel.png?w=1240 1240w, /static/img/docs/panels/traces/screenshot-traces-traceid-panel.png?w=1920 1920w"
+             data-sizes="auto"alt="Results of query in trace panel"width="1463"height="548"/>
+           <noscript>
+             <img
+               src="/static/img/docs/panels/traces/screenshot-traces-traceid-panel.png"
+               alt="Results of query in trace panel"width="1463"height="548"/>
+           </noscript></div></a></figure>
+</li>
+</ol>
+<h2 id="add-traceql-with-table-visualizations">Add TraceQL with table visualizations</h2>
+<p>While you can add a trace visualization to a dashboard, having to manually add trace IDs as a dashboard variable is cumbersome.
+It’s more useful to instead be able to use TraceQL queries to search for specific types of traces and then select appropriate traces from matching results.</p>
+<ol>
+<li>
+<p>In the same dashboard where you added the trace visualization, click <strong>Edit</strong> in the top-right corner.</p>
+</li>
+<li>
+<p>In the <strong>Add</strong> drop-down, select <strong>Visualization</strong>.</p>
+</li>
+<li>
+<p>Select the same trace data source you used in the previous section.</p>
+</li>
+<li>
+<p>In the top-right corner of the panel editor, select the <strong>Visualizations</strong> tab, search for, and select <strong>Table</strong>.</p>
+</li>
+<li>
+<p>In the query editor, select the <strong>TraceQL</strong> tab.</p>
+</li>
+<li>
+<p>Under the <strong>Panel options</strong>, enter a <strong>Title</strong> for your trace panel or have Grafana create one using 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/#set-up-generative-ai-features-for-dashboards">generative AI features</a>.</p>
+</li>
+<li>
+<p>Add an appropriate TraceQL query to search for traces that you would like to visualize in the dashboard. This example uses a simple, static query. You can write the TraceQL query as a template query to take advantage of other dashboard variables, if they exist. This lets you create dynamic queries based on these variables.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 1055px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/static/img/docs/panels/traces/screenshot-traces-dynamic-query.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/static/img/docs/panels/traces/screenshot-traces-dynamic-query.png"data-srcset="/static/img/docs/panels/traces/screenshot-traces-dynamic-query.png?w=320 320w, /static/img/docs/panels/traces/screenshot-traces-dynamic-query.png?w=550 550w, /static/img/docs/panels/traces/screenshot-traces-dynamic-query.png?w=750 750w, /static/img/docs/panels/traces/screenshot-traces-dynamic-query.png?w=900 900w, /static/img/docs/panels/traces/screenshot-traces-dynamic-query.png?w=1040 1040w, /static/img/docs/panels/traces/screenshot-traces-dynamic-query.png?w=1240 1240w, /static/img/docs/panels/traces/screenshot-traces-dynamic-query.png?w=1920 1920w"
+             data-sizes="auto"alt="Create a dynamic query"width="1055"height="380"/>
+           <noscript>
+             <img
+               src="/static/img/docs/panels/traces/screenshot-traces-dynamic-query.png"
+               alt="Create a dynamic query"width="1055"height="380"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<p>When results are returned from a query, the results are rendered in the panel’s table.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1055px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/panels/traces/screenshot-traces-returned-query.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/panels/traces/screenshot-traces-returned-query.png"data-srcset="/static/img/docs/panels/traces/screenshot-traces-returned-query.png?w=320 320w, /static/img/docs/panels/traces/screenshot-traces-returned-query.png?w=550 550w, /static/img/docs/panels/traces/screenshot-traces-returned-query.png?w=750 750w, /static/img/docs/panels/traces/screenshot-traces-returned-query.png?w=900 900w, /static/img/docs/panels/traces/screenshot-traces-returned-query.png?w=1040 1040w, /static/img/docs/panels/traces/screenshot-traces-returned-query.png?w=1240 1240w, /static/img/docs/panels/traces/screenshot-traces-returned-query.png?w=1920 1920w"
+          data-sizes="auto"alt="Results of a returned query in the panel table"width="1055"height="380"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/traces/screenshot-traces-returned-query.png"
+            alt="Results of a returned query in the panel table"width="1055"height="380"/>
+        </noscript></div></a></figure>
+<h3 id="use-a-variable-to-add-other-links-to-traces">Use a variable to add other links to traces</h3>
+<p>The results in the traces visualization include links to the <strong>Explore</strong> page that renders the trace. You can add other links to traces in the table that fill in the <code>traceId</code> dashboard variable when selected, so that the trace is visualized in the same dashboard.</p>
+<p>To create a set of data links in the panel, use the following steps:</p>
+<ol>
+<li>
+<p>In the panel editor menu, under <strong>Data links</strong>, click <strong>Add link</strong>.</p>
+</li>
+<li>
+<p>Add a <strong>Title</strong> for the data link.</p>
+</li>
+<li>
+<p>Find the UUID of the dashboard by looking in your browser’s address bar when the full dashboard is being rendered. Because this is a link to a dashboard in the same Grafana stack, only the path of the dashboard is required.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 889px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/static/img/docs/panels/traces/screensnot-traces-uuid-url.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/static/img/docs/panels/traces/screensnot-traces-uuid-url.png"data-srcset="/static/img/docs/panels/traces/screensnot-traces-uuid-url.png?w=320 320w, /static/img/docs/panels/traces/screensnot-traces-uuid-url.png?w=550 550w, /static/img/docs/panels/traces/screensnot-traces-uuid-url.png?w=750 750w, /static/img/docs/panels/traces/screensnot-traces-uuid-url.png?w=900 900w, /static/img/docs/panels/traces/screensnot-traces-uuid-url.png?w=1040 1040w, /static/img/docs/panels/traces/screensnot-traces-uuid-url.png?w=1240 1240w, /static/img/docs/panels/traces/screensnot-traces-uuid-url.png?w=1920 1920w"
+             data-sizes="auto"alt="Unique identifier for the dashboard"width="889"height="50"/>
+           <noscript>
+             <img
+               src="/static/img/docs/panels/traces/screensnot-traces-uuid-url.png"
+               alt="Unique identifier for the dashboard"width="889"height="50"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>In the <strong>URL</strong> field, make a self-reference to the dashboard that contains both of the panels. This self-reference uses the value of the selected trace in the table to fill in the dashboard variable. Use the path for the dashboard from the previous step and then fill in the value of <code>traceId</code> using the selected results from the TraceQL table.
+The trace ID is exposed using the <code>traceID</code> data field in the returned results, so use that as the value for the dashboard variable.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 759px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/static/img/docs/panels/traces/screenshot-traces-edit-link.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/static/img/docs/panels/traces/screenshot-traces-edit-link.png"data-srcset="/static/img/docs/panels/traces/screenshot-traces-edit-link.png?w=320 320w, /static/img/docs/panels/traces/screenshot-traces-edit-link.png?w=550 550w, /static/img/docs/panels/traces/screenshot-traces-edit-link.png?w=750 750w, /static/img/docs/panels/traces/screenshot-traces-edit-link.png?w=900 900w, /static/img/docs/panels/traces/screenshot-traces-edit-link.png?w=1040 1040w, /static/img/docs/panels/traces/screenshot-traces-edit-link.png?w=1240 1240w, /static/img/docs/panels/traces/screenshot-traces-edit-link.png?w=1920 1920w"
+             data-sizes="auto"alt="Edit link and add the Trace link"width="759"height="378"/>
+           <noscript>
+             <img
+               src="/static/img/docs/panels/traces/screenshot-traces-edit-link.png"
+               alt="Edit link and add the Trace link"width="759"height="378"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Select <strong>Save</strong> to save the data link.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<p>You should now see a list of matching traces in the table visualization. While selecting the <strong>TraceID</strong> or <strong>SpanID</strong> fields will give you the option to either open the <strong>Explore</strong> page to visualize the trace or following the data link, selecting any other field (such as <strong>Start time</strong>, <strong>Name</strong> or <strong>Duration</strong>) automatically follows the data link, filling in the <code>traceId</code> dashboard variable, and then shows the relevant trace in the trace panel.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 692px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/panels/traces/screenshot-traces-trace-link.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/panels/traces/screenshot-traces-trace-link.png"data-srcset="/static/img/docs/panels/traces/screenshot-traces-trace-link.png?w=320 320w, /static/img/docs/panels/traces/screenshot-traces-trace-link.png?w=550 550w, /static/img/docs/panels/traces/screenshot-traces-trace-link.png?w=750 750w, /static/img/docs/panels/traces/screenshot-traces-trace-link.png?w=900 900w, /static/img/docs/panels/traces/screenshot-traces-trace-link.png?w=1040 1040w, /static/img/docs/panels/traces/screenshot-traces-trace-link.png?w=1240 1240w, /static/img/docs/panels/traces/screenshot-traces-trace-link.png?w=1920 1920w"
+          data-sizes="auto"alt="Selecting the trace link"width="692"height="307"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/traces/screenshot-traces-trace-link.png"
+            alt="Selecting the trace link"width="692"height="307"/>
+        </noscript></div></a></figure>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1457px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png"data-srcset="/static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png?w=320 320w, /static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png?w=550 550w, /static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png?w=750 750w, /static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png?w=900 900w, /static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png?w=1040 1040w, /static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png?w=1240 1240w, /static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png?w=1920 1920w"
+          data-sizes="auto"alt="Follow the trace link populates the trace ID and displays the traces view"width="1457"height="889"title="Follow the trace link populates the trace ID and displays the traces view"/>
+        <noscript>
+          <img
+            src="/static/img/docs/panels/traces/screenshot-traces-trace-link-follow.png"
+            alt="Follow the trace link populates the trace ID and displays the traces view"width="1457"height="889"title="Follow the trace link populates the trace ID and displays the traces view"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Follow the trace link populates the trace ID and displays the traces view</figcaption></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="span-filters-options">Span filters options</h3>
+<p>The <strong>Span filters</strong> options control the initial state of the span filters when the visualization loads, allowing you to customize your trace analysis view.</p>
+<p>The following options support variable interpolation, where you can set the service name to a variable <code>$var</code> and the visualization will replace it with the value for the variable named <code>$var</code> in the span filters: <strong>Service name</strong>, <strong>Span name</strong>, <strong>Min duration</strong>, <strong>Max duration</strong>, and <strong>Tags</strong>.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Find in trace</td>
+          <td>Set the initial value to focus on spans relevant to your query.</td>
+      </tr>
+      <tr>
+          <td>Show matches only</td>
+          <td>Toggle the switch on to display only spans that match the defined filter criteria. This helps simplify trace interpretation.</td>
+      </tr>
+      <tr>
+          <td>Show critical path only</td>
+          <td>Toggle the switch on to highlight only the spans in the critical path, which helps identify performance bottlenecks and their impact on overall latency.</td>
+      </tr>
+      <tr>
+          <td>Service name</td>
+          <td>Along with the <strong>Service name operator</strong>, define a specific service or pattern to narrow analysis to spans related to particular services.</td>
+      </tr>
+      <tr>
+          <td>Span name</td>
+          <td>Along with the <strong>Span name operator</strong>, filter spans by name or pattern to focus on specific span types or processes.</td>
+      </tr>
+      <tr>
+          <td>Min duration</td>
+          <td>Set the minimum duration threshold to exclude spans outside the desired time range.</td>
+      </tr>
+      <tr>
+          <td>Max duration</td>
+          <td>Set the maximum duration threshold to exclude spans outside the desired time range.</td>
+      </tr>
+      <tr>
+          <td>Tags</td>
+          <td>Add one or more tags to further refine the filtering criteria so only relevant spans are displayed.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->

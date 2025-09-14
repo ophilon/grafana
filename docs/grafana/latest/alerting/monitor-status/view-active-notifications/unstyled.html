@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<h1 id="view-active-notifications">View active notifications</h1>
+<p>The Active notifications page lists groups of alerts (or alert instances) that are actively triggering notifications.</p>
+<p>By default, Grafana Alerting 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/">groups similar alerts into a single notification</a>.</p>
+<p>In this view, you can:</p>
+<ul>
+<li>Find alert groups and the state of their notifications.</li>
+<li>Filter for alert instances that match specific criteria.</li>
+</ul>
+<p>The Active notifications view is useful for debugging and verifying how notifications are grouped based on your notification policy settings.</p>
+<h2 id="view-alert-groups-and-notification-state">View alert groups and notification state</h2>
+<p>To view alert groups, complete the following steps.</p>
+<ol>
+<li>
+<p>Click <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Active notifications</strong> to view the list of groups firing notifications.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/alerting/active-notifications-view2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/alerting/active-notifications-view2.png"data-srcset="/media/docs/alerting/active-notifications-view2.png?w=320 320w, /media/docs/alerting/active-notifications-view2.png?w=550 550w, /media/docs/alerting/active-notifications-view2.png?w=750 750w, /media/docs/alerting/active-notifications-view2.png?w=900 900w, /media/docs/alerting/active-notifications-view2.png?w=1040 1040w, /media/docs/alerting/active-notifications-view2.png?w=1240 1240w, /media/docs/alerting/active-notifications-view2.png?w=1920 1920w"
+             data-sizes="auto"alt="Active notifications view in Grafana Alerting"width="1218"height="408"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/active-notifications-view2.png"
+               alt="Active notifications view in Grafana Alerting"width="1218"height="408"/>
+           </noscript></div></a></figure>
+<p>By default, alert groups are grouped by the notification policies grouping.</p>
+<p>Each group displays its label set, contact point, and the number of alert instances (or alerts).</p>
+<p>Then, click on a group to access its alert instances. You can find alert instances by their label set and view their notification state.</p>
+</li>
+</ol>
+<h3 id="notification-states">Notification states</h3>
+<p>The notification state of an alert instance can be in one of the following states:</p>
+<ul>
+<li><strong>Unprocessed</strong>: The alert is received but its notification has not been processed yet.</li>
+<li><strong>Suppressed</strong>: The alert has been silenced.</li>
+<li><strong>Active</strong>: The alert notification has been handled. The alert is still firing and continues to be managed.</li>
+</ul>
+<h3 id="filter-alerts">Filter alerts</h3>
+<p>You can filter by label, state, or Alertmanager:</p>
+<ul>
+<li>
+<p><strong>By label</strong>: In <strong>Search</strong>, enter an existing label to view alerts matching the label. For example, <code>environment=production,region=~US|EU,severity!=warning</code>.</p>
+</li>
+<li>
+<p><strong>By state</strong>: In <strong>States</strong>, select from Active, Suppressed, or Unprocessed states to view alerts matching your selected state. All other alerts are hidden.</p>
+</li>
+<li>
+<p><strong>By Alertmanager</strong>: In the <strong>Alertmanager</strong> dropdown, select an 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alertmanager/">external Alertmanager</a> to view only alert groups for that specific Alertmanager. By default, the <code>Grafana</code> Alertmanager is selected.</p>
+</li>
+</ul>
+<h3 id="custom-group">Custom group</h3>
+<p>From <strong>Custom group by</strong> dropdown, select a combination of labels to view a grouping other than the default. This helps validate the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/group-alert-notifications/">grouping settings of your notification policies</a>.</p>
+<p>If an alert does not contain labels specified either in the grouping of the default policy or the custom grouping, then the alert is added to a catch all group with a header of <code>No grouping</code>.</p>
+<h2 id="view-notification-errors">View notification errors</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Notification errors are only available with 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alertmanager/">pre-configured Grafana Alertmanagers</a>.</p></blockquote></div>
+
+<p>Notification errors provide information about why they failed to be sent or were not received.</p>
+<p>To view notification errors, navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+<p>Each contact point displays a message about the status of their latest notification deliveries.</p>
+<p>If a contact point is failing, a red message indicates that there are errors delivering notifications. Hover over the error message to see the notification error details.</p>

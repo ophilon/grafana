@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<h1 id="configure-jira-for-alerting">Configure Jira for Alerting</h1>
+<p>Use the Jira integration in a contact point to create issues in your Jira instance when alerts fire. The integration supports both Jira Cloud and Jira Server/Data Center installations.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Before you begin, ensure you have the following:</p>
+<ul>
+<li>A Jira instance (Cloud, Server, or Data Center)</li>
+<li>API access credentials for Jira</li>
+<li>Appropriate permissions to create issues in your target Jira project</li>
+</ul>
+<h2 id="configure-jira-for-a-contact-point">Configure Jira for a contact point</h2>
+<p>To create a contact point with a Jira integration, complete the following steps:</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</li>
+<li>Click <strong>+ Add contact point</strong>.</li>
+<li>Enter a name for the contact point.</li>
+<li>From the <strong>Integration</strong> list, select <strong>Jira</strong>.</li>
+<li>Set up the required <a href="#required-settings">settings</a> for your Jira configuration.</li>
+<li>Click <strong>Save contact point</strong>.</li>
+</ol>
+<p>For more details on contact points, including how to test them and enable notifications, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a>.</p>
+<h3 id="required-settings">Required Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>URL</td>
+          <td>The URL of the REST API of your Jira instance. Supported versions: <code>2</code> and <code>3</code> (e.g., <code>https://your-domain.atlassian.net/rest/api/3</code>).</td>
+      </tr>
+      <tr>
+          <td>Basic Auth User</td>
+          <td>Username for authentication. For Jira Cloud, use your email address.</td>
+      </tr>
+      <tr>
+          <td>Basic Auth Password</td>
+          <td>Password or personal token. For Jira Cloud, you need to obtain a personal token <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noopener noreferrer">here</a> and use it as the password.</td>
+      </tr>
+      <tr>
+          <td>API Token</td>
+          <td>An alternative to basic authentication, a bearer token is used to authorize the API requests. See <a href="https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html" target="_blank" rel="noopener noreferrer">Jira documentation</a> for more information.</td>
+      </tr>
+      <tr>
+          <td>Project Key</td>
+          <td>The project key identifying the project where issues will be created. Project keys are unique identifiers for a project.</td>
+      </tr>
+      <tr>
+          <td>Issue Type</td>
+          <td>The type of issue to create (e.g., <code>Task</code>, <code>Bug</code>, <code>Incident</code>). Make sure that you specify a type that is available in your project.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="optional-settings">Optional Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Summary</td>
+          <td>The issue title. Supports templating. Max length is 255 characters.</td>
+      </tr>
+      <tr>
+          <td>Description</td>
+          <td>The description of the issue. Depending on version of the API, it can be a text, Markdown, or JSON (v3 API only). Maximum size of the field is 32kb.<br><strong>Note:</strong> JSON is not limited by the client, and if it exceeds the size, the API is likely to reject the request.</td>
+      </tr>
+      <tr>
+          <td>Labels</td>
+          <td>Custom labels can be added to organize and filter issues created in Jira. Supports templating, allowing dynamic label generation based on alert data.</td>
+      </tr>
+      <tr>
+          <td>Priority</td>
+          <td>The priority level of the issue (e.g., <code>Low</code>, <code>Medium</code>, <code>High</code>, <code>Critical</code>). <br>Ensure that the priority value matches the available options for your Jira instance. You can customize priority levels in Jira <a href="https://support.atlassian.com/jira-cloud-administration/docs/configure-priorities/" target="_blank" rel="noopener noreferrer">here</a>.</td>
+      </tr>
+      <tr>
+          <td>Resolve Transition</td>
+          <td>The transition name to move the issue to a resolved state when an alert is resolved. Ensure that the value matches a valid transition available in your Jira workflow for the specified issue type. If this field is empty, the issue will not be transitioned to Done.</td>
+      </tr>
+      <tr>
+          <td>Reopen Transition</td>
+          <td>The transition name to move the issue back to an open state when an alert reoccurs. Ensure that the value matches a valid transition available in your Jira workflow for the specified issue type. If this field is empty, the issue will not be reopened.</td>
+      </tr>
+      <tr>
+          <td>Reopen Duration</td>
+          <td>The time duration (in minutes) to control whether to reopen an issue that was closed within this duration or create a new one. If not specified, the most recent issue that matches the deduplication key will be updated and reopened (if reopen transition is specified).</td>
+      </tr>
+      <tr>
+          <td>&ldquo;Won&rsquo;t fix&rdquo; Transition</td>
+          <td>Specify a resolution status that should be ignored when searching for existing issues. For example, issues with this resolution will not be reopened or updated by subsequent alerts.</td>
+      </tr>
+      <tr>
+          <td>Deduplication Key Field</td>
+          <td>Custom field to store the deduplication key. Must be a text field. <br> If not specified, the deduplication key is added to labels in the format of <code>ALERT(hash sum)</code>. See <a href="https://support.atlassian.com/jira-cloud-administration/docs/create-a-custom-field/" target="_blank" rel="noopener noreferrer">Jira documentation</a> for how to create custom fields.</td>
+      </tr>
+      <tr>
+          <td>Fields</td>
+          <td>Allows to configure custom fields of Jira issue. The field name should be of the format like <code>customfield_10001</code>.</td>
+      </tr>
+  </tbody>
+</table>

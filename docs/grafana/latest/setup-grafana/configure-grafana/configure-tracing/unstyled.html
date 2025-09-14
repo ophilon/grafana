@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<h1 id="configure-profiling-and-tracing-to-troubleshoot-grafana">Configure profiling and tracing to troubleshoot Grafana</h1>
+<p>You can set up the <code>grafana-server</code> process to enable certain diagnostics when it starts. This can be useful
+when investigating certain performance problems. It&rsquo;s <em>not</em> recommended to have these enabled by default.</p>
+<h2 id="turn-on-profiling-and-collect-profiles">Turn on profiling and collect profiles</h2>
+<p>The <code>grafana-server</code> can be started with the command-line option <code>-profile</code> to enable profiling, <code>-profile-addr</code> to override the default HTTP address (<code>localhost</code>), and
+<code>-profile-port</code> to override the default HTTP port (<code>6060</code>) where the <code>pprof</code> debugging endpoints are available. Further, <a href="https://pkg.go.dev/runtime#SetBlockProfileRate" target="_blank" rel="noopener noreferrer"><code>-profile-block-rate</code></a> controls the fraction of goroutine blocking events that are reported in the blocking profile, default <code>1</code> (i.e. track every event) for backward compatibility reasons, and <a href="https://pkg.go.dev/runtime#SetMutexProfileFraction" target="_blank" rel="noopener noreferrer"><code>-profile-mutex-rate</code></a> controls the fraction of mutex contention events that are reported in the mutex profile, default <code>0</code> (i.e. track no events). The higher the fraction (that is, the smaller this value) the more overhead it adds to normal operations.</p>
+<p>Running Grafana with profiling enabled and without block and mutex profiling enabled should only add a fraction of overhead and is suitable for <a href="/oss/pyroscope/">continuous profiling</a>. Adding a small fraction of block and mutex profiling, such as 10-5 (10%-20%) should in general be fine.</p>
+<p>Enable profiling:</p>
+<pre>./grafana server -profile -profile-addr=0.0.0.0 -profile-port=8080</pre>
+<p>Enable profiling with block and mutex profiling enabled with a fraction of 20%:</p>
+<pre>./grafana server -profile -profile-addr=0.0.0.0 -profile-port=8080 -profile-block-rate=5 -profile-mutex-rate=5</pre>
+<p>Note that <code>pprof</code> debugging endpoints are served on a different port than the Grafana HTTP server. Check what debugging endpoints are available by browsing <code>http://&lt;profile-addr&gt;&lt;profile-port&gt;/debug/pprof</code>.</p>
+<p>There are some additional <a href="https://github.com/grafana/pyroscope-go/tree/main/godeltaprof" target="_blank" rel="noopener noreferrer">godeltaprof</a> endpoints available which are more suitable in a continuous profiling scenario. These endpoints are <code>/debug/pprof/delta_heap</code>, <code>/debug/pprof/delta_block</code>, <code>/debug/pprof/delta_mutex</code>.</p>
+<p>You can configure or override profiling settings using environment variables:</p>
+<pre>export GF_DIAGNOSTICS_PROFILING_ENABLED=true
+export GF_DIAGNOSTICS_PROFILING_ADDR=0.0.0.0
+export GF_DIAGNOSTICS_PROFILING_PORT=8080
+export GF_DIAGNOSTICS_PROFILING_BLOCK_RATE=5
+export GF_DIAGNOSTICS_PROFILING_MUTEX_RATE=5</pre>
+<p>In general, you use the <a href="https://golang.org/cmd/pprof/" target="_blank" rel="noopener noreferrer">Go command pprof</a> to both collect and analyze profiling data. You can also use <a href="https://curl.se/" target="_blank" rel="noopener noreferrer">curl</a> or similar to collect profiles which could be convenient in environments where you don&rsquo;t have the Go/pprof command available. Next, some usage examples of using curl and pprof to collect and analyze memory and CPU profiles.</p>
+<p><strong>Analyzing high memory usage/memory leaks:</strong></p>
+<p>When experiencing high memory usage or potential memory leaks it&rsquo;s useful to collect several heap profiles and later when analyzing, compare them. It&rsquo;s a good idea to wait some time, e.g. 30 seconds, between collecting each profile to allow memory consumption to increase.</p>
+<pre>curl http://&lt;profile-addr&gt;:&lt;profile-port&gt;/debug/pprof/heap &gt; heap1.pprof
+sleep 30
+curl http://&lt;profile-addr&gt;:&lt;profile-port&gt;/debug/pprof/heap &gt; heap2.pprof</pre>
+<p>You can then use pprof tool to compare two heap profiles:</p>
+<pre>go tool pprof -http=localhost:8081 --base heap1.pprof heap2.pprof</pre>
+<p><strong>Analyzing high CPU usage:</strong></p>
+<p>When experiencing high CPU usage it&rsquo;s suggested to collect CPU profiles over a period of time, e.g. 30 seconds.</p>
+<pre>curl &#39;http://&lt;profile-addr&gt;:&lt;profile-port&gt;/debug/pprof/profile?seconds=30&#39; &gt; profile.pprof</pre>
+<p>You can then use pprof tool to analyze the collected CPU profile:</p>
+<pre>go tool pprof -http=localhost:8081 profile.pprof</pre>
+<h2 id="use-tracing">Use tracing</h2>
+<p>The <code>grafana-server</code> can be started with the arguments <code>-tracing</code> to enable tracing and <code>-tracing-file</code> to override the default trace file (<code>trace.out</code>) where trace result is written to. For example:</p>
+<pre>./grafana server -tracing -tracing-file=/tmp/trace.out</pre>
+<p>You can configure or override profiling settings using environment variables:</p>
+<pre>export GF_DIAGNOSTICS_TRACING_ENABLED=true
+export GF_DIAGNOSTICS_TRACING_FILE=/tmp/trace.out</pre>
+<p>View the trace in a web browser (Go required to be installed):</p>
+<pre>go tool trace &lt;trace file&gt;
+2019/11/24 22:20:42 Parsing trace...
+2019/11/24 22:20:42 Splitting trace...
+2019/11/24 22:20:42 Opening browser. Trace viewer is listening on http://127.0.0.1:39735</pre>
+<p>For more information about how to analyze trace files, refer to <a href="https://golang.org/cmd/trace/" target="_blank" rel="noopener noreferrer">Go command trace</a>.</p>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<h1 id="loki-template-variables">Loki template variables</h1>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For an introduction to templating and template variables, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a> documentation.</p>
+<h2 id="use-query-variables">Use query variables</h2>
+<p>Variables of the type <em>Query</em> help you query Loki for lists of labels or label values.
+The Loki data source provides a form to select the type of values expected for a given variable.</p>
+<p>The form has these options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Query type</th>
+          <th>Example label</th>
+          <th>Example stream selector</th>
+          <th>List returned</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Label names</td>
+          <td>Not required</td>
+          <td>Not required</td>
+          <td>Label names.</td>
+      </tr>
+      <tr>
+          <td>Label values</td>
+          <td><code>label</code></td>
+          <td></td>
+          <td>Label values for <code>label</code>.</td>
+      </tr>
+      <tr>
+          <td>Label values</td>
+          <td><code>label</code></td>
+          <td><code>log stream selector</code></td>
+          <td>Label values for <code>label</code> in the specified <code>log stream selector</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="use-ad-hoc-filters">Use ad hoc filters</h2>
+<p>Loki supports the special <strong>Ad hoc filters</strong> variable type.
+You can use this variable type to specify any number of key/value filters, and Grafana applies them automatically to all of your Loki queries.</p>
+<p>For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#add-ad-hoc-filters">Add ad hoc filters</a>.</p>
+<h2 id="use-__auto-variable-for-loki-metric-queries">Use $__auto variable for Loki metric queries</h2>
+<p>Consider using the <code>$__auto</code> variable in your Loki metric queries, which will automatically be substituted with the <a href="/docs/grafana/next/datasources/loki/query-editor/#options">step value</a> for range queries, and with the selected time range&rsquo;s value (computed from the starting and ending times) for instant queries.</p>
+<p>For more information about variables, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#global-variables">Global built-in variables</a>.</p>
+<h2 id="label-extraction-and-indexing-in-loki">Label extraction and indexing in Loki</h2>
+<p>Labels play a fundamental role in Loki&rsquo;s log aggregation and querying capabilities. When logs are ingested into Loki, they are often accompanied by metadata called <code>labels</code>, which provide contextual information about the log entries. These labels consist of <code>key-value</code> pairs and are essential for organizing, filtering, and searching log data efficiently.</p>
+<h3 id="label-extraction">Label extraction</h3>
+<p>During the ingestion process, Loki performs label extraction from log lines. Loki&rsquo;s approach to label extraction is based on <code>regular expressions</code>, allowing users to specify custom patterns for parsing log lines and extracting relevant label key-value pairs. This flexibility enables Loki to adapt to various log formats and schemas.</p>
+<p>For example, suppose you have log lines in the following format:</p>
+<p><strong>2023-07-25 12:34:56 INFO: Request from IP A.B.C.D to endpoint /api/data</strong></p>
+<p>To extract labels from this log format, you could define a regular expression to extract the log level (&ldquo;INFO&rdquo;), IP address (&ldquo;A.B.C.D&rdquo;), and endpoint (&quot;/api/data&quot;) as labels. These labels can later be used to filter and aggregate log entries.</p>
+<h3 id="indexing-labels">Indexing labels</h3>
+<p>Once labels are extracted, Loki efficiently indexes them. The index serves as a lookup mechanism that maps labels to the corresponding log entries. This indexing process enables faster retrieval of logs based on specific label criteria, significantly enhancing query performance.</p>
+<p>For instance, if you have a label &ldquo;job&rdquo; that represents different services in your application, Loki will index the logs for each job separately. This indexing allows you to quickly query and analyze logs for individual jobs without the need to scan the entire log dataset.</p>
+<p>By effectively extracting and indexing labels, Loki enables users to perform complex and targeted log queries without compromising on query speed and resource consumption.</p>
+<p>Utilizing Loki&rsquo;s indexed labels in combination with Grafana&rsquo;s template variables provides a powerful way to interactively explore and visualize log data. Template variables allow users to create dynamic queries, selecting and filtering logs based on various labels, such as job names, instance IDs, severity levels, or any other contextual information attached to the log entries.</p>
+<p>In conclusion, Loki&rsquo;s label extraction and indexing mechanisms are key components that contribute to its ability to handle vast amounts of log data efficiently. By making use of labels and template variables, users can easily gain valuable insights from their log data and troubleshoot issues effectively.</p>

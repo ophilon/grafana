@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<h1 id="saml-configuration-options">SAML configuration options</h1>
+<p>This page provides a comprehensive guide to configuring SAML authentication in Grafana. You&rsquo;ll find detailed configuration examples, available settings, and their descriptions to help you set up and customize SAML authentication for your Grafana instance.</p>
+<p>The table below describes all SAML configuration options. Continue reading below for details on specific options. Like any other Grafana configuration, you can apply these options as 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#override-configuration-with-environment-variables">environment variables</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Required</th>
+          <th>Description</th>
+          <th>Default</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>enabled</code></td>
+          <td>No</td>
+          <td>Whether SAML authentication is allowed.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>name</code></td>
+          <td>No</td>
+          <td>Name used to refer to the SAML authentication in the Grafana user interface.</td>
+          <td><code>SAML</code></td>
+      </tr>
+      <tr>
+          <td><code>entity_id</code></td>
+          <td>No</td>
+          <td>The entity ID of the service provider. This is the unique identifier of the service provider.</td>
+          <td><code>https://{Grafana URL}/saml/metadata</code></td>
+      </tr>
+      <tr>
+          <td><code>single_logout</code></td>
+          <td>No</td>
+          <td>Whether SAML Single Logout is enabled.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>allow_sign_up</code></td>
+          <td>No</td>
+          <td>Whether to allow new Grafana user creation through SAML login. If set to <code>false</code>, then only existing Grafana users can log in with SAML.</td>
+          <td><code>true</code></td>
+      </tr>
+      <tr>
+          <td><code>auto_login</code></td>
+          <td>No</td>
+          <td>Whether SAML auto login is enabled.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>allow_idp_initiated</code></td>
+          <td>No</td>
+          <td>Whether SAML IdP-initiated login is allowed.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>certificate</code> or <code>certificate_path</code></td>
+          <td>Yes</td>
+          <td>Base64-encoded string or Path for the SP X.509 certificate.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>private_key</code> or <code>private_key_path</code></td>
+          <td>Yes</td>
+          <td>Base64-encoded string or Path for the SP private key.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>signature_algorithm</code></td>
+          <td>No</td>
+          <td>Signature algorithm used for signing requests to the IdP. Supported values are rsa-sha1, rsa-sha256, rsa-sha512.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>idp_metadata</code>, <code>idp_metadata_path</code>, or <code>idp_metadata_url</code></td>
+          <td>Yes</td>
+          <td>Base64-encoded string, Path or URL for the IdP SAML metadata XML.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>max_issue_delay</code></td>
+          <td>No</td>
+          <td>Maximum time allowed between the issuance of an AuthnRequest by the SP and the processing of the Response.</td>
+          <td><code>90s</code></td>
+      </tr>
+      <tr>
+          <td><code>metadata_valid_duration</code></td>
+          <td>No</td>
+          <td>Duration for which the SP metadata remains valid.</td>
+          <td><code>48h</code></td>
+      </tr>
+      <tr>
+          <td><code>relay_state</code></td>
+          <td>No</td>
+          <td>Relay state for IdP-initiated login. This should match the relay state configured in the IdP.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>assertion_attribute_name</code></td>
+          <td>No</td>
+          <td>Friendly name or name of the attribute within the SAML assertion to use as the user name. Alternatively, this can be a template with variables that match the names of attributes within the SAML assertion.</td>
+          <td><code>displayName</code></td>
+      </tr>
+      <tr>
+          <td><code>assertion_attribute_login</code></td>
+          <td>No</td>
+          <td>Friendly name or name of the attribute within the SAML assertion to use as the user login handle.</td>
+          <td><code>mail</code></td>
+      </tr>
+      <tr>
+          <td><code>assertion_attribute_email</code></td>
+          <td>No</td>
+          <td>Friendly name or name of the attribute within the SAML assertion to use as the user email.</td>
+          <td><code>mail</code></td>
+      </tr>
+      <tr>
+          <td><code>assertion_attribute_groups</code></td>
+          <td>No</td>
+          <td>Friendly name or name of the attribute within the SAML assertion to use as the user groups.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>assertion_attribute_role</code></td>
+          <td>No</td>
+          <td>Friendly name or name of the attribute within the SAML assertion to use as the user roles.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>assertion_attribute_org</code></td>
+          <td>No</td>
+          <td>Friendly name or name of the attribute within the SAML assertion to use as the user organization</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>assertion_attribute_external_uid</code></td>
+          <td>No</td>
+          <td>Friendly name or name of the attribute within the SAML assertion to use as the user external UID.</td>
+          <td><code>userUID</code></td>
+      </tr>
+      <tr>
+          <td><code>allowed_organizations</code></td>
+          <td>No</td>
+          <td>List of comma- or space-separated organizations. User should be a member of at least one organization to log in.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>org_mapping</code></td>
+          <td>No</td>
+          <td>List of comma- or space-separated Organization:OrgId:Role mappings. Organization can be <code>*</code> meaning &ldquo;All users&rdquo;. Role is optional and can have the following values: <code>None</code>, <code>Viewer</code>, <code>Editor</code> or <code>Admin</code>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>role_values_none</code></td>
+          <td>No</td>
+          <td>List of comma- or space-separated roles which will be mapped into the None role.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>role_values_viewer</code></td>
+          <td>No</td>
+          <td>List of comma- or space-separated roles which will be mapped into the Viewer role.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>role_values_editor</code></td>
+          <td>No</td>
+          <td>List of comma- or space-separated roles which will be mapped into the Editor role.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>role_values_admin</code></td>
+          <td>No</td>
+          <td>List of comma- or space-separated roles which will be mapped into the Admin role.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>role_values_grafana_admin</code></td>
+          <td>No</td>
+          <td>List of comma- or space-separated roles which will be mapped into the Grafana Admin (Super Admin) role.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>skip_org_role_sync</code></td>
+          <td>No</td>
+          <td>Whether to skip organization role synchronization.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>name_id_format</code></td>
+          <td>No</td>
+          <td>Specifies the format of the requested NameID element in the SAML AuthnRequest.</td>
+          <td><code>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</code></td>
+      </tr>
+      <tr>
+          <td><code>client_id</code></td>
+          <td>No</td>
+          <td>Client ID of the IdP service application used to retrieve more information about the user from the IdP. (Microsoft Entra ID only)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>client_secret</code></td>
+          <td>No</td>
+          <td>Client secret of the IdP service application used to retrieve more information about the user from the IdP. (Microsoft Entra ID only)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>token_url</code></td>
+          <td>No</td>
+          <td>URL to retrieve the access token from the IdP. (Microsoft Entra ID only)</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>force_use_graph_api</code></td>
+          <td>No</td>
+          <td>Whether to use the IdP service application retrieve more information about the user from the IdP. (Microsoft Entra ID only)</td>
+          <td><code>false</code></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="example-saml-configuration">Example SAML configuration</h2>
+<pre>[auth.saml]
+enabled = true
+auto_login = false
+certificate_path = &#34;/path/to/certificate.cert&#34;
+private_key_path = &#34;/path/to/private_key.pem&#34;
+idp_metadata_path = &#34;/my/metadata.xml&#34;
+max_issue_delay = 90s
+metadata_valid_duration = 48h
+assertion_attribute_name = displayName
+assertion_attribute_login = mail
+assertion_attribute_email = mail
+
+assertion_attribute_groups = Group
+assertion_attribute_role = Role
+assertion_attribute_org = Org
+role_values_viewer = external
+role_values_editor = editor, developer
+role_values_admin = admin, operator
+role_values_grafana_admin = superadmin
+org_mapping = Engineering:2:Editor, Engineering:3:Viewer, Sales:3:Editor, *:1:Editor
+allowed_organizations = Engineering, Sales</pre>
+<h2 id="example-saml-configuration-in-terraform">Example SAML configuration in Terraform</h2>
+<pre>resource &#34;grafana_sso_settings&#34; &#34;saml_sso_settings&#34; {
+  provider_name = &#34;saml&#34;
+  saml_settings {
+    name                       = &#34;SAML&#34;
+    auto_login                 = false
+    certificate_path           = &#34;/path/to/certificate.cert&#34;
+    private_key_path           = &#34;/path/to/private_key.pem&#34;
+    idp_metadata_path          = &#34;/my/metadata.xml&#34;
+    max_issue_delay            = &#34;90s&#34;
+    metadata_valid_duration    = &#34;48h&#34;
+    assertion_attribute_name   = &#34;displayName&#34;
+    assertion_attribute_login  = &#34;mail&#34;
+    assertion_attribute_email  = &#34;mail&#34;
+    assertion_attribute_groups = &#34;Group&#34;
+    assertion_attribute_role   = &#34;Role&#34;
+    assertion_attribute_org    = &#34;Org&#34;
+    role_values_editor         = &#34;editor, developer&#34;
+    role_values_admin          = &#34;admin, operator&#34;
+    role_values_grafana_admin  = &#34;superadmin&#34;
+    org_mapping                = &#34;Engineering:2:Editor, Engineering:3:Viewer, Sales:3:Editor, *:1:Editor&#34;
+    allowed_organizations      = &#34;Engineering, Sales&#34;
+  }
+}</pre>
+<p>Go to 
+    <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/sso_settings" target="_blank" rel="noopener noreferrer">Terraform Registry</a> for a complete reference on using the <code>grafana_sso_settings</code> resource.</p>

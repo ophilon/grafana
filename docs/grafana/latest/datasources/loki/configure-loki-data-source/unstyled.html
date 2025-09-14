@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<h1 id="loki-data-source">Loki data source</h1>
+<p>Grafana ships with built-in support for <a href="/docs/loki/latest/">Loki</a>, an open-source log aggregation system by Grafana Labs. If you are new to Loki the following documentation will help you get started:</p>
+<ul>
+<li><a href="/docs/loki/latest/get-started/">Getting started</a></li>
+<li><a href="/docs/loki/latest/best-practices/#best-practices">Best practices</a></li>
+</ul>
+<h2 id="configure-the-loki-data-source">Configure the Loki data source</h2>
+<p>To add the Loki data source, complete the following steps:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu.</li>
+<li>Under <strong>Connections</strong>, click <strong>Add new connection</strong>.</li>
+<li>Enter <code>Loki</code> in the search bar.</li>
+<li>Select <strong>Loki data source</strong>.</li>
+<li>Click <strong>Create a Loki data source</strong> in the upper right.</li>
+</ol>
+<p>You will be taken to the <strong>Settings</strong> tab where you will set up your Loki configuration.</p>
+<h2 id="configuration-options">Configuration options</h2>
+<p>The following is a list of configuration options for Loki.</p>
+<p>The first option to configure is the name of your connection:</p>
+<ul>
+<li>
+<p><strong>Name</strong> - The data source name. This is how you refer to the data source in panels and queries. Examples: loki-1, loki_logs.</p>
+</li>
+<li>
+<p><strong>Default</strong> - Toggle to select as the default name in dashboard panels. When you go to a dashboard panel this will be the default selected data source.</p>
+</li>
+</ul>
+<h3 id="http-section">HTTP section</h3>
+<ul>
+<li>
+<p><strong>URL</strong> - The URL of your Loki server. Loki uses port 3100. If your Loki server is local, use <code>http://localhost:3100</code>. If it is on a server within a network, this is the URL with port where you are running Loki. Example: <code>http://loki.example.orgname:3100</code>.</p>
+</li>
+<li>
+<p><strong>Allowed cookies</strong> - Specify cookies by name that should be forwarded to the data source. The Grafana proxy deletes all forwarded cookies by default.</p>
+</li>
+<li>
+<p><strong>Timeout</strong> - The HTTP request timeout. This must be in seconds. There is no default, so this setting is up to you.</p>
+</li>
+</ul>
+<h3 id="auth-section">Auth section</h3>
+<p>There are several authentication methods you can choose in the Authentication section.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use TLS (Transport Layer Security) for an additional layer of security when working with Loki. For information on setting up TLS encryption with Loki see <a href="/docs/loki/latest/configuration/">Grafana Loki configuration parameters</a>.</p></blockquote></div>
+
+<ul>
+<li>
+<p><strong>Basic authentication</strong> - The most common authentication method. Use your <code>data source</code> user name and <code>data source</code> password to connect.</p>
+</li>
+<li>
+<p><strong>With credentials</strong> - Toggle on to enable credentials such as cookies or auth headers to be sent with cross-site requests.</p>
+</li>
+<li>
+<p><strong>TLS client authentication</strong> - Toggle on to use client authentication. When enabled, add the <code>Server name</code>, <code>Client cert</code> and <code>Client key</code>. The client provides a certificate that is validated by the server to establish the client&rsquo;s trusted identity. The client key encrypts the data between client and server.</p>
+</li>
+<li>
+<p><strong>With CA cert</strong> - Authenticate with a CA certificate. Follow the instructions of the CA (Certificate Authority) to download the certificate file.</p>
+</li>
+<li>
+<p><strong>Skip TLS verify</strong> - Toggle on to bypass TLS certificate validation.</p>
+</li>
+<li>
+<p><strong>Forward OAuth identity</strong> - Forward the OAuth access token (and also the OIDC ID token if available) of the user querying the data source.</p>
+</li>
+</ul>
+<h3 id="custom-http-headers">Custom HTTP headers</h3>
+<ul>
+<li>
+<p><strong>Header</strong> - Add a custom header. This allows custom headers to be passed based on the needs of your Loki instance.</p>
+</li>
+<li>
+<p><strong>Value</strong> - The value of the header.</p>
+</li>
+</ul>
+<h3 id="alerting">Alerting</h3>
+<ul>
+<li><strong>Manage alert rules in Alerting UI</strong> - Toggle on to manage alert rules for the Loki data source. To manage other alerting resources add an <code>Alertmanager</code> data source.</li>
+</ul>
+<h3 id="queries">Queries</h3>
+<ul>
+<li><strong>Maximum lines</strong> - Sets the maximum number of log lines returned by Loki. Increase the limit to have a bigger results set for ad-hoc analysis. Decrease the limit if your browser is sluggish when displaying log results. The default is <code>1000</code>.</li>
+</ul>
+<!-- 
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To troubleshoot configuration and other issues, check the log file located at <code>/var/log/grafana/grafana.log</code> on Unix systems, or in <code>&lt;grafana_install_dir&gt;/data/log</code> on other platforms and manual installations.</p></blockquote></div>
+ -->
+<h3 id="derived-fields">Derived fields</h3>
+<p>Derived Fields are used to extract new fields from your logs and create a link from the value of the field.</p>
+<p>For example, you can link to your tracing backend directly from your logs, or link to a user profile page if the log line contains a corresponding <code>userId</code>.
+These links appear in the 
+    <a href="/docs/grafana/latest/explore/logs-integration/#labels-and-detected-fields">log details</a>.</p>
+<p>You can add multiple derived fields.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you use Grafana Cloud, you can request modifications to this feature by clicking <strong>Open a Support Ticket</strong> from the Grafana Cloud Portal.</p></blockquote></div>
+
+<p>Each derived field consists of the following:</p>
+<ul>
+<li>
+<p><strong>Name</strong> - Sets the field name. Displayed as a label in the log details.</p>
+</li>
+<li>
+<p><strong>Type</strong> - Defines the type of the derived field. It can be either:</p>
+</li>
+</ul>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Using complex regular expressions in either type can impact browser performance when processing large volumes of logs. Consider using simpler patterns when possible.</p></blockquote></div>
+
+<ul>
+<li>
+<p><strong>Regex</strong>: A regular expression to parse a part of the log message and capture it as the value of the new field. Can contain only one capture group.</p>
+</li>
+<li>
+<p><strong>Label</strong>: A label from the selected log line. This can be any type of label - indexed, parsed or structured metadata. When using this type, the input will match as a regular expression against label keys, allowing you to match variations like <code>traceid</code> and <code>trace_id</code> with a single regex pattern like <code>trace[_]?id</code>. The value of the matched label will be used as the value of the derived field.</p>
+</li>
+<li>
+<p><strong>URL/query</strong> Sets the full link URL if the link is external, or a query for the target data source if the link is internal. You can interpolate the value from the field with the <code>${__value.raw}</code> macro.</p>
+</li>
+<li>
+<p><strong>URL Label</strong> - Sets a custom display label for the link. This setting overrides the link label, which defaults to the full external URL or name of the linked internal data source.</p>
+</li>
+<li>
+<p><strong>Internal link</strong> - Toggle on to define an internal link. For internal links, you can select the target data source from a selector. This supports only tracing data sources.</p>
+</li>
+<li>
+<p><strong>Open in new tab</strong> - Toggle on to open the link in a new tab or window.</p>
+</li>
+<li>
+<p><strong>Show example log message</strong> - Click to paste an example log line to test the regular expression of your derived fields.</p>
+</li>
+</ul>
+<p>Click <strong>Save &amp; test</strong> to test your connection.</p>
+<h4 id="troubleshoot-interpolation">Troubleshoot interpolation</h4>
+<p>You can use a debug section to see what your fields extract and how the URL is interpolated.
+Select <strong>Show example log message</strong> to display a text area where you can enter a log message.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v75/loki_derived_fields_settings.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v75/loki_derived_fields_settings.png"data-srcset="/static/img/docs/v75/loki_derived_fields_settings.png?w=320 320w, /static/img/docs/v75/loki_derived_fields_settings.png?w=550 550w, /static/img/docs/v75/loki_derived_fields_settings.png?w=750 750w, /static/img/docs/v75/loki_derived_fields_settings.png?w=900 900w, /static/img/docs/v75/loki_derived_fields_settings.png?w=1040 1040w, /static/img/docs/v75/loki_derived_fields_settings.png?w=1240 1240w, /static/img/docs/v75/loki_derived_fields_settings.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of the derived fields debugging"width="2060"height="866"title="Screenshot of the derived fields debugging"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v75/loki_derived_fields_settings.png"
+            alt="Screenshot of the derived fields debugging"width="2060"height="866"title="Screenshot of the derived fields debugging"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screenshot of the derived fields debugging</figcaption></a></figure>
+<p>The new field with the link shown in log details:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/explore/data-link-9-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/explore/data-link-9-4.png"data-srcset="/static/img/docs/explore/data-link-9-4.png?w=320 320w, /static/img/docs/explore/data-link-9-4.png?w=550 550w, /static/img/docs/explore/data-link-9-4.png?w=750 750w, /static/img/docs/explore/data-link-9-4.png?w=900 900w, /static/img/docs/explore/data-link-9-4.png?w=1040 1040w, /static/img/docs/explore/data-link-9-4.png?w=1240 1240w, /static/img/docs/explore/data-link-9-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Data link in Explore"width="1838"height="810"title="Data link in Explore"/>
+        <noscript>
+          <img
+            src="/static/img/docs/explore/data-link-9-4.png"
+            alt="Data link in Explore"width="1838"height="810"title="Data link in Explore"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Data link in Explore</figcaption></a></figure>

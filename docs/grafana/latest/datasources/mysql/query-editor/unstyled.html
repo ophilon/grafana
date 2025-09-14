@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<h1 id="mysql-query-editor">MySQL query editor</h1>
+<p>Grafana’s query editors are unique for each data source. For general information on Grafana query editors, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#query-editors">Query editors</a>. For general information on querying data sources in Grafana, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<p>The MySQL query editor is located on the 
+    <a href="/docs/grafana/latest/explore/">Explore page</a>. You can also access the MySQL query editor from a dashboard panel. Click the ellipsis in the upper right of the panel and select <strong>Edit</strong>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If a default database is configured in the <strong>Data Source Configuration page</strong>, or via a provisioning configuration file, users will be restricted to querying only that pre-configured database.</p></blockquote></div>
+
+<h2 id="mysql-query-editor-components">MySQL query editor components</h2>
+<p>The MySQL query editor has two modes: <strong>Builder</strong> and <strong>Code</strong>.</p>
+<p>Builder mode helps you build a query using a visual interface. Code mode allows for advanced querying and offers support for complex SQL query writing.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If your table or database name contains a reserved word or a <a href="https://dev.mysql.com/doc/en/identifiers.html" target="_blank" rel="noopener noreferrer">prohibited character</a> the editor will put quotes around the name. For example, the name <code>table-name</code> will be quoted with backticks - <code>`table-name`</code>.</p></blockquote></div>
+
+<h2 id="mysql-builder-mode">MySQL Builder mode</h2>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 1265px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/mysql/screenshot-mysql-query-editor.v11.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/mysql/screenshot-mysql-query-editor.v11.3.png"data-srcset="/media/docs/mysql/screenshot-mysql-query-editor.v11.3.png?w=320 320w, /media/docs/mysql/screenshot-mysql-query-editor.v11.3.png?w=550 550w, /media/docs/mysql/screenshot-mysql-query-editor.v11.3.png?w=750 750w, /media/docs/mysql/screenshot-mysql-query-editor.v11.3.png?w=900 900w, /media/docs/mysql/screenshot-mysql-query-editor.v11.3.png?w=1040 1040w, /media/docs/mysql/screenshot-mysql-query-editor.v11.3.png?w=1240 1240w, /media/docs/mysql/screenshot-mysql-query-editor.v11.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Builder mode"width="1265"height="519"/>
+        <noscript>
+          <img
+            src="/media/docs/mysql/screenshot-mysql-query-editor.v11.3.png"
+            alt="Builder mode"width="1265"height="519"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>The following components will help you build a MySQL query:</p>
+<ul>
+<li>
+<p><strong>Format</strong> - Select a format response from the drop-down for the MySQL query. The default is <strong>Table</strong>. If you use the <strong>Time series</strong> format option, one of the columns must be <code>time</code>.</p>
+</li>
+<li>
+<p><strong>Dataset</strong> - Select a database to query from the drop-down.</p>
+<ul>
+<li>
+<p><strong>Table</strong> - Select a table from the drop-down. Tables correspond to the chosen database.</p>
+</li>
+<li>
+<p><strong>Data operations</strong> - <em>Optional</em> Select an aggregation from the drop-down. You can add multiple data operations by clicking the <strong>+ sign</strong>. Click the <strong>X</strong> to remove a data operation. Click the <strong>garbage can icon</strong> to remove the entire column.</p>
+</li>
+<li>
+<p><strong>Column</strong> - Select a column on which to run the aggregation.</p>
+</li>
+<li>
+<p><strong>Alias</strong> - <em>Optional</em> Add an alias from the drop-down. You can also add your own alias by typing it in the box and clicking <strong>Enter</strong>. Remove an alias by clicking the <strong>X</strong>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Filter</strong> - Toggle to add filters.</p>
+<ul>
+<li><strong>Filter by column value</strong> - <em>Optional</em> If you toggle <strong>Filter</strong> you can add a column to filter by from the drop-down. To filter on more columns, click the <strong>+ sign</strong> to the right of the condition drop-down. You can choose a variety of operators from the drop-down next to the condition. When multiple filters are added you can add an <code>AND</code> operator to display all true conditions or an <code>OR</code> operator to display any true conditions. Use the second drop-down to choose a filter. To remove a filter, click the <code>X</code> button next to that filter&rsquo;s drop-down. After selecting a date type column, you can choose <strong>Macros</strong> from the operators list and select <code>timeFilter</code> which will add the <code>$\_\_timeFilter</code> macro to the query with the selected date column.</li>
+</ul>
+</li>
+<li>
+<p><strong>Group</strong> - Toggle to add <strong>Group by column</strong>.</p>
+<ul>
+<li><strong>Group by column</strong> - Select a column to filter by from the drop-down. Click the <strong>+ sign</strong> to filter by multiple columns. Click the <strong>X</strong> to remove a filter.</li>
+</ul>
+</li>
+<li>
+<p><strong>Order</strong> - Toggle to add an ORDER BY statement.</p>
+<ul>
+<li><strong>Order by</strong> - Select a column to order by from the drop-down. Select ascending (<code>ASC</code>) or descending (<code>DESC</code>) order.</li>
+<li><strong>Limit</strong> - You can add an optional limit on the number of retrieved results. Default is 50.</li>
+</ul>
+</li>
+<li>
+<p><strong>Preview</strong> - Toggle for a preview of the SQL query generated by the query builder. Preview is toggled on by default.</p>
+</li>
+</ul>
+<h2 id="mysql-code-mode">MySQL Code mode</h2>
+<p>To create advanced queries, switch to <strong>Code mode</strong> by clicking <strong>Code</strong> in the upper right of the editor window. Code mode supports the auto-completion of tables, columns, SQL keywords, standard SQL functions, Grafana template variables, and Grafana macros. Columns cannot be completed before a table has been specified.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 963px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v92/sql_code_editor.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v92/sql_code_editor.png"data-srcset="/static/img/docs/v92/sql_code_editor.png?w=320 320w, /static/img/docs/v92/sql_code_editor.png?w=550 550w, /static/img/docs/v92/sql_code_editor.png?w=750 750w, /static/img/docs/v92/sql_code_editor.png?w=900 900w, /static/img/docs/v92/sql_code_editor.png?w=1040 1040w, /static/img/docs/v92/sql_code_editor.png?w=1240 1240w, /static/img/docs/v92/sql_code_editor.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="963"height="326"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v92/sql_code_editor.png"
+            alt=""width="963"height="326"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<p>Select <strong>Table</strong> or <strong>Time Series</strong> as the format. Click the <strong>{}</strong> in the bottom right to format the query. Click the <strong>downward caret</strong> to expand the Code mode editor. <strong>CTRL/CMD + Return</strong> serves as a keyboard shortcut to execute the query.</p>
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>Changes made to a query in Code mode will not transfer to Builder mode and will be discarded. You will be prompted to copy your code to the clipboard to save any changes.</p></blockquote></div>
+
+<h2 id="macros">Macros</h2>
+<p>You can add macros to your queries to simplify the syntax and enable dynamic elements, such as date range filters.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Macro example</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>$__time(dateColumn)</code></td>
+          <td>Replaces the value with an expression to convert to a UNIX timestamp and renames the column to <code>time_sec</code>. It also helps to recognize the <code>time</code> column, as required in Time Series format. Example: <em>UNIX_TIMESTAMP(dateColumn) AS time_sec</em>.</td>
+      </tr>
+      <tr>
+          <td><code>$__timeEpoch(dateColumn)</code></td>
+          <td>Replaces the value with an expression to convert to a UNIX Epoch timestamp and renames the column to <code>time_sec</code>. Example: <em>UNIX_TIMESTAMP(dateColumn) AS time_sec</em>.</td>
+      </tr>
+      <tr>
+          <td><code>$__timeFilter(dateColumn)</code></td>
+          <td>Applies a time range filter using the specified column name and fetches only the data that falls within that range. Example: <em>dateColumn BETWEEN FROM_UNIXTIME(1494410783) AND FROM_UNIXTIME(1494410983)</em></td>
+      </tr>
+      <tr>
+          <td><code>$__timeFrom()</code></td>
+          <td>Replaces the value with the start of the currently active time selection. Example: <em>FROM_UNIXTIME(1494410783)</em></td>
+      </tr>
+      <tr>
+          <td><code>$__timeTo()</code></td>
+          <td>Replaces the value with the end of the currently active time selection. Example: <em>FROM_UNIXTIME(1494410983)</em></td>
+      </tr>
+      <tr>
+          <td><code>$__timeGroup(dateColumn,'5m')</code></td>
+          <td>Replaces the value with an expression suitable for use in a GROUP BY clause and creates the bucket timestamps at a fixed interval. Example: *cast(cast(UNIX_TIMESTAMP(dateColumn)/(300) as signed)*300 as signed),*</td>
+      </tr>
+      <tr>
+          <td><code>$__timeGroup(dateColumn,'5m', 0)</code></td>
+          <td>Same as the <code>$__timeGroup(dateColumn,'5m')</code> macro, but includes a fill parameter to ensure missing points in the series are added by Grafana, using 0 as the default value. <strong>This applies only to time series queries.</strong></td>
+      </tr>
+      <tr>
+          <td><code>$__timeGroup(dateColumn,'5m', NULL)</code></td>
+          <td>Same as the <code>$__timeGroup(dateColumn,'5m', 0)</code> but NULL is used as the value for missing points. <strong>This applies only to time series queries.</strong></td>
+      </tr>
+      <tr>
+          <td><code>$__timeGroup(dateColumn,'5m', previous)</code></td>
+          <td>Same as the <code>$__timeGroup(dateColumn,'5m', previous)</code> macro, but uses the previous value in the series as the fill value. If no previous value exists,<code>NULL</code> will be used. <strong>This applies only to time series queries.</strong></td>
+      </tr>
+      <tr>
+          <td><code>$__timeGroupAlias(dateColumn,'5m')</code></td>
+          <td>Replaces the value identical to $__timeGroup but with an added column alias.</td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochFilter(dateColumn)</code></td>
+          <td>Replaces the value by a time range filter using the specified column name with times represented as a UNIX timestamp. Example: <em>dateColumn &gt; 1494410783 AND dateColumn &lt; 1494497183</em></td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochFrom()</code></td>
+          <td>Replaces the value with the start of the currently active time selection as a UNIX timestamp. Example: <em>1494410783</em></td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochTo()</code></td>
+          <td>Replaces the value with the end of the currently active time selection as UNIX timestamp. Example: <em>1494497183</em></td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochNanoFilter(dateColumn)</code></td>
+          <td>Replaces the value with a time range filter using the specified column name with time represented as a nanosecond timestamp. Example: <em>dateColumn &gt; 1494410783152415214 AND dateColumn &lt; 1494497183142514872</em></td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochNanoFrom()</code></td>
+          <td>Replaces the value with the start of the currently active time selection as nanosecond timestamp. Example: <em>1494410783152415214</em></td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochNanoTo()</code></td>
+          <td>Replaces the value with the end of the currently active time selection as nanosecond timestamp. Example: <em>1494497183142514872</em></td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochGroup(dateColumn,'5m', [fillmode])</code></td>
+          <td>Same as $__timeGroup but for times stored as Unix timestamp. <strong>Note that <code>fillMode</code> only works with time series queries.</strong></td>
+      </tr>
+      <tr>
+          <td><code>$__unixEpochGroupAlias(dateColumn,'5m', [fillmode])</code></td>
+          <td>Same as $__timeGroup but also adds a column alias. <strong>Note that <code>fillMode</code> only works with time series queries.</strong></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="table-sql-queries">Table SQL queries</h2>
+<p>If the <strong>Format</strong> option is set to <strong>Table</strong>, you can execute virtually any type of SQL query. The Table panel will automatically display the resulting columns and rows from your query.</p>
+<p>You can change or customize the name of a Table panel column by using the SQL keyword <code>AS</code> syntax.</p>
+<pre>SELECT
+  title as &#39;Title&#39;,
+  user.login as &#39;Created By&#39; ,
+  dashboard.created as &#39;Created On&#39;
+ FROM dashboard
+INNER JOIN user on user.id = dashboard.created_by
+WHERE $__timeFilter(dashboard.created)</pre>
+<p>Table panel results:</p>
+<p><img
+  class="lazyload"
+  data-src="/static/img/docs/v43/mysql_table.png"
+  alt="" width="562"
+     height="250"/></p>
+<h2 id="time-series-queries">Time series queries</h2>
+<p>Set the <strong>Format</strong> option to <strong>Time series</strong> to create and run time series queries.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To run a time series query you must include a column named <code>time</code> that returns either a SQL datetime value or a numeric datatype representing the UNIX epoch time in seconds. Additionally, the query results must be sorted by the <code>time</code> column for proper visualization in panels.</p></blockquote></div>
+
+<p>The examples in this section refer to the data in the following table:</p>
+<pre>+---------------------+--------------+---------------------+----------+
+| time_date_time      | value_double | CreatedAt           | hostname |
++---------------------+--------------+---------------------+----------+
+| 2025-01-02 03:05:00 | 3.0          | 2025-01-02 03:05:00 | 10.0.1.1 |
+| 2025-01-02 03:06:00 | 4.0          | 2025-01-02 03:06:00 | 10.0.1.2 |
+| 2025-01-02 03:10:00 | 6.0          | 2025-01-02 03:10:00 | 10.0.1.1 |
+| 2025-01-02 03:11:00 | 7.0          | 2025-01-02 03:11:00 | 10.0.1.2 |
+| 2025-01-02 03:20:00 | 5.0          | 2025-01-02 03:20:00 | 10.0.1.2 |
++---------------------+--------------+---------------------+----------+</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For backward compatibility, an exception to the aforementioned rule applies to queries returning three columns, including a string column named <code>metric</code>. Instead of converting the metric column into field labels, it is used as the field name, and the series name is set to the value of the metric column. Refer to the following example with a metric column.</p></blockquote></div>
+
+<p><strong>Example with <code>$__time(dateColumn)</code> Macro:</strong></p>
+<pre>SELECT
+  $__time(time_date_time),
+  value_double
+FROM my_data
+ORDER BY time_date_time</pre>
+<p>Table panel result:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 624px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png"data-srcset="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=320 320w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=550 550w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=750 750w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=900 900w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=1040 1040w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=1240 1240w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=1920 1920w"
+          data-sizes="auto"alt="output of time macro"width="624"height="233"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png"
+            alt="output of time macro"width="624"height="233"/>
+        </noscript></div></a></figure>
+<p>In the following example, the result includes two columns, <code>Time</code> and <code>value_double</code>, which represent the data associated with fixed timestamps. This query does not apply a time range filter and returns all rows from the table.</p>
+<p><strong>Example with <code>$__timeFilter(dateColumn)</code> Macro:</strong></p>
+<pre>SELECT
+  $__time(time_date_time),
+  value_double
+FROM my_data
+WHERE $__timeFilter(time_date_time)
+ORDER BY time_date_time</pre>
+<p>Table panel result:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 624px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png"data-srcset="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=320 320w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=550 550w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=750 750w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=900 900w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=1040 1040w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=1240 1240w, /media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png?w=1920 1920w"
+          data-sizes="auto"alt="output of time filter macro"width="624"height="233"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/mysql/screenshot-time-and-timefilter-macro.png"
+            alt="output of time filter macro"width="624"height="233"/>
+        </noscript></div></a></figure>
+<p>This example returns the same result as the previous one, but adds support for filtering data using the Grafana time picker.</p>
+<p><strong>Example with <code>$__timeGroup(dateColumn,'5m')</code> Macro:</strong></p>
+<pre>SELECT
+  $__timeGroup(time_date_time, &#39;5m&#39;) AS time,
+  sum(value_double) AS sum_value
+FROM my_data
+WHERE $__timeFilter(time_date_time)
+GROUP BY time
+ORDER BY time</pre>
+<p>Table panel result:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 624px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png"data-srcset="/media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png?w=320 320w, /media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png?w=550 550w, /media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png?w=750 750w, /media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png?w=900 900w, /media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png?w=1040 1040w, /media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png?w=1240 1240w, /media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png?w=1920 1920w"
+          data-sizes="auto"alt="output of time group macro"width="624"height="127"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/mysql/screenshot-timegroup-macro.png"
+            alt="output of time group macro"width="624"height="127"/>
+        </noscript></div></a></figure>
+<p>Given the result in the following example, the data is grouped and aggregated within buckets with timestamps of fixed interval i.e. 5 mins. To customize the default series name formatting (optional), refer to <a href="/">Standard options definitions</a>.</p>
+<p><strong>Example with <code>$__timeGroupAlias(dateColumn,'5m')</code> Macro:</strong></p>
+<pre>SELECT
+  $__timeGroupAlias(time_date_time,&#39;5m&#39;),
+  min(value_double),
+  &#39;min&#39; as metric
+FROM my_data
+WHERE $__timeFilter(time_date_time)
+GROUP BY time
+ORDER BY time</pre>
+<p>Table panel result:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 624px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png"data-srcset="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png?w=320 320w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png?w=550 550w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png?w=750 750w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png?w=900 900w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png?w=1040 1040w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png?w=1240 1240w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png?w=1920 1920w"
+          data-sizes="auto"alt="output of time group alias macro"width="624"height="117"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro.png"
+            alt="output of time group alias macro"width="624"height="117"/>
+        </noscript></div></a></figure>
+<p>The following result is similar to the result of the <code>$__timeGroup(dateColumn,'5m')</code> macro, except it uses a built-in alias for the time column.
+To customize the default series name formatting (optional), refer to <a href="/">Standard options definitions</a>.</p>
+<p><strong>Example with <code>$__timeGroupAlias</code> Macro to convert null values to zero instead:</strong></p>
+<pre>SELECT
+  $__timeGroupAlias(createdAt,&#39;5m&#39;,0),
+  sum(value_double) as value,
+  hostname
+FROM my_data
+WHERE
+  $__timeFilter(createdAt)
+GROUP BY time, hostname
+ORDER BY time</pre>
+<p>Table panel result:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 624px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png"data-srcset="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png?w=320 320w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png?w=550 550w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png?w=750 750w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png?w=900 900w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png?w=1040 1040w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png?w=1240 1240w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png?w=1920 1920w"
+          data-sizes="auto"alt="output of null values to zero case, for time group alias macro"width="624"height="159"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-conv-null-to-zero.png"
+            alt="output of null values to zero case, for time group alias macro"width="624"height="159"/>
+        </noscript></div></a></figure>
+<p>Given the result in the following example, null values within bucket timestamps are replaced by zero and also add the <code>Time</code> column alias by default. To customize the default series name formatting (optional), refer to <a href="/">Standard options definitions</a> to display the value of <code>${__field.labels.hostname}</code>.</p>
+<p><strong>Example with multiple columns for <code>$__timeGroupAlias(dateColumn,'5m')</code> Macro:</strong></p>
+<pre>SELECT
+  $__timeGroupAlias(time_date_time,&#39;5m&#39;),
+  min(value_double) as min_value,
+  max(value_double) as max_value
+FROM my_data
+WHERE $__timeFilter(time_date_time)
+GROUP BY time
+ORDER BY time</pre>
+<p>Table panel result:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 624px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png"data-srcset="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png?w=320 320w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png?w=550 550w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png?w=750 750w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png?w=900 900w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png?w=1040 1040w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png?w=1240 1240w, /media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png?w=1920 1920w"
+          data-sizes="auto"alt="output with multiple colummns for time group alias macro"width="624"height="143"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/data-sources/mysql/screenshot-timeGroupAlias-macro-multiple-columns.png"
+            alt="output with multiple colummns for time group alias macro"width="624"height="143"/>
+        </noscript></div></a></figure>
+<p>The query returns multiple columns representing minimum and maximum values within the defined range.</p>
+<h2 id="templating">Templating</h2>
+<p>Instead of hardcoding values like server, application, or sensor names in your metric queries, you can use variables. Variables appear as drop-down select boxes at the top of the dashboard. These drop-downs make it easy to change the data being displayed in your dashboard.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templates</a> for an introduction to creating template variables as well as the different types.</p>
+<h3 id="query-variable">Query variable</h3>
+<p>If you add a <code>Query</code> template variable you can write a MySQL query to retrieve items such as measurement names, key names, or key values, which will be displayed in the drop-down menu.</p>
+<p>For example, you can use a variable to retrieve all the values from the <code>hostname</code> column in a table by creating the following query in the templating variable <em>Query</em> setting.</p>
+<pre>SELECT hostname FROM my_host</pre>
+<p>A query can return multiple columns, and Grafana will automatically generate a list based on the query results. For example, the following query returns a list with values from <code>hostname</code> and <code>hostname2</code>.</p>
+<pre>SELECT my_host.hostname, my_other_host.hostname2 FROM my_host JOIN my_other_host ON my_host.city = my_other_host.city</pre>
+<p>To use time range dependent macros like <code>$__timeFilter(column)</code> in your query,you must set the template variable&rsquo;s refresh mode to <em>On Time Range Change</em>.</p>
+<pre>SELECT event_name FROM event_log WHERE $__timeFilter(time_column)</pre>
+<p>Another option is a query that can create a key/value variable. The query should return two columns that are named <code>__text</code> and <code>__value</code>. The <code>__text</code> column must contain unique values (if not, only the first value is used). This allows the drop-down options to display a text-friendly name as the text while using an ID as the value. For example, a query could use <code>hostname</code> as the text and <code>id</code> as the value:</p>
+<pre>SELECT hostname AS __text, id AS __value FROM my_host</pre>
+<p>You can also create nested variables. For example, if you have a variable named <code>region</code>, you can configure the <code>hosts</code> variable to display only the hosts within the currently selected region as shown in the following example. If <code>region</code> is a multi-value variable, use the <code>IN</code> operator instead of <code>=</code> to match multiple values.</p>
+<pre>SELECT hostname FROM my_host  WHERE region IN($region)</pre>
+<h4 id="use-__searchfilter-to-filter-results-in-a-query-variable">Use <code>__searchFilter</code> to filter results in a query variable</h4>
+<p>Using <code>__searchFilter</code> in the query field allows the query results to be filtered based on the user’s input in the drop-down selection box. If you do not enter anything, the default value for <code>__searchFilter</code> is %</p>
+<p>Note that you must enclose the <code>__searchFilter</code> expression in quotes as Grafana does not add them automatically.</p>
+<p>The following example demonstrates how to use <code>__searchFilter</code> in the query field to enable real-time searching for <code>hostname</code> as the user type in the drop-down selection box.</p>
+<pre>SELECT hostname FROM my_host  WHERE hostname LIKE &#39;$__searchFilter&#39;</pre>
+<h3 id="using-variables-in-queries">Using variables in queries</h3>
+<p>Template variable values are only quoted when the template variable is a <code>multi-value</code>.</p>
+<p>If the variable is a multi-value variable, use the <code>IN</code> comparison operator instead of <code>=</code> to match against multiple values.</p>
+<p>You can use two different syntaxes:</p>
+<p><code>$&lt;varname&gt;</code> Example with a template variable named <code>hostname</code>:</p>
+<pre>SELECT
+  UNIX_TIMESTAMP(atimestamp) as time,
+  aint as value,
+  avarchar as metric
+FROM my_table
+WHERE $__timeFilter(atimestamp) and hostname in($hostname)
+ORDER BY atimestamp ASC</pre>
+<p><code>[[varname]]</code> Example with a template variable named <code>hostname</code>:</p>
+<pre>SELECT
+  UNIX_TIMESTAMP(atimestamp) as time,
+  aint as value,
+  avarchar as metric
+FROM my_table
+WHERE $__timeFilter(atimestamp) and hostname in([[hostname]])
+ORDER BY atimestamp ASC</pre>
+<h4 id="disabling-quoting-for-multi-value-variables">Disabling quoting for multi-value variables</h4>
+<p>Grafana automatically creates a quoted, comma-separated string for multi-value variables. For example: if <code>server01</code> and <code>server02</code> are selected then it will be formatted as: <code>'server01', 'server02'</code>. To disable quoting, use the csv formatting option for variables:</p>
+<p>Grafana automatically formats multi-value variables as a quoted, comma-separated string. For example, if <code>server01</code> and <code>server02</code> are selected, they are formatted as <code>'server01'</code>, <code>'server02'</code>. To remove the quotes, enable the CSV formatting option for the variables.</p>
+<p><code>${servers:csv}</code></p>
+<p>Read more about variable formatting options in the 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/#advanced-variable-format-options">Variables</a> documentation.</p>
+<h2 id="annotations">Annotations</h2>
+<p>
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations/">Annotations</a> allow you to overlay rich event information on top of graphs. You add annotation queries via the <strong>Dashboard settings &gt; Annotations view</strong>.</p>
+<p><strong>Example query using a<code>time</code> column with epoch values:</strong></p>
+<pre>SELECT
+  epoch_time as time,
+  metric1 as text,
+  CONCAT(tag1, &#39;,&#39;, tag2) as tags
+FROM
+  public.test_data
+WHERE
+  $__unixEpochFilter(epoch_time)</pre>
+<p>You may use one or more tags to show them as annotations in a common-separate string.</p>
+<p><strong>Example query using a <code>time</code> column with epoch values for a single tag:</strong></p>
+<pre>SELECT
+  epoch_time as time,
+  metric1 as text,
+  tag1 as tag
+FROM
+  my_data
+WHERE
+  $__unixEpochFilter(epoch_time)</pre>
+<p><strong>Example region query using <code>time</code> and <code>timeend</code> columns with epoch values:</strong></p>
+<pre>SELECT
+  epoch_time as time,
+  epoch_timeend as timeend,
+  metric1 as text,
+  CONCAT(tag1, &#39;,&#39;, tag2) as tags
+FROM
+  public.test_data
+WHERE
+  $__unixEpochFilter(epoch_time)</pre>
+<p><strong>Example query using a <code>time</code> column with a native SQL date/time data type:</strong></p>
+<pre>SELECT
+  native_date_time as time,
+  metric1 as text,
+  CONCAT(tag1, &#39;,&#39;, tag2) as tags
+FROM
+  public.test_data
+WHERE
+  $__timeFilter(native_date_time)</pre>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>time</code></td>
+          <td>The name of the date/time field, which can be a column with a native SQL date/time data type or epoch value.</td>
+      </tr>
+      <tr>
+          <td><code>timeend</code></td>
+          <td>Optional name of the end date/time field, which can be a column with a native SQL date/time data type or epoch value.</td>
+      </tr>
+      <tr>
+          <td><code>text</code></td>
+          <td>Event description field.</td>
+      </tr>
+      <tr>
+          <td><code>tags</code></td>
+          <td>Optional field name to use for event tags as a comma separated string.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="alerting">Alerting</h2>
+<p>Use time series queries to create alerts. Table formatted queries aren&rsquo;t yet supported in alert rule conditions.</p>
+<p>For more information regarding alerting refer to the following:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/">Alert rules</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">Template annotations and labels</a></li>
+</ul>

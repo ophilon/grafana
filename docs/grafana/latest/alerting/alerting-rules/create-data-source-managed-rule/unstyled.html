@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<h1 id="configure-data-source-managed-alert-rules">Configure data source-managed alert rules</h1>
+<p>Data source-managed alert rules are alert rules that are stored in the data source, such as in Prometheus or Loki, rather than in Grafana.</p>
+<p>In Grafana Alerting, you can:</p>
+<ol>
+<li>Create and edit data source-managed rules for Grafana Mimir and Grafana Loki data sources.</li>
+<li>View rules from Prometheus data sources when 
+    <a href="/docs/grafana/latest/datasources/prometheus/configure/">Manage alerts via Alerting UI</a> is enabled. However, you cannot create or edit these rules in Grafana.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/alerting-migration/">Import data source-managed rules</a> from Loki, Mimir, and Prometheus into Grafana-managed rules.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Data source-managed rules are supported for horizontal scalability, but they can introduce more operational complexity than Grafana-managed alert rules.</p>
+<p>We recommend using 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/">Grafana-managed alert rules</a> whenever possible, as they provide a richer feature set and better integration with the full Grafana Alerting workflow.</p></blockquote></div>
+
+<h2 id="comparison-with-grafana-managed-rules">Comparison with Grafana-managed rules</h2>
+<p>The table below compares Grafana-managed and data source-managed alert rules.</p>
+<table>
+  <thead>
+      <tr>
+          <th><div style="width:200px">Feature</div></th>
+          <th><div style="width:200px">Grafana-managed alert rule</div></th>
+          <th><div style="width:200px">Data source-managed alert rule</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Supported data sources</td>
+          <td>All backend data sources enabling the 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-rbac/"><code>alerting</code> option</a></td>
+          <td>Only supports creating rules for Mimir and Loki data sources</td>
+      </tr>
+      <tr>
+          <td>Mix and match data sources</td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>Add 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#advanced-options-expressions">expressions</a> to transform<wbr /> your data and set 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#alert-condition">alert conditions</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/nodata-and-error-states/">No data and error states</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/stale-alert-instances/">Stale alert instances</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/images-in-notifications/">Images in alert notifications</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/set-up/configure-rbac/">Role-based access control</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state-history/">Alert state history</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-rules/#view-compare-and-restore-alert-rules-versions">Alert version history</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/terraform-provisioning/">Terraform provisioning</a></td>
+          <td>Yes</td>
+          <td>No</td>
+      </tr>
+      <tr>
+          <td>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-recording-rules/">Recording rules</a></td>
+          <td>Yes</td>
+          <td>Yes</td>
+      </tr>
+      <tr>
+          <td>Organization</td>
+          <td>Organize and manage access with folders</td>
+          <td>Use namespaces</td>
+      </tr>
+      <tr>
+          <td>Alert rule evaluation</td>
+          <td>Alert evaluation is done in Grafana</td>
+          <td>Alert rule evaluation is done in the data source and allow for horizontal scaling</td>
+      </tr>
+      <tr>
+          <td>Scaling</td>
+          <td>Alert rules are stored in the Grafana database.</td>
+          <td>Alert rules are stored within the data source and allow for horizontal scaling</td>
+      </tr>
+  </tbody>
+</table>
+<p>The following diagram shows the architecture of a Mimir setup that uses data source-managed alert rules.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/mimir-managed-alerting-architecture-v2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/mimir-managed-alerting-architecture-v2.png"data-srcset="/media/docs/alerting/mimir-managed-alerting-architecture-v2.png?w=320 320w, /media/docs/alerting/mimir-managed-alerting-architecture-v2.png?w=550 550w, /media/docs/alerting/mimir-managed-alerting-architecture-v2.png?w=750 750w, /media/docs/alerting/mimir-managed-alerting-architecture-v2.png?w=900 900w, /media/docs/alerting/mimir-managed-alerting-architecture-v2.png?w=1040 1040w, /media/docs/alerting/mimir-managed-alerting-architecture-v2.png?w=1240 1240w, /media/docs/alerting/mimir-managed-alerting-architecture-v2.png?w=1920 1920w"
+          data-sizes="auto"alt="Data source-managed alerting architecture based on Grafana Mimir"width="1866"height="816"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/mimir-managed-alerting-architecture-v2.png"
+            alt="Data source-managed alerting architecture based on Grafana Mimir"width="1866"height="816"/>
+        </noscript></div></a></figure>
+<h2 id="create-data-source-managed-alert-rules">Create data source-managed alert rules</h2>
+<p>To create or edit data source-managed alert rules, follow these instructions.</p>
+<h3 id="before-you-begin">Before you begin</h3>
+<p>Verify that you have write permission to the Mimir or Loki data source. Otherwise, you cannot create or update data source-managed alert rules.</p>
+<h4 id="enable-the-ruler-api">Enable the Ruler API</h4>
+<p>For more information, refer to the <a href="/docs/mimir/latest/references/http-api/#ruler">Mimir Ruler API</a> or <a href="/docs/loki/latest/api/#ruler">Loki Ruler API</a>.</p>
+<ul>
+<li>
+<p><strong>Mimir</strong> - use the <code>/prometheus</code> prefix. The Prometheus data source supports both Grafana Mimir and Prometheus, and Grafana expects that both the <a href="/docs/mimir/latest/operators-guide/reference-http-api/#querier--query-frontend">Query API</a> and <a href="/docs/mimir/latest/operators-guide/reference-http-api/#ruler">Ruler API</a> are under the same URL. You cannot provide a separate URL for the Ruler API.</p>
+</li>
+<li>
+<p><strong>Loki</strong> - The <code>local</code> rule storage type, default for the Loki data source, supports only viewing of rules. To edit rules, configure one of the other rule storage types.</p>
+</li>
+</ul>
+<h4 id="permissions">Permissions</h4>
+<p>Alert rules for Mimir or Loki instances can be edited or deleted by users with <strong>Editor</strong> or <strong>Admin</strong> roles.</p>
+<p>If you do not want to manage alert rules for a particular data source, go to its settings and clear the <strong>Manage alerts via Alerting UI</strong> checkbox.</p>
+<h4 id="provisioning">Provisioning</h4>
+<p>Note that if you delete an alert resource created in the UI, you can no longer retrieve it.</p>
+<p>To backup and manage alert rules, you can 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/">provision alerting resources</a> using options such as configuration files, Terraform, or the Alerting API.</p>
+<h3 id="set-alert-rule-name">Set alert rule name</h3>
+
+
+<div data-shared="alerts/configure-alert-rule-name.md">
+            <ol>
+<li>
+<p>Click <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alert rules</strong> -&gt; <strong>+ New alert rule</strong>.</p>
+</li>
+<li>
+<p>Enter a name to identify your alert rule.</p>
+<p>This name is displayed in the alert rule list. It is also the <code>alertname</code> label for every alert instance that is created from this rule.</p>
+</li>
+</ol>
+</div>
+
+        
+<h3 id="define-query-and-condition">Define query and condition</h3>
+<p>Define a query to get the data you want to measure and a condition that needs to be met before an alert rule fires.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>By default, new alert rules are Grafana-managed. To switch to <strong>Data source-managed</strong>, follow these instructions.</p></blockquote></div>
+
+<ol>
+<li>
+<p>Select a Prometheus-based data source from the drop-down list.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to find more options.</p>
+</li>
+<li>
+<p>Enter a PromQL or LogQL query, including the alert condition.</p>
+</li>
+<li>
+<p>In the <strong>Rule type</strong> option, select <strong>Data source-managed</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Preview alerts</strong>.</p>
+</li>
+</ol>
+<h3 id="set-alert-evaluation-behavior">Set alert evaluation behavior</h3>
+<p>Use 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/">alert rule evaluation</a> to determine how frequently an alert rule should be evaluated and how quickly it should change its state.</p>
+<ol>
+<li>
+<p>Select a namespace or click <strong>+ New namespace</strong>.</p>
+</li>
+<li>
+<p>Select an evaluation group or click <strong>+ New evaluation group</strong>.</p>
+<p>If you are creating a new evaluation group, specify the interval for the group.</p>
+<p>All rules within the same group are evaluated sequentially over the same time interval. You can reorder them from the <strong>Alert rules</strong> page.</p>
+</li>
+<li>
+<p>Enter a pending period.</p>
+<p>The 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rule-evaluation/#pending-period">pending period</a> is the period in which an alert rule can be in breach of the condition until it fires.</p>
+<p>Once a condition is met, the alert goes into the <strong>Pending</strong> state. If the condition remains active for the duration specified, the alert transitions to the <strong>Firing</strong> state, else it reverts to the <strong>Normal</strong> state.</p>
+</li>
+</ol>
+<h3 id="configure-labels-and-notifications">Configure labels and notifications</h3>
+<p>Add 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#labels">labels</a> to your alert rules to set which 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/notification-policies/">notification policy</a> should handle your firing alert instances.</p>
+<p>All alert rules and instances, irrespective of their labels, match the default notification policy. If there are no nested policies, or no nested policies match the labels in the alert rule or alert instance, then the default notification policy is the matching policy.</p>
+<ol>
+<li>
+<p>Add labels if you want to change the way your notifications are routed.</p>
+<p>Add custom labels by selecting existing key-value pairs from the drop down, or add new labels by entering the new key or value.</p>
+</li>
+</ol>
+<h3 id="configure-notification-message">Configure notification message</h3>
+<p>Use 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/annotation-label/#annotations">annotations</a> to add information to alert messages that can help respond to the alert.</p>
+<p>Annotations are included by default in notification messages, and can use text or 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/templates/">templates</a> to display dynamic data from queries.</p>
+<p>Grafana provides several optional annotations.</p>
+<ol>
+<li>
+<p>Optional: Add a summary.</p>
+<p>Short summary of what happened and why.</p>
+</li>
+<li>
+<p>Optional: Add a description.</p>
+<p>Description of what the alert rule does.</p>
+</li>
+<li>
+<p>Optional: Add a Runbook URL.</p>
+<p>Webpage where you keep your runbook for the alert</p>
+</li>
+<li>
+<p>Optional: Add a custom annotation.</p>
+<p>Add any additional information that could help address the alert.</p>
+</li>
+<li>
+<p>Optional: <strong>Link dashboard and panel</strong>.</p>
+<p>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/link-alert-rules-to-panels/">Link the alert rule to a panel</a> to facilitate alert investigation.</p>
+</li>
+<li>
+<p>Click <strong>Save rule</strong>.</p>
+</li>
+</ol>

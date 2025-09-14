@@ -1,0 +1,147 @@
+@font-face {
+  font-family: 'gicons';
+  src:  url('fonts/gicons.eot?e6sm6e');
+  src:  url('fonts/gicons.eot?e6sm6e#iefix') format('embedded-opentype'),
+    url('fonts/gicons.ttf?e6sm6e') format('truetype'),
+    url('fonts/gicons.woff?e6sm6e') format('woff'),
+    url('fonts/gicons.svg?e6sm6e#gicons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'gicons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-university:before {
+  content: "\e91d";
+  color: #fb755a;
+}
+.icon-book:before {
+  content: "\e915";
+  color: #fb9d5a;
+}
+.icon-quote:before {
+  content: "\e916";
+  color: #fb9d5a;
+}
+.icon-browser:before {
+  content: "\e917";
+  color: #fb9d5a;
+}
+.icon-power:before {
+  content: "\e918";
+  color: #fb9d5a;
+}
+.icon-article:before {
+  content: "\e919";
+  color: #fb9d5a;
+}
+.icon-calendar:before {
+  content: "\e91a";
+  color: #fb9d5a;
+}
+.icon-dashboard:before {
+  content: "\e91b";
+  color: #fb9d5a;
+}
+.icon-post:before {
+  content: "\e91c";
+  color: #fb9d5a;
+}
+.icon-grafana-swirl:before {
+  content: "\e914";
+  color: #fb755a;
+}
+.icon-external:before {
+  content: "\e913";
+  color: #4279cd;
+}
+.icon-webinars-videos:before {
+  content: "\e912";
+  color: #7b8087;
+}
+.icon-add-item:before {
+  content: "\e900";
+  color: #e14a63;
+}
+.icon-bar-chart:before {
+  content: "\e901";
+  color: #a352cc;
+}
+.icon-paragraph:before {
+  content: "\e902";
+  color: #ff780a;
+}
+.icon-books:before {
+  content: "\e903";
+  color: #e14a63;
+}
+.icon-code-brackets:before {
+  content: "\e904";
+  color: #36b263;
+}
+.icon-community:before {
+  content: "\e905";
+  color: #a352cc;
+}
+.icon-cortex-lite:before {
+  content: "\e906";
+  color: #ee7800;
+}
+.icon-git-branch:before {
+  content: "\e907";
+  color: #4279cd;
+}
+.icon-grafana-lite:before {
+  content: "\e908";
+  color: #ee7800;
+}
+.icon-graphite-lite:before {
+  content: "\e909";
+  color: #ee7800;
+}
+.icon-list:before {
+  content: "\e90a";
+  color: #ff780a;
+}
+.icon-loki:before {
+  content: "\e90b";
+  color: #ee7800;
+}
+.icon-metrictank:before {
+  content: "\e90c";
+  color: #ee7800;
+}
+.icon-presentation:before {
+  content: "\e90d";
+  color: #efba00;
+}
+.icon-prometheus-lite:before {
+  content: "\e90e";
+  color: #ee7800;
+}
+.icon-speakerbox-check:before {
+  content: "\e90f";
+  color: #4279cd;
+}
+.icon-tanka-lite:before {
+  content: "\e910";
+  color: #ee7800;
+}
+.icon-arrow:before {
+  content: "\e911";
+  color: #1a53b7;
+}

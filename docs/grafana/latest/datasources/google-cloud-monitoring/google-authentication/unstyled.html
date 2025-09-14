@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<h1 id="configure-google-authentication">Configure Google authentication</h1>
+<p>Requests from a Grafana plugin to Google are made on behalf of an Identity and Access Management (IAM) role or IAM user.
+The IAM user or IAM role must have the associated policies to perform certain API actions.
+Since these policies are specific to each data source, refer to the data source documentation for details.</p>
+<p>All requests to Google APIs are performed on the server-side by the Grafana backend.
+You can authenticate a Grafana plugin to Google by uploading a Google JSON Web Token (JWT) file, or by automatically retrieving credentials from the Google metadata server.
+The latter option is available only when running Grafana on a GCE virtual machine.</p>
+<h2 id="use-a-google-service-account-key-file">Use a Google Service Account key file</h2>
+<p>To authenticate the Grafana plugin with the Google API, create a Google Cloud Platform (GCP) Service Account for the Project you want to show data.</p>
+<p>Each Grafana data source integrates with one GCP Project.
+To visualize data from multiple GCP Projects, create one data source per GCP Project.</p>
+<h3 id="create-a-gcp-service-account-and-key-file">Create a GCP Service Account and key file</h3>
+<ol>
+<li>Navigate to the <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer">APIs and Services Credentials page</a>.</li>
+<li>Click on the <strong>Create credentials</strong> dropdown and select the <strong>Service account</strong> option.</li>
+<li>In <strong>Service account name</strong>, enter a name for the account.</li>
+<li>From the <strong>Role</strong> dropdown, choose the roles required by the specific plugin.</li>
+<li>Click <strong>Done</strong>.</li>
+<li>Use the newly created account to <a href="https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-console" target="_blank" rel="noopener noreferrer">create a service account key</a>.
+A JSON key file is created and downloaded to your computer.</li>
+<li>Store the key file in a secure place, because it grants access to your Google data.</li>
+<li>In the Grafana data source configuration page, upload the key file.
+The file&rsquo;s contents are encrypted and saved in the Grafana database.
+Remember to save the file after uploading.</li>
+</ol>
+<h4 id="create-a-gcp-service-account-for-multiple-projects">Create a GCP service account for multiple projects</h4>
+<p>You can create a service account and key file that can be used to access multiple projects. Follow steps 1-5 above, then:</p>
+<ol>
+<li>Note the email address of the service account, it will look a little strange like <code>foobar-478@main-boardwalk-90210.iam.gserviceaccount.com</code>.</li>
+<li>Navigate to the other project(s) you want to access.</li>
+<li>Add the service account email address to the IAM page of each project, and grant it the required roles.</li>
+<li>Navigate back to the original project&rsquo;s service account and create a <a href="https://cloud.google.com/iam/docs/creating-managing-service-account-keys#iam-service-account-keys-create-console" target="_blank" rel="noopener noreferrer">service account key</a>. A JSON key file is created and downloaded to your computer</li>
+<li>Store the key file in a secure place, because it grants access to your Google data.</li>
+<li>In the Grafana data source configuration page, upload the key file.
+The file&rsquo;s contents are encrypted and saved in the Grafana database.
+Remember to save the file after uploading.</li>
+</ol>
+<h2 id="configure-a-gce-default-service-account">Configure a GCE default service account</h2>
+<p>When Grafana is running on a Google Compute Engine (GCE) virtual machine, Grafana can automatically retrieve default credentials from the metadata server. As a result, there is no need to generate a private key file for the service account. You also do not need to upload the file to Grafana. The following preconditions must be met before Grafana can retrieve default credentials.</p>
+<ul>
+<li>You must create a Service Account for use by the GCE virtual machine. For more information, refer to <a href="https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#createanewserviceaccount" target="_blank" rel="noopener noreferrer">Create new service account</a>.</li>
+<li>Verify that the GCE virtual machine instance is running as the service account that you created. For more information, refer to <a href="https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#using" target="_blank" rel="noopener noreferrer">setting up an instance to run as a service account</a>.</li>
+<li>Allow access to the specified API scope.</li>
+</ul>
+<p>For more information about creating and enabling service accounts for GCE instances, refer to <a href="https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances" target="_blank" rel="noopener noreferrer">enabling service accounts for instances in Google documentation</a>.</p>
+<h3 id="service-account-impersonation">Service account impersonation</h3>
+<p>You can also configure the plugin to use <a href="https://cloud.google.com/iam/docs/service-account-impersonation" target="_blank" rel="noopener noreferrer">service account impersonation</a>.
+You need to ensure the service account used by this plugin has the <code>iam.serviceAccounts.getAccessToken</code> permission. This permission is in roles like the <a href="https://cloud.google.com/iam/docs/roles-permissions/iam#iam.serviceAccountTokenCreator" target="_blank" rel="noopener noreferrer">Service Account Token Creator role</a> (roles/iam.serviceAccountTokenCreator). Also, the service account impersonated by this plugin needs <a href="https://cloud.google.com/iam/docs/roles-permissions/monitoring#monitoring.viewer" target="_blank" rel="noopener noreferrer">Monitoring Viewer</a>.</p>

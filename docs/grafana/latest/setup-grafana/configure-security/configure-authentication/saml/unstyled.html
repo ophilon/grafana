@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<h1 id="saml-authentication-in-grafana">SAML authentication in Grafana</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>SAML authentication integration allows your Grafana users to log in by using an external SAML 2.0 Identity Provider (IdP). To enable this, Grafana becomes a Service Provider (SP) in the authentication flow, interacting with the IdP to exchange user information.</p>
+<p>You can configure SAML authentication in Grafana through one of the following methods:</p>
+<ul>
+<li><a href="#configure-saml-using-the-grafana-config-file">Configure SAML using Grafana configuration file</a></li>
+<li>Configure SAML using the 
+    <a href="/docs/grafana/latest/developers/http_api/sso-settings/">SSO Settings API</a></li>
+<li>Configure SAML using the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/saml-ui/">SAML user interface</a></li>
+<li>Configure SAML using the 
+    <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/sso_settings" target="_blank" rel="noopener noreferrer">Grafana Terraform provider</a></li>
+</ul>
+<p>If you are using Okta or Azure AD as Identity Provider, see the following documentation for configuration:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-with-azuread/">Configure SAML with Azure AD</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-with-okta/">Configure SAML with Okta</a></li>
+</ul>
+<p>All methods offer the same configuration options. However, if you want to keep all of Grafana authentication settings in one place, use the Grafana configuration file or the Terraform provider. If you are a Grafana Cloud user, you do not have access to Grafana configuration file. Instead, configure SAML through the other methods.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Configuration in the API takes precedence over the configuration in the Grafana configuration file. SAML settings from the API will override any SAML configuration set in the Grafana configuration file.</p></blockquote></div>
+
+<h2 id="saml-bindings">SAML Bindings</h2>
+<p>Grafana supports the following SAML 2.0 bindings:</p>
+<ul>
+<li>
+<p>From the Service Provider (SP) to the Identity Provider (IdP):</p>
+<ul>
+<li><code>HTTP-POST</code> binding</li>
+<li><code>HTTP-Redirect</code> binding</li>
+</ul>
+</li>
+<li>
+<p>From the Identity Provider (IdP) to the Service Provider (SP):</p>
+<ul>
+<li><code>HTTP-POST</code> binding</li>
+</ul>
+</li>
+</ul>
+<h2 id="request-initiation">Request Initiation</h2>
+<p>Grafana supports:</p>
+<ul>
+<li>SP-initiated requests</li>
+<li>IdP-initiated requests</li>
+</ul>
+<p>By default, SP-initiated requests are enabled. For instructions on how to enable IdP-initiated logins, see <a href="#idp-initiated-single-sign-on-sso">IdP-initiated Single Sign-On (SSO)</a>.</p>
+<h2 id="enable-saml-authentication-in-grafana">Enable SAML authentication in Grafana</h2>
+<p>To use the SAML integration, in the <code>auth.saml</code> section of in the Grafana custom configuration file, set <code>enabled</code> to <code>true</code>.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/">Configuration</a> for more information about configuring Grafana.</p>
+<h2 id="identity-provider-idp-registration">Identity provider (IdP) registration</h2>
+<p>For the SAML integration to work correctly, you need to make the IdP aware of the SP.</p>
+<p>The integration provides two key endpoints as part of Grafana:</p>
+<ul>
+<li>The <code>/saml/metadata</code> endpoint, which contains the SP metadata. You can either download and upload it manually, or you make the IdP request it directly from the endpoint. Some providers name it Identifier or Entity ID.</li>
+<li>The <code>/saml/acs</code> endpoint, which is intended to receive the ACS (Assertion Customer Service) callback. Some providers name it SSO URL or Reply URL.</li>
+</ul>
+<h2 id="configure-saml-using-the-grafana-configuration-file">Configure SAML using the Grafana configuration file</h2>
+<ol>
+<li>In the <code>[auth.saml]</code> section in the Grafana configuration file, set 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/enterprise-configuration/#enabled-3"><code>enabled</code></a> to <code>true</code>.</li>
+<li>Configure SAML options:
+<ul>
+<li>Review all 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/saml-configuration-options/">available configuration options</a></li>
+<li>For IdP-specific configuration, refer to:
+<ul>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-with-okta/">Configure SAML with Okta</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-with-azuread/">Configure SAML with Entra ID</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Save the configuration file and then restart the Grafana server.</li>
+</ol>
+<p>When you are finished, the Grafana configuration might look like this example:</p>
+<pre>[server]
+root_url = https://grafana.example.com
+
+[auth.saml]
+enabled = true
+name = My IdP
+auto_login = false
+private_key_path = &#34;/path/to/private_key.pem&#34;
+certificate_path = &#34;/path/to/certificate.cert&#34;
+idp_metadata_url = &#34;https://my-org.okta.com/app/my-application/sso/saml/metadata&#34;
+assertion_attribute_name = DisplayName
+assertion_attribute_login = Login
+assertion_attribute_email = Email
+assertion_attribute_groups = Group</pre>
+<h2 id="assertion-mapping">Assertion mapping</h2>
+<p>During the SAML SSO authentication flow, Grafana receives the ACS callback. The callback contains all the relevant information of the user under authentication embedded in the SAML response. Grafana parses the response to create (or update) the user within its internal database.</p>
+<p>For Grafana to map the user information, it looks at the individual attributes within the assertion. You can think of these attributes as Key/Value pairs (although, they contain more information than that).</p>
+<p>Grafana provides configuration options that let you modify which keys to look at for these values. The data we need to create the user in Grafana is Name, Login handle, and email.</p>
+<h3 id="the-assertion_attribute_name-option">The <code>assertion_attribute_name</code> option</h3>
+<p><code>assertion_attribute_name</code> is a special assertion mapping that can either be a simple key, indicating a mapping to a single assertion attribute on the SAML response, or a complex template with variables using the <code>$__saml{&lt;attribute&gt;}</code> syntax. If this property is misconfigured, Grafana will log an error message on startup and disallow SAML sign-ins. Grafana will also log errors after a login attempt if a variable in the template is missing from the SAML response.</p>
+<p><strong>Examples</strong></p>
+<pre>#plain string mapping
+assertion_attribute_name = displayName</pre>
+<pre>#template mapping
+assertion_attribute_name = $__saml{firstName} $__saml{lastName}</pre>
+<h2 id="saml-name-id">SAML Name ID</h2>
+<p>The <code>name_id_format</code> configuration field specifies the requested format of the NameID element in the SAML assertion.</p>
+<p>By default, this is set to <code>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</code> and does not need to be specified in the configuration file.</p>
+<p>The following list includes valid configuration field values:</p>
+<table>
+  <thead>
+      <tr>
+          <th><code>name_id_format</code> value in the configuration file or Terraform</th>
+          <th><code>Name identifier format</code> on the UI</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</code></td>
+          <td>Default</td>
+      </tr>
+      <tr>
+          <td><code>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</code></td>
+          <td>Unspecified</td>
+      </tr>
+      <tr>
+          <td><code>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</code></td>
+          <td>Email address</td>
+      </tr>
+      <tr>
+          <td><code>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</code></td>
+          <td>Persistent</td>
+      </tr>
+      <tr>
+          <td><code>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</code></td>
+          <td>Transient</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="idp-metadata">IdP metadata</h2>
+<p>You also need to define the public part of the IdP for message verification. The SAML IdP metadata XML defines where and how Grafana exchanges user information.</p>
+<p>Grafana supports three ways of specifying the IdP metadata.</p>
+<ul>
+<li>Without a suffix <code>idp_metadata</code>, Grafana assumes base64-encoded XML file contents.</li>
+<li>With the <code>_path</code> suffix, Grafana assumes a path and attempts to read the file from the file system.</li>
+<li>With the <code>_url</code> suffix, Grafana assumes a URL and attempts to load the metadata from the given location.</li>
+</ul>
+<h2 id="maximum-issue-delay">Maximum issue delay</h2>
+<p>Prevents SAML response replay attacks and internal clock skews between the SP (Grafana) and the IdP. You can set a maximum amount of time between the SP issuing the AuthnRequest and the SP (Grafana) processing it.</p>
+<p>The configuration options is specified as a duration, such as <code>max_issue_delay = 90s</code> or <code>max_issue_delay = 1h</code>.</p>
+<h2 id="metadata-valid-duration">Metadata valid duration</h2>
+<p>SP metadata is likely to expire at some point, perhaps due to a certificate rotation or change of location binding. Grafana allows you to specify for how long the metadata should be valid. Leveraging the <code>validUntil</code> field, you can tell consumers until when your metadata is going to be valid. The duration is computed by adding the duration to the current time.</p>
+<p>The configuration option is specified as a duration, such as <code>metadata_valid_duration = 48h</code>.</p>
+<h2 id="allow-new-user-sign-up">Allow new user sign up</h2>
+<p>By default, new Grafana users using SAML authentication will have an account created for them automatically. To decouple authentication and account creation and ensure only users with existing accounts can log in with SAML, set the <code>allow_sign_up</code> option to false.</p>
+<h2 id="integrating-with-scim-provisioning">Integrating with SCIM Provisioning</h2>
+<p>If you are also using SCIM provisioning for this Grafana application in Azure AD, it&rsquo;s crucial to align the user identifiers between SAML and SCIM for seamless operation. The unique identifier that links the SAML user to the SCIM provisioned user is determined by the <code>assertion_attribute_external_uid</code> setting in the Grafana SAML configuration. This <code>assertion_attribute_external_uid</code> should correspond to the <code>externalId</code> used in SCIM provisioning (typically set to the Azure AD <code>user.objectid</code>).</p>
+<ol>
+<li>
+<p><strong>Ensure Consistent Identifier in SAML Assertion:</strong></p>
+<ul>
+<li>The unique identifier from Azure AD (typically <code>user.objectid</code>) that you mapped to the <code>externalId</code> attribute in Grafana in your SCIM provisioning setup <strong>must also be sent as a claim in the SAML assertion.</strong> For more details on SCIM, refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-scim-provisioning/">SCIM provisioning documentation</a>.</li>
+<li>In the Azure AD Enterprise Application, under <strong>Single sign-on</strong> &gt; <strong>Attributes &amp; Claims</strong>, ensure you add a claim that provides this identifier. For example, you might add a claim named <code>UserID</code> (or similar, like <code>externalId</code>) that sources its value from <code>user.objectid</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Grafana SAML Settings for SCIM:</strong></p>
+<ul>
+<li>In the <code>[auth.saml]</code> section of your Grafana configuration, set <code>assertion_attribute_external_uid</code> to the name of the SAML claim you configured in the previous step (e.g., <code>userUID</code> or the full URI like <code>http://schemas.microsoft.com/identity/claims/objectidentifier</code> if that&rsquo;s how Azure AD sends it).</li>
+<li>The <code>assertion_attribute_login</code> setting should still be configured to map to the attribute your users will log in with (e.g., <code>userPrincipalName</code>, <code>mail</code>).</li>
+</ul>
+<p><em>Example Grafana Configuration:</em></p>
+<pre>[auth.saml]
+# ... other SAML settings ...
+assertion_attribute_login = http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier # Or other login attribute
+assertion_attribute_external_uid = http://schemas.microsoft.com/identity/claims/objectidentifier # Or your custom claim name for user.objectid</pre>
+<p>Ensure that the value specified in <code>assertion_attribute_external_uid</code> precisely matches the name of the claim as it&rsquo;s sent in the SAML assertion from Azure AD.</p>
+</li>
+<li>
+<p><strong>SCIM Linking Identifier and Azure AD:</strong></p>
+<ul>
+<li>By default (if <code>assertion_attribute_external_uid</code> is not set), Grafana uses the <code>userUID</code> attribute from the SAML assertion for SCIM linking.</li>
+<li><strong>Recommended for Azure AD:</strong> For SCIM integration with Azure AD, it is necessary to:
+<ol>
+<li>Ensure Azure AD sends the <code>user.objectid</code> in a claim.</li>
+<li>Either set this claim name in Azure AD to <code>userUID</code>, or, if you want to use a different claim name, set <code>assertion_attribute_external_uid</code> in Grafana to match the claim name you chose in Azure AD.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="configure-automatic-login">Configure automatic login</h2>
+<p>Set <code>auto_login</code> option to true to attempt login automatically, skipping the login screen.
+This setting is ignored if multiple auth providers are configured to use auto login.</p>
+<p>For more information about automatic login behavior and troubleshooting, see 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/#automatic-oauth-login">Automatic login</a>.</p>
+<pre>auto_login = true</pre>
+<h2 id="configure-allowed-organizations">Configure allowed organizations</h2>
+<p>With the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/enterprise-configuration/#allowed_organizations"><code>allowed_organizations</code></a> option you can specify a list of organizations where the user must be a member of at least one of them to be able to log in to Grafana.</p>
+<p>To get the list of user&rsquo;s organizations from SAML attributes, you must configure the <code>assertion_attribute_org</code> option. This option specifies which SAML attribute contains the list of organizations the user belongs to.</p>
+<p>To put values containing spaces in the list, use the following JSON syntax:</p>
+<pre>allowed_organizations = [&#34;org 1&#34;, &#34;second org&#34;]</pre>
+<h2 id="configuring-saml-with-http-post-binding">Configuring SAML with HTTP-Post binding</h2>
+<p>If multiple bindings are supported for SAML Single Sign-On (SSO) by the Identity Provider (IdP), Grafana will use the <code>HTTP-Redirect</code> binding by default. If the IdP only supports the <code>HTTP-Post binding</code> then updating the <code>content_security_policy_template</code> (in case <code>content_security_policy = true</code>) and <code>content_security_policy_report_only_template</code> (in case <code>content_security_policy_report_only = true</code>) might be required to allow Grafana to initiate a POST request to the IdP. These settings are used to define the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy" target="_blank" rel="noopener noreferrer">Content Security Policy (CSP)</a> headers that are sent by Grafana.</p>
+<p>To allow Grafana to initiate a POST request to the IdP, update the <code>content_security_policy_template</code> and <code>content_security_policy_report_only_template</code> settings in the Grafana configuration file and add the identity provider domain to the <code>form-action</code> directive. By default, the <code>form-action</code> directive is set to <code>self</code> which only allows POST requests to the same domain as Grafana. To allow POST requests to the identity provider domain, update the <code>form-action</code> directive to include the identity provider domain, for example: <code>form-action 'self' https://idp.example.com</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For Grafana Cloud instances, please contact Grafana Support to update the <code>content_security_policy_template</code> and <code>content_security_policy_report_only_template</code> settings of your Grafana instance. Please provide the metadata URL/file of your IdP.</p></blockquote></div>
+
+<h2 id="idp-initiated-login">IdP-initiated login</h2>
+<p>By default, Grafana allows only service provider (SP) initiated logins (when the user logs in with SAML via the login page in Grafana). If you want users to log in into Grafana directly from your identity provider (IdP), set the <code>allow_idp_initiated</code> configuration option to <code>true</code> and configure <code>relay_state</code> with the same value specified in the IdP configuration.</p>
+<p>IdP-initiated SSO has some security risks, so make sure you understand the risks before enabling this feature. When using IdP-initiated login, Grafana receives unsolicited SAML responses and can&rsquo;t verify that login flow was started by the user. This makes it hard to detect whether SAML message has been stolen or replaced. Because of this, IdP-initiated login is vulnerable to login cross-site request forgery (CSRF) and man in the middle (MITM) attacks. We do not recommend using IdP-initiated login and keeping it disabled whenever possible.</p>
+<h2 id="advanced-configuration">Advanced configuration</h2>
+<p>For advanced configuration and troubleshooting, please refer to the one of the following pages:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-request-signing/">Configure SAML request signing</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-single-logout/">Configure SAML single logout</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-org-mapping/">Configure Organization mapping</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/configure-saml-team-role-mapping/">Configure Role and Team sync</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/saml-configuration-options/">SAML configuration options</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/troubleshoot-saml/">Troubleshooting</a></li>
+</ul>

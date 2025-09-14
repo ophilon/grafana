@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<h1 id="modify-dashboard-settings">Modify dashboard settings</h1>
+<p>The dashboard settings page allows you to:</p>
+<ul>
+<li>Edit general dashboard properties, including time settings</li>
+<li>Add annotation queries</li>
+<li>Add dashboard variables</li>
+<li>Add links</li>
+<li>View the dashboard JSON model</li>
+</ul>
+<p>To access the dashboard setting page:</p>
+<ol>
+<li>Click <strong>Edit</strong> in the top-right corner of the dashboard.</li>
+<li>Click <strong>Settings</strong>.</li>
+</ol>
+<h2 id="modify-dashboard-time-settings">Modify dashboard time settings</h2>
+<p>Adjust dashboard time settings when you want to change the dashboard timezone, the local browser time, and specify auto-refresh time intervals.</p>
+<ol>
+<li>
+<p>On the <strong>Settings</strong> page, scroll down to the <strong>Time Options</strong> section of the <strong>General</strong> tab.</p>
+</li>
+<li>
+<p>Specify time settings as follows.</p>
+<ul>
+<li><strong>Time zone:</strong> Specify the local time zone of the service or system that you are monitoring. This can be helpful when monitoring a system or service that operates across several time zones.
+<ul>
+<li><strong>Default:</strong> Grafana uses the default selected time zone for the user profile, team, or organization. If no time zone is specified for the user profile, a team the user is a member of, or the organization, then Grafana uses the local browser time.</li>
+<li><strong>Browser time:</strong> The time zone configured for the viewing user browser is used. This is usually the same time zone as set on the computer.</li>
+<li>Standard <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones" target="_blank" rel="noopener noreferrer">ISO 8601 time zones</a>, including UTC.</li>
+</ul>
+</li>
+<li><strong>Auto refresh:</strong> Customize the options displayed for relative time and the auto-refresh options Entries are comma separated and accept any valid time unit.</li>
+<li><strong>Now delay:</strong> Override the <code>now</code> time by entering a time delay. Use this option to accommodate known delays in data aggregation to avoid null values.</li>
+<li><strong>Hide time picker:</strong> Select this option if you do not want Grafana to display the time picker.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>(Optional) Enter a description of the changes you&rsquo;ve made.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="add-tags">Add tags</h2>
+<p>You can add metadata to your dashboards using tags. Tags also give you the ability to filter the list of dashboards.</p>
+<p>Tags can be up to 50 characters long, including spaces.</p>
+<p>To add tags to a dashboard, follow these steps:</p>
+<ol>
+<li>
+<p>On the <strong>Settings</strong> page, scroll down to the <strong>Tags</strong> section of the <strong>General</strong> tab.</p>
+</li>
+<li>
+<p>In the field, enter a new or existing tag.</p>
+<p>If you&rsquo;re entering an existing tag, make sure that you spell it the same way or a new tag is created.</p>
+</li>
+<li>
+<p>Click <strong>Add</strong> or press the Enter key.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>(Optional) Enter a description of the changes you&rsquo;ve made.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<p>When you&rsquo;re on the <strong>Dashboards</strong> page, any tags you&rsquo;ve entered show up under the <strong>Tags</strong> column.</p>
+<h2 id="add-an-annotation-query">Add an annotation query</h2>
+<p>An annotation query is a query that queries for events. These events can be visualized in graphs across the dashboard as vertical lines along with a small
+icon you can hover over to see the event information.</p>
+<ol>
+<li>On the <strong>Settings</strong> page, go to the <strong>Annotations</strong> tab.</li>
+<li>Click <strong>Add annotation query</strong>.</li>
+<li>Enter a name and select a data source.</li>
+<li>Complete the rest of the form to build a query and annotation.</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>(Optional) Enter a description of the changes you&rsquo;ve made.</li>
+<li>Click <strong>Save</strong>.</li>
+<li>Click <strong>Exit edit</strong>.</li>
+</ol>
+<p>The query editor UI changes based on the data source you select. Refer to the 
+    <a href="/docs/grafana/latest/datasources/">Data source</a> documentation for details on how to construct a query.</p>
+<h2 id="add-a-variable">Add a variable</h2>
+<p>Variables enable you to create more interactive and dynamic dashboards. Instead of hard-coding things like server, application,
+and sensor names in your metric queries, you can use variables in their place. Variables are displayed as dropdown lists at the top of
+the dashboard. These dropdowns make it easy to change the data being displayed in your dashboard.</p>
+<p>For more information about variables, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/">Variables</a>.</p>
+<ol>
+<li>
+<p>On the <strong>Settings</strong> page, go to the <strong>Variables</strong> tab.</p>
+</li>
+<li>
+<p>Click <strong>+ New variable</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Select variable type</strong> drop-down, choose an option.</p>
+<p>The variable type you select impacts which fields you populate on the page.</p>
+</li>
+<li>
+<p>In the <strong>General</strong> section, enter the name of the variable.</p>
+<p>This is the name that you&rsquo;ll use later in queries.</p>
+</li>
+<li>
+<p>Set the rest of the variable options.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>(Optional) Enter a description of the changes you&rsquo;ve made.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="add-a-link">Add a link</h2>
+<p>Dashboard links enable you to place links to other dashboards and web sites directly below the dashboard header. Links provide for easy navigation to other, related dashboards and content.</p>
+<ol>
+<li>
+<p>On the <strong>Settings</strong> page, click the <strong>Links</strong> tab.</p>
+</li>
+<li>
+<p>Click <strong>+ New link</strong>.</p>
+</li>
+<li>
+<p>Enter title for the link.</p>
+</li>
+<li>
+<p>In the <strong>Type</strong> drop-down, select <strong>Dashboards</strong> or <strong>Link</strong>.</p>
+</li>
+<li>
+<p>Set the rest of the link options.</p>
+<p>For more detailed directions on creating links, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/#dashboard-links">Dashboard links</a></p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>(Optional) Enter a description of the changes you&rsquo;ve made.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="view-dashboard-json-model">View dashboard JSON model</h2>
+<p>A dashboard in Grafana is represented by a JSON object, which stores metadata of its dashboard. Dashboard metadata includes dashboard properties, metadata from panels, template variables, panel queries, and so on.</p>
+<p>To view a dashboard JSON model, on the <strong>Settings</strong> page, click the <strong>JSON Model</strong> tab.</p>
+<p>For more information about the JSON fields, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/view-dashboard-json-model/#json-fields">JSON fields</a>.</p>

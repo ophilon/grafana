@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<h1 id="provision-resources-and-sync-dashboards">Provision resources and sync dashboards</h1>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Provisioning is an <a href="/docs/release-life-cycle/">experimental feature</a> introduced in Grafana v12 for open source and Enterprise editions. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. This feature is not publicly available in Grafana Cloud yet. Only the cloud-hosted version of GitHub (GitHub.com) is supported at this time. GitHub Enterprise is not yet compatible.</p>
+<p>Sign up for Grafana Cloud Git Sync early access using <a href="https://forms.gle/WKkR3EVMcbqsNnkD9" target="_blank" rel="noopener noreferrer">this form</a>.</p></blockquote></div>
+
+<p>Using Provisioning, you can configure how to store your dashboard JSON files in either GitHub repositories using Git Sync or a local path.</p>
+<p>Of the two experimental options, Git Sync is the recommended method for provisioning your dashboards. You can synchronize any new dashboards and changes to existing dashboards to your configured GitHub repository.
+If you push a change in the repository, those changes are mirrored in your Grafana instance.
+For more information on configuring Git Sync, refer to 
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/git-sync-setup/">Set up Git Sync</a>.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/file-path-setup/">Set up file provisioning</a> to learn more about the version of local file provisioning in Grafana 12.</p>
+<h2 id="provisioned-folders-and-connections">Provisioned folders and connections</h2>
+<p>Dashboards and folders saved to the local path are referred to as &ldquo;provisioned&rdquo; resources and are labeled as such in the Grafana UI.</p>
+<p>Dashboards saved in your GitHub repository or local folder configured appear in a provisioned folder in Grafana.</p>
+<p>You can set a single folder, or multiple folders to a different repository, with up to 10 connections. Alternatively, your entire Grafana instance can be the provisioned folder.</p>
+<h2 id="how-it-works">How it works</h2>
+<p>A user decides to update a provisioned dashboard that is either stored within a GitHub repository (Git Sync workflow) or in a local file (local file workflow).</p>
+<h3 id="git-sync-workflow">Git Sync workflow</h3>
+<p>Resources provisioned with Git Sync can be modified from within the Grafana UI or within the GitHub repository.
+Changes made in either the repository or the Grafana UI are bidirectional.</p>
+<p>For example, when a user updates dashboards within the Grafana UI, they choose <strong>Save</strong> to preserve the changes.
+Grafana notifies them that the dashboard is provisioned in a GitHub repository.
+They choose how to preserve their changes: either saved directly to a branch or pushed to a new branch using a pull request in GitHub.
+If they chose a new branch, then they open the pull request and follow their normal workflow.</p>
+<p>Grafana polls GitHub at a regular interval.
+The connection is established using a personal access token for authorization.
+With the webhooks feature enabled, repository notifications appear almost immediately.
+Without webhooks, Grafana polls for changes at the specified interval.
+The default polling interval is 60 seconds.</p>
+<p>Any changes made in the provisioned files stored in the GitHub repository are reflected in the Grafana database.
+The Grafana UI reads the database and updates the UI to reflect these changes.</p>
+<h3 id="local-file-workflow">Local file workflow</h3>
+<p>In the local file workflow, all provisioned resources are changed in the local files.
+The user can&rsquo;t use the Grafana UI to edit or delete provisioned resources.</p>
+<p>Any changes made in the provisioned files are reflected in the Grafana database.
+The Grafana UI reads the database and updates the UI to reflect these changes.</p>
+<h2 id="explore-provisioning">Explore provisioning</h2>
+<ul><li>
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/intro-git-sync/">Git Sync</a><br>Learn about Git Sync, the Grafana feature for storing and managing dashboards within GitHub repositories.</li><li>
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/git-sync-setup/">Set up Git Sync</a><br>Instructions for setting up Git Sync, so you can provision GitHub repositories for use with Grafana.</li><li>
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/file-path-setup/">Set up file provisioning</a><br>Instructions for setting up file provisioning with a local path.</li><li>
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/provisioned-dashboards/">Work with provisioned dashboards</a><br>Update, save, and modify provisioned resources in Grafana using Git Sync.</li><li>
+    <a href="/docs/grafana/latest/observability-as-code/provision-resources/use-git-sync/">Manage provisioned repositories with Git Sync</a><br>Instructions for working with Git Sync to perform common tasks, such as saving dashboards to GitHub and synchronizing changes with Grafana.</li></ul>

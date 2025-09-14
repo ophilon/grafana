@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<h1 id="dashboard-json-schema-v2">Dashboard JSON schema v2</h1>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Dashboard JSON schema v2 is an <a href="/docs/release-life-cycle/">experimental</a> feature. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. To get early access to this feature, request it through <a href="https://docs.google.com/forms/d/e/1FAIpQLSd73nQzuhzcHJOrLFK4ef_uMxHAQiPQh1-rsQUT2MRqbeMLpg/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">this form</a>.</p>
+<p><strong>Do not enable this feature in production environments as it may result in the irreversible loss of data.</strong></p></blockquote></div>
+
+<p>Grafana dashboards are represented as JSON objects that store metadata, panels, variables, and settings.</p>
+<p>Observability as Code works with all versions of the JSON model, and it&rsquo;s fully compatible with version 2.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Schema v2 is automatically enabled with the Dynamic Dashboards feature toggle.
+To get early access to this feature, request it through <a href="https://docs.google.com/forms/d/e/1FAIpQLSd73nQzuhzcHJOrLFK4ef_uMxHAQiPQh1-rsQUT2MRqbeMLpg/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">this form</a>.
+It also requires the new dashboards API feature toggle, <code>kubernetesDashboards</code>, to be enabled as well.</p>
+<p>For more information on how dashboards behave depending on your feature flag configuration, refer to <a href="#notes-and-limitations">Notes and limitations</a>.</p>
+<h2 id="accessing-the-json-model">Accessing the JSON Model</h2>
+<p>To view the JSON representation of a dashboard:</p>
+<ol>
+<li>Toggle on the edit mode switch in the top-right corner of the dashboard.</li>
+<li>Click the gear icon in the top navigation bar to go to <strong>Settings</strong>.</li>
+<li>Select the <strong>JSON Model</strong> tab.</li>
+<li>Copy or edit the JSON structure as needed.</li>
+</ol>
+<h2 id="json-fields">JSON fields</h2>
+<pre>{
+  &#34;annotations&#34;: [],
+  &#34;cursorSync&#34;: &#34;Off&#34;,
+  &#34;editable&#34;: true,
+  &#34;elements&#34;: {},
+  &#34;layout&#34;: {
+    &#34;kind&#34;: GridLayout, // Can also be AutoGridLayout, RowsLayout, or TabsLayout
+    &#34;spec&#34;: {
+      &#34;items&#34;: []
+    }
+  },
+  &#34;links&#34;: [],
+  &#34;liveNow&#34;: false,
+  &#34;preload&#34;: false,
+  &#34;tags&#34;: [], // Tags associated with the dashboard.
+  &#34;timeSettings&#34;: {
+    &#34;autoRefresh&#34;: &#34;&#34;,
+    &#34;autoRefreshIntervals&#34;: [
+      &#34;5s&#34;,
+      &#34;10s&#34;,
+      &#34;30s&#34;,
+      &#34;1m&#34;,
+      &#34;5m&#34;,
+      &#34;15m&#34;,
+      &#34;30m&#34;,
+      &#34;1h&#34;,
+      &#34;2h&#34;,
+      &#34;1d&#34;
+    ],
+    &#34;fiscalYearStartMonth&#34;: 0,
+    &#34;from&#34;: &#34;now-6h&#34;,
+    &#34;hideTimepicker&#34;: false,
+    &#34;timezone&#34;: &#34;browser&#34;,
+    &#34;to&#34;: &#34;now&#34;
+  },
+  &#34;title&#34;: &#34;&#34;,
+  &#34;variables&#34;: []
+},</pre>
+<p>The dashboard JSON sample shown uses the default <code>GridLayoutKind</code>.
+The JSON in a new dashboard for the other three layout options, <code>AutoGridLayout</code>, <code>RowsLayout</code>, and <code>TabsLayout</code>, are as follows:</p>
+<p><strong><code>AutoGridLayout</code></strong></p>
+<pre>  &#34;layout&#34;: {
+    &#34;kind&#34;: &#34;AutoGridLayout&#34;,
+    &#34;spec&#34;: {
+      &#34;columnWidthMode&#34;: &#34;standard&#34;,
+      &#34;items&#34;: [],
+      &#34;fillScreen&#34;: false,
+      &#34;maxColumnCount&#34;: 3,
+      &#34;rowHeightMode&#34;: &#34;standard&#34;
+    }
+  },</pre>
+<p><strong><code>RowsLayout</code></strong></p>
+<pre>  &#34;layout&#34;: {
+    &#34;kind&#34;: &#34;RowsLayout&#34;,
+    &#34;spec&#34;: {
+      &#34;rows&#34;: []
+  },</pre>
+<p><strong><code>TabsLayout</code></strong></p>
+<pre>  &#34;layout&#34;: {
+    &#34;kind&#34;: &#34;TabsLayout&#34;,
+    &#34;spec&#34;: {
+      &#34;tabs&#34;: []
+  },</pre>
+<h3 id="dashboardspec"><code>DashboardSpec</code></h3>
+<p>The following table explains the usage of the dashboard JSON fields.
+The table includes default and other fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>annotations</td>
+          <td>Contains the list of annotations that are associated with the dashboard.</td>
+      </tr>
+      <tr>
+          <td>cursorSync</td>
+          <td>Dashboard cursor sync behavior.<ul><li><code>Off</code> - No shared crosshair or tooltip (default)</li><li><code>Crosshair</code> - Shared crosshair</li><li><code>Tooltip</code> - Shared crosshair and shared tooltip</li></ul></td>
+      </tr>
+      <tr>
+          <td>editable</td>
+          <td>bool. Whether or not a dashboard is editable.</td>
+      </tr>
+      <tr>
+          <td>elements</td>
+          <td>Contains the list of elements included in the dashboard. Supported dashboard elements are: PanelKind and LibraryPanelKind.</td>
+      </tr>
+      <tr>
+          <td>layout</td>
+          <td>The dashboard layout. Supported layouts are:<ul><li>GridLayoutKind</li><li>AutoGridLayoutKind</li><li>RowsLayoutKind</li><li>TabsLayoutKind</li></ul></td>
+      </tr>
+      <tr>
+          <td>links</td>
+          <td>Links with references to other dashboards or external websites.</td>
+      </tr>
+      <tr>
+          <td>liveNow</td>
+          <td>bool. When set to <code>true</code>, the dashboard redraws panels at an interval matching the pixel width. This keeps data &ldquo;moving left&rdquo; regardless of the query refresh rate. This setting helps avoid dashboards presenting stale live data.</td>
+      </tr>
+      <tr>
+          <td>preload</td>
+          <td>bool. When set to <code>true</code>, the dashboard loads all panels when the dashboard is loaded.</td>
+      </tr>
+      <tr>
+          <td>tags</td>
+          <td>Contains the list of tags associated with dashboard.</td>
+      </tr>
+      <tr>
+          <td>timeSettings</td>
+          <td>All time settings for the dashboard.</td>
+      </tr>
+      <tr>
+          <td>title</td>
+          <td>Title of the dashboard.</td>
+      </tr>
+      <tr>
+          <td>variables</td>
+          <td>Contains the list of configured template variables.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="annotations"><code>annotations</code></h3>
+<p>The configuration for the list of annotations that are associated with the dashboard.
+For the JSON and field usage notes, refer to the 
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/annotations-schema/">annotations schema documentation</a>.</p>
+<h3 id="elements"><code>elements</code></h3>
+<p>Dashboards can contain the following elements:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/panel-schema/">PanelKind</a></li>
+<li>
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/librarypanel-schema/">LibraryPanelKind</a></li>
+</ul>
+<h3 id="layout"><code>layout</code></h3>
+<p>Dashboards can have four layout options:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/layout-schema/#gridlayoutkind">GridLayoutKind</a></li>
+<li>
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/layout-schema/#autogridlayoutkind">AutoGridLayoutKind</a></li>
+<li>
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/layout-schema/#rowslayoutkind">RowsLayoutKind</a></li>
+<li>
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/layout-schema/#tabslayoutkind">TabsLayoutKind</a></li>
+</ul>
+<p>For the JSON and field usage notes about each of these, refer to the 
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/layout-schema/">layout schema documentation</a>.</p>
+<h3 id="links"><code>links</code></h3>
+<p>The configuration for links with references to other dashboards or external websites.</p>
+<p>For the JSON and field usage notes, refer to the 
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/links-schema/">links schema documentation</a>.</p>
+<h3 id="tags"><code>tags</code></h3>
+<p>The tags associated with the dashboard:</p>
+<p><code> [...string]</code></p>
+<h3 id="timesettings"><code>timesettings</code></h3>
+<p>The <code>TimeSettingsSpec</code> defines the default time configuration for the time picker and the refresh picker for the specific dashboard.
+For the JSON and field usage notes about the <code>TimeSettingsSpec</code>, refer to the 
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/timesettings-schema/">timesettings schema documentation</a>.</p>
+<h3 id="variables"><code>variables</code></h3>
+<p>The <code>variables</code> schema defines which variables are used in the dashboard.</p>
+<p>There are eight variables types:</p>
+<ul>
+<li>QueryVariableKind</li>
+<li>TextVariableKind</li>
+<li>ConstantVariableKind</li>
+<li>DatasourceVariableKind</li>
+<li>IntervalVariableKind</li>
+<li>CustomVariableKind</li>
+<li>GroupByVariableKind</li>
+<li>AdhocVariableKind</li>
+</ul>
+<p>For the JSON and field usage notes about the <code>variables</code> spec, refer to the 
+    <a href="/docs/grafana/latest/observability-as-code/schema-v2/variables-schema/">variables schema documentation</a>.</p>
+<h2 id="notes-and-limitations">Notes and limitations</h2>
+<h3 id="existing-dashboards">Existing dashboards</h3>
+<p>With schema v2 enabled, you can still open and view your pre-existing dashboards.
+Upon saving, they’ll be updated to the new schema where you can take advantage of the new features and functionalities.</p>
+<h3 id="dashboard-behavior-with-disabled-feature-flags">Dashboard behavior with disabled feature flags</h3>
+<p>If you disable the Dynamic dashboards or <code>kubernetesDashboards</code> feature flags, you should be aware of how dashboards will behave.</p>
+<h4 id="disable-dynamic-dashboards">Disable Dynamic dashboards</h4>
+<p>If the Dynamic dashboards feature toggle is disabled, depending on how the dashboard was built, it will behave differently:</p>
+<ul>
+<li>Dashboards built on the new schema through the UI - View only</li>
+<li>Dashboards built on Schema v1 - View and edit</li>
+<li>Dashboards built on the new schema by way of Terraform or the CLI - View and edit</li>
+<li>Provisioned dashboards built on the new schema - View and edit, but the edit experience will be the old experience</li>
+</ul>
+<h4 id="disable-dynamic-dashboards-and-kubernetesdashboards">Disable Dynamic dashboards and <code>kubernetesDashboards</code></h4>
+<p>You’ll be unable to view or edit dashboards created or updated in the new schema.</p>
+<h3 id="import-and-export">Import and export</h3>
+<p>From the UI, dashboards created on schema v2 can be exported and imported like other dashboards.
+When you export them to use in another instance, references of data sources are not persisted but data source types are.
+You’ll have the option to select the data source of your choice in the import UI.</p>

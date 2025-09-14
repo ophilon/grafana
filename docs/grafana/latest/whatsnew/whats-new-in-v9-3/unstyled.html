@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v93">What&rsquo;s new in Grafana v9.3</h1>
+<p>Welcome to Grafana 9.3! Read on to learn about our navigation overhaul, support for four new languages, new panels and transformations, several often-requested auth improvements, usability improvements to Alerting, and more. For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>.</p>
+<h2 id="new-navigation">New navigation</h2>
+<p>Available in <strong>beta</strong> in all editions of Grafana</p>
+<p>Use Grafana’s redesigned navigation to get full visibility into the health of your systems, by quickly jumping between features as part of your incident response workflow.</p>
+<p>As Grafana has grown from a data visualization tool to an observability solution, we’ve added many new features along the way. This has resulted in pages that are visually inconsistent or hard to find. These updates to navigation give Grafana a new look and feel and make page layouts and navigation patterns more consistent.</p>
+<p>We’ve revamped the navigation menu and grouped related tools together, making it easier to find what you need. Pages in Grafana now leverage new layouts that include breadcrumbs and a sidebar, allowing you to quickly jump between pages. We’ve also introduced a header that appears on all pages in Grafana, making dashboard search accessible from any page.</p>
+<p>To try out Grafana’s new navigation, enable the <code>topnav</code> feature toggle. If you are a Cloud Advanced customer, open a ticket with our support team and we will enable it for you.</p>
+<p><strong>Note:</strong> The Grafana and Grafana Cloud documentation has not yet been updated to reflect changes to the navigation - these changes will roll out when the new navigation becomes generally available.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/navigation/navigation-9-3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/navigation/navigation-9-3.png"data-srcset="/static/img/docs/navigation/navigation-9-3.png?w=320 320w, /static/img/docs/navigation/navigation-9-3.png?w=550 550w, /static/img/docs/navigation/navigation-9-3.png?w=750 750w, /static/img/docs/navigation/navigation-9-3.png?w=900 900w, /static/img/docs/navigation/navigation-9-3.png?w=1040 1040w, /static/img/docs/navigation/navigation-9-3.png?w=1240 1240w, /static/img/docs/navigation/navigation-9-3.png?w=1920 1920w"
+          data-sizes="auto"alt="New navigation for Grafana"width="1272"height="752"title="New navigation for Grafana"/>
+        <noscript>
+          <img
+            src="/static/img/docs/navigation/navigation-9-3.png"
+            alt="New navigation for Grafana"width="1272"height="752"title="New navigation for Grafana"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">New navigation for Grafana</figcaption></a></figure>
+<h2 id="view-dashboards-in-spanish-french-german-and-simplified-chinese">View dashboards in Spanish, French, German, and Simplified Chinese</h2>
+<p>Generally available in all editions of Grafana</p>
+<p>We have added four new languages to Grafana: Spanish, French, German, and Simplified Chinese.</p>
+<p>With millions of users across the globe, Grafana has a global footprint. In order to make it accessible to a wider audience, we have taken the first steps in localizing key workflows. You can now set Grafana’s language for the navigation, viewing dashboards, and some settings. This will cover the main activities a Viewer performs within Grafana.</p>
+<p>Read more about configuring the <a href="../../administration/organization-preferences/">default language for your organization</a> and <a href="../../administration/user-management/user-preferences/">updating your profile</a> in our documentation.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/internationalization/internationalization-9-3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/internationalization/internationalization-9-3.png"data-srcset="/static/img/docs/internationalization/internationalization-9-3.png?w=320 320w, /static/img/docs/internationalization/internationalization-9-3.png?w=550 550w, /static/img/docs/internationalization/internationalization-9-3.png?w=750 750w, /static/img/docs/internationalization/internationalization-9-3.png?w=900 900w, /static/img/docs/internationalization/internationalization-9-3.png?w=1040 1040w, /static/img/docs/internationalization/internationalization-9-3.png?w=1240 1240w, /static/img/docs/internationalization/internationalization-9-3.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana available in Spanish, French, German, and Simplified Chinese"width="2992"height="1720"title="Grafana available in Spanish, French, German, and Simplified Chinese"/>
+        <noscript>
+          <img
+            src="/static/img/docs/internationalization/internationalization-9-3.png"
+            alt="Grafana available in Spanish, French, German, and Simplified Chinese"width="2992"height="1720"title="Grafana available in Spanish, French, German, and Simplified Chinese"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana available in Spanish, French, German, and Simplified Chinese</figcaption></a></figure>
+<h2 id="geomap-panel">Geomap panel</h2>
+<p>Generally available in all editions of Grafana</p>
+<p>We have added a new alpha layer type in Geomap called photo layer. This layer enables you to render a photo at each data point. To learn more about the photo layer and the geomap panel, refer to <a href="../../panels-visualizations/visualizations/geomap/#photos-layer-alpha">Photos layer</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/geomap-panel/geomap-photos-9-3-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/geomap-panel/geomap-photos-9-3-0.png"data-srcset="/static/img/docs/geomap-panel/geomap-photos-9-3-0.png?w=320 320w, /static/img/docs/geomap-panel/geomap-photos-9-3-0.png?w=550 550w, /static/img/docs/geomap-panel/geomap-photos-9-3-0.png?w=750 750w, /static/img/docs/geomap-panel/geomap-photos-9-3-0.png?w=900 900w, /static/img/docs/geomap-panel/geomap-photos-9-3-0.png?w=1040 1040w, /static/img/docs/geomap-panel/geomap-photos-9-3-0.png?w=1240 1240w, /static/img/docs/geomap-panel/geomap-photos-9-3-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Geomap panel photos layer"width="947"height="615"title="Geomap panel photos layer"/>
+        <noscript>
+          <img
+            src="/static/img/docs/geomap-panel/geomap-photos-9-3-0.png"
+            alt="Geomap panel photos layer"width="947"height="615"title="Geomap panel photos layer"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Geomap panel photos layer</figcaption></a></figure>
+<h2 id="canvas-panel">Canvas panel</h2>
+<p>Available in <strong>beta</strong> in all editions of Grafana</p>
+<p>Canvas is a new panel that combines the power of Grafana with the flexibility of custom elements. Canvas visualizations are extensible form-built panels that allow you to explicitly place elements within static and dynamic layouts. This empowers you to design custom visualizations and overlay data in ways that aren’t possible with standard Grafana panels, all within Grafana’s UI. If you’ve used popular UI and web design tools, then designing Canvas panels will feel very familiar.</p>
+<p>In Grafana v9.3, we have added icon value mapping support to the Canvas panel. This enables you to dynamically set which icon to display based on your data. To learn more about the Canvas panel, refer to <a href="../../panels-visualizations/visualizations/canvas/">Canvas</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="750px" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/static/img/docs/canvas-panel/canvas-icon-value-mapping-support-9-3-0.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Canvas panel icon value mapping support</figcaption></figure>
+</div>
+<h2 id="public-dashboards-improvements">Public dashboards improvements</h2>
+<p>We&rsquo;ve made the following improvements to public dashboards.</p>
+<h3 id="manage-all-of-your-public-dashboards-in-one-place">Manage all of your public dashboards in one place</h3>
+<p>Available in <strong>experimental</strong> in Grafana Open Source, Enterprise, and Cloud Advanced</p>
+<p>You can use Public Dashboards to make a given dashboard available to anyone on the internet without needing to sign in. In Grafana v9.3, we have introduced a new screen where you can manage all of your public dashboards. From here, you can view a list of all of the public dashboards in your Grafana instance, navigate to the underlying dashboard, see if it is enabled, link out to the public version of the dashboard, or update the public dashboard&rsquo;s configuration. You can see a public dashboard&rsquo;s configuration if you have view access to the dashboard itself, and you can edit its configuration if you have the Admin or Server Admin role or the &ldquo;Public Dashboard writer&rdquo; role if you are using RBAC in Grafana Enterprise or Cloud Advanced.</p>
+<p>To check out this new screen and configure your public dashboards, navigate to <strong>Dashboards &gt; Public Dashboards</strong>.</p>
+<h3 id="choose-to-display-annotations-in-public-dashboards">Choose to display annotations in public dashboards</h3>
+<p>Available in <strong>experimental</strong> in Grafana Open Source, Enterprise, and Cloud Advanced</p>
+<p>Annotations are now supported in public dashboards, with the exception of query annotations. They are turned off by default, but can be turned on in your public dashboard settings.</p>
+<p>Note that because Public Dashboards is an experimental feature, you need to enable it in Grafana using the <code>publicDashboards</code> <a href="../../setup-grafana/configure-grafana/#feature_toggles">feature toggle</a>, or open a support ticket requesting public dashboards if you are a Cloud Advanced customer.</p>
+<p>To learn more about public dashboards, refer to 
+    <a href="/docs/grafana/latest/dashboards/share-dashboards-panels/shared-dashboards/">Public dashboards</a>.</p>
+<h2 id="new-transformation-partition-by-values">New transformation: Partition by values</h2>
+<p>Available in <strong>experimental</strong> in all editions of Grafana</p>
+<p>This new transformation can help eliminate the need for multiple queries to the same datasource with different WHERE clauses when graphing multiple series.</p>
+<p>Consider a metrics SQL table with the following data:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Region</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>US</td>
+          <td>1520</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>EU</td>
+          <td>2936</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>US</td>
+          <td>1327</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>EU</td>
+          <td>912</td>
+      </tr>
+  </tbody>
+</table>
+<p>Prior to v9.3, if you wanted to plot a red trendline for US and a blue one for EU in the same TimeSeries panel, you would likely have to split this into two queries:</p>
+<pre>   SELECT Time, Value FROM metrics WHERE Time &gt; ‘2022-10-20’ AND Region=’US’
+   SELECT Time, Value FROM metrics WHERE Time &gt; ‘2022-10-20’ AND Region=’EU’</pre>
+<p>This approach also requires you to know ahead of time which regions exist in the metrics table.</p>
+<p>With the partition by values transformer, you can issue a single query and split the results by unique (enum) values from one or more columns (fields) of your choosing. In this case, Region.</p>
+<pre>   SELECT Time, Region, Value FROM metrics WHERE Time &gt; ‘2022-10-20’</pre>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Region</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>US</td>
+          <td>1520</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>US</td>
+          <td>1327</td>
+      </tr>
+  </tbody>
+</table>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Region</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2022-10-20 12:00:00</td>
+          <td>EU</td>
+          <td>2936</td>
+      </tr>
+      <tr>
+          <td>2022-10-20 01:00:00</td>
+          <td>EU</td>
+          <td>912</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="reporting-zoom-in-and-out-to-fit-your-data-better-into-a-pdf">Reporting: Zoom in and out to fit your data better into a PDF</h2>
+<p>Generally available in Grafana Enterprise, Cloud Pro, and Cloud Advanced.</p>
+<p>Because dashboards appear on a screen and reports are PDFs, it can be challenging to render data just the way you want to. Sometimes the report doesn&rsquo;t show enough columns in a table, or the titles appear too small. Now you can adjust the scale of your report to zoom in and make each text field and panel larger or zoom out to show more data.</p>
+<p>The zoom feature is located in the <strong>Format Report</strong> section of your reporting configuration. To learn more about reporting, refer to <a href="../../dashboards/create-reports/">Create and manage reports</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/enterprise/reports/report-zoom.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/enterprise/reports/report-zoom.png"data-srcset="/static/img/docs/enterprise/reports/report-zoom.png?w=320 320w, /static/img/docs/enterprise/reports/report-zoom.png?w=550 550w, /static/img/docs/enterprise/reports/report-zoom.png?w=750 750w, /static/img/docs/enterprise/reports/report-zoom.png?w=900 900w, /static/img/docs/enterprise/reports/report-zoom.png?w=1040 1040w, /static/img/docs/enterprise/reports/report-zoom.png?w=1240 1240w, /static/img/docs/enterprise/reports/report-zoom.png?w=1920 1920w"
+          data-sizes="auto"alt="Report zoom feature with PDF documents at three different zoom levels"width="1576"height="1290"title="Report zoom feature with PDF documents at three different zoom levels"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reports/report-zoom.png"
+            alt="Report zoom feature with PDF documents at three different zoom levels"width="1576"height="1290"title="Report zoom feature with PDF documents at three different zoom levels"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Report zoom feature with PDF documents at three different zoom levels</figcaption></a></figure>
+<h2 id="users-and-access">Users and access</h2>
+<p>We&rsquo;ve made the following improvements to users and access.</p>
+<h3 id="oauth-token-handling-improvements">OAuth: token handling improvements</h3>
+<p>Generally available in all editions of Grafana</p>
+<p>As part of our efforts to improve the security of Grafana, we are introducing a long-awaited feature that enhances Grafana&rsquo;s OAuth 2.0 compatibility. When a user logs in using an OAuth provider, Grafana verifies on each request that the user&rsquo;s access token has not expired. Grafana uses the refresh token provided (if any exists) when an access token expires to obtain a new access token.</p>
+<p>Because this feature introduces a breaking change, it is behind the <code>accessTokenExpirationCheck</code> feature toggle and is disabled by default. Enabling this functionality without configuring refresh tokens for the specific OAuth provider will sign users out after their access token has expired, and they would need to sign in again every time.</p>
+<p>Complete documentation on how to configure obtaining a refresh token can be found on the <a href="../../setup-grafana/configure-security/configure-authentication/">authentication configuration page</a>, in the instructions for your Oauth identity provider.</p>
+<h3 id="resolve-user-conflicts-in-grafanas-cli">Resolve user conflicts in Grafana&rsquo;s CLI</h3>
+<p>In the older versions of Grafana, usernames were case-sensitive. This created conflicts, where a user might sign in using two different methods (like SAML and OAuth) and have two accounts created, like <code>elastigirl@incredibles.com</code> and <code>ElastiGirl@incredibles.com</code>. Users in this situation might think they have lost their preferences and permissions. If this has occurred in your Grafana instance, you can use a new Grafana CLI command to resolve user identity conflicts between users within Grafana.</p>
+<blockquote>
+<p>Note: If you use Grafana Cloud or you run Grafana with MySQL as your database, you will not experience any user identity conflicts and you do not need to use this tool.</p></blockquote>
+<pre># lists all the conflicting users
+$ grafana-cli user-manager conflicts list
+
+# creates a conflict patch file to edit
+$ grafana-cli user-manager conflicts generate-file
+
+# reads edited conflict patch file for validation
+$ grafana-cli user-manager conflicts validate-file &lt;filepath&gt;
+
+# ingests the conflict users file. Can be executed once per file and will change the state of the database.
+$ grafana-cli user-manager conflicts ingest-file &lt;filepath&gt;</pre>
+<h3 id="ldap-role-mapping-improvements">LDAP: Role mapping improvements</h3>
+<p>Generally available in all editions of Grafana</p>
+<p>If you use an LDAP directory to authenticate to Grafana but prefer to assign organizations and roles in the Grafana UI
+or via API, you can now skip user organization role synchronization with your LDAP
+directory.</p>
+<p>Use the <code>skip_org_role_sync</code> <a href="../../setup-grafana/configure-security/configure-authentication/ldap/#disable-org-role-synchronization">LDAP authentication configuration option</a>
+when configuring LDAP authentication to prevent the synchronization between your LDAP groups and organization roles
+and make user roles editable manually.</p>
+<h3 id="azure-ad-oauth2-new-option-to-always-fetch-groups-from-the-graph-api">Azure AD OAuth2: New option to always fetch groups from the Graph API</h3>
+<p>Generally available in all editions of Grafana</p>
+<p>If you use Azure AD OAuth2 authentication and use <code>SecurityEnabled</code> groups that you don&rsquo;t want Azure to embed in the
+authentication token, you can configure Grafana to use Microsoft&rsquo;s Graph API instead.</p>
+<p>Use the <a href="../../setup-grafana/configure-security/configure-authentication/azuread/#force-fetching-groups-from-microsoft-graph-api"><code>force_use_graph_api</code> configuration option</a>
+when configuring Azure AD authentication to force Grafana to fetch groups using Graph API.</p>
+<h3 id="rbac-list-tokens-permissions">RBAC: List token&rsquo;s permissions</h3>
+<p>Generally available in Grafana Enterprise and Cloud Advanced</p>
+<p>We added a new endpoint to help users diagnose permissions-related issues with user and token authorization.
+<a href="../../developers/http_api/access_control/#list-your-permissions">This endpoint</a> allows users to get the
+full list of RBAC permissions associated with their token.</p>
+<p>For more details, refer to <a href="../../administration/service-accounts/#debug-the-permissions-of-a-service-account-token">Debug the permissions of a service account token</a>.</p>
+<h3 id="rbac-with-terraform-extended-support-for-provisioning-permissions">RBAC with Terraform: Extended support for provisioning permissions</h3>
+<p>Generally available in Grafana Enterprise and Cloud Advanced</p>
+<p>All Grafana users can now use the latest release of <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs" target="_blank" rel="noopener noreferrer">Terraform&rsquo;s Grafana provider</a> (version 1.31.1+) to provision <a href="../../administration/service-accounts/#manage-users-and-teams-permissions-for-a-service-account-in-grafana">user and team access to service accounts</a>.</p>
+<p>This allows full management of service accounts through Terraform - from creating a service account and allowing users to access it to assigning roles to the service account and generating service account tokens.</p>
+<p>Grafana Enterprise and Cloud Pro and Advanced users can now provision <a href="../../administration/data-source-management/#data-source-permissions">access to data sources</a> for Grafana&rsquo;s <code>Viewer</code>, <code>Editor</code>, and <code>Admin</code> basic roles, as well as assign <code>Edit</code> permission.</p>
+<p>We have also added <a href="../../administration/roles-and-permissions/access-control/rbac-terraform-provisioning/">documentation on provisioning RBAC roles and role assignments</a> to guide our Grafana Enterprise and Cloud Pro and Advanced users through this process.</p>
+<p>Finally, we have fixed several access control related bugs to ensure a smoother provisioning experience.</p>
+<h2 id="alerting">Alerting</h2>
+<p>All of these new alerting features are generally available in all editions of Grafana.</p>
+<h3 id="support-for-webex-teams">Support for Webex Teams</h3>
+<p>You can now use Cisco Webex Teams as a contact point, to send alerts to a Webex Teams space.</p>
+<h3 id="edit-alert-rules-created-using-the-provisioning-api">Edit alert rules created using the provisioning API</h3>
+<p>Edit API-provisioned alert rules from the Grafana UI. To make a provisioned alert editable, add the <code>x-disable-provenance</code> header to the following requests when creating or editing your alert rules in the API:</p>
+<p>POST /api/v1/provisioning/alert-rules</p>
+<p>PUT /api/v1/provisioning/alert-rules/{UID}</p>
+<h3 id="support-values-in-notification-templates">Support values in notification templates</h3>
+<p>Add alert values to notification templates, so that you can create a single template that prints the annotations, labels, and values for your alerts in a format of your choice.</p>
+<h3 id="view-notification-errors">View notification errors</h3>
+<p>When an alert fails to fire, see when something is wrong with your contact point(s) and the reason for the error. The Receivers API contains information on the error, including a time stamp, duration of the attempt, and the error. You can also view the errors for each contact point in the UI.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png"data-srcset="/static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png?w=320 320w, /static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png?w=550 550w, /static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png?w=750 750w, /static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png?w=900 900w, /static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png?w=1040 1040w, /static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png?w=1240 1240w, /static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Alert notification errors"width="1200"height="301"title="Alert notification errors"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/alert-view-notification-errors-whats-new-v9.3.png"
+            alt="Alert notification errors"width="1200"height="301"title="Alert notification errors"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Alert notification errors</figcaption></a></figure>
+<h3 id="redesign-of-the-expressions-pipeline">Redesign of the expressions pipeline</h3>
+<p>We&rsquo;ve redesigned the expressions pipeline editor to combine the expressions editor and the preview into a single view.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png"data-srcset="/static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png?w=320 320w, /static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png?w=550 550w, /static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png?w=750 750w, /static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png?w=900 900w, /static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png?w=1040 1040w, /static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png?w=1240 1240w, /static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png?w=1920 1920w"
+          data-sizes="auto"alt="Expression pipeline redesign"width="1200"height="1061"title="Expression pipeline redesign"/>
+        <noscript>
+          <img
+            src="/static/img/docs/alerting/alert-expression-pipeline-whats-new-v9.3.png"
+            alt="Expression pipeline redesign"width="1200"height="1061"title="Expression pipeline redesign"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Expression pipeline redesign</figcaption></a></figure>

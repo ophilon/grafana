@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v73">What&rsquo;s new in Grafana v7.3</h1>
+<p>This topic includes the release notes for Grafana v7.3. For all details, read the full <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a> or the <a href="#patch-release-notes">Patch release notes</a>.</p>
+<p>The main highlights are:</p>
+<ul>
+<li><a href="#cloud-monitoring-out-of-the-box-dashboards"><strong>Google Cloud Monitoring:</strong> Out of the box dashboards</a></li>
+<li><a href="#shorten-url-for-dashboards-and-explore"><strong>Shorten URL for dashboards and Explore</strong></a></li>
+<li><a href="#table-improvements-and-new-image-cell-mode"><strong>Table improvements and new image cell mode</strong></a></li>
+<li><a href="#new-color-scheme-option"><strong>New color scheme option</strong></a></li>
+<li><a href="#sigv4-authentication-for-aws-users"><strong>SigV4 Authentication for Amazon Elasticsearch Service</strong></a></li>
+<li><a href="#csv-exports-for-excel"><strong>CSV exports for Excel</strong></a></li>
+</ul>
+<h2 id="table-improvements-and-new-image-cell-mode">Table improvements and new image cell mode</h2>
+<p>The table has been updated with improved hover behavior for cells that have longer content than what fits the current column width. As you can see
+in the animated gif below the cell will automatically expand to show you full content of the cell.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v73/table_hover.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v73/table_hover.gif"alt="Table hover"width="1426"height="518"title="Table hover"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v73/table_hover.gif"
+            alt="Table hover"width="1426"height="518"title="Table hover"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Table hover</figcaption></a></figure>
+<p>Another new feature that can be seen in the image above is the new image cell display mode. If you have a field value that is an image URL or a base64 encoded image you can configure the table to display it as an image.</p>
+<h2 id="new-color-scheme-option">New color scheme option</h2>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p pull-right"
+    style="max-width: 450px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v73/color_scheme_dropdown.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v73/color_scheme_dropdown.png"data-srcset="/static/img/docs/v73/color_scheme_dropdown.png?w=320 320w, /static/img/docs/v73/color_scheme_dropdown.png?w=550 550w, /static/img/docs/v73/color_scheme_dropdown.png?w=750 750w, /static/img/docs/v73/color_scheme_dropdown.png?w=900 900w, /static/img/docs/v73/color_scheme_dropdown.png?w=1040 1040w, /static/img/docs/v73/color_scheme_dropdown.png?w=1240 1240w, /static/img/docs/v73/color_scheme_dropdown.png?w=1920 1920w"
+          data-sizes="auto"alt="Color scheme"width="734"height="688"title="Color scheme"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v73/color_scheme_dropdown.png"
+            alt="Color scheme"width="734"height="688"title="Color scheme"class="pull-right"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Color scheme</figcaption></a></figure>
+<p>A new standard field color scheme option has been added. This new option will provide a unified way for all new panels to specify how colors should be assigned. For more information, refer to <a href="../../panels-visualizations/configure-standard-options/#color-scheme">Apply color to series and fields</a>.</p>
+<ul>
+<li><strong>Single color</strong>: Specifies a single color. Useful in an override rule.</li>
+<li><strong>From thresholds</strong>: Informs Grafana to take color from the matching threshold.</li>
+<li><strong>Classic palette</strong>: Assigns a color by looking up a color in a palette by series index. Useful for Graphs and pie charts, and other categorical data visualizations in Grafana.</li>
+<li><strong>Green-Yellow-Red (by value)</strong>: A continuous color scheme where Grafana will interpolate a color based on the value assigned to the green, yellow, and red components. The value must be within the min &amp; max limits.</li>
+<li><strong>Blue-Yellow-Red (by value)</strong>: Same as above but different colors.</li>
+<li><strong>Blues (by value)</strong>: Same as above but color scheme go from panel background to blue.</li>
+</ul>
+<div class="clearfix"></div>
+<p>As you can see this adds new continuous color schemes where Grafana will interpolate colors. A great use of these new color schemes is the table panel where you can color the background and get a heatmap like effect.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v73/table_color_scheme.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v73/table_color_scheme.png"data-srcset="/static/img/docs/v73/table_color_scheme.png?w=320 320w, /static/img/docs/v73/table_color_scheme.png?w=550 550w, /static/img/docs/v73/table_color_scheme.png?w=750 750w, /static/img/docs/v73/table_color_scheme.png?w=900 900w, /static/img/docs/v73/table_color_scheme.png?w=1040 1040w, /static/img/docs/v73/table_color_scheme.png?w=1240 1240w, /static/img/docs/v73/table_color_scheme.png?w=1920 1920w"
+          data-sizes="auto"alt="table color scheme"width="1876"height="958"title="table color scheme"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v73/table_color_scheme.png"
+            alt="table color scheme"width="1876"height="958"title="table color scheme"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">table color scheme</figcaption></a></figure>
+<p>Another thing to highlight is that all these new color schemes are theme aware and adapt to the current theme. For example here is how the new monochrome color scheme look like in the light theme:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v73/table_color_scheme_mono_light.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v73/table_color_scheme_mono_light.png"data-srcset="/static/img/docs/v73/table_color_scheme_mono_light.png?w=320 320w, /static/img/docs/v73/table_color_scheme_mono_light.png?w=550 550w, /static/img/docs/v73/table_color_scheme_mono_light.png?w=750 750w, /static/img/docs/v73/table_color_scheme_mono_light.png?w=900 900w, /static/img/docs/v73/table_color_scheme_mono_light.png?w=1040 1040w, /static/img/docs/v73/table_color_scheme_mono_light.png?w=1240 1240w, /static/img/docs/v73/table_color_scheme_mono_light.png?w=1920 1920w"
+          data-sizes="auto"alt="table color monochrome scheme"width="1600"height="908"title="table color monochrome scheme"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v73/table_color_scheme_mono_light.png"
+            alt="table color monochrome scheme"width="1600"height="908"title="table color monochrome scheme"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">table color monochrome scheme</figcaption></a></figure>
+<p>As this new option is a standard field option it works in every panel. Here is another example from the <a href="../../panels-visualizations/visualizations/bar-gauge/">Bar Gauge</a> panel.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/v73/bar_gauge_gradient_color_scheme.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/v73/bar_gauge_gradient_color_scheme.png"data-srcset="/static/img/docs/v73/bar_gauge_gradient_color_scheme.png?w=320 320w, /static/img/docs/v73/bar_gauge_gradient_color_scheme.png?w=550 550w, /static/img/docs/v73/bar_gauge_gradient_color_scheme.png?w=750 750w, /static/img/docs/v73/bar_gauge_gradient_color_scheme.png?w=900 900w, /static/img/docs/v73/bar_gauge_gradient_color_scheme.png?w=1040 1040w, /static/img/docs/v73/bar_gauge_gradient_color_scheme.png?w=1240 1240w, /static/img/docs/v73/bar_gauge_gradient_color_scheme.png?w=1920 1920w"
+          data-sizes="auto"alt="bar gauge color scheme"width="1472"height="462"title="bar gauge color scheme"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v73/bar_gauge_gradient_color_scheme.png"
+            alt="bar gauge color scheme"width="1472"height="462"title="bar gauge color scheme"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">bar gauge color scheme</figcaption></a></figure>
+<h2 id="csv-exports-for-excel">CSV exports for Excel</h2>
+<p>In v7.0, we introduced a new table panel and inspect mode with Download CSV enabled. However, CSV export to Excel was removed. Due to a large number of inquiries and requests, this <a href="https://github.com/grafana/grafana/pull/27284" target="_blank" rel="noopener noreferrer">community contribution from tomdaly</a> brought the feature back.</p>
+<p>For more information, refer to <a href="../../panels-visualizations/panel-inspector/#download-raw-query-results">Download raw query results</a>.</p>
+<h2 id="google-cloud-monitoring-out-of-the-box-dashboards">Google Cloud monitoring out-of-the-box dashboards</h2>
+<p>The updated Google Cloud monitoring data source is shipped with pre-configured dashboards for five of the most popular Google Cloud Platform (GCP) services:</p>
+<ul>
+<li>BigQuery</li>
+<li>Cloud Load Balancing</li>
+<li>Cloud SQL</li>
+<li>Google Compute Engine <code>GCE</code></li>
+<li>Google Kubernetes Engine <code>GKE</code></li>
+</ul>
+<p>To import the pre-configured dashboards, go to the configuration page of your Google Cloud Monitoring data source and click on the <code>Dashboards</code> tab. Click <code>Import</code> for the dashboard you would like to use. To customize the dashboard, we recommend to save the dashboard under a different name, because otherwise the dashboard will be overwritten when a new version of the dashboard is released.</p>
+<p>For more details, see the <a href="../../datasources/google-cloud-monitoring/#out-of-the-box-dashboards">Google Cloud Monitoring docs</a></p>
+<h2 id="shorten-url-for-dashboards-and-explore">Shorten URL for dashboards and Explore</h2>
+<p>This is an amazing new feature that was created in cooperation with one of our community members. The new share shortened link capability allows you to create smaller and simpler URLs of the format <code>/goto/:uid</code> instead of using longer URLs that can contain complex query parameters. In Explore, you can create a shortened link by clicking on the share button in Explore toolbar. In the dashboards, a shortened url option is available through the share panel or dashboard button.</p>
+<h2 id="sigv4-authentication-for-aws-users">SigV4 authentication for AWS users</h2>
+<p>You can now configure your Elasticsearch data source to access your Amazon Elasticsearch Service domain directly from Grafana.</p>
+<p>For more details, refer to the <a href="../../datasources/elasticsearch/#aws-signature-version-4-authentication">Elasticsearch docs</a>.</p>
+<h2 id="chaining-pipeline-aggregation-in-elasticsearch">Chaining pipeline aggregation in Elasticsearch</h2>
+<p>Thanks to a contribution from a community member, it&rsquo;s now possible to chain multiple pipeline aggregations together and use the results of one pipeline aggregation as the input of another. This unleashes the full power of Elasticsearch&rsquo;s pipeline aggregations in Grafana, allowing users to perform high order derivatives or use a pipeline aggregation result as a variable for a Bucket Script Aggregation.</p>
+<h2 id="grafana-enterprise-features">Grafana Enterprise features</h2>
+<p>These features are included in the Grafana Enterprise edition software.</p>
+<h3 id="auditing">Auditing</h3>
+<p>Auditing tracks important changes to your Grafana instance to help you manage and mitigate suspicious activity and meet compliance requirements. Grafana logs events (as JSON) to file or directly to <a href="/oss/loki/">loki</a>.</p>
+<p>Example of a login event:</p>
+<pre>{
+  &#34;timestamp&#34;: &#34;2020-10-22T10:18:00.838094347Z&#34;,
+  &#34;user&#34;: {
+    &#34;userId&#34;: 1,
+    &#34;orgId&#34;: 1,
+    &#34;isAnonymous&#34;: false
+  },
+  &#34;action&#34;: &#34;login-grafana&#34;,
+  &#34;result&#34;: {
+    &#34;statusType&#34;: &#34;success&#34;,
+    &#34;statusCode&#34;: 200
+  },
+  &#34;requestUri&#34;: &#34;/login&#34;,
+  &#34;ipAddress&#34;: &#34;127.0.0.1:41324&#34;,
+  &#34;userAgent&#34;: &#34;Chrome/86.0.4240.111&#34;,
+  &#34;grafanaVersion&#34;: &#34;7.3.0&#34;
+}</pre>
+<p>For more details, see the <a href="../../setup-grafana/configure-security/audit-grafana/">Auditing docs</a>.</p>
+<h3 id="data-source-usage-insights">Data source usage insights</h3>
+<p>Data source usage insights allows you to gain insight into how a data source is being used and how well it works. There is a new tab in the data source settings page called insights that will show you information about how the data source has been used in the past 30 days.</p>
+<p>Insights:</p>
+<ul>
+<li>Queries per day</li>
+<li>Errors per day</li>
+<li>Average load duration per day (ms)</li>
+</ul>
+<h3 id="saml-single-logout">SAML single logout</h3>
+<p>SAML’s single logout (SLO) capability allows users to log out from all applications associated with the current identity provider (IdP) session established via SAML SSO. For more information, refer to the <a href="../../setup-grafana/configure-security/configure-authentication/saml/#single-logout">docs</a>.</p>
+<h3 id="saml-idp-initiated-single-sign-on">SAML IdP-initiated single sign on</h3>
+<p>IdP-initiated single sign on (SSO) allows the user to log in directly from the SAML identity provider (IdP). It is disabled by default for security reasons. For more information, refer to the <a href="../../setup-grafana/configure-security/configure-authentication/saml/#idp-initiated-single-sign-on-sso">docs</a>.</p>
+<h2 id="changelog">Changelog</h2>
+<p>Check out <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">CHANGELOG.md</a> for a complete list of new features, changes, and bug fixes.</p>
+<h2 id="patch-release-notes">Patch release notes</h2>
+<ul>
+<li><a href="../../release-notes/release-notes-7-3-0/">Grafana 7.3.0 release notes</a></li>
+<li><a href="../../release-notes/release-notes-7-3-1/">Grafana 7.3.1 release notes</a></li>
+<li><a href="../../release-notes/release-notes-7-3-2/">Grafana 7.3.2 release notes</a></li>
+<li><a href="../../release-notes/release-notes-7-3-3/">Grafana 7.3.3 release notes</a></li>
+<li><a href="../../release-notes/release-notes-7-3-4/">Grafana 7.3.4 release notes</a></li>
+<li><a href="../../release-notes/release-notes-7-3-5/">Grafana 7.3.5 release notes</a></li>
+<li><a href="../../release-notes/release-notes-7-3-6/">Grafana 7.3.6 release notes</a></li>
+<li><a href="../../release-notes/release-notes-7-3-7/">Grafana 7.3.7 release notes</a></li>
+</ul>

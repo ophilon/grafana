@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<h1 id="install-grafana-on-macos">Install Grafana on macOS</h1>
+<p>This page explains how to install Grafana on macOS.</p>
+<p>The following video demonstrates how to install Grafana on macOS as outlined in this document:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=1zdm8SxOLYQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="install-grafana-on-macos-using-homebrew">Install Grafana on macOS using Homebrew</h2>
+<p>To install Grafana on macOS using Homebrew, complete the following steps:</p>
+<ol>
+<li>
+<p>On the <a href="http://brew.sh/" target="_blank" rel="noopener noreferrer">Homebrew</a> homepage, search for Grafana.</p>
+<p>The last stable and released version is listed.</p>
+</li>
+<li>
+<p>Open a terminal and run the following commands:</p>
+<pre>brew update
+brew install grafana</pre>
+<p>The brew page downloads and untars the files into:</p>
+<ul>
+<li><code>/usr/local/Cellar/grafana/[version]</code> (Intel Silicon)</li>
+<li><code>/opt/homebrew/Cellar/grafana/[version]</code> (Apple Silicon)</li>
+</ul>
+</li>
+<li>
+<p>To start Grafana, run the following command:</p>
+<pre>brew services start grafana</pre>
+</li>
+</ol>
+<h3 id="using-the-grafana-cli-with-homebrew">Using the Grafana CLI with Homebrew</h3>
+<p>To use the Grafana CLI with Homebrew, you need to append the home path, the config file path and - based on the command - some other configurations to the <code>cli</code> command:</p>
+<p>For <code>admin</code> commands, you need to append the <code>--configOverrides cfg:default.paths.data=/opt/homebrew/var/lib/grafana</code> configuration. Example:</p>
+<pre>/opt/homebrew/opt/grafana/bin/grafana cli --config /opt/homebrew/etc/grafana/grafana.ini --homepath /opt/homebrew/opt/grafana/share/grafana --configOverrides cfg:default.paths.data=/opt/homebrew/var/lib/grafana admin reset-admin-password &lt;new password&gt;</pre>
+<p>For <code>plugins</code> commands, you need to append the <code>--pluginsDir /opt/homebrew/var/lib/grafana/plugins</code> configuration. Example:</p>
+<pre>/opt/homebrew/opt/grafana/bin/grafana cli --config /opt/homebrew/etc/grafana/grafana.ini --homepath /opt/homebrew/opt/grafana/share/grafana --pluginsDir &#34;/opt/homebrew/var/lib/grafana/plugins&#34; plugins install &lt;plugin-id&gt;</pre>
+<h2 id="install-standalone-macos-binaries">Install standalone macOS binaries</h2>
+<p>To install Grafana on macOS using the standalone binaries, complete the following steps:</p>
+<ol>
+<li>
+<p>Navigate to the <a href="/grafana/download">Grafana download page</a>.</p>
+</li>
+<li>
+<p>Select the Grafana version you want to install.</p>
+<ul>
+<li>The most recent Grafana version is selected by default.</li>
+<li>The <strong>Version</strong> field displays only tagged releases. If you want to install a nightly build, click <strong>Nightly Builds</strong> and then select a version.</li>
+</ul>
+</li>
+<li>
+<p>Select an <strong>Edition</strong>.</p>
+<ul>
+<li><strong>Enterprise:</strong> This is the recommended version. It is functionally identical to the open source version, but includes features you can unlock with a license, if you so choose.</li>
+<li><strong>Open Source:</strong> This version is functionally identical to the Enterprise version, but you will need to download the Enterprise version if you want Enterprise features.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Mac</strong>.</p>
+</li>
+<li>
+<p>Copy and paste the code from the <a href="/grafana/download">download page</a> into your command line and run.</p>
+</li>
+<li>
+<p>Untar the <code>gz</code> file and copy the files to the location of your preference.</p>
+</li>
+<li>
+<p>To start Grafana service, go to the directory and run the command:</p>
+<pre>./bin/grafana server</pre>
+</li>
+</ol>
+<p>Alternatively, watch the Grafana for Beginners video below:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=T51Qa7eE3W8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><a href="../../start-restart-grafana/">Start the Grafana server</a></li>
+</ul>

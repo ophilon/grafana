@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<h1 id="cloudwatch-template-variables">CloudWatch template variables</h1>
+<p>Instead of hard-coding details such as server, application, and sensor names in metric queries, you can use variables.
+Grafana lists these variables in dropdown select boxes at the top of the dashboard to help you change the data displayed in your dashboard.
+Grafana refers to such variables as template variables.</p>
+<p>For an introduction to templating and template variables, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> and 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/">Add and manage variables</a> documentation.</p>
+<h2 id="use-query-variables">Use query variables</h2>
+<p>You can specify these CloudWatch data source queries in the Variable edit view&rsquo;s <strong>Query Type</strong> field.
+Use them to fill a variable&rsquo;s options list with values like <code>regions</code>, <code>namespaces</code>, <code>metric names</code>, and <code>dimension keys/values</code>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>List returned</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Regions</strong></td>
+          <td>All AWS regions.</td>
+      </tr>
+      <tr>
+          <td><strong>Namespaces</strong></td>
+          <td>All namespaces CloudWatch supports.</td>
+      </tr>
+      <tr>
+          <td><strong>Metrics</strong></td>
+          <td>Metrics in the namespace. (Specify region or use &ldquo;default&rdquo; for custom metrics.)</td>
+      </tr>
+      <tr>
+          <td><strong>Dimension Keys</strong></td>
+          <td>Dimension keys in the namespace.</td>
+      </tr>
+      <tr>
+          <td><strong>Dimension Values</strong></td>
+          <td>Dimension values matching the specified <code>region</code>, <code>namespace</code>, <code>metric</code>, and <code>dimension_key</code>. Use dimension <code>filters</code> for more specific results.</td>
+      </tr>
+      <tr>
+          <td><strong>EBS Volume IDs</strong></td>
+          <td>Volume ids matching the specified <code>region</code> and <code>instance_id</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>EC2 Instance Attributes</strong></td>
+          <td>Attributes matching the specified <code>region</code>, <code>attribute_name</code>, and <code>filters</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Resource ARNs</strong></td>
+          <td>ARNs matching the specified <code>region</code>, <code>resource_type</code>, and <code>tags</code>.</td>
+      </tr>
+      <tr>
+          <td><strong>Statistics</strong></td>
+          <td>All standard statistics.</td>
+      </tr>
+      <tr>
+          <td><strong>LogGroups</strong></td>
+          <td>All log groups matching the specified <code>region</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>For details on the available dimensions, refer to the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CW_Support_For_AWS.html" target="_blank" rel="noopener noreferrer">CloudWatch Metrics and Dimensions Reference</a>.</p>
+<p>For details about the metrics CloudWatch provides, refer to the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/CW_Support_For_AWS.html" target="_blank" rel="noopener noreferrer">CloudWatch documentation</a>.</p>
+<h3 id="use-variables-in-queries">Use variables in queries</h3>
+<p>Use Grafana&rsquo;s variable syntax to include variables in queries.
+For details, refer to the 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">variable syntax documentation</a>.</p>
+<h2 id="use-ec2_instance_attribute">Use ec2_instance_attribute</h2>
+<h3 id="filters">Filters</h3>
+<p>The <code>ec2_instance_attribute</code> query takes <code>filters</code> as a filter name and a comma-separated list of values.
+You can specify <a href="http://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeInstances.html" target="_blank" rel="noopener noreferrer">pre-defined filters of ec2:DescribeInstances</a>.</p>
+<h3 id="select-attributes">Select attributes</h3>
+<p>A query returns only one attribute per instance.
+You can select any attribute that has a single value and isn&rsquo;t an object or array, also known as a flat attribute:</p>
+<ul>
+<li><code>AmiLaunchIndex</code></li>
+<li><code>Architecture</code></li>
+<li><code>ClientToken</code></li>
+<li><code>EbsOptimized</code></li>
+<li><code>EnaSupport</code></li>
+<li><code>Hypervisor</code></li>
+<li><code>IamInstanceProfile</code></li>
+<li><code>ImageId</code></li>
+<li><code>InstanceId</code></li>
+<li><code>InstanceLifecycle</code></li>
+<li><code>InstanceType</code></li>
+<li><code>KernelId</code></li>
+<li><code>KeyName</code></li>
+<li><code>LaunchTime</code></li>
+<li><code>Platform</code></li>
+<li><code>PrivateDnsName</code></li>
+<li><code>PrivateIpAddress</code></li>
+<li><code>PublicDnsName</code></li>
+<li><code>PublicIpAddress</code></li>
+<li><code>RamdiskId</code></li>
+<li><code>RootDeviceName</code></li>
+<li><code>RootDeviceType</code></li>
+<li><code>SourceDestCheck</code></li>
+<li><code>SpotInstanceRequestId</code></li>
+<li><code>SriovNetSupport</code></li>
+<li><code>SubnetId</code></li>
+<li><code>VirtualizationType</code></li>
+<li><code>VpcId</code></li>
+</ul>
+<p>You can select tags by prepending the tag name with <code>Tags.</code>.
+For example, select the tag <code>Name</code> by using <code>Tags.Name</code>.</p>

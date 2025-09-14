@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<h1 id="elasticsearch-query-editor">Elasticsearch query editor</h1>
+<p>Grafana provides a query editor for Elasticsearch. Elasticsearch queries are in Lucene format.
+See <a href="https://www.elastic.co/guide/en/kibana/current/lucene-query.html" target="_blank" rel="noopener noreferrer">Lucene query syntax</a> and <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/query-dsl-query-string-query.html#query-string-syntax" target="_blank" rel="noopener noreferrer">Query string syntax</a> if you are new to working with Lucene queries in Elasticsearch.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When composing Lucene queries, ensure that you use uppercase boolean operators: <code>AND</code>, <code>OR</code>, and <code>NOT</code>. Lowercase versions of these operators are not supported by the Lucene query syntax.</p></blockquote></div>
+
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 800px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/elasticsearch/elastic-query-editor-10.1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/elasticsearch/elastic-query-editor-10.1.png"data-srcset="/static/img/docs/elasticsearch/elastic-query-editor-10.1.png?w=320 320w, /static/img/docs/elasticsearch/elastic-query-editor-10.1.png?w=550 550w, /static/img/docs/elasticsearch/elastic-query-editor-10.1.png?w=750 750w, /static/img/docs/elasticsearch/elastic-query-editor-10.1.png?w=900 900w, /static/img/docs/elasticsearch/elastic-query-editor-10.1.png?w=1040 1040w, /static/img/docs/elasticsearch/elastic-query-editor-10.1.png?w=1240 1240w, /static/img/docs/elasticsearch/elastic-query-editor-10.1.png?w=1920 1920w"
+          data-sizes="auto"alt="Elasticsearch query editor"width="1844"height="266"title="Elasticsearch query editor"/>
+        <noscript>
+          <img
+            src="/static/img/docs/elasticsearch/elastic-query-editor-10.1.png"
+            alt="Elasticsearch query editor"width="1844"height="266"title="Elasticsearch query editor"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Elasticsearch query editor</figcaption></a></figure>
+<p>For general documentation on querying data sources in Grafana, including options and functions common to all query editors, see 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<h2 id="aggregation-types">Aggregation types</h2>
+<p>Elasticsearch groups aggregations into three categories:</p>
+<ul>
+<li>
+<p><strong>Bucket</strong> - Bucket aggregations don&rsquo;t calculate metrics, they create buckets of documents based on field values, ranges and a variety of other criteria. See <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket.html" target="_blank" rel="noopener noreferrer">Bucket aggregations</a> for additional information. Use bucket aggregations under <code>Group by</code> when creating a metrics query in the query builder.</p>
+</li>
+<li>
+<p><strong>Metrics</strong> - Metrics aggregations perform calculations such as sum, average, min, etc. They can be single-value or multi-value. See <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics.html" target="_blank" rel="noopener noreferrer">Metrics aggregations</a> for additional information. Use metrics aggregations in the metrics query type in the query builder.</p>
+</li>
+<li>
+<p><strong>Pipeline</strong> - Elasticsearch pipeline aggregations work with inputs or metrics created from other aggregations (not documents or fields). There are parent and sibling and sibling pipeline aggregations. See <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-pipeline.html" target="_blank" rel="noopener noreferrer">Pipeline aggregations</a> for additional information.</p>
+</li>
+</ul>
+<h2 id="select-a-query-type">Select a query type</h2>
+<p>There are three types of queries you can create with the Elasticsearch query builder. Each type is explained in detail below.</p>
+<h3 id="metrics-query-type">Metrics query type</h3>
+<p>Metrics queries aggregate data and produce a variety of calculations such as count, min, max, etc. Click on the metric box to view a list of options in the dropdown menu. The default is <code>count</code>.</p>
+<ul>
+<li>
+<p><strong>Alias</strong> - Aliasing only applies to <strong>time series queries</strong>, where the last group is <code>date histogram</code>. This is ignored for any other type of query.</p>
+</li>
+<li>
+<p><strong>Metric</strong> - Metrics aggregations include:</p>
+<ul>
+<li>count - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-valuecount-aggregation.html" target="_blank" rel="noopener noreferrer">Value count aggregation</a></li>
+<li>average - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-rate-aggregation.html" target="_blank" rel="noopener noreferrer">Avg aggregation</a></li>
+<li>sum - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-sum-aggregation.html" target="_blank" rel="noopener noreferrer">Sum aggregation</a></li>
+<li>max - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-max-aggregation.html" target="_blank" rel="noopener noreferrer">Max aggregation</a></li>
+<li>min - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-min-aggregation.html" target="_blank" rel="noopener noreferrer">Min aggregation</a></li>
+<li>extended stats - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-extendedstats-aggregation.html" target="_blank" rel="noopener noreferrer">Extended stats aggregation</a></li>
+<li>percentiles - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-percentile-aggregation.html" target="_blank" rel="noopener noreferrer">Percentiles aggregation</a></li>
+<li>unique count - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-cardinality-aggregation.html" target="_blank" rel="noopener noreferrer">Cardinality aggregation</a></li>
+<li>top metrics - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-top-metrics.html" target="_blank" rel="noopener noreferrer">Top metrics aggregation</a></li>
+<li>rate - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/search-aggregations-metrics-rate-aggregation.html" target="_blank" rel="noopener noreferrer">Rate aggregation</a></li>
+</ul>
+</li>
+</ul>
+<p>You can select multiple metrics and group by multiple terms or filters when using the Elasticsearch query editor.</p>
+<p>Use the <strong>+ sign</strong> to the right to add multiple metrics to your query. Click on the <strong>eye icon</strong> next to <strong>Metric</strong> to hide metrics, and the <strong>garbage can icon</strong> to remove metrics.</p>
+<ul>
+<li><strong>Group by options</strong> - Create multiple group by options when constructing your Elasticsearch query. Date histogram is the default option. Below is a list of options in the dropdown menu.
+<ul>
+<li>terms - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html" target="_blank" rel="noopener noreferrer">Terms aggregation</a>.</li>
+<li>filter - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filter-aggregation.html" target="_blank" rel="noopener noreferrer">Filter aggregation</a>.</li>
+<li>geo hash grid - see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-geohashgrid-aggregation.html" target="_blank" rel="noopener noreferrer">Geohash grid aggregation</a>.</li>
+<li>date histogram - for time series queries. See <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-datehistogram-aggregation.html" target="_blank" rel="noopener noreferrer">Date histogram aggregation</a>.</li>
+<li>histogram - Depicts frequency distributions. See <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-histogram-aggregation.html" target="_blank" rel="noopener noreferrer">Histogram aggregation</a>.</li>
+<li>nested (experimental) - See <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-nested-aggregation.html" target="_blank" rel="noopener noreferrer">Nested aggregation</a>.</li>
+</ul>
+</li>
+</ul>
+<p>Each group by option will have a different subset of options to further narrow your query.</p>
+<p>The following options are specific to the <strong>date histogram</strong> bucket aggregation option.</p>
+<ul>
+<li><strong>Time field</strong> - Depicts date data options. The default option can be specified when configuring the Elasticsearch data source in the <strong>Time field name</strong> under the <a href="/docs/grafana/latest/datasources/elasticsearch/configure-elasticsearch-data-source/#elasticsearch-details"><strong>Elasticsearch details</strong></a> section. Otherwise <strong>@timestamp</strong> field will be used as a default option.</li>
+<li><strong>Interval</strong> - Group by a type of interval. There are option to choose from the dropdown menu to select seconds, minutes, hours or day. You can also add a custom interval such as <code>30d</code> (30 days). <code>Auto</code> is the default option.</li>
+<li><strong>Min doc count</strong> - The minimum amount of data to include in your query. The default is <code>0</code>.</li>
+<li><strong>Thin edges</strong> - Select to trim edges on the time series data points. The default is <code>0</code>.</li>
+<li><strong>Offset</strong> - Changes the start value of each bucket by the specified positive(+) or negative (-) offset duration. Examples include <code>1h</code> for 1 hour, <code>5s</code> for 5 seconds or <code>1d</code> for 1 day.</li>
+<li><strong>Timezone</strong> - Select a timezone from the dropdown menu. The default is <code>Coordinated universal time</code>.</li>
+</ul>
+<p>Configure the following options for the <strong>terms</strong> bucket aggregation option:</p>
+<ul>
+<li><strong>Order</strong> - Sets the order of data. Options are <code>top</code> or <code>bottom.</code></li>
+<li><strong>Size</strong> - Limits the number of documents, or size of the data set. You can set a custom number or <code>no limit</code>.</li>
+<li><strong>Min doc count</strong> - The minimum amount of data to include in your query. The default is <code>0</code>.</li>
+<li><strong>Order by</strong> - Order terms by <code>term value</code>, <code>doc count</code> or <code>count</code>.</li>
+<li><strong>Missing</strong> - Defines how documents missing a value should be treated. Missing values are ignored by default, but they can be treated as if they had a value. See <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html#_missing_value_5" target="_blank" rel="noopener noreferrer">Missing value</a> in Elasticsearch&rsquo;s documentation for more information.</li>
+</ul>
+<p>Configure the following options for the <strong>filters</strong> bucket aggregation option:</p>
+<ul>
+<li><strong>Query</strong> - Specify the query to create a bucket of documents (data). Examples are <code>hostname:&quot;hostname1&quot;</code>, <code>product:&quot;widget5&quot;</code>. Use the * wildcard to match any number of characters.</li>
+<li><strong>Label</strong> - Add a label or name to the bucket.</li>
+</ul>
+<p>Configure the following options for the <strong>geo hash grid</strong> bucket aggregation option:</p>
+<ul>
+<li><strong>Precision</strong> - Specifies the number of characters of the geo hash.</li>
+</ul>
+<p>Configure the following options for the <strong>histogram</strong> bucket aggregation option:</p>
+<ul>
+<li><strong>Interval</strong> - Group by a type of interval. There are option to choose from the dropdown menu to select seconds, minutes, hours or day. You can also add a custom interval such as <code>30d</code> (30 days). <code>Auto</code> is the default option.</li>
+<li><strong>Min doc count</strong> - The minimum amount of data to include in your query. The default is <code>0</code></li>
+</ul>
+<p>The <strong>nested</strong> group by option is currently experimental, you can select a field and then settings specific to that field.</p>
+<p>Click the <strong>+ sign</strong> to add multiple group by options. The data will grouped in order (first by, then by).</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 850px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/elasticsearch/group-by-then-by-10.2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/elasticsearch/group-by-then-by-10.2.png"data-srcset="/static/img/docs/elasticsearch/group-by-then-by-10.2.png?w=320 320w, /static/img/docs/elasticsearch/group-by-then-by-10.2.png?w=550 550w, /static/img/docs/elasticsearch/group-by-then-by-10.2.png?w=750 750w, /static/img/docs/elasticsearch/group-by-then-by-10.2.png?w=900 900w, /static/img/docs/elasticsearch/group-by-then-by-10.2.png?w=1040 1040w, /static/img/docs/elasticsearch/group-by-then-by-10.2.png?w=1240 1240w, /static/img/docs/elasticsearch/group-by-then-by-10.2.png?w=1920 1920w"
+          data-sizes="auto"alt="Group by options"width="1614"height="565"title="Group by options"/>
+        <noscript>
+          <img
+            src="/static/img/docs/elasticsearch/group-by-then-by-10.2.png"
+            alt="Group by options"width="1614"height="565"title="Group by options"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Group by options</figcaption></a></figure>
+<h3 id="logs-query-type">Logs query type</h3>
+<p>Logs queries analyze Elasticsearch log data. You can configure the following options:</p>
+<ul>
+<li><strong>Logs Options/Limit</strong> - Limits the number of logs to analyze. The default is <code>500</code>.</li>
+</ul>
+<h3 id="raw-data-query-type">Raw data query type</h3>
+<p>Run a raw data query to retrieve a table of all fields that are associated with each log line.</p>
+<ul>
+<li><strong>Raw data size</strong> - Number of raw data documents. You can specify a different amount. The default is <code>500</code>.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The option to run a <strong>raw document query</strong> is deprecated as of Grafana v10.1.</p></blockquote></div>
+
+<h2 id="use-template-variables">Use template variables</h2>
+<p>You can also augment queries by using <a href="../template-variables/">template variables</a>.</p>
+<p>Queries of <code>terms</code> have a 500-result limit by default.
+To set a custom limit, set the <code>size</code> property in your query.</p>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<h1 id="panel-overview">Panel overview</h1>
+<p>A Grafana panel is a visual representation of data composed of a 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">query</a> and a 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/">visualization</a>. Within panels, you can apply 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/">transformations</a>, which process the results of a query before they&rsquo;re passed on for visualization. You can also further customize a panel by formatting data and configuring visualization options.</p>
+<p>Each panel has a query editor specific to the data source selected in the panel. The query editor allows you to build a query that returns the data you want to visualize.</p>
+<p>Panels offer a wide variety of formatting and styling options, from applying colors based on field values to creating custom units. Each visualization also comes with options specific to it that give you further control over how your data is displayed. Panels can also be dragged, dropped, and resized to rearrange them on the dashboard.</p>
+<p>To get started adding panels, ensure that you have configured a data source:</p>
+<ul>
+<li>
+<p>For details about using data sources, refer to 
+    <a href="/docs/grafana/latest/datasources/">Data sources</a>.</p>
+</li>
+<li>
+<p>For more information about managing data sources as an administrator, refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/">Data source management</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>
+    <a href="/docs/grafana/latest/administration/data-source-management/">Data source management</a> is only available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+</li>
+</ul>
+<h2 id="panel-feature-overview">Panel feature overview</h2>
+<p>The following image and descriptions highlight the panel features:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-panel-overview-ann-v11.0.png"
+  alt="Annotated panel with time series visualization" width="794"
+     height="298"/></p>
+<ol>
+<li><strong>Panel title</strong> - You can create your own panel titles or have Grafana create them for you using 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/#set-up-generative-ai-features-for-dashboards">generative AI features</a>.</li>
+<li><strong>Panel description</strong> - You can create your own panel descriptions or have Grafana create them for you using 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/#set-up-generative-ai-features-for-dashboards">generative AI features</a></li>
+<li><strong>Links</strong> - Add 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/#panel-links">panel links</a> to other dashboards, panels, or external sites.</li>
+<li><strong>Panel menu</strong> - In the <a href="#panel-menu">panel menu</a>, access actions such as <strong>View</strong>, <strong>Edit</strong>, <strong>Inspect</strong>, and <strong>Remove</strong>.</li>
+<li><strong>Legend</strong> - Change series colors, y-axis, and series visibility directly from the 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">legend</a>.</li>
+<li><strong>Tooltips</strong> - View 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-tooltips/">tooltips</a> to get more information about data points.</li>
+</ol>
+<h2 id="panel-menu">Panel menu</h2>
+<p>To access the panel editor, hover over the top-right corner of any panel. Click the panel menu icon that appears and select <strong>Edit</strong>. The panel menu gives you access to the following actions:</p>
+<ul>
+<li><strong>View</strong>: View the panel in full screen.</li>
+<li><strong>Edit</strong>: Open the panel editor to edit panel and visualization options.</li>
+<li><strong>Share</strong>: Share the panel as a link, embed, or snapshot.</li>
+<li><strong>Explore</strong>: Open the panel in <strong>Explore</strong>, where you can focus on your query.</li>
+<li><strong>Inspect</strong>: Open the <strong>Inspect</strong> drawer, where you can review the panel data, stats, metadata, JSON, and query.
+<ul>
+<li><strong>Data</strong>: Open the <strong>Inspect</strong> drawer in the <strong>Data</strong> tab.</li>
+<li><strong>Query</strong>: Open the <strong>Inspect</strong> drawer in the <strong>Query</strong> tab.</li>
+<li><strong>Panel JSON</strong>: Open the <strong>Inspect</strong> drawer in the <strong>JSON</strong> tab.</li>
+</ul>
+</li>
+<li><strong>Extensions</strong>: Access other actions provided by installed applications, such as declaring an incident. Note that this option doesn&rsquo;t appear unless you have app plugins installed which contribute an <a href="/developers/plugin-tools/key-concepts/ui-extensions">extension</a> to the panel menu.</li>
+<li><strong>More</strong>: Access other panel actions.
+<ul>
+<li><strong>Duplicate</strong>: Make a copy of the panel. Duplicated panels query data separately from the original panel. You can use the special <code>Dashboard</code> data source to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/share-query/">share the same query results across panels</a> instead.</li>
+<li><strong>Copy</strong>: Copy the panel to the clipboard.</li>
+<li><strong>New library panel</strong>: Create a panel that can be imported into other dashboards.</li>
+<li><strong>New alert rule</strong>: Open the alert rule configuration page in <strong>Alerting</strong>, where you can 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/#create-alerts-from-panels">create a Grafana-managed alert</a> based on the panel queries.</li>
+<li><strong>Hide legend</strong>: Hide the panel legend.</li>
+<li><strong>Get help</strong>: Send a snapshot or panel data to Grafana Labs Technical Support.</li>
+</ul>
+</li>
+<li><strong>Remove</strong>: Remove the panel from the dashboard.</li>
+</ul>
+<h2 id="keyboard-shortcuts">Keyboard shortcuts</h2>
+<p>Grafana has a number of keyboard shortcuts available specifically for panels. Press <code>?</code> on your keyboard to display all keyboard shortcuts available in your version of Grafana.</p>
+<p>By hovering over a panel with the mouse you can use some shortcuts that will target that panel.</p>
+<ul>
+<li><code>e</code>: Toggle panel edit view</li>
+<li><code>v</code>: Toggle panel fullscreen view</li>
+<li><code>pu</code>: Share link</li>
+<li><code>pe</code>: Share embed</li>
+<li><code>ps</code>: Share snapshot</li>
+<li><code>px</code>: Open panel in <strong>Explore</strong></li>
+<li><code>pd</code>: Duplicate Panel</li>
+<li><code>i</code>: Inspect</li>
+<li><code>pl</code>: Hide or show legend</li>
+<li><code>pr</code>: Remove Panel</li>
+</ul>
+<h2 id="add-a-panel">Add a panel</h2>
+<p>To add a panel in a new dashboard click <strong>+ Add visualization</strong> in the middle of the dashboard:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/empty-dashboard-10.2.png"
+  alt="Empty dashboard state" width="939"
+     height="507"/></p>
+<p>To add a panel to an existing dashboard, follow these steps:</p>
+<ol>
+<li>
+<p>Click <strong>Edit</strong> in the top-right corner of the dashboard.</p>
+</li>
+<li>
+<p>Click the <strong>Add</strong> drop-down and select <strong>Visualization</strong>:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-add-dropdown-11.2.png"
+  alt="Add dropdown" width="201"
+     height="174"/></p>
+</li>
+</ol>
+<h2 id="panel-configuration">Panel configuration</h2>
+<p>To configure panels, refer to the following subtopics:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-tooltips/">Configure tooltips</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a></li>
+</ul>

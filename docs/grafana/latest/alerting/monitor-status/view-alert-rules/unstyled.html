@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<h1 id="view-alert-rules">View alert rules</h1>
+<p>The Alert rules list view page lists all existing recording and alert rules, including those created in Grafana and those available in configured data sources.</p>
+<p>To access the Alert rules page, click <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Alert rules</strong>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alert-rules-page-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alert-rules-page-2.png"data-srcset="/media/docs/alerting/alert-rules-page-2.png?w=320 320w, /media/docs/alerting/alert-rules-page-2.png?w=550 550w, /media/docs/alerting/alert-rules-page-2.png?w=750 750w, /media/docs/alerting/alert-rules-page-2.png?w=900 900w, /media/docs/alerting/alert-rules-page-2.png?w=1040 1040w, /media/docs/alerting/alert-rules-page-2.png?w=1240 1240w, /media/docs/alerting/alert-rules-page-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Alert rule view page in Grafana Alerting"width="1792"height="1162"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-rules-page-2.png"
+            alt="Alert rule view page in Grafana Alerting"width="1792"height="1162"/>
+        </noscript></div></a></figure>
+<p>By default, alert rules are grouped in separate sections—one for Grafana-managed alerts, and another for data source-managed alerts.
+Inside the Grafana-managed alert rules section, the rules are organized in a hierarchical structure, from folder -&gt; rule group -&gt; rules.
+Inside the data source-managed alert rules section, the rules are organized from namespace -&gt;rule group -&gt; rules.</p>
+<p>Select a group to expand it and view the list of alert rules within that group.</p>
+<p>The view includes filters to simplify managing large volumes of alerts.</p>
+<p>You can filter by data sources, dashboards, and alert rule properties such as state, type, health, and contact points. The <strong>Search</strong> input allows you to filter by additional parameters like folders, evaluation groups, labels, and more.</p>
+<h2 id="change-alert-rules-list-view">Change alert rules list view</h2>
+<p>You can also change how the rule list is displayed using the <strong>View as</strong> option.</p>
+<ul>
+<li>
+<p><strong>Grouped</strong>: Displays Grafana rules grouped in a hierarchical structure, from folder/namespace, to evaluation group, to the individual rules. This is the default view.</p>
+</li>
+<li>
+<p><strong>List</strong>: Displays all rules from all data sources in a flat, unpaginated list.</p>
+</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/view-alert-rule-list-with-actions-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/view-alert-rule-list-with-actions-2.png"data-srcset="/media/docs/alerting/view-alert-rule-list-with-actions-2.png?w=320 320w, /media/docs/alerting/view-alert-rule-list-with-actions-2.png?w=550 550w, /media/docs/alerting/view-alert-rule-list-with-actions-2.png?w=750 750w, /media/docs/alerting/view-alert-rule-list-with-actions-2.png?w=900 900w, /media/docs/alerting/view-alert-rule-list-with-actions-2.png?w=1040 1040w, /media/docs/alerting/view-alert-rule-list-with-actions-2.png?w=1240 1240w, /media/docs/alerting/view-alert-rule-list-with-actions-2.png?w=1920 1920w"
+          data-sizes="auto"alt="View alert rule state and alert rule health in Grafana Alerting"width="1368"height="754"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/view-alert-rule-list-with-actions-2.png"
+            alt="View alert rule state and alert rule health in Grafana Alerting"width="1368"height="754"/>
+        </noscript></div></a></figure>
+<p>For details on how rule states and alert instance states are displayed, refer to 
+    <a href="/docs/grafana/latest/alerting/monitor-status/view-alert-state/">View alert state</a>.</p>
+<h2 id="view-compare-and-restore-alert-rules-versions">View, compare and restore alert rules versions.</h2>
+<p>You can view, compare, and restore previous alert rule versions.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In Grafana OSS and Enterprise, the number of alert rule versions is limited. Free users are allowed a maximum of 10 alert rule versions, while paid users have a maximum of 100 stored alert rule versions.</p></blockquote></div>
+
+<p>To view or restore previous versions for an alert rule, complete the following steps.</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Alert rules</strong>.</li>
+<li>Select an alert rule and click <strong>View</strong>.</li>
+<li>Click the <strong>Versions</strong> tab.<br />
+The page displays a list of the previous rule versions.</li>
+</ol>
+<p>On the Alert rule&rsquo;s Versions page you can view, compare and restore the previous rule versions.
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png"data-srcset="/media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png?w=320 320w, /media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png?w=550 550w, /media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png?w=750 750w, /media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png?w=900 900w, /media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png?w=1040 1040w, /media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png?w=1240 1240w, /media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png?w=1920 1920w"
+          data-sizes="auto"alt="View alert rule history to compare and restore previous alert rules."width="1521"height="710"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/screenshot-grafana-alerting-version-history-v3.png"
+            alt="View alert rule history to compare and restore previous alert rules."width="1521"height="710"/>
+        </noscript></div></a></figure></p>
+<h2 id="bulk-pause-or-resume-alert-rules-evaluations-within-a-folder">Bulk pause or resume alert rules evaluations within a folder</h2>
+<p>Admin users can pause or resume all of the alert rules evaluations within a folder. To pause or resume all the alert rules evaluations in a folder, click the menu icon and select <strong>Pause all rule evaluation</strong> or <strong>Resume all rule evaluation</strong>.</p>
+<h2 id="bulk-delete-all-alert-rules-within-a-folder">Bulk delete all alert rules within a folder</h2>
+<p>Admin users can delete all of the alert rules within a folder. To delete all the alert rules in a folder, click the menu icon and select <strong>Delete</strong>. Then type &ldquo;Delete&rdquo; into the field and click <strong>Delete</strong> to confirm the bulk deletion.</p>
+<h2 id="permanently-delete-or-restore-deleted-alert-rules">Permanently delete or restore deleted alert rules</h2>
+<p>Only users with an Admin role can restore deleted Grafana-managed alert rules. After an alert rule is restored, it is restored with a new, different UID from the one it had before.</p>
+<ol>
+<li>Go to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Recently deleted</strong>.</li>
+<li>Click the <strong>Restore</strong> button to restore the alert rule or click <strong>Delete permanently</strong> to delete the alert rule.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Deleted alert rules are stored for 30 days. Grafana Enterprise and OSS users can adjust the length of time for which the rules are stored can be adjusted in the Grafana configuration file&rsquo;s <code>[unified_alerting].deleted_rule_retention</code> field. For an example of how to modify the Grafana configuration file, refer to the <a href="/docs/grafana/latest/alerting/set-up/configure-alert-state-history/#configuring-grafana">documentation example here</a>.</p></blockquote></div>
+

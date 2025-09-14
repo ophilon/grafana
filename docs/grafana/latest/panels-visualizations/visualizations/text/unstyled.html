@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<h1 id="text">Text</h1>
+<p>Text visualizations let you include text or HTML in your dashboards.
+This can be used to add contextual information and descriptions or embed complex HTML.</p>
+<p>For example, if you want to display important links on your dashboard, you can use a text visualization to add these links:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A text panel showing important links"width="1608"height="596"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-text-visualization-v11.6.png"
+            alt="A text panel showing important links"width="1608"height="596"/>
+        </noscript></div></a></figure>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/adl33bxy1ih34b/" target="_blank" rel="noopener noreferrer">Text Panel</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/adl33bxy1ih34b/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<p>Use a text visualization when you need to:</p>
+<ul>
+<li>Add important links or useful annotations.</li>
+<li>Provide instructions or guidance on how to interpret different panels, configure settings, or take specific actions based on the displayed data.</li>
+<li>Announce any scheduled maintenance or downtime that might impact your dashboards.</li>
+</ul>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="text-options">Text options</h3>
+<p>Use the following options to refine your text visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Mode</td>
+          <td>Determines how embedded content appears. Choose from:<ul><li><strong>Markdown</strong> - Formats the content as <a href="https://en.wikipedia.org/wiki/Markdown" target="_blank" rel="noopener noreferrer">markdown</a>.</li><li><strong>HTML</strong> - Renders the content as <a href="https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/text/sanitize.ts" target="_blank" rel="noopener noreferrer">sanitized</a> HTML. If you require more direct control over the output, you can set the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#disable_sanitize_html">disable_sanitize_html</a> flag which enables you to directly enter HTML.</li><li><strong>Code</strong> - Renders content inside a read-only code editor. 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/">Variables</a> in the content are expanded for display.</li></ul><p>To allow embedding of iframes and other websites, you need set <code>allow_embedding = true</code> in your Grafana <code>config.ini</code> or environment variables (depending on your employment).</p></td>
+      </tr>
+      <tr>
+          <td>Language</td>
+          <td>When you choose <strong>Code</strong> as your text mode, select an appropriate language to apply syntax highlighting to the embedded text.</td>
+      </tr>
+      <tr>
+          <td>Show line numbers</td>
+          <td>Displays line numbers in the panel preview when you choose <strong>Code</strong> as your text mode.</td>
+      </tr>
+      <tr>
+          <td>Show mini map</td>
+          <td>Displays a small outline of the embedded text in the panel preview when you choose <strong>Code</strong> as your text mode.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->

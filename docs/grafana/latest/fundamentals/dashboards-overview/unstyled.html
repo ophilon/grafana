@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<h1 id="grafana-dashboards-overview">Grafana dashboards overview</h1>
+<p>Have you ever wondered what a dashboard is? In the observability world, this term is frequently used, but what exactly does it mean? The concept is borrowed from automobiles, where a dashboard gives drivers access to the controls necessary to operate a vehicle. Similarly, digital dashboards help us comprehend and manage systems. This topic explains how Grafana dashboards function, enabling you to create your own with greater ease.</p>
+<p>The following image illustrates a sample Grafana dashboard:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards-overview/complex-dashboard-example.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards-overview/complex-dashboard-example.png"data-srcset="/media/docs/grafana/dashboards-overview/complex-dashboard-example.png?w=320 320w, /media/docs/grafana/dashboards-overview/complex-dashboard-example.png?w=550 550w, /media/docs/grafana/dashboards-overview/complex-dashboard-example.png?w=750 750w, /media/docs/grafana/dashboards-overview/complex-dashboard-example.png?w=900 900w, /media/docs/grafana/dashboards-overview/complex-dashboard-example.png?w=1040 1040w, /media/docs/grafana/dashboards-overview/complex-dashboard-example.png?w=1240 1240w, /media/docs/grafana/dashboards-overview/complex-dashboard-example.png?w=1920 1920w"
+          data-sizes="auto"alt="Example Grafana dashboard"width="2188"height="1992"title="Example Grafana dashboard"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards-overview/complex-dashboard-example.png"
+            alt="Example Grafana dashboard"width="2188"height="1992"title="Example Grafana dashboard"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Example Grafana dashboard</figcaption></a></figure>
+<p>A Grafana dashboard consists of panels displaying data in beautiful graphs, charts, and other visualizations. These panels are created using components that transform raw data from a data source into visualizations. The process involves passing data through three gates: a plugin, a query, and an optional transformation.</p>
+<p>The image below displays all the gates, followed by detailed explanations of their purpose, usage, and significance.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards-overview/dashboard-component-architecture.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards-overview/dashboard-component-architecture.png"data-srcset="/media/docs/grafana/dashboards-overview/dashboard-component-architecture.png?w=320 320w, /media/docs/grafana/dashboards-overview/dashboard-component-architecture.png?w=550 550w, /media/docs/grafana/dashboards-overview/dashboard-component-architecture.png?w=750 750w, /media/docs/grafana/dashboards-overview/dashboard-component-architecture.png?w=900 900w, /media/docs/grafana/dashboards-overview/dashboard-component-architecture.png?w=1040 1040w, /media/docs/grafana/dashboards-overview/dashboard-component-architecture.png?w=1240 1240w, /media/docs/grafana/dashboards-overview/dashboard-component-architecture.png?w=1920 1920w"
+          data-sizes="auto"alt="Dashboard component architecture"width="1436"height="818"title="Dashboard component architecture"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards-overview/dashboard-component-architecture.png"
+            alt="Dashboard component architecture"width="1436"height="818"title="Dashboard component architecture"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Dashboard component architecture</figcaption></a></figure>
+<h2 id="data-sources">Data sources</h2>
+<p>A data source refers to any entity that consists of data. It can be an SQL database, Grafana Loki, Grafana Mimir, or a JSON-based API. It can even be a basic CSV file. The first step in creating a dashboard visualization is selecting the data source that contains the data you need.</p>
+<p>It can be difficult to understand the distinctions between different data sources as each possesses its own structure and requires different query methods. However, in dashboards, you can see different data sources visualized in one single view, making it easier to understand your data overall.</p>
+<h2 id="plugins">Plugins</h2>
+<p>A Grafana plugin is software that adds new capabilities to Grafana. They come in many types, but right now we&rsquo;ll address <em>data source plugins</em>. The job of a Grafana data source plugin is to take a query you want answered, retrieve the data from the data source, and reconcile the differences between the data model of the data source and the data model of Grafana dashboards. It does this using a unified data structure called a <a href="/developers/plugin-tools/key-concepts/data-frames">data frame</a>.</p>
+<p>The data coming into the plugin from the data source might be in many different formats (such as JSON, rows and columns, or CSV), but when it leaves the plugin and moves through the rest of the gates toward a visualization, it&rsquo;s always in data frames.</p>
+<p>Currently, Grafana offers a diverse range of 155 data sources that you can use. The most commonly used options are already pre-installed and accessible. Before exploring other options, look for an existing data source that matches your requirements. Grafana constantly updates the list, but if you don&rsquo;t find a suitable data source, you can browse through the <a href="/grafana/plugins/?type=datasource">plugin catalog</a> or <a href="/developers/plugin-tools">create a plugin</a>.</p>
+<h2 id="queries">Queries</h2>
+<p>Queries allow you to reduce the entirety of your data to a specific dataset, providing a more manageable visualization. They help answer questions you have about system and operational processes. For instance, a company with an online store might want to determine the number of customers who add products to their shopping carts. This can be achieved through a query that aggregates access metrics for the shopping cart service, revealing the number of users accessing the service per second.</p>
+<p>When working with data sources, it&rsquo;s crucial to recognize that each one has its own distinct query language. For example, Prometheus data sources utilize <a href="/blog/2020/02/04/introduction-to-promql-the-prometheus-query-language/">PromQL</a>, while <a href="/docs/loki/latest/logql/">LogQL</a> is used for logs, and particular databases employ SQL. A query is the foundation of every visualization in Grafana, and a dashboard might use a range of query languages.</p>
+<p>The following image shows the Query Editor associated with the Prometheus data source. The <code>node_cpu_seconds_total</code> query is written in PromQL and requests just one metric:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards-overview/example-query.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards-overview/example-query.png"data-srcset="/media/docs/grafana/dashboards-overview/example-query.png?w=320 320w, /media/docs/grafana/dashboards-overview/example-query.png?w=550 550w, /media/docs/grafana/dashboards-overview/example-query.png?w=750 750w, /media/docs/grafana/dashboards-overview/example-query.png?w=900 900w, /media/docs/grafana/dashboards-overview/example-query.png?w=1040 1040w, /media/docs/grafana/dashboards-overview/example-query.png?w=1240 1240w, /media/docs/grafana/dashboards-overview/example-query.png?w=1920 1920w"
+          data-sizes="auto"alt="Example query"width="1244"height="690"title="Example query"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards-overview/example-query.png"
+            alt="Example query"width="1244"height="690"title="Example query"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Example query</figcaption></a></figure>
+<h2 id="transformations">Transformations</h2>
+<p>When the data format in a visualization doesn’t meet your requirements, you can apply a 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/">transformation</a> that manipulates the data returned by a query.
+You might not need to transform data when you&rsquo;re first starting out, but they&rsquo;re powerful and worth mentioning.</p>
+<p>Transforming data is useful in the following kinds of situations:</p>
+<ul>
+<li>You want to combine two fields together, for example, concatenating <code>Given Name</code> and <code>Family Name</code> into a <code>Full Name</code> field.</li>
+<li>You have CSV data (all text), and you want to convert a field type (such as parsing a date or a number out of a string).</li>
+<li>You want to filter, join, merge, or perform other SQL-like operations that might not be supported by the underlying data source or query language.</li>
+</ul>
+<p>Transformations are located in the <strong>Transform</strong> tab in the edit dialog for a panel. Select the transformation you want, and define the transformation. The following image shows that you can have as many transformations as you want, just like queries. For example, you can chain together a series of transformations that make a change to a data type, filter results, organize columns, and sort the result into one data pipeline. Every time the dashboard is refreshed, the transformation applies to the latest data from the data source.</p>
+<p>The following image shows the transformation dialog:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards-overview/example-transform-chain.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards-overview/example-transform-chain.png"data-srcset="/media/docs/grafana/dashboards-overview/example-transform-chain.png?w=320 320w, /media/docs/grafana/dashboards-overview/example-transform-chain.png?w=550 550w, /media/docs/grafana/dashboards-overview/example-transform-chain.png?w=750 750w, /media/docs/grafana/dashboards-overview/example-transform-chain.png?w=900 900w, /media/docs/grafana/dashboards-overview/example-transform-chain.png?w=1040 1040w, /media/docs/grafana/dashboards-overview/example-transform-chain.png?w=1240 1240w, /media/docs/grafana/dashboards-overview/example-transform-chain.png?w=1920 1920w"
+          data-sizes="auto"alt="Example chain of transformations"width="1244"height="454"title="Example chain of transformations"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards-overview/example-transform-chain.png"
+            alt="Example chain of transformations"width="1244"height="454"title="Example chain of transformations"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Example chain of transformations</figcaption></a></figure>
+<h2 id="panels">Panels</h2>
+<p>After the data is sourced, queried, and transformed, it passes to a panel, which is the final gate in the journey to a Grafana visualization. A panel is a container that displays the visualization and provides you with various controls to manipulate it. The panel configuration is where you specify how you want to see the data. For example, you use a drop-down menu in the top-right of the panel to specify the type of visualization you want to see, such as a bar chart, pie chart, or histogram.</p>
+<p>The panel options let you customize many aspects of the visualization and the options differ based on which visualization you select. Panels also contain queries that specify the data the panel is visualizing.</p>
+<p>The following image shows a table panel being edited, the panel settings showing the query at the bottom, and the panel options on the right. In this image, you can see how the data source, plugin, query, and panel all come together.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/dashboards-overview/example-table-panel.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/dashboards-overview/example-table-panel.png"data-srcset="/media/docs/grafana/dashboards-overview/example-table-panel.png?w=320 320w, /media/docs/grafana/dashboards-overview/example-table-panel.png?w=550 550w, /media/docs/grafana/dashboards-overview/example-table-panel.png?w=750 750w, /media/docs/grafana/dashboards-overview/example-table-panel.png?w=900 900w, /media/docs/grafana/dashboards-overview/example-table-panel.png?w=1040 1040w, /media/docs/grafana/dashboards-overview/example-table-panel.png?w=1240 1240w, /media/docs/grafana/dashboards-overview/example-table-panel.png?w=1920 1920w"
+          data-sizes="auto"alt="Example table panel"width="1244"height="670"title="Example table panel"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards-overview/example-table-panel.png"
+            alt="Example table panel"width="1244"height="670"title="Example table panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Example table panel</figcaption></a></figure>
+<p>Selecting the best visualization depends on the data and how you want it presented. To see examples of dashboards in one place that you can browse and inspect, refer to <a href="https://play.grafana.org/" target="_blank" rel="noopener noreferrer">Grafana Play</a>, which has feature showcases and a variety of examples.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>With the data source, plugin, query, transformation, and panel model in mind, you can now see right through any Grafana dashboard you encounter, and imagine how to build your own.</p>
+<p>Building a Grafana dashboard is a process that starts with determining your dashboard requirements and identifying which data sources support those requirements. If you want to integrate a specialized database with a Grafana dashboard, you must ensure the correct plugin is installed so that you can add a data source to use with that plugin.</p>
+<p>And with the data source identified and the plugin installed, you can write your query, transform the data, and format the visualization to meet your needs.</p>
+<p>This component architecture is part of what makes Grafana so powerful and general. Given the data source plugin and data frame abstraction, any data source you can access can work with the same general approach.</p>

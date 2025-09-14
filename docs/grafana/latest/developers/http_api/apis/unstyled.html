@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<h1 id="grafanas-new-api-structure">Grafana&rsquo;s New API Structure</h1>
+<h2 id="overview">Overview</h2>
+<p>Going forward, Grafana&rsquo;s HTTP API will follow a standardized API structure alongside consistent API versioning.</p>
+<h2 id="api-path-structure">API Path Structure</h2>
+<p>All Grafana APIs follow this standardized format:</p>
+<pre>/apis/&lt;group&gt;/&lt;version&gt;/namespaces/&lt;namespace&gt;/&lt;resource&gt;[/&lt;name&gt;]</pre>
+<p>Where the final <code>/&lt;name&gt;</code> segment is used for operations on individual resources (like Get, Update, Delete) and omitted for collection operations (like List, Create).</p>
+<h2 id="understanding-the-components">Understanding the Components</h2>
+<h3 id="group-group">Group (<code>&lt;group&gt;</code>)</h3>
+<p>Groups organize related functionality into logical collections. For example <code>dashboard.grafana.app</code> will be used for all dashboard-related operations.</p>
+<h3 id="version-version">Version (<code>&lt;version&gt;</code>)</h3>
+<p>These APIs will also uses semantic versioning with three stability levels:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Level</th>
+          <th>Format</th>
+          <th>Description</th>
+          <th>Use Case</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Alpha</td>
+          <td><code>v1alpha1</code></td>
+          <td>Early development stage. Unstable, may contain bugs, and subject to removal</td>
+          <td>For testing new features</td>
+      </tr>
+      <tr>
+          <td>Beta</td>
+          <td><code>v1beta1</code></td>
+          <td>More stable than alpha, but may still have some changes</td>
+          <td>For early production use</td>
+      </tr>
+      <tr>
+          <td>GA</td>
+          <td><code>v1</code></td>
+          <td>Generally Available. Stable with backward compatibility guarantees</td>
+          <td>For production use</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="namespace-namespace">Namespace (<code>&lt;namespace&gt;</code>)</h3>
+<p>Namespaces isolate resources within your Grafana instance. The format varies by deployment type:</p>
+<h4 id="oss--on-premise-grafana">OSS &amp; On-Premise Grafana</h4>
+<ul>
+<li>Default organization (org 1): <code>default</code></li>
+<li>Additional organizations: <code>org-&lt;org_id&gt;</code></li>
+</ul>
+<h4 id="grafana-cloud">Grafana Cloud</h4>
+<ul>
+<li>Format: <code>stacks-&lt;stack_id&gt;</code></li>
+<li>Your instance ID is the <code>stack_id</code>. You can find this value by either:
+<ul>
+<li>Going to grafana.com, clicking on your stack, and selecting &ldquo;Details&rdquo; on your Grafana instance</li>
+<li>Accessing the /swagger page in your cloud instance, where the namespace will be automatically populated on the relevant endpoints</li>
+</ul>
+</li>
+</ul>
+<h3 id="resource-resource">Resource (<code>&lt;resource&gt;</code>)</h3>
+<p>Represents the core resource you want to interact with, such as:</p>
+<ul>
+<li><code>dashboards</code></li>
+<li><code>playlists</code></li>
+<li><code>folders</code></li>
+</ul>
+<h3 id="name-">Name (<name>)</h3>
+<p>The <code>&lt;name&gt;</code> is the unique identifier for a specific instance of a resource within its namespace and resource type. <code>&lt;name&gt;</code> is distinct from the metadata.uid field. The URL path will always use the metadata.name.</p>
+<p>For example, to get a dashboard defined as:</p>
+<pre>{
+  &#34;kind&#34;: &#34;Dashboard&#34;,
+  &#34;apiVersion&#34;: &#34;dashboard.grafana.app/v1beta1&#34;,
+  &#34;metadata&#34;: {
+    &#34;name&#34;: &#34;production-overview&#34;, // This value IS used in the URL path
+    &#34;namespace&#34;: &#34;default&#34;,
+    &#34;uid&#34;: &#34;a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8&#34; // This value is NOT used in the URL path
+    // ... other metadata
+  },
+  &#34;spec&#34;: {
+    // ... dashboard spec
+  }
+}</pre>
+<p>You would use the following API call:</p>
+<p><code>GET /apis/dashboard.grafana.app/v1beta1/namespaces/default/dashboards/production-overview</code></p>

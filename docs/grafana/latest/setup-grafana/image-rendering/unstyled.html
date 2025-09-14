@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<h1 id="set-up-image-rendering">Set up image rendering</h1>
+<p>Grafana supports automatic rendering of panels as PNG images. This allows Grafana to automatically generate images of your panels to include in alert notifications, <a href="../../dashboards/create-reports/#export-dashboard-as-pdf">PDF export</a>, and <a href="../../dashboards/create-reports/">Reporting</a>. PDF Export and Reporting are available only in <a href="../../introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p>
+<p>While an image is being rendered, the PNG image is temporarily written to the file system. When the image is rendered, the PNG image is temporarily written to the <code>png</code> folder in the Grafana <code>data</code> folder.</p>
+<p>A background job runs every 10 minutes and removes temporary images. You can configure how long an image should be stored before being removed by configuring the <a href="../configure-grafana/#temp_data_lifetime">temp_data_lifetime</a> setting.</p>
+<p>You can also render a PNG by hovering over the panel to display the actions menu in the top-right corner, and then clicking <strong>Share &gt; Share link</strong>. The <strong>Render image</strong> option is displayed in the link settings.</p>
+<h2 id="alerting-and-render-limits">Alerting and render limits</h2>
+<p>Alert notifications can include images, but rendering many images at the same time can overload the server where the renderer is running. For instructions of how to configure this, see <a href="../configure-grafana/#max_concurrent_screenshots">max_concurrent_screenshots</a>.</p>
+<h2 id="install-grafana-image-renderer-plugin">Install Grafana Image Renderer plugin</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>All PhantomJS support has been removed. Instead, use the Grafana Image Renderer plugin or remote rendering service.</p></blockquote></div>
+
+<p>To install the plugin, refer to the <a href="/grafana/plugins/grafana-image-renderer/?tab=installation#installation">Grafana Image Renderer Installation instructions</a>.</p>
+<h3 id="memory-requirements">Memory requirements</h3>
+<p>Rendering images requires a lot of memory, mainly because Grafana creates browser instances in the background for the actual rendering. Grafana recommends a minimum of 16GB of free memory on the system rendering images.</p>
+<p>Rendering multiple images in parallel requires an even bigger memory footprint. You can use the remote rendering service in order to render images on a remote system, so your local system resources are not affected.</p>
+<h2 id="configuration">Configuration</h2>
+<p>The Grafana Image Renderer plugin has a number of configuration options that are used in plugin or remote rendering modes.</p>
+<p>In plugin mode, you can specify them directly in the <a href="../configure-grafana/#plugingrafana-image-renderer">Grafana configuration file</a>.</p>
+<p>In remote rendering mode, you can specify them in a <code>.json</code> <a href="#configuration-file">configuration file</a> or, for some of them, you can override the configuration defaults using environment variables.</p>
+<h3 id="configuration-file">Configuration file</h3>
+<p>You can update your settings by using a configuration file, see <a href="https://github.com/grafana/grafana-image-renderer/tree/master/default.json" target="_blank" rel="noopener noreferrer">default.json</a> for defaults. Note that any configured environment variable takes precedence over configuration file settings.</p>
+<p>You can volume mount your custom configuration file when starting the docker container:</p>
+<pre>docker run -d --name=renderer --network=host -v /some/path/config.json:/home/nonroot/config.json grafana/grafana-image-renderer:latest</pre>
+<p>You can see a docker-compose example using a custom configuration file <a href="https://github.com/grafana/grafana-image-renderer/tree/master/devenv/docker/custom-config" target="_blank" rel="noopener noreferrer">here</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The configuration files were located in <code>/usr/src/app</code> up until v4.0.0 and later.
+After this point, they are located in <code>/home/nonroot</code>.</p></blockquote></div>
+
+<h3 id="security">Security</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature is available in Image Renderer v3.6.1 and later.</p></blockquote></div>
+
+<p>You can restrict access to the rendering endpoint by specifying a secret token. The token should be configured in the Grafana configuration file and the renderer configuration file. This token is important when you run the plugin in remote rendering mode.</p>
+<p>Renderer versions v3.6.1 or later require a Grafana version with this feature. These include:</p>
+<ul>
+<li>Grafana v9.1.2 or later</li>
+<li>Grafana v9.0.8 or later patch releases</li>
+<li>Grafana v8.5.11 or later patch releases</li>
+<li>Grafana v8.4.11 or later patch releases</li>
+<li>Grafana v8.3.11 or later patch releases</li>
+</ul>
+<pre>AUTH_TOKEN=-</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;security&#34;: {
+      &#34;authToken&#34;: &#34;-&#34;
+    }
+  }
+}</pre>
+<p>See <a href="../configure-grafana/#renderer_token">Grafana configuration</a> for how to configure the token in Grafana.</p>
+<h3 id="rendering-mode">Rendering mode</h3>
+<p>You can instruct how headless browser instances are created by configuring a rendering mode. Default is <code>default</code>, other supported values are <code>clustered</code> and <code>reusable</code>.</p>
+<h4 id="default">Default</h4>
+<p>Default mode will create a new browser instance on each request. When handling multiple concurrent requests, this mode increases memory usage as it will launch multiple browsers at the same time. If you want to set a maximum number of browser to open, you&rsquo;ll need to use the <a href="#clustered">clustered mode</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When using the <code>default</code> mode, it&rsquo;s recommended to not remove the default Chromium flag <code>--disable-gpu</code>. When receiving a lot of concurrent requests, not using this flag can cause Puppeteer <code>newPage</code> function to freeze, causing request timeouts and leaving browsers open.</p></blockquote></div>
+
+<pre>RENDERING_MODE=default</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;mode&#34;: &#34;default&#34;
+  }
+}</pre>
+<h4 id="clustered">Clustered</h4>
+<p>With the <code>clustered</code> mode, you can configure how many browser instances or incognito pages can execute concurrently. Default is <code>browser</code> and will ensure a maximum amount of browser instances can execute concurrently. Mode <code>context</code> will ensure a maximum amount of incognito pages can execute concurrently. You can also configure the maximum concurrency allowed, which per default is <code>5</code>, and the maximum duration of a rendering request, which per default is <code>30</code> seconds.</p>
+<p>Using a cluster of incognito pages is more performant and consumes less CPU and memory than a cluster of browsers. However, if one page crashes it can bring down the entire browser with it (making all the rendering requests happening at the same time fail). Also, each page isn&rsquo;t guaranteed to be totally clean (cookies and storage might bleed-through as seen <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=754576" target="_blank" rel="noopener noreferrer">here</a>).</p>
+<pre>RENDERING_MODE=clustered
+RENDERING_CLUSTERING_MODE=browser
+RENDERING_CLUSTERING_MAX_CONCURRENCY=5
+RENDERING_CLUSTERING_TIMEOUT=30</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;mode&#34;: &#34;clustered&#34;,
+    &#34;clustering&#34;: {
+      &#34;mode&#34;: &#34;browser&#34;,
+      &#34;maxConcurrency&#34;: 5,
+      &#34;timeout&#34;: 30
+    }
+  }
+}</pre>
+<h4 id="reusable-experimental">Reusable (experimental)</h4>
+<p>When using the rendering mode <code>reusable</code>, one browser instance will be created and reused. A new incognito page will be opened for each request. This mode is experimental since, if the browser instance crashes, it will not automatically be restarted. You can achieve a similar behavior using <code>clustered</code> mode with a high <code>maxConcurrency</code> setting.</p>
+<pre>RENDERING_MODE=reusable</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;mode&#34;: &#34;reusable&#34;
+  }
+}</pre>
+<h4 id="optimize-the-performance-cpu-and-memory-usage-of-the-image-renderer">Optimize the performance, CPU and memory usage of the image renderer</h4>
+<p>The performance and resources consumption of the different modes depend a lot on the number of concurrent requests your service is handling. To understand how many concurrent requests your service is handling, <a href="monitoring/">monitor your image renderer service</a>.</p>
+<p>With no concurrent requests, the different modes show very similar performance and CPU / memory usage.</p>
+<p>When handling concurrent requests, we see the following trends:</p>
+<ul>
+<li>To improve performance and reduce CPU and memory consumption, use <a href="#clustered">clustered</a> mode with <code>RENDERING_CLUSTERING_MODE</code> set as <code>context</code>. This parallelizes incognito pages instead of browsers.</li>
+<li>If you use the <a href="#clustered">clustered</a> mode with a <code>maxConcurrency</code> setting below your average number of concurrent requests, performance will drop as the rendering requests will need to wait for the other to finish before getting access to an incognito page / browser.</li>
+</ul>
+<p>To achieve better performance, monitor the machine on which your service is running. If you don&rsquo;t have enough memory and / or CPU, every rendering step will be slower than usual, increasing the duration of every rendering request.</p>
+<h3 id="other-available-settings">Other available settings</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Please note that not all settings are available using environment variables. If there is no example using environment variable below, it means that you need to update the configuration file.</p></blockquote></div>
+
+<h4 id="http-host">HTTP host</h4>
+<p>Change the listening host of the HTTP server. Default is unset and will use the local host.</p>
+<pre>HTTP_HOST=localhost</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;host&#34;: &#34;localhost&#34;
+  }
+}</pre>
+<h4 id="http-port">HTTP port</h4>
+<p>Change the listening port of the HTTP server. Default is <code>8081</code>. Setting <code>0</code> will automatically assign a port not in use.</p>
+<pre>HTTP_PORT=0</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;port&#34;: 0
+  }
+}</pre>
+<h4 id="http-protocol">HTTP protocol</h4>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>HTTPS protocol is supported in the image renderer v3.11.0 and later.</p></blockquote></div>
+
+<p>Change the protocol of the server, it can be <code>http</code> or <code>https</code>. Default is <code>http</code>.</p>
+<pre>HTTP_PROTOCOL=https</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;protocol&#34;: &#34;https&#34;
+  }
+}</pre>
+<h4 id="https-certificate-and-key-file">HTTPS certificate and key file</h4>
+<p>Path to the image renderer certificate and key file used to start an HTTPS server.</p>
+<pre>HTTP_CERT_FILE=./path/to/cert
+HTTP_CERT_KEY=./path/to/key</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;certFile&#34;: &#34;./path/to/cert&#34;,
+    &#34;certKey&#34;: &#34;./path/to/key&#34;
+  }
+}</pre>
+<h4 id="https-min-tls-version">HTTPS min TLS version</h4>
+<p>Minimum TLS version allowed. Accepted values are: <code>TLSv1.2</code>, <code>TLSv1.3</code>. Default is <code>TLSv1.2</code>.</p>
+<pre>HTTP_MIN_TLS_VERSION=TLSv1.2</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;minTLSVersion&#34;: &#34;TLSv1.2&#34;
+  }
+}</pre>
+<h4 id="enable-prometheus-metrics">Enable Prometheus metrics</h4>
+<p>You can enable <a href="https://prometheus.io/" target="_blank" rel="noopener noreferrer">Prometheus</a> metrics endpoint <code>/metrics</code> using the environment variable <code>ENABLE_METRICS</code>. Node.js and render request duration metrics are included, see <a href="monitoring/#enable-prometheus-metrics-endpoint">Enable Prometheus metrics endpoint</a> for details.</p>
+<p>Default is <code>false</code>.</p>
+<pre>ENABLE_METRICS=true</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;metrics&#34;: {
+      &#34;enabled&#34;: true,
+      &#34;collectDefaultMetrics&#34;: true,
+      &#34;requestDurationBuckets&#34;: [1, 5, 7, 9, 11, 13, 15, 20, 30]
+    }
+  }
+}</pre>
+<h4 id="enable-detailed-timing-metrics">Enable detailed timing metrics</h4>
+<p>With the <a href="#enable-prometheus-metrics">Prometheus metrics enabled</a>, you can also enable detailed metrics to get the duration of every rendering step.</p>
+<p>Default is <code>false</code>.</p>
+<pre># Available from v3.9.0+
+RENDERING_TIMING_METRICS=true</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;timingMetrics&#34;: true
+  }
+}</pre>
+<h4 id="log-level">Log level</h4>
+<p>Change the log level. Default is <code>info</code> and will include log messages with level <code>error</code>, <code>warning</code> and <code>info</code>.</p>
+<pre>LOG_LEVEL=debug</pre>
+<pre>{
+  &#34;service&#34;: {
+    &#34;logging&#34;: {
+      &#34;level&#34;: &#34;debug&#34;,
+      &#34;console&#34;: {
+        &#34;json&#34;: false,
+        &#34;colorize&#34;: true
+      }
+    }
+  }
+}</pre>
+<h4 id="verbose-logging">Verbose logging</h4>
+<p>Instruct headless browser instance whether to capture and log verbose information when rendering an image. Default is <code>false</code> and will only capture and log error messages. When enabled (<code>true</code>) debug messages are captured and logged as well.</p>
+<p>Note that you need to change log level to <code>debug</code>, see above, for the verbose information to be included in the logs.</p>
+<pre>RENDERING_VERBOSE_LOGGING=true</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;verboseLogging&#34;: true
+  }
+}</pre>
+<h4 id="capture-browser-output">Capture browser output</h4>
+<p>Instruct headless browser instance whether to output its debug and error messages into running process of remote rendering service. Default is <code>false</code>.
+This can be useful to enable (<code>true</code>) when troubleshooting.</p>
+<pre>RENDERING_DUMPIO=true</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;dumpio&#34;: true
+  }
+}</pre>
+<h4 id="tracing">Tracing</h4>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Tracing is supported in the image renderer v3.12.6 and later.</p></blockquote></div>
+
+<p>Set the tracing URL to enable OpenTelemetry Tracing. The default is empty (disabled).
+You can also configure the service name that will be set in the traces. The default is <code>grafana-image-renderer</code>.</p>
+<pre>RENDERING_TRACING_URL=&#34;http://localhost:4318/v1/traces&#34;</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;tracing&#34;: {
+      &#34;url&#34;: &#34;http://localhost:4318/v1/traces&#34;,
+      &#34;serviceName&#34;: &#34;grafana-renderer&#34;
+    }
+  }
+}</pre>
+<h4 id="custom-chromechromium">Custom Chrome/Chromium</h4>
+<p>If you already have <a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a> or <a href="https://www.chromium.org/" target="_blank" rel="noopener noreferrer">Chromium</a>
+installed on your system, then you can use this instead of the pre-packaged version of Chromium.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Please note that this is not recommended, since you may encounter problems if the installed version of Chrome/Chromium is not compatible with the <a href="/grafana/plugins/grafana-image-renderer">Grafana Image renderer plugin</a>.</p></blockquote></div>
+
+<p>You need to make sure that the Chrome/Chromium executable is available for the Grafana/image rendering service process.</p>
+<pre>CHROME_BIN=&#34;/usr/bin/chromium-browser&#34;</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;chromeBin&#34;: &#34;/usr/bin/chromium-browser&#34;
+  }
+}</pre>
+<h4 id="start-browser-with-additional-arguments">Start browser with additional arguments</h4>
+<p>Additional arguments to pass to the headless browser instance. Defaults are <code>--no-sandbox,--disable-gpu</code>. The list of Chromium flags can be found <a href="https://peter.sh/experiments/chromium-command-line-switches/" target="_blank" rel="noopener noreferrer">here</a> and the list of flags used as defaults by Puppeteer can be found <a href="https://cri.dev/posts/2020-04-04-Full-list-of-Chromium-Puppeteer-flags/" target="_blank" rel="noopener noreferrer">there</a>. Multiple arguments is separated with comma-character.</p>
+<pre>RENDERING_ARGS=--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage,--disable-accelerated-2d-canvas,--disable-gpu,--window-size=1280x758</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;args&#34;: [
+      &#34;--no-sandbox&#34;,
+      &#34;--disable-setuid-sandbox&#34;,
+      &#34;--disable-dev-shm-usage&#34;,
+      &#34;--disable-accelerated-2d-canvas&#34;,
+      &#34;--disable-gpu&#34;,
+      &#34;--window-size=1280x758&#34;
+    ]
+  }
+}</pre>
+<h4 id="ignore-https-errors">Ignore HTTPS errors</h4>
+<p>Instruct headless browser instance whether to ignore HTTPS errors during navigation. Per default HTTPS errors are not ignored.
+Due to the security risk it&rsquo;s not recommended to ignore HTTPS errors.</p>
+<pre>IGNORE_HTTPS_ERRORS=true</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;ignoresHttpsErrors&#34;: true
+  }
+}</pre>
+<h4 id="default-timezone">Default timezone</h4>
+<p>Instruct headless browser instance to use a default timezone when not provided by Grafana, .e.g. when rendering panel image of alert. See <a href="https://cs.chromium.org/chromium/src/third_party/icu/source/data/misc/metaZones.txt?rcl=faee8bc70570192d82d2978a71e2a615788597d1" target="_blank" rel="noopener noreferrer">ICU’s metaZones.txt</a> for a list of supported timezone IDs. Fallbacks to <code>TZ</code> environment variable if not set.</p>
+<pre>BROWSER_TZ=Europe/Stockholm</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;timezone&#34;: &#34;Europe/Stockholm&#34;
+  }
+}</pre>
+<h4 id="default-language">Default language</h4>
+<p>Instruct headless browser instance to use a default language when not provided by Grafana, e.g. when rendering panel image of alert.
+Refer to the HTTP header Accept-Language to understand how to format this value.</p>
+<pre># Available from v3.9.0+
+RENDERING_LANGUAGE=&#34;fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5&#34;</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;acceptLanguage&#34;: &#34;fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5&#34;
+  }
+}</pre>
+<h4 id="viewport-width">Viewport width</h4>
+<p>Default viewport width when width is not specified in the rendering request. Default is <code>1000</code>.</p>
+<pre># Available from v3.9.0+
+RENDERING_VIEWPORT_WIDTH=1000</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;width&#34;: 1000
+  }
+}</pre>
+<h4 id="viewport-height">Viewport height</h4>
+<p>Default viewport height when height is not specified in the rendering request. Default is <code>500</code>.</p>
+<pre># Available from v3.9.0+
+RENDERING_VIEWPORT_HEIGHT=500</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;height&#34;: 500
+  }
+}</pre>
+<h4 id="viewport-maximum-width">Viewport maximum width</h4>
+<p>Limit the maximum viewport width that can be requested. Default is <code>3000</code>.</p>
+<pre># Available from v3.9.0+
+RENDERING_VIEWPORT_MAX_WIDTH=1000</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;maxWidth&#34;: 1000
+  }
+}</pre>
+<h4 id="viewport-maximum-height">Viewport maximum height</h4>
+<p>Limit the maximum viewport height that can be requested. Default is <code>3000</code>.</p>
+<pre># Available from v3.9.0+
+RENDERING_VIEWPORT_MAX_HEIGHT=500</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;maxHeight&#34;: 500
+  }
+}</pre>
+<h4 id="device-scale-factor">Device scale factor</h4>
+<p>Specify default device scale factor for rendering images. <code>2</code> is enough for monitor resolutions, <code>4</code> would be better for printed material. Setting a higher value affects performance and memory. Default is <code>1</code>.
+This can be overridden in the rendering request.</p>
+<pre># Available from v3.9.0+
+RENDERING_VIEWPORT_DEVICE_SCALE_FACTOR=2</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;deviceScaleFactor&#34;: 2
+  }
+}</pre>
+<h4 id="maximum-device-scale-factor">Maximum device scale factor</h4>
+<p>Limit the maximum device scale factor that can be requested. Default is <code>4</code>.</p>
+<pre># Available from v3.9.0+
+RENDERING_VIEWPORT_MAX_DEVICE_SCALE_FACTOR=4</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;maxDeviceScaleFactor&#34;: 4
+  }
+}</pre>
+<h4 id="page-zoom-level">Page zoom level</h4>
+<p>The following command sets a page zoom level. The default value is <code>1</code>. A value of <code>1.5</code> equals 150% zoom.</p>
+<pre>RENDERING_VIEWPORT_PAGE_ZOOM_LEVEL=1</pre>
+<pre>{
+  &#34;rendering&#34;: {
+    &#34;pageZoomLevel&#34;: 1
+  }
+}</pre>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<h1 id="configure-passwordless-authentication-with-magic-links">Configure passwordless authentication with magic links</h1>
+<p>Passwordless authentication lets Grafana users authenticate with a magic link or one-time password (OTP) sent via email.</p>
+<h2 id="enable-passwordless-authentication">Enable passwordless authentication</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Passwordless authentication is an experimental feature. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. Enable the <code>passwordlessMagicLinkAuthentication</code> feature toggle in Grafana to use this feature.</p></blockquote></div>
+
+<p>To enable passwordless authentication, use the following configuration:</p>
+<pre>[auth.passwordless]
+enabled = true</pre>
+<h2 id="code-expiration">Code expiration</h2>
+<p>By default, the one-time password (OTP) sent to a user&rsquo;s email is valid for 20 minutes. Use the <code>code_expiration</code> option to change the duration that the OTP is valid.</p>
+<pre>[auth.passwordless]
+enabled = true
+code_expiration = 20m</pre>
+<h2 id="enable-smtp-server">Enable SMTP server</h2>
+<p>The SMTP server must be enabled so that Grafana can send emails.
+The following configuration enables the SMTP server.
+For more information on configuring the SMTP server, refer to <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#smtp">SMTP</a>.</p>
+<pre>[smtp]
+enabled = true</pre>

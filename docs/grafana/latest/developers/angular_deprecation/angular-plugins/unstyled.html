@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<h1 id="plugins-using-angularjs">Plugins using AngularJS</h1>
+<p>The use of AngularJS in Grafana has been <a href="../">deprecated</a> in favor of React. Support for AngularJS will be turned off by default in Grafana 11.</p>
+<p>This page explains how Grafana users might be impacted by the removal of Angular support based on plugins dependent on this legacy framework. You will also see if there is a migration option available for a given plugin.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>We are greatly appreciative of the developers who have contributed plugins to the Grafana ecosystem. Guidance on migrating a plugin to React can be found in our <a href="/developers/plugin-tools/migration-guides/migrate-angularjs-to-react">migration guide</a>.</p></blockquote></div>
+
+<h2 id="what-should-i-do-with-the-list-of-angularjs-plugins">What should I do with the list of AngularJS plugins?</h2>
+<p>Refer to the <a href="#angularjs-based-plugins">table below</a> and take the appropriate action for you.</p>
+<ul>
+<li>Consider the advice on whether to update, migrate to a listed alternative, or explore the Grafana plugins <a href="/grafana/plugins">catalog</a> to find the most suitable option for your use case.</li>
+<li>Use our <a href="https://github.com/grafana/detect-angular-dashboards" target="_blank" rel="noopener noreferrer">detect-angular-dashboards</a> open source tooling to list dashboards which have a dependency on Angular plugins.</li>
+<li>Check your Grafana instances for usage of these plugins. Refer to the documentation on <a href="../../../administration/plugin-management/#browse-plugins">browsing installed plugins</a>.</li>
+<li>Customers of Grafana Enterprise and users of Grafana Cloud can also leverage <a href="../../../dashboards/assess-dashboard-usage/">usage insights</a> to prioritize any migration efforts.</li>
+<li>Review the plugin source repositories to add your support to any migration issues or consider forking the repo.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you want to add any specific migration guidance for your plugin here or update our assessment, please open a PR by clicking <strong>Suggest an edit</strong> at the bottom of this page.</p></blockquote></div>
+
+<h2 id="private-plugins">Private plugins</h2>
+<p>Grafana OSS and Grafana Enterprise support the creation of private plugins for use on local instances. These plugins may have a dependency on AngularJS and require an update.</p>
+<p>The <code>detect-angular-dashboards</code> tool listed above will include private plugins in its report <strong>if the Grafana version is v10.1.0 or later</strong>.</p>
+<p>Additionally, warning icons and messages will be displayed when browsing the catalog via <strong>Administration</strong> &gt; <strong>Plugins and Data</strong> &gt; <strong>Plugins</strong> in your local instance.</p>
+<h2 id="automatic-migration-of-plugins">Automatic migration of plugins</h2>
+<p>Certain legacy Grafana panel plugins automatically update to their React-based replacements when Angular support is disabled. This migration is usually available within the panel options, as shown in the screenshot below for World Map. Automatic migration can be triggered by setting the feature toggle <code>autoMigrateOldPanels</code> to <code>true</code>.</p>
+<p>Automatic migration is supported for the plugins shown in the following table. Each of the target plugins are included in Grafana as Core plugins which don&rsquo;t require installation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Plugin</th>
+          <th>Migration target</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Graph (old)</td>
+          <td>Time Series</td>
+      </tr>
+      <tr>
+          <td>Singlestat</td>
+          <td>Stat</td>
+      </tr>
+      <tr>
+          <td>Stat (old)</td>
+          <td>Stat</td>
+      </tr>
+      <tr>
+          <td>Table (old)</td>
+          <td>Table</td>
+      </tr>
+      <tr>
+          <td>Worldmap</td>
+          <td>Geomap</td>
+      </tr>
+  </tbody>
+</table>
+<p>A dashboard must still be saved with the new plugin ID to persist the change.</p>
+<h1 id="angularjs-based-plugins">AngularJS-based plugins</h1>
+<p>This table lists plugins which we have detected as having a dependency on AngularJS. For alternatives, consider included <a href="../../../panels-visualizations/visualizations/">Visualizations</a> and <a href="../../../datasources/">Data sources</a>, as well as external plugins from the <a href="/grafana/plugins">catalog</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Plugin ID</th>
+          <th>Name</th>
+          <th>Action</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>grafana-worldmap-panel</td>
+          <td>Worldmap Panel</td>
+          <td>Migrate - <a href="../../../panels-visualizations/visualizations/geomap/">Geomap</a> (core) replaced Worldmap - Note this should migrate when Angular is disabled.</td>
+      </tr>
+      <tr>
+          <td>natel-discrete-panel</td>
+          <td>Discrete</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>vonage-status-panel</td>
+          <td>Status Panel</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/stat/">Stat</a> (core) or <a href="/grafana/plugins/grafana-polystat-panel/">Polystat</a> as potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>grafana-simple-json-datasource</td>
+          <td>SimpleJson</td>
+          <td>Migrate - Consider <a href="/grafana/plugins/yesoreyeram-infinity-datasource/">Infinity</a> as a potential alternative.</td>
+      </tr>
+      <tr>
+          <td>natel-plotly-panel</td>
+          <td>Plotly</td>
+          <td>Migrate - Consider alternative <a href="/grafana/plugins/nline-plotlyjs-panel/">nline-plotlyjs-panel</a> plugin.</td>
+      </tr>
+      <tr>
+          <td>agenty-flowcharting-panel</td>
+          <td>FlowCharting</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/canvas/">Canvas</a> (core) or <a href="/grafana/plugins/jdbranham-diagram-panel/">Diagram</a> as potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>camptocamp-prometheus-alertmanager-datasource</td>
+          <td>Prometheus AlertManager</td>
+          <td>Update - Note the minimum version for React is 2.0.0.</td>
+      </tr>
+      <tr>
+          <td>briangann-gauge-panel</td>
+          <td>D3 Gauge</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>yesoreyeram-boomtable-panel</td>
+          <td>Boom Table</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/table/">Table</a> (core) and <a href="../../../panels-visualizations/query-transform-data/transform-data/">transformations</a> as appropriate.</td>
+      </tr>
+      <tr>
+          <td>briangann-datatable-panel</td>
+          <td>Datatable Panel</td>
+          <td>Wait - New version with React migration is planned.</td>
+      </tr>
+      <tr>
+          <td>flant-statusmap-panel</td>
+          <td>Statusmap</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>michaeldmoore-multistat-panel</td>
+          <td>Multistat</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>pr0ps-trackmap-panel</td>
+          <td>TrackMap</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>snuids-trafficlights-panel</td>
+          <td>Traffic Lights</td>
+          <td>Migrate - Consider <a href="/grafana/plugins/heywesty-trafficlight-panel/">Traffic Light</a> as a potential alternative.</td>
+      </tr>
+      <tr>
+          <td>vertamedia-clickhouse-datasource</td>
+          <td>Altinity plugin for ClickHouse</td>
+          <td>Update - Note the minimum version for React is 3.0.0.</td>
+      </tr>
+      <tr>
+          <td>petrslavotinek-carpetplot-panel</td>
+          <td>Carpet plot</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>ryantxu-ajax-panel</td>
+          <td>AJAX</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>michaeldmoore-annunciator-panel</td>
+          <td>Annunciator</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/stat/">Stat</a> (core).</td>
+      </tr>
+      <tr>
+          <td>marcuscalidus-svg-panel</td>
+          <td>SVG</td>
+          <td>Migrate - Consider alternatives such as <a href="../../../panels-visualizations/visualizations/canvas/">Canvas</a> (core), <a href="/grafana/plugins/snuids-svg-panel/">Colored SVG</a>, or others.</td>
+      </tr>
+      <tr>
+          <td>neocat-cal-heatmap-panel</td>
+          <td>Cal-HeatMap</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/heatmap/">Heatmap</a> (core) visualization.</td>
+      </tr>
+      <tr>
+          <td>blackmirror1-singlestat-math-panel</td>
+          <td>Singlestat Math</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>scadavis-synoptic-panel</td>
+          <td>SCADAvis Synoptic Panel</td>
+          <td>Update - Note the minimum version for React is 2.0.</td>
+      </tr>
+      <tr>
+          <td>farski-blendstat-panel</td>
+          <td>Blendstat</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/stat/">Stat</a> (core) and <a href="../../../panels-visualizations/query-transform-data/transform-data/">transformations</a> as appropriate.</td>
+      </tr>
+      <tr>
+          <td>savantly-heatmap-panel</td>
+          <td>Heatmap</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/heatmap/">Heatmap</a> (core) visualization.</td>
+      </tr>
+      <tr>
+          <td>mtanda-histogram-panel</td>
+          <td>Histogram</td>
+          <td>Migrate - Consider included <a href="../../../panels-visualizations/visualizations/histogram/">Histogram</a> visualization.</td>
+      </tr>
+      <tr>
+          <td>snuids-radar-panel</td>
+          <td>Radar Graph</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>fatcloud-windrose-panel</td>
+          <td>WindRose</td>
+          <td>Migrate - Consider alternative <a href="/grafana/plugins/operato-windrose-panel/">Operator Windrose</a> plugin.</td>
+      </tr>
+      <tr>
+          <td>bessler-pictureit-panel</td>
+          <td>PictureIt</td>
+          <td>Migrate - Consider alternative <a href="/grafana/plugins/larona-epict-panel/">ePict</a> plugin.</td>
+      </tr>
+      <tr>
+          <td>digrich-bubblechart-panel</td>
+          <td>Bubble Chart</td>
+          <td>Update - Note the minimum version for React is 2.0.1. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>corpglory-progresslist-panel</td>
+          <td>Progress List</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>aidanmountford-html-panel</td>
+          <td>HTML</td>
+          <td>Migrate - Consider alternatives such as <a href="../../../panels-visualizations/visualizations/text/">Text</a> (core), <a href="/grafana/plugins/gapit-htmlgraphics-panel">HTML</a>, or others.</td>
+      </tr>
+      <tr>
+          <td>fifemon-graphql-datasource</td>
+          <td>GraphQL Data Source</td>
+          <td>Wait - Removal of AngularJS is planned. Consider <a href="/grafana/plugins/yesoreyeram-infinity-datasource/">Infinity</a> plugin as alternative.</td>
+      </tr>
+      <tr>
+          <td>goshposh-metaqueries-datasource</td>
+          <td>MetaQueries</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>mxswat-separator-panel</td>
+          <td>Separator</td>
+          <td>Migrate - Consider alternative <a href="../../../panels-visualizations/visualizations/text/">Text</a> panel (core) which can be empty and used as a separator.</td>
+      </tr>
+      <tr>
+          <td>natel-influx-admin-panel</td>
+          <td>Influx Admin</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>doitintl-bigquery-datasource</td>
+          <td>Google BigQuery</td>
+          <td>Migrate - Consider <a href="/grafana/plugins/grafana-bigquery-datasource/">Grafana Big Query</a> plugin.</td>
+      </tr>
+      <tr>
+          <td>satellogic-3d-globe-panel</td>
+          <td>3D Globe Panel</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>foursquare-clouderamanager-datasource</td>
+          <td>Cloudera Manager</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>grafana-splunk-datasource</td>
+          <td>Splunk</td>
+          <td>Update - Note the minimum version for React is 4.1.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-singlestat-panel</td>
+          <td>Singlestat</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/stat/">Stat</a> panel (core).</td>
+      </tr>
+      <tr>
+          <td>blackmirror1-statusbygroup-panel</td>
+          <td>Status By Group Panel</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>novalabs-annotations-panel</td>
+          <td>Annotation Panel</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>jasonlashua-prtg-datasource</td>
+          <td>PRTG</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>ryantxu-annolist-panel</td>
+          <td>Annotation List</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/annotations/">annotations list</a> (core).</td>
+      </tr>
+      <tr>
+          <td>cloudflare-app</td>
+          <td>Cloudflare Grafana App</td>
+          <td>Migrate - Consider using the <a href="https://dash.cloudflare.com/?to=/:account/:zone/analytics/dns" target="_blank" rel="noopener noreferrer">Cloudflare Dashboard</a> or <a href="https://developers.cloudflare.com/api/operations/dns-analytics-table" target="_blank" rel="noopener noreferrer">DNS Analytics API</a>.</td>
+      </tr>
+      <tr>
+          <td>smartmakers-trafficlight-panel</td>
+          <td>TrafficLight</td>
+          <td>Migrate - Consider <a href="/grafana/plugins/heywesty-trafficlight-panel/">Traffic Light</a> as a potential alternative.</td>
+      </tr>
+      <tr>
+          <td>zuburqan-parity-report-panel</td>
+          <td>Parity Report</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>citilogics-geoloop-panel</td>
+          <td>GeoLoop</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>xginn8-pagerduty-datasource</td>
+          <td>Pagerduty</td>
+          <td>Wait - We are developing an Enterprise plugin for Pagerduty targeted for availability in Q1 2024. Note that all roadmap items are subject to change.</td>
+      </tr>
+      <tr>
+          <td>gretamosa-topology-panel</td>
+          <td>Topology Panel</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>fzakaria-simple-annotations-datasource</td>
+          <td>Simple Annotations</td>
+          <td>Migrate - Check for annotations support within your data sources to remove dependency on this plugin.</td>
+      </tr>
+      <tr>
+          <td>oci-metrics-datasource</td>
+          <td>Oracle Cloud Infrastructure Metrics</td>
+          <td>Update - Note the minimum version for React is 5.0.0.</td>
+      </tr>
+      <tr>
+          <td>abhisant-druid-datasource</td>
+          <td>Druid</td>
+          <td>Migrate - Migrate to replacement <a href="/grafana/plugins/grafadruid-druid-datasource/">Druid</a> plugin.</td>
+      </tr>
+      <tr>
+          <td>devopsprodigy-kubegraf-app</td>
+          <td>DevOpsProdigy KubeGraf</td>
+          <td>Migrate - Consider <a href="/solutions/kubernetes/">Grafana Kubernetes Monitoring</a> (Grafana Cloud only).</td>
+      </tr>
+      <tr>
+          <td>mtanda-heatmap-epoch-panel</td>
+          <td>HeatmapEpoch</td>
+          <td>Migrate - Consider <a href="../../../panels-visualizations/visualizations/heatmap/">Heatmap</a> (core) visualization.</td>
+      </tr>
+      <tr>
+          <td>alexandra-trackmap-panel</td>
+          <td>Track Map</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>gnocchixyz-gnocchi-datasource</td>
+          <td>Gnocchi</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>tencentcloud-monitor-app</td>
+          <td>Tencent Cloud Monitor</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>andig-darksky-datasource</td>
+          <td>DarkSky</td>
+          <td>Remove - Note that support for the DarkSky API was ended by Apple in March 2023.</td>
+      </tr>
+      <tr>
+          <td>mtanda-google-calendar-datasource</td>
+          <td>GoogleCalendar</td>
+          <td>Wait - Migration to React is planned.</td>
+      </tr>
+      <tr>
+          <td>ntop-ntopng-datasource</td>
+          <td>ntopng</td>
+          <td>Migrate - Consider <a href="../../../datasources/influxdb/">InfluxDB</a> (core), with additional guidance available <a href="https://www.ntop.org/guides/ntopng/basic_concepts/timeseries.html#influxdb-driver" target="_blank" rel="noopener noreferrer">here</a>.</td>
+      </tr>
+      <tr>
+          <td>ayoungprogrammer-finance-datasource</td>
+          <td>Finance</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>grafana-kairosdb-datasource</td>
+          <td>KairosDB</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>fastweb-openfalcon-datasource</td>
+          <td>Open-Falcon</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>praj-ams-datasource</td>
+          <td>Ambari Metrics</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>monasca-datasource</td>
+          <td>Monasca</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>grafana-strava-datasource</td>
+          <td>Strava</td>
+          <td>Update - Note the minimum version for React is 1.6.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>gridprotectionalliance-osisoftpi-datasource</td>
+          <td>OSIsoft-PI</td>
+          <td>Update - Note the minimum version for React is 4.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>monitoringartist-monitoringart-datasource</td>
+          <td>Monitoring Art</td>
+          <td>Migrate - Browse included visualizations and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>hawkular-datasource</td>
+          <td>Hawkular</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>ovh-warp10-datasource</td>
+          <td>Warp 10</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>natel-usgs-datasource</td>
+          <td>USGS Water Services</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>radensolutions-netxms-datasource</td>
+          <td>NetXMS</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>ibm-apm-datasource</td>
+          <td>IBM APM</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>cognitedata-datasource</td>
+          <td>Cognite Data Fusion</td>
+          <td>Update - Note the minimum version for React is 4.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>linksmart-sensorthings-datasource</td>
+          <td>LinkSmart SensorThings</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>pue-solr-datasource</td>
+          <td>Solr</td>
+          <td>Migrate - Consider this <a href="https://solr.apache.org/guide/solr/latest/deployment-guide/monitoring-with-prometheus-and-grafana.html" target="_blank" rel="noopener noreferrer">guidance</a> on using solr-exporter for prometheus.</td>
+      </tr>
+      <tr>
+          <td>paytm-kapacitor-datasource</td>
+          <td>KapacitorSimpleJson</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>oci-logs-datasource</td>
+          <td>Oracle Cloud Infrastructure Logs</td>
+          <td>Update - Note the minimum version for React is 4.0.0.</td>
+      </tr>
+      <tr>
+          <td>gridprotectionalliance-openhistorian-datasource</td>
+          <td>openHistorian</td>
+          <td>Wait - Note that new version with React migration is planned.</td>
+      </tr>
+      <tr>
+          <td>devicehive-devicehive-datasource</td>
+          <td>DeviceHive</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>rackerlabs-blueflood-datasource</td>
+          <td>Blueflood</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>udoprog-heroic-datasource</td>
+          <td>Heroic</td>
+          <td>Migrate - Note that Heroic DB has been discontinued.</td>
+      </tr>
+      <tr>
+          <td>akumuli-datasource</td>
+          <td>Akumuli</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>bmchelix-ade-datasource</td>
+          <td>BMC Helix</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>sidewinder-datasource</td>
+          <td>Sidewinder</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>linksmart-hds-datasource</td>
+          <td>LinkSmart HDS Datasource</td>
+          <td>Migrate - browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>skydive-datasource</td>
+          <td>Skydive</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>quasardb-datasource</td>
+          <td>QuasarDB</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>spotify-heroic-datasource</td>
+          <td>Heroic</td>
+          <td>Migrate - Note that Heroic DB has been discontinued.</td>
+      </tr>
+      <tr>
+          <td>grafana-es-open-distro-datasource</td>
+          <td>Open Distro for Elasticsearch</td>
+          <td>Migrate - Note that <a href="/grafana/plugins/grafana-opensearch-datasource/">OpenSearch</a> replaced Open Distro for Elasticseach.</td>
+      </tr>
+      <tr>
+          <td>humio-datasource</td>
+          <td>Humio</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>yeya24-chaosmesh-datasource</td>
+          <td>Chaos Mesh</td>
+          <td>Migrate - Note that plugin was replaced by <a href="/grafana/plugins/chaosmeshorg-datasource/">chaosmeshorg-datasource</a>.</td>
+      </tr>
+      <tr>
+          <td>kentik-connect-app</td>
+          <td>Kentik Connect Pro</td>
+          <td>Update - Note the minimum version for React is 1.7.0.</td>
+      </tr>
+      <tr>
+          <td>chaosmeshorg-datasource</td>
+          <td>Chaos Mesh</td>
+          <td>Update - Note the minimum version for React is 3.0.0.</td>
+      </tr>
+      <tr>
+          <td>aquaqanalytics-kdbadaptor-datasource</td>
+          <td>kdb+</td>
+          <td>Migrate - Note that <a href="/grafana/plugins/aquaqanalytics-kdbbackend-datasource">kdb+ backend</a> replaced kdb.+.</td>
+      </tr>
+      <tr>
+          <td>alexanderzobnin-zabbix-app</td>
+          <td>Zabbix</td>
+          <td>Update - Note the minimum version for React is 4.3.0. We recommend the latest. Recently brought under Grafana signature.</td>
+      </tr>
+      <tr>
+          <td>bosun-app</td>
+          <td>Bosun</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>belugacdn-app</td>
+          <td>BelugaCDN</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>grafana-azure-data-explorer-datasource</td>
+          <td>Azure Data Explorer Datasource</td>
+          <td>Update - The minimum supported version is 3.5.1. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>ddurieux-glpi-app</td>
+          <td>glpi</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>fetzerch-sunandmoon-datasource</td>
+          <td>Sun and Moon</td>
+          <td>Update - Note the minimum version for React is 0.3.0.</td>
+      </tr>
+      <tr>
+          <td>grafana-clock-panel</td>
+          <td>Clock</td>
+          <td>Update - Note the minimum version for React is 1.1.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-github-datasource</td>
+          <td>GitHub</td>
+          <td>Update - Note the minimum version for React is 1.3.3. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-datadog-datasource</td>
+          <td>Datadog</td>
+          <td>Update - Note the minimum version for React is 3.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-gitlab-datasource</td>
+          <td>Gitlab</td>
+          <td>Update - Note the minimum version for React is 1.1.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-iot-twinmaker-app</td>
+          <td>AWS IoT TwinMaker App</td>
+          <td>Update - Note the minimum version for React is 1.6.3. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-newrelic-datasource</td>
+          <td>New Relic</td>
+          <td>Update - Note the minimum version for React is 3.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-opensearch-datasource</td>
+          <td>Opensearch</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-oracle-datasource</td>
+          <td>Oracle</td>
+          <td>Update - Note the minimum version for React is 2.0.6. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-piechart-panel</td>
+          <td>Pie Chart</td>
+          <td>Migrate - Note that <a href="../../../panels-visualizations/visualizations/pie-chart/">Pie Chart</a> (core) replaced Pie Chart.</td>
+      </tr>
+      <tr>
+          <td>grafana-polystat-panel</td>
+          <td>Polystat</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-servicenow-datasource</td>
+          <td>ServiceNow</td>
+          <td>Update - Note the minimum version for React is 2.0.2. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-synthetic-monitoring-app</td>
+          <td>Synthetic Monitoring</td>
+          <td>Update - Note the minimum version for React is 0.7.3. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>grafana-wavefront-datasource</td>
+          <td>Wavefront</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>hadesarchitect-cassandra-datasource</td>
+          <td>Apache Cassandra</td>
+          <td>Update - Note the minimum version for React is 2.1.1. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>instana-datasource</td>
+          <td>Instana</td>
+          <td>Update - Note the minimum version for React is 3.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>jdbranham-diagram-panel</td>
+          <td>Diagram</td>
+          <td>Update - Note the minimum version for React is 1.7.1. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>larona-epict-panel</td>
+          <td>ePict</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>moogsoft-aiops-app</td>
+          <td>Moogsoft AIOps</td>
+          <td>Update - Note the minimum version for React is 9.0.0.</td>
+      </tr>
+      <tr>
+          <td>opennms-helm-app</td>
+          <td>OpenNMS Helm</td>
+          <td>Migrate - Note that <a href="/grafana/plugins/opennms-opennms-app/">OpenNMS Plugin for Grafana</a> replaced OpenNMS Helm.</td>
+      </tr>
+      <tr>
+          <td>percona-percona-app</td>
+          <td>Percona</td>
+          <td>Migrate - Consider use of <a href="https://github.com/percona/grafana-dashboards/" target="_blank" rel="noopener noreferrer">Percona dashboards</a>.</td>
+      </tr>
+      <tr>
+          <td>novatec-sdg-panel</td>
+          <td>Service Dependency Graph</td>
+          <td>Update - Note the minimum version for React is 4.0.3.</td>
+      </tr>
+      <tr>
+          <td>pierosavi-imageit-panel</td>
+          <td>ImageIt</td>
+          <td>Migrate - Consider <a href="/grafana/plugins/larona-epict-panel/">ePict</a> or browse plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>redis-app</td>
+          <td>Redis Application</td>
+          <td>Update - Note the minimum version for React is 1.2.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>sbueringer-consul-datasource</td>
+          <td>Consul</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>simpod-json-datasource</td>
+          <td>JSON</td>
+          <td>Update - Note the minimum version for React is 0.3.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>singlestat</td>
+          <td>Singlestat</td>
+          <td>Migrate - Note that <a href="../../../panels-visualizations/visualizations/stat/">Stat</a> (core) replaced Singlestat.</td>
+      </tr>
+      <tr>
+          <td>sni-pnp-datasource</td>
+          <td>PNP</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>sni-thruk-datasource</td>
+          <td>Thruk</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>stagemonitor-elasticsearch-app</td>
+          <td>stagemonitor Elasticsearch</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>tdengine-datasource</td>
+          <td>TDengine Datasource</td>
+          <td>Update - Note the minimum version for React is 3.3.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>vertica-grafana-datasource</td>
+          <td>Vertica</td>
+          <td>Update - Note the minimum version for React is 2.0.0. We recommend the latest.</td>
+      </tr>
+      <tr>
+          <td>voxter-app</td>
+          <td>Voxter VoIP Platform Metrics</td>
+          <td>Migrate - Browse included data sources and plugins catalog for potential alternatives.</td>
+      </tr>
+      <tr>
+          <td>graph</td>
+          <td>Graph (old)</td>
+          <td>Migrate - Note that this is replaced by <a href="../../../panels-visualizations/visualizations/time-series/">Time Series</a> (core) - This plugin should migrate when Angular is disabled. Also consider Bar Chart or Histogram if appropriate.</td>
+      </tr>
+      <tr>
+          <td>table-old</td>
+          <td>Table (old)</td>
+          <td>Migrate - Note that this is replaced by <a href="../../../panels-visualizations/visualizations/table/">Table</a> (core) - This plugin should migrate when AngularJS is disabled.</td>
+      </tr>
+      <tr>
+          <td>shorelinesoftware-shoreline-datasource</td>
+          <td>Shoreline Data Source</td>
+          <td>Update - Note the minimum version for React is 1.2.1. We recommend the latest.</td>
+      </tr>
+  </tbody>
+</table>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<h1 id="configure-lbac-for-data-sources-for-prometheus-data-source">Configure LBAC for data sources for Prometheus data source</h1>
+<h2 id="grafana-cloud">Grafana Cloud</h2>
+<p>LBAC for data sources is available on Grafana Cloud using a new Prometheus data source with basic authentication configured. A new data source can be created as described in <a href="#task-1-lbac-configuration-for-new-prometheus-data-source">LBAC Configuration for New Prometheus Data Source</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To be able to use LBAC for Prometheus data sources, you need to enable the feature toggle <code>teamHttpHeadersMimir</code> on your Grafana instance. Go to the feature toggles page in setting to enable the feature.</p>
+<ul>
+<li>Be sure that you have the permission setup to create a Prometheus tenant in Grafana Cloud</li>
+<li>Be sure that you have admin data source permissions for Grafana.</li>
+</ul>
+<h2 id="grafana-cloud-1">Grafana Cloud</h2>
+<p>LBAC for data sources is available in private preview on Grafana Cloud for Prometheus created with basic authentication. Prometheus data sources for LBAC for data sources can only be created, provisioning is currently not available.</p>
+<p>You cannot configure LBAC rules for Grafana-provisioned data sources from the UI. We recommend that you replicate the setting of the provisioned data source in a new data source as described in <a href="#task-1-lbac-configuration-for-new-prometheus-data-source">LBAC Configuration for New Prometheus Data Source</a> and then add the LBAC configuration to the new data source.</p>
+<h3 id="permissions">Permissions</h3>
+<p>We recommend that you remove all permissions for roles and teams that are not required to access the data source. This will help to ensure that only the required teams have access to the data source. The recommended permissions are <code>Admin</code> permission and only add the teams <code>Query</code> permissions that you want to add LBAC for data sources rules for.</p>
+<h2 id="task-1-lbac-configuration-for-new-prometheus-data-source">Task 1: LBAC Configuration for new Prometheus data source</h2>
+<ol>
+<li>Access Prometheus data sources details for your stack through grafana.com</li>
+<li>Copy Prometheus details and create a CAP
+<ul>
+<li>Copy the details of your Prometheus setup.</li>
+<li>Create a Cloud Access Policy (CAP) for the Prometheus data source in grafana.com.</li>
+<li>Ensure the CAP includes <code>metrics:read</code> permissions.</li>
+<li>Ensure the CAP does not include <code>labels</code> rules.</li>
+</ul>
+</li>
+<li>Create a new Prometheus data source
+<ul>
+<li>In Grafana, proceed to add a new data source and select Prometheus as the type.</li>
+</ul>
+</li>
+<li>Navigate back to the Prometheus data source
+<ul>
+<li>Set up the Prometheus data source using basic authentication. Use the <code>userID</code> as the username. Use the generated CAP <code>token</code> as the password.</li>
+<li>Save and connect.</li>
+</ul>
+</li>
+<li>Navigate to data source permissions
+<ul>
+<li>Go to the permissions tab of the newly created Prometheus data source. Here, you&rsquo;ll find the LBAC for data sources rules section.</li>
+</ul>
+</li>
+</ol>
+<p>For more information on how to setup LBAC for data sources rules for a Prometheus data source, refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/create-teamlbac-rules/">Create LBAC for data sources rules for the Prometheus data source</a>.</p>
+<h2 id="grafana-enterprise">Grafana Enterprise</h2>
+<p>LBAC for data sources is available in Grafana Enterprise for Prometheus connected to GEM created with basic authentication.</p>
+<p>You cannot configure LBAC rules for Grafana-provisioned data sources from the UI. Alternatively, you can replicate the setting of the provisioned data source in a new data source as described in 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/configure-teamlbac-for-prometheus/#task-1-lbac-configuration-for-new-prometheus-data-source">LBAC Configuration for new Prometheus data source</a> and then add the LBAC configuration to the new data source.</p>
+<h2 id="before-you-begin-1">Before you begin</h2>
+<p>To be able to use LBAC for Prometheus data sources, you need to enable the feature toggle <code>teamHttpHeadersMimir</code> on your Grafana instance. Contact support to enable the feature toggle for you.</p>
+<ul>
+<li>Be sure that you have the permission setup to create a cluster in your Grafana</li>
+<li>Be sure that you have admin plugins permissions for Grafana.</li>
+<li>Be sure that you have admin data source permissions for Grafana.</li>
+</ul>
+<h3 id="permissions-1">Permissions</h3>
+<p>We recommend that you remove all permissions for roles and teams that are not required to access the data source. This will help to ensure that only the required teams have access to the data source. The recommended permissions are <code>Admin</code> permission and only add the teams <code>Query</code> permissions that you want to add LBAC for data sources rules for.</p>
+<h2 id="task-0-setup-grafana-enterprise-metrics-tenant-and-access-policies">Task 0: Setup Grafana Enterprise Metrics tenant and access policies</h2>
+<ol>
+<li>Access the plugins page and install Grafana Enterprise Metrics plugins</li>
+<li>Connect your plugin and use app as the cluster</li>
+<li>Access the app Grafana Enterprise Metrics and configure a tenant</li>
+<li>Store the <code>uid</code> of the tenant to be used as the username for the basic authentication</li>
+<li>Access the policies page inside of the app and create a AP
+<ul>
+<li>Create a Access Policy (CAP) for the Prometheus data source.</li>
+<li>Ensure the CAP includes <code>metrics:read</code> permissions.</li>
+<li>Ensure the CAP does not include <code>labels</code> rules.</li>
+<li>Store the <code>token</code> to be used as password for authentication.</li>
+</ul>
+</li>
+</ol>
+<h2 id="task-1-lbac-configuration-for-new-prometheus-data-source-1">Task 1: LBAC Configuration for new Prometheus data source</h2>
+<ol>
+<li>Create a new Prometheus data source
+<ul>
+<li>In Grafana, proceed to add a new data source and select Prometheus as the type.</li>
+</ul>
+</li>
+<li>Navigate back to the Prometheus data source
+<ul>
+<li>Set up the Prometheus data source using basic authentication. Use the <code>uid</code> as the username. Use the generated <code>token</code> as the password.</li>
+<li>Save and connect.</li>
+</ul>
+</li>
+<li>Navigate to data source permissions
+<ul>
+<li>Go to the permissions tab of the newly created Prometheus data source. Here, you&rsquo;ll find the LBAC for data sources rules section.</li>
+</ul>
+</li>
+</ol>
+<p>For more information on how to setup LBAC for data sources rules for a Prometheus data source, refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/create-teamlbac-rules/">Create LBAC for data sources rules for the Prometheus data source</a>.</p>

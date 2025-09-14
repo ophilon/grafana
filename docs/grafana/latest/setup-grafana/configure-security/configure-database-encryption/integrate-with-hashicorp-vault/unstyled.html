@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<h1 id="integrate-grafana-with-hashicorp-vault">Integrate Grafana with Hashicorp Vault</h1>
+<p>If you manage your secrets with <a href="https://www.hashicorp.com/products/vault" target="_blank" rel="noopener noreferrer">Hashicorp Vault</a>, you can use them for <a href="../../../configure-grafana/">Configuration</a> and <a href="../../../../administration/provisioning/">Provisioning</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in <a href="../../../../introduction/grafana-enterprise/">Grafana Enterprise</a>.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you have Grafana <a href="../../../set-up-for-high-availability/">set up for high availability</a>, then we advise not to use dynamic secrets for provisioning files.
+Each Grafana instance is responsible for renewing its own leases. Your data source leases might expire when one of your Grafana servers shuts down.</p></blockquote></div>
+
+<h2 id="configuration">Configuration</h2>
+<p>Before using Vault, you need to activate it by providing a URL, authentication method (currently only token),
+and a token for your Vault service. Grafana automatically renews the service token if it is renewable and
+set up with a limited lifetime.</p>
+<p>If you&rsquo;re using short-lived leases, then you can also configure how often Grafana should renew the lease and for how long. We recommend keeping the defaults unless you run into problems.</p>
+<pre>[keystore.vault]
+# Location of the Vault server
+;url =
+# Vault namespace if using Vault with multi-tenancy
+;namespace =
+# Method for authenticating towards Vault. Vault is inactive if this option is not set
+# Possible values: token
+;auth_method =
+# Secret token to connect to Vault when auth_method is token
+;token =
+# Time between checking if there are any secrets which needs to be renewed.
+;lease_renewal_interval = 5m
+# Time until expiration for tokens which are renewed. Should have a value higher than lease_renewal_interval
+;lease_renewal_expires_within = 15m
+# New duration for renewed tokens. Vault may be configured to ignore this value and impose a stricter limit.
+;lease_renewal_increment = 1h</pre>
+<p>Example for <code>vault server -dev</code>:</p>
+<pre>[keystore.vault]
+url = http://127.0.0.1:8200 # HTTP should only be used for local testing
+auth_method = token
+token = s.sAZLyI0r7sFLMPq6MWtoOhAN # replace with your key</pre>
+<h2 id="using-the-vault-expander">Using the Vault expander</h2>
+<p>After you configure Vault, you must set the configuration or provisioning files you wish to
+use Vault. Vault configuration is an extension of configuration&rsquo;s <a href="../../../configure-grafana/#variable-expansion">variable expansion</a> and follows the
+<code>$__vault{&lt;argument&gt;}</code> syntax.</p>
+<p>The argument to Vault consists of three parts separated by a colon:</p>
+<ul>
+<li>The first part specifies which secrets engine should be used.</li>
+<li>The second part specifies which secret should be accessed.</li>
+<li>The third part specifies which field of that secret should be used.</li>
+</ul>
+<p>For example, if you place a Key/Value secret for the Grafana admin user in <em>secret/grafana/admin_defaults</em>
+the syntax for accessing its <em>password</em> field would be <code>$__vault{kv:secret/grafana/admin_defaults:password}</code>.</p>
+<h3 id="secrets-engines">Secrets engines</h3>
+<p>Vault supports many secrets engines which represents different methods for storing or generating secrets when requested by an
+authorized user. Grafana supports a subset of these which are most likely to be relevant for a Grafana installation.</p>
+<h4 id="keyvalue">Key/Value</h4>
+<p>Grafana supports Vault&rsquo;s <a href="https://www.vaultproject.io/docs/secrets/kv/kv-v2" target="_blank" rel="noopener noreferrer">K/V version 2</a> storage engine which
+is used to store and retrieve arbitrary secrets as <code>kv</code>.</p>
+<pre>$__vault{kv:secret/grafana/smtp:username}</pre>
+<h4 id="databases">Databases</h4>
+<p>The Vault <a href="https://www.vaultproject.io/docs/secrets/databases" target="_blank" rel="noopener noreferrer">databases secrets engines</a> is a family of
+secret engines which shares a similar syntax and grants the user dynamic access to a database.
+You can use this both for setting up Grafana&rsquo;s own database access and for provisioning data sources.</p>
+<pre>$__vault{database:database/creds/grafana:username}</pre>
+<h3 id="examples">Examples</h3>
+<p>The following examples show you how to set your <a href="../../../configure-grafana/">configuration</a> or <a href="../../../../administration/provisioning/">provisioning</a> files to use Vault to retrieve configuration values.</p>
+<h4 id="configuration-1">Configuration</h4>
+<p>The following is a partial example for using Vault to set up a Grafana configuration file&rsquo;s email and database credentials.
+Refer to <a href="../../../configure-grafana/">Configuration</a> for more information.</p>
+<pre>[smtp]
+enabled = true
+host = $__vault{kv:secret/grafana/smtp:hostname}:587
+user = $__vault{kv:secret/grafana/smtp:username}
+password = $__vault{kv:secret/grafana/smtp:password}
+
+[database]
+type = mysql
+host = mysqlhost:3306
+name = grafana
+user = $__vault{database:database/creds/grafana:username}
+password = $__vault{database:database/creds/grafana:password}</pre>
+<h4 id="provisioning">Provisioning</h4>
+<p>The following is a full examples of a provisioning YAML file setting up a MySQL data source using Vault&rsquo;s
+database secrets engine.
+Refer to <a href="../../../../administration/provisioning/">Provisioning</a> for more information.</p>
+<p><strong>provisioning/custom.yaml</strong></p>
+<pre>apiVersion: 1
+
+datasources:
+  - name: statistics
+    type: mysql
+    url: localhost:3306
+    database: stats
+    user: $__vault{database:database/creds/ro/stats:username}
+    secureJsonData:
+      password: $__vault{database:database/creds/ro/stats:password}</pre>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<h1 id="whats-new-in-grafana-v95">What&rsquo;s new in Grafana v9.5</h1>
+<p>Welcome to Grafana 9.5! We&rsquo;re excited to share some major updates to Grafana&rsquo;s navigation, tons of usability improvements to Alerting, and some promising experiments to help you query your Prometheus metrics. Also, read on to learn about our continued migration from API keys to service accounts, as well as deprecation of plugins that use Angular and a field in the InfluxDB data source.</p>
+<p>For more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>. For the specific steps we recommend when you upgrade to v9.5, check out our <a href="../../upgrade-guide/upgrade-v9.5/">Upgrade Guide</a>.</p>
+<!-- Template below
+
+## Feature
+[Generally available | Available in experimental/beta] in Grafana [Open Source, Enterprise, Cloud Free, Cloud Pro, Cloud Advanced]
+
+Description. Include an overview of the feature and problem it solves, and where to learn more (like a link to the docs).
+
+> **Note:** You must use relative references when linking to docs within the Grafana repo. Please do not use absolute URLs. For more information about relrefs, refer to [Links and references](/docs/writers-toolkit/writing-guide/references/).-->
+<h2 id="grafanas-new-navigation-is-generally-available">Grafana&rsquo;s new navigation is generally available</h2>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>The navigation in Grafana has been updated with a new design and an improved structure to make it easier for you to access the data you need. With this update, you can quickly navigate between pages, giving you full visibility into the health of your systems.</p>
+<p>As Grafana evolved from a visualization platform to a comprehensive observability solution, we added numerous tools to support users throughout the software development life cycle. These tools focus on preventing incidents, monitoring applications or infrastructure, and aiding incident response. However, the added functionality must be easily discoverable and navigable to be truly helpful. These key updates to Grafana’s navigation experience help address this:</p>
+<ul>
+<li>A redesigned navigation menu that groups related tools together for easy access.</li>
+<li>A command palette you can use to take actions in Grafana, like creating a dashboard or navigating to an app or page.</li>
+<li>Updated layouts featuring breadcrumbs and a sidebar, allowing you to quickly jump between pages.</li>
+<li>A new header that appears on all pages in Grafana, which includes a search function.</li>
+</ul>
+<p>Join the <a href="https://github.com/grafana/grafana/discussions/58910" target="_blank" rel="noopener noreferrer">discussion on GitHub</a> and share your feedback.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/navigation-9-4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/navigation-9-4.png"data-srcset="/media/docs/grafana/navigation-9-4.png?w=320 320w, /media/docs/grafana/navigation-9-4.png?w=550 550w, /media/docs/grafana/navigation-9-4.png?w=750 750w, /media/docs/grafana/navigation-9-4.png?w=900 900w, /media/docs/grafana/navigation-9-4.png?w=1040 1040w, /media/docs/grafana/navigation-9-4.png?w=1240 1240w, /media/docs/grafana/navigation-9-4.png?w=1920 1920w"
+          data-sizes="auto"alt="Grafana new navigation"width="1000"height="624"title="Grafana new navigation"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/navigation-9-4.png"
+            alt="Grafana new navigation"width="1000"height="624"title="Grafana new navigation"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Grafana new navigation</figcaption></a></figure>
+<h2 id="dashboards-and-visualizations">Dashboards and visualizations</h2>
+<h3 id="redesigned-empty-dashboard-state">Redesigned empty dashboard state</h3>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>Dashboards have been updated so that it’s easier to begin building from scratch. The options displayed when you add a new dashboard—adding a visualization, a row, or importing panels—each include brief explanations of what those steps will do, so you can begin building with confidence.</p>
+<p>Also, a text <strong>Add</strong> dropdown with these options has replaced the previous &ldquo;+&rdquo; icon at the top of the dashboard. This makes it clearer that this element allows you not only to add new panels, but to take all the actions associated with building a new dashboard.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png"data-srcset="/media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png?w=320 320w, /media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png?w=550 550w, /media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png?w=750 750w, /media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png?w=900 900w, /media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png?w=1040 1040w, /media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png?w=1240 1240w, /media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Dashboard without any visualizations added"width="1491"height="709"title="Dashboard without any visualizations added"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-empty-dashboard-whats-new-9-5.png"
+            alt="Dashboard without any visualizations added"width="1491"height="709"title="Dashboard without any visualizations added"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Dashboard without any visualizations added</figcaption></a></figure>
+<h3 id="redesigned-dashboard-panel-is-generally-available">Redesigned dashboard panel is generally available</h3>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>Dashboard panels contain a lot of information, some of which is difficult to discover or access from the dashboard. With our redesigned panels, we&rsquo;ve improved accessibility and made it easier to understand the status of a panel by adding and moving key elements.</p>
+<p>We’ve improved panels without titles, made panel descriptions and errors more succinct, and linked key actions from the header of the panel. All of these are laid out from left to right in a row, so there are no overlapping, unusable components.</p>
+<p>Grafana’s new panel design is available only for React-based panels. No Angular-based panels, like the legacy Graph and Worldmap panels, are redesigned. As a reminder, Angular is deprecated in Grafana and will be removed in a future release. See our <a href="../../developers/angular_deprecation/">deprecation docs</a> for more information.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/panel-redesign-whats-new-9.5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/panel-redesign-whats-new-9.5.png"data-srcset="/media/docs/grafana/panel-redesign-whats-new-9.5.png?w=320 320w, /media/docs/grafana/panel-redesign-whats-new-9.5.png?w=550 550w, /media/docs/grafana/panel-redesign-whats-new-9.5.png?w=750 750w, /media/docs/grafana/panel-redesign-whats-new-9.5.png?w=900 900w, /media/docs/grafana/panel-redesign-whats-new-9.5.png?w=1040 1040w, /media/docs/grafana/panel-redesign-whats-new-9.5.png?w=1240 1240w, /media/docs/grafana/panel-redesign-whats-new-9.5.png?w=1920 1920w"
+          data-sizes="auto"alt="Panel header with open menu"width="708"height="371"title="Panel header with open menu"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panel-redesign-whats-new-9.5.png"
+            alt="Panel header with open menu"width="708"height="371"title="Panel header with open menu"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Panel header with open menu</figcaption></a></figure>
+<h2 id="prometheus-performance-and-usability-improvements">Prometheus performance and usability improvements</h2>
+<h3 id="prometheus-metric-encyclopedia">Prometheus metric encyclopedia</h3>
+<p><em>Experimental in all editions of Grafana.</em></p>
+<p>When you have thousands (or millions) of Prometheus metrics, it can be hard to find the exact one you&rsquo;re looking for. Enable feature toggle <code>prometheusMetricEncyclopedia</code> to replace the basic metric select dropdown in the Prometheus query builder with a paginated and searchable metric <em>encyclopedia</em>.</p>
+<p>Here&rsquo;s what you can do with the metric encyclopedia:</p>
+<ul>
+<li>Fuzzy search for metrics by name, type, and description</li>
+<li>Filter metrics by Prometheus types (gauge, counter, histogram, summary)</li>
+<li>Display metrics in a paginated list, sort the results, and choose a number of results per page, so that you don&rsquo;t wait a long time for search results</li>
+<li>View metric details, like type and description</li>
+<li>[Expert feature] Search metric names by regex using the backend only</li>
+</ul>
+<h3 id="prometheus-browser-cache">Prometheus browser cache</h3>
+<p><em>Experimental in all editions of Grafana.</em></p>
+<p>New feature toggle <code>prometheusResourceBrowserCache</code> provides the ability to cache Prometheus editor API calls in the Prometheus data source configuration.
+This improves Prometheus query editor performance, with the biggest performance improvements seen by users with high cardinality Prometheus instances.</p>
+<h2 id="removal-of-api-key-creation-from-the-ui">Removal of API key creation from the UI</h2>
+<p>With this update we are going one step further in deprecating API keys in favor of <a href="../../administration/service-accounts/">service accounts</a>. We&rsquo;ve removed the button for creating new API keys through Grafana&rsquo;s user interface, and now only allow the creation of API keys using our HTTP API. We recommend that you migrate your existing API keys to service accounts, and opt for new service accounts instead of new API keys. This change is part of our long-term strategy for sunsetting API keys.</p>
+<p>Learn more about the deprecation strategy for API keys and how to manage them in our <a href="https://github.com/grafana/grafana/issues/53567" target="_blank" rel="noopener noreferrer">Sunsetting API keys</a> GitHub issue.</p>
+<h2 id="resolve-grafana-issues-faster-with-support-bundles">Resolve Grafana issues faster with support bundles</h2>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>Support bundles provide a simple way to collect information about your Grafana instance through Grafana&rsquo;s user interface. In a few clicks, you can create a support bundle containing data about migrations, plugins, settings, and more. Once you&rsquo;ve created a support bundle, you can either examine it yourself, or share it with your colleagues or Grafana engineers to aid in troubleshooting of your Grafana instance.</p>
+<p>Learn more about support bundles and how to configure them in our <a href="../../troubleshooting/support-bundles/">support bundle documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/troubleshooting/support-bundle.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/troubleshooting/support-bundle.png"data-srcset="/static/img/docs/troubleshooting/support-bundle.png?w=320 320w, /static/img/docs/troubleshooting/support-bundle.png?w=550 550w, /static/img/docs/troubleshooting/support-bundle.png?w=750 750w, /static/img/docs/troubleshooting/support-bundle.png?w=900 900w, /static/img/docs/troubleshooting/support-bundle.png?w=1040 1040w, /static/img/docs/troubleshooting/support-bundle.png?w=1240 1240w, /static/img/docs/troubleshooting/support-bundle.png?w=1920 1920w"
+          data-sizes="auto"alt="Create a support bundle to resolve issues faster"width="2876"height="934"title="Create a support bundle to resolve issues faster"/>
+        <noscript>
+          <img
+            src="/static/img/docs/troubleshooting/support-bundle.png"
+            alt="Create a support bundle to resolve issues faster"width="2876"height="934"title="Create a support bundle to resolve issues faster"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Create a support bundle to resolve issues faster</figcaption></a></figure>
+<h2 id="alerting">Alerting</h2>
+<p><em>All Alerting improvements are generally available in all editions of Grafana.</em></p>
+<h3 id="search-for-alert-rules-from-multiple-data-sources">Search for alert rules from multiple data sources</h3>
+<p>Search for and display alert rules for multiple data sources at the same time.</p>
+<h3 id="fuzzy-search-on-the-alert-rule-list-view">Fuzzy search on the Alert rule list view</h3>
+<p>Search for namespaces or folders, evaluation groups, and alert rule names on the Alert rules list view with immediate results, and regardless of typos.</p>
+<h3 id="access-an-alert-rule-from-a-dashboard-or-a-panel">Access an alert rule from a dashboard or a panel</h3>
+<p>Navigate to an alert rule directly from a dashboard or a panel to easily access the alert rule details.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/alert-rule-dashboard.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/alert-rule-dashboard.png"data-srcset="/media/docs/alerting/alert-rule-dashboard.png?w=320 320w, /media/docs/alerting/alert-rule-dashboard.png?w=550 550w, /media/docs/alerting/alert-rule-dashboard.png?w=750 750w, /media/docs/alerting/alert-rule-dashboard.png?w=900 900w, /media/docs/alerting/alert-rule-dashboard.png?w=1040 1040w, /media/docs/alerting/alert-rule-dashboard.png?w=1240 1240w, /media/docs/alerting/alert-rule-dashboard.png?w=1920 1920w"
+          data-sizes="auto"alt="Access an alert rule from a dashboard or a panel"width="906"height="350"title="Access an alert rule from a dashboard or a panel"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alert-rule-dashboard.png"
+            alt="Access an alert rule from a dashboard or a panel"width="906"height="350"title="Access an alert rule from a dashboard or a panel"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Access an alert rule from a dashboard or a panel</figcaption></a></figure>
+<h3 id="access-a-dashboard-or-panel-from-an-alert-rule">Access a dashboard or panel from an alert rule</h3>
+<p>Navigate from an alert rule straight to a dashboard or a panel associated with the alert rule to visualize your alerting data.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/dashboard-alert-rule-2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/dashboard-alert-rule-2.png"data-srcset="/media/docs/alerting/dashboard-alert-rule-2.png?w=320 320w, /media/docs/alerting/dashboard-alert-rule-2.png?w=550 550w, /media/docs/alerting/dashboard-alert-rule-2.png?w=750 750w, /media/docs/alerting/dashboard-alert-rule-2.png?w=900 900w, /media/docs/alerting/dashboard-alert-rule-2.png?w=1040 1040w, /media/docs/alerting/dashboard-alert-rule-2.png?w=1240 1240w, /media/docs/alerting/dashboard-alert-rule-2.png?w=1920 1920w"
+          data-sizes="auto"alt="Access a dashboard or panel from an alert rule"width="1398"height="736"title="Access a dashboard or panel from an alert rule"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/dashboard-alert-rule-2.png"
+            alt="Access a dashboard or panel from an alert rule"width="1398"height="736"title="Access a dashboard or panel from an alert rule"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Access a dashboard or panel from an alert rule</figcaption></a></figure>
+<h3 id="preview-queries-for-recording-rules">Preview queries for recording rules</h3>
+<p>Visualize queries when creating or editing recording rules, so you can see the results of your query before saving your recording rule.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/preview-queries-recording-rule.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/preview-queries-recording-rule.png"data-srcset="/media/docs/alerting/preview-queries-recording-rule.png?w=320 320w, /media/docs/alerting/preview-queries-recording-rule.png?w=550 550w, /media/docs/alerting/preview-queries-recording-rule.png?w=750 750w, /media/docs/alerting/preview-queries-recording-rule.png?w=900 900w, /media/docs/alerting/preview-queries-recording-rule.png?w=1040 1040w, /media/docs/alerting/preview-queries-recording-rule.png?w=1240 1240w, /media/docs/alerting/preview-queries-recording-rule.png?w=1920 1920w"
+          data-sizes="auto"alt="Preview queries for recording rules"width="1712"height="788"title="Preview queries for recording rules"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/preview-queries-recording-rule.png"
+            alt="Preview queries for recording rules"width="1712"height="788"title="Preview queries for recording rules"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Preview queries for recording rules</figcaption></a></figure>
+<h3 id="updated-alert-behavior-when-an-evaluation-returns-no-data">Updated alert behavior when an evaluation returns no data</h3>
+<p>Alert rules that are configured to fire when an evaluation returns no data now only fire when the entire duration of the evaluation period has finished. This means that rather than immediately firing when the alert rule condition is breached, the alert rule waits until the time set in the <strong>For</strong> field has finished and then fires, reducing alert noise and allowing for temporary data availability issues.</p>
+<h3 id="improved-notification-policies-view">Improved Notification policies view</h3>
+<p>Updates to the Notification policies view make it easier to use and manage in the following ways:</p>
+<ul>
+<li>View default policy and nested policies at a glance</li>
+<li>New tab for mute timings</li>
+<li>View alert instances for each policy</li>
+<li>View contact points and which integrations are configured for each policy</li>
+<li>View inherited properties on nested policies</li>
+<li>Search for label matchers and for contact points to see which notifications are going where</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/alerting/notification-policies-view.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/alerting/notification-policies-view.png"data-srcset="/media/docs/alerting/notification-policies-view.png?w=320 320w, /media/docs/alerting/notification-policies-view.png?w=550 550w, /media/docs/alerting/notification-policies-view.png?w=750 750w, /media/docs/alerting/notification-policies-view.png?w=900 900w, /media/docs/alerting/notification-policies-view.png?w=1040 1040w, /media/docs/alerting/notification-policies-view.png?w=1240 1240w, /media/docs/alerting/notification-policies-view.png?w=1920 1920w"
+          data-sizes="auto"alt="Improved Notification policies view"width="1534"height="1256"title="Improved Notification policies view"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/notification-policies-view.png"
+            alt="Improved Notification policies view"width="1534"height="1256"title="Improved Notification policies view"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Improved Notification policies view</figcaption></a></figure>
+<h3 id="guidance-for-configuring-your-alertmanager">Guidance for configuring your Alertmanager</h3>
+<p>Get additional help while configuring your Alertmanager. If you enter an invalid Alertmanager configuration, an error message displays, and you can choose from a previous working configuration to restart it.</p>
+<h2 id="influxdb-plugin-database-field-deprecation">InfluxDB plugin database field deprecation</h2>
+<p>The <code>database</code> field in the provisioning file has been deprecated.
+This information will be stored in the <code>jsonData</code> field using the <code>dbName</code> property.
+The <code>database</code> field will be removed in the future to make InfluxDB consistent with other data sources.
+For more information and examples please refer to the <a href="../../datasources/influxdb/#provision-the-data-source">InfluxDB Provisioning docs</a>.</p>
+<h2 id="auth-lock-organization-roles-synced-from-auth-providers">Auth: Lock organization roles synced from auth providers</h2>
+<p><em>Generally available in all editions of Grafana.</em></p>
+<p>Grafana v9.4 provided the ability to configure synchronization of organization roles for each OAuth provider. With synchronization on, the organization role was applied to the user from the OAuth provider upon signing in. However, after the user signed in, you could still change the user’s organization role during the session.</p>
+<p>With this release, we are reinforcing organization role syncing behavior by introducing a new feature toggle called <code>onlyExternalOrgRoleSync</code>. Once enabled, users signing in to Grafana cannot change organization roles that have been synchronized from an external authentication provider, like Active Directory or Google OAuth. This can help ensure the right users maintain the right level of access at all times.</p>
+<p>This feature should be used if you want to enforce strict role synchronization from your auth provider to the organization roles.</p>
+<p>To use this feature, enable the <code>onlyExternalOrgRoleSync</code> feature toggle. If you’re using Grafana Cloud and would like to enable this feature, please contact customer support. We&rsquo;ll also be automatically enabling this feature for Grafana Cloud instances over the upcoming weeks.</p>
+<p>You can also <em>prevent</em> the synchronization of organization roles from a given authentication provider. Learn more in our <a href="../../setup-grafana/configure-grafana/#authgrafana_com-skip_org_role_sync/">skip org role sync</a>! documentation.</p>
+<h2 id="reporting-ui-adapted-to-match-the-new-navigation-style">Reporting UI adapted to match the new navigation style</h2>
+<p><em>Generally available in Grafana Enterprise, Cloud Pro, and Cloud Advanced.</em></p>
+<p>We updated the reporting UI to better fit the new navigation style, adding a horizontal slider and moving the <strong>Preview</strong> and <strong>Send</strong> buttons to the Action section in the page. We also fixed the alignment of the different sections.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/Screenshot-newUI-report.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/Screenshot-newUI-report.png"data-srcset="/media/docs/grafana/Screenshot-newUI-report.png?w=320 320w, /media/docs/grafana/Screenshot-newUI-report.png?w=550 550w, /media/docs/grafana/Screenshot-newUI-report.png?w=750 750w, /media/docs/grafana/Screenshot-newUI-report.png?w=900 900w, /media/docs/grafana/Screenshot-newUI-report.png?w=1040 1040w, /media/docs/grafana/Screenshot-newUI-report.png?w=1240 1240w, /media/docs/grafana/Screenshot-newUI-report.png?w=1920 1920w"
+          data-sizes="auto"alt="New Grafana report UI"width="1666"height="916"title="New Grafana report UI"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/Screenshot-newUI-report.png"
+            alt="New Grafana report UI"width="1666"height="916"title="New Grafana report UI"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">New Grafana report UI</figcaption></a></figure>
+<h2 id="experimental-support-for-using-jwts-as-auth-method">Experimental support for using JWTs as auth method</h2>
+<p><em>Experimental in Grafana Open Source and Enterprise.</em></p>
+<p>This feature adds support for using JWT tokens to store rendering keys instead of relying on “remote caching”. It covers most rendering use cases, though some still rely on the remote cache as a store. You can enable this by enabling the feature flag <code>renderAuthJWT</code> in the <code>custom.ini</code> configuration file.</p>
+<h2 id="note-for-plugin-developers">Note for plugin developers</h2>
+<p>One of the major changes coming in Grafana 10 will be our upgrade to React 18 and use of the new React client rendering API. There are many significant benefits we gain from this: access to new React features like <a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener noreferrer">transitions</a> and concurrent rendering, as well as other general performance and security improvements. These changes have now been delivered to the core <code>grafana</code> repo with <a href="https://github.com/grafana/grafana/pull/64428" target="_blank" rel="noopener noreferrer">PR 64428</a>.</p>
+<p>As with any major upgrade, there&rsquo;s a potential for this to impact the way your plugin works. In particular, there could be unintended side effects caused by the changes around improving consistency with <code>useEffect</code> timings and automatic batching of state updates.</p>
+<p>Recommended actions:</p>
+<ul>
+<li>Review the React 18 <a href="https://react.dev/blog/2022/03/08/react-18-upgrade-guide" target="_blank" rel="noopener noreferrer">upgrade docs</a></li>
+<li>Test your plugins against one of the latest <a href="https://hub.docker.com/r/grafana/grafana-dev/tags?page=1" target="_blank" rel="noopener noreferrer">grafana-dev docker images</a> (for example, <a href="https://hub.docker.com/layers/grafana/grafana-dev/10.0.0-111404pre/images/sha256-ac78acf54b44bd2ce7e68b796b1df47030da7f35e53b02bc3eec3f4de05f780f?context=explore" target="_blank" rel="noopener noreferrer">this one</a>)</li>
+<li>Add a comment to the <a href="https://community.grafana.com/t/grafana-10-is-upgrading-to-react-18/86051" target="_blank" rel="noopener noreferrer">forum discussion</a> if your plugin is impacted in any way. Either to socialise the changes needed for your plugin or to reach out and ask for help yourself.</li>
+</ul>

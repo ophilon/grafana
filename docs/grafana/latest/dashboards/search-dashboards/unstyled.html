@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<h1 id="search-dashboards-and-folders">Search dashboards and folders</h1>
+<p>You can search for dashboards and dashboard folders by name.</p>
+<p>When you search for dashboards, you can also do it by panel title. Whether you search by name or panel title, the system returns all dashboards available within the Grafana instance, even if you do not have permission to view the contents of the dashboard.</p>
+<h2 id="search-by-name">Search by name</h2>
+<p>Begin typing any part of the dashboard or folder name in the search bar. The search returns results for any partial string match in real-time, as you type.</p>
+<p>The search is:</p>
+<ul>
+<li>Real-time</li>
+<li><em>Not</em> case sensitive</li>
+<li>Functional across stored <em>and</em> file based dashboards and folders.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can use your keyboard arrow keys to navigate the results and press <code>Enter</code> to open the selected dashboard or folder.</p></blockquote></div>
+
+<p>The following images show:</p>
+<p>Searching by dashboard name from the <strong>Dashboards</strong> page.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1696px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/search-for-dashboard.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/search-for-dashboard.png"data-srcset="/media/docs/grafana/dashboards/search-for-dashboard.png?w=320 320w, /media/docs/grafana/dashboards/search-for-dashboard.png?w=550 550w, /media/docs/grafana/dashboards/search-for-dashboard.png?w=750 750w, /media/docs/grafana/dashboards/search-for-dashboard.png?w=900 900w, /media/docs/grafana/dashboards/search-for-dashboard.png?w=1040 1040w, /media/docs/grafana/dashboards/search-for-dashboard.png?w=1240 1240w, /media/docs/grafana/dashboards/search-for-dashboard.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="1696"height="960"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/search-for-dashboard.png"
+            alt=""width="1696"height="960"/>
+        </noscript></div></a></figure>
+<p>Searching by folder name from the <strong>Dashboards</strong> page.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 851px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/search-folder.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/search-folder.png"data-srcset="/media/docs/grafana/dashboards/search-folder.png?w=320 320w, /media/docs/grafana/dashboards/search-folder.png?w=550 550w, /media/docs/grafana/dashboards/search-folder.png?w=750 750w, /media/docs/grafana/dashboards/search-folder.png?w=900 900w, /media/docs/grafana/dashboards/search-folder.png?w=1040 1040w, /media/docs/grafana/dashboards/search-folder.png?w=1240 1240w, /media/docs/grafana/dashboards/search-folder.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="851"height="454"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/search-folder.png"
+            alt=""width="851"height="454"/>
+        </noscript></div></a></figure>
+<p>Searching by dashboard name inside a folder.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 848px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/search-in-folder.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/search-in-folder.png"data-srcset="/media/docs/grafana/dashboards/search-in-folder.png?w=320 320w, /media/docs/grafana/dashboards/search-in-folder.png?w=550 550w, /media/docs/grafana/dashboards/search-in-folder.png?w=750 750w, /media/docs/grafana/dashboards/search-in-folder.png?w=900 900w, /media/docs/grafana/dashboards/search-in-folder.png?w=1040 1040w, /media/docs/grafana/dashboards/search-in-folder.png?w=1240 1240w, /media/docs/grafana/dashboards/search-in-folder.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="848"height="587"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/search-in-folder.png"
+            alt=""width="848"height="587"/>
+        </noscript></div></a></figure>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When you search within a folder, its subfolders are not part of the results returned. You need to be on the <strong>Dashboards</strong> page (or the root level) to search for subfolders by name.</p></blockquote></div>
+
+<h2 id="search-dashboards-using-panel-title">Search dashboards using panel title</h2>
+<p>You can search for a dashboard by the title of a panel that appears in a dashboard.
+If a panel&rsquo;s title matches your search query, the dashboard appears in the search results.</p>
+<p>This feature is available by default in Grafana Cloud and in Grafana OSS v9.1 and higher, you access this feature by enabling the <code>panelTitleSearch</code> feature toggle.
+For more information about enabling panel title search, refer to <a href="#enable-the-paneltitlesearch-feature-toggle">Enable the panelTitleSearch feature toggle.</a></p>
+<p>The following image shows the search results when you search using panel title.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1404px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v91/dashboard-features/search-by-panel-title.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v91/dashboard-features/search-by-panel-title.png"data-srcset="/static/img/docs/v91/dashboard-features/search-by-panel-title.png?w=320 320w, /static/img/docs/v91/dashboard-features/search-by-panel-title.png?w=550 550w, /static/img/docs/v91/dashboard-features/search-by-panel-title.png?w=750 750w, /static/img/docs/v91/dashboard-features/search-by-panel-title.png?w=900 900w, /static/img/docs/v91/dashboard-features/search-by-panel-title.png?w=1040 1040w, /static/img/docs/v91/dashboard-features/search-by-panel-title.png?w=1240 1240w, /static/img/docs/v91/dashboard-features/search-by-panel-title.png?w=1920 1920w"
+          data-sizes="auto"alt=""width="1404"height="242"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v91/dashboard-features/search-by-panel-title.png"
+            alt=""width="1404"height="242"/>
+        </noscript></div></a></figure>
+<h3 id="enable-the-paneltitlesearch-feature-toggle">Enable the panelTitleSearch feature toggle</h3>
+<p>Complete the following steps to enable the <code>panelTitleSearch</code> feature toggle.</p>
+<p><strong>Before you begin:</strong></p>
+<ul>
+<li>If you are running Grafana Enterprise with RBAC, enable 
+    <a href="/docs/grafana/latest/administration/service-accounts/">service accounts</a>.</li>
+</ul>
+<p><strong>To enable the panelTitleSearch feature toggle:</strong></p>
+<ol>
+<li>
+<p>Open the Grafana 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#configuration-file-location">configuration file</a>.</p>
+</li>
+<li>
+<p>Locate the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#feature_toggles">feature_toggles</a> section.</p>
+</li>
+<li>
+<p>Add the following parameter to the <code>feature_toggles</code> section:</p>
+<pre>[feature_toggles]
+# enable features, separated by spaces
+enable = panelTitleSearch</pre>
+</li>
+<li>
+<p>Save your changes and restart the Grafana server.</p>
+</li>
+</ol>
+<h2 id="filter-dashboard-search-results-by-tags">Filter dashboard search results by tag(s)</h2>
+<p>Tags are a great way to organize your dashboards, especially as the number of dashboards grow. You can add and manage tags in dashboard <code>Settings</code>.</p>
+<p>When you select multiple tags, Grafana shows dashboards that include all selected tags.</p>
+<p>To filter dashboard search result by a tag, complete one of the following steps:</p>
+<ul>
+<li>
+<p>To filter dashboard search results by tag, click a tag that appears in the right column of the search results.</p>
+<p>You can continue filtering by clicking additional tags.</p>
+</li>
+<li>
+<p>To see a list of all available tags, click the <strong>Filter by tags</strong> dropdown menu and select a tag.</p>
+<p>All tags will be shown, and when you select a tag, the dashboard search will be instantly filtered.</p>
+</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When using only a keyboard, press the <code>tab</code> key and navigate to the <strong>Filter by tag</strong> drop-down menu, press the down arrow key <code>▼</code> to activate the menu and locate a tag, and press <code>Enter</code> to select the tag.</p></blockquote></div>
+

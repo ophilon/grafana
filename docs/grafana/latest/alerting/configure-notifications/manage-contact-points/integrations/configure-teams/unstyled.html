@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<h1 id="configure-microsoft-teams-for-alerting">Configure Microsoft Teams for Alerting</h1>
+<p>Use the Grafana Alerting - Microsoft Teams integration to receive notifications in your team’s channel when your alerts are firing.</p>
+<p>Note that you can customize the <code>title</code> and <code>message</code> of the notification using 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>; however, you cannot modify its visual appearance with adaptive cards.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To set up Microsoft Teams for integration with Grafana Alerting, create a new workflow that accepts Webhook requests. This allows Grafana to send alert notifications to Microsoft Teams channels.</p>
+<h3 id="create-a-workflow-in-microsoft-teams">Create a workflow in Microsoft Teams</h3>
+<ol>
+<li>To create a new workflow, follow the steps in <a href="https://learn.microsoft.com/en-us/power-automate/teams/teams-app-create" target="_blank" rel="noopener noreferrer">Create flows in Microsoft Teams</a>.</li>
+<li>Microsoft provides a template library. You can use the template <strong>Post to a channel when a webhook request is received</strong>.</li>
+<li>At the end of workflow creation wizard, copy the URL that is provided.</li>
+</ol>
+<p><strong>Note</strong>
+If you chose a private channel for the target of the workflow, you need to edit workflow before using it. Expand the step &ldquo;Send each adaptive card&rdquo;, and then expand action &ldquo;Post your own adaptive card as the Flow bot to a channel&rdquo;. Change &ldquo;Post as&rdquo; to User, and save the workflow.</p>
+<h2 id="procedure">Procedure</h2>
+<p>To create your MS Teams integration in Grafana Alerting, complete the following steps.</p>
+<ol>
+<li>
+<p>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Add contact point</strong>.</p>
+</li>
+<li>
+<p>Enter a contact point name.</p>
+</li>
+<li>
+<p>From the Integration list, select <strong>Microsoft Teams</strong>.</p>
+</li>
+<li>
+<p>In the <strong>URL</strong> field, copy in your Webhook URL.</p>
+</li>
+<li>
+<p>Click <strong>Test</strong> to check that your integration works.</p>
+<p>** For Grafana Alertmanager only.**</p>
+<p>A test alert notification should be sent to the MS Team channel.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> contact point.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>The Microsoft Teams contact point is ready to receive alert notifications.</p>
+<p>To add this contact point to your alert, complete the following steps.</p>
+<ol>
+<li>In Grafana, navigate to <strong>Alerting</strong> &gt; <strong>Alert rules</strong>.</li>
+<li>Edit or create a new alert rule.</li>
+<li>Scroll down to the <strong>Configure labels and notifications</strong> section.</li>
+<li>Under Notifications click <strong>Select contact point</strong>.</li>
+<li>From the drop-down menu, select the previously created contact point.</li>
+<li><strong>Click Save rule and exit</strong>.</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li>If Grafana reports that notification was sent successfully but it was not delivered to the channel, check the workflow&rsquo;s run history. You can find it in the workflow details page.</li>
+</ul>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<h1 id="configure-panel-options">Configure panel options</h1>
+<p>There are settings common to all visualizations, which you set in the <strong>Panel options</strong> section of the panel editor pane. The following sections describe these options as well as how to set them.</p>
+<h2 id="panel-options">Panel options</h2>
+<p>Set the following options to provide basic information about a panel and define basic display elements:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>Text entered in this field appears at the top of your panel in the panel editor and in the dashboard. You can use 
+    <a href="/docs/grafana/latest/dashboards/variables/">variables you have defined</a> in the <strong>Title</strong> field, but not 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#global-variables">global variables</a>.</td>
+      </tr>
+      <tr>
+          <td>Description</td>
+          <td>Text entered in this field appears in a tooltip in the upper-left corner of the panel. Add a description to a panel to share with users any important information about it, such as its purpose. You can use 
+    <a href="/docs/grafana/latest/dashboards/variables/">variables you have defined</a> in the <strong>Description</strong> field, but not 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#global-variables">global variables</a>.</td>
+      </tr>
+      <tr>
+          <td>Transparent background</td>
+          <td>Toggle this switch on and off to control whether or not the panel has the same background color as the dashboard.</td>
+      </tr>
+      <tr>
+          <td>Panel links</td>
+          <td>Add 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/#panel-links">links to the panel</a> to create shortcuts to other dashboards, panels, and external websites. Access panel links by clicking the icon next to the panel title.</td>
+      </tr>
+      <tr>
+          <td>Repeat options</td>
+          <td>Set whether to repeat the panel for each value in the selected variable. For more information, refer to <a href="#configure-repeating-panels">Configure repeating panels</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>You can use generative AI to populate the <strong>Title</strong> and <strong>Description</strong> fields with the <a href="/docs/grafana-cloud/alerting-and-irm/machine-learning/configure/llm-plugin/">Grafana LLM plugin</a>, which is currently in public preview. To enable this, refer to 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/#set-up-generative-ai-features-for-dashboards">Set up generative AI features for dashboards</a>.</p>
+<h2 id="configure-repeating-panels">Configure repeating panels</h2>
+<p>You can configure Grafana to dynamically add panels or rows to a dashboard. A dynamic panel is a panel that the system creates based on the value of a variable. Variables dynamically change your queries across all panels in a dashboard. For more information about repeating rows, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/#configure-repeating-rows">Configure repeating rows</a>.</p>
+<p>To see an example of repeating panels, refer to <a href="https://play.grafana.org/d/testdata-repeating/testdata-repeating-panels?orgId=1" target="_blank" rel="noopener noreferrer">this dashboard with repeating panels</a>.</p>
+<p><strong>Before you begin:</strong></p>
+<ul>
+<li>Ensure that the query includes a multi-value variable.</li>
+</ul>
+<p>To configure repeating panels, follow these steps:</p>
+<ol>
+<li>
+<p>Navigate to the panel you want to update.</p>
+</li>
+<li>
+<p>Hover over any part of the panel to display the menu on the top right corner.</p>
+</li>
+<li>
+<p>Click the menu and select <strong>Edit</strong>.</p>
+</li>
+<li>
+<p>Open the <strong>Panel options</strong> section of the panel editor pane.</p>
+</li>
+<li>
+<p>Under <strong>Repeat options</strong>, select a variable in the <strong>Repeat by variable</strong> drop-down list.</p>
+</li>
+<li>
+<p>Under <strong>Repeat direction</strong>, choose one of the following:</p>
+<ul>
+<li><strong>Horizontal</strong> - Arrange panels side-by-side. Grafana adjusts the width of a repeated panel. You can&rsquo;t mix other panels on a row with a repeated panel.</li>
+<li><strong>Vertical</strong> - Arrange panels in a column. The width of repeated panels is the same as the original, repeated panel.</li>
+</ul>
+</li>
+<li>
+<p>If you selected <strong>Horizontal</strong> in the previous step, select a value in the <strong>Max per row</strong> drop-down list to control the maximum number of panels that can be in a row.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</p>
+</li>
+<li>
+<p>To propagate changes to all panels, reload the dashboard.</p>
+</li>
+</ol>
+<p>You can stop a panel from repeating by selecting <strong>Disable repeating</strong> in the <strong>Repeat by variable</strong> drop-down list.</p>

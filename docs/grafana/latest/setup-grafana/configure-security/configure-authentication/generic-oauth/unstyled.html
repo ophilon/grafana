@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<h1 id="configure-generic-oauth-authentication">Configure Generic OAuth authentication</h1>
+
+
+<div data-shared="auth/intro.md">
+            <p>There are numerous authentication methods available in Grafana to verify user identity. The authentication configuration dictates which users can access Grafana and the methods they can use for logging in.
+You can also configure Grafana to automatically update users&rsquo; roles and team memberships in Grafana based on the information returned by the auth provider integration.</p>
+<p>When deciding on an authentication method, it&rsquo;s important to take into account your current identity and access management system as well as the specific authentication and authorization features you require.
+For a complete list of the available authentication options and the features they support, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/">Configure authentication</a>.</p>
+</div>
+
+        
+<p>Grafana provides OAuth2 integrations for the following auth providers:</p>
+<ul>
+<li><a href="../azuread/">Azure AD OAuth</a></li>
+<li><a href="../github/">GitHub OAuth</a></li>
+<li><a href="../gitlab/">GitLab OAuth</a></li>
+<li><a href="../google/">Google OAuth</a></li>
+<li><a href="../grafana-cloud/">Grafana Com OAuth</a></li>
+<li><a href="../keycloak/">Keycloak OAuth</a></li>
+<li><a href="../okta/">Okta OAuth</a></li>
+</ul>
+<p>If your OAuth2 provider is not listed, you can use Generic OAuth authentication.</p>
+<p>This topic describes how to configure Generic OAuth authentication using different methods and includes <a href="#examples-of-setting-up-generic-oauth2">examples of setting up Generic OAuth</a> with specific OAuth2 providers.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To follow this guide:</p>
+<ul>
+<li>Ensure you know how to create an OAuth2 application with your OAuth2 provider. Consult the documentation of your OAuth2 provider for more information.</li>
+<li>Ensure your identity provider returns OpenID UserInfo compatible information such as the <code>sub</code> claim.</li>
+<li>If you are using refresh tokens, ensure you know how to set them up with your OAuth2 provider. Consult the documentation of your OAuth2 provider for more information.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If Users use the same email address in Azure AD that they use with other authentication providers (such as Grafana.com), you need to do additional configuration to ensure that the users are matched correctly. Please refer to the <a href="../#using-the-same-email-address-to-login-with-different-identity-providers">Using the same email address to login with different identity providers</a> documentation for more information.</p></blockquote></div>
+
+<h2 id="configure-generic-oauth-authentication-client-using-the-grafana-ui">Configure generic OAuth authentication client using the Grafana UI</h2>
+<p>As a Grafana Admin, you can configure Generic OAuth client from within Grafana using the Generic OAuth UI. To do this, navigate to <strong>Administration &gt; Authentication &gt; Generic OAuth</strong> page and fill in the form. If you have a current configuration in the Grafana configuration file then the form will be pre-populated with those values otherwise the form will contain default values.</p>
+<p>After you have filled in the form, click <strong>Save</strong> to save the configuration. If the save was successful, Grafana will apply the new configurations.</p>
+<p>If you need to reset changes you made in the UI back to the default values, click <strong>Reset</strong>. After you have reset the changes, Grafana will apply the configuration from the Grafana configuration file (if there is any configuration) or the default values.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you run Grafana in high availability mode, configuration changes may not get applied to all Grafana instances immediately. You may need to wait a few minutes for the configuration to propagate to all Grafana instances.</p></blockquote></div>
+
+<p>Refer to <a href="#configuration-options">configuration options</a> for more information.</p>
+<h2 id="configure-generic-oauth-authentication-client-using-the-terraform-provider">Configure generic OAuth authentication client using the Terraform provider</h2>
+<pre>resource &#34;grafana_sso_settings&#34; &#34;generic_sso_settings&#34; {
+  provider_name = &#34;generic_oauth&#34;
+  oauth2_settings {
+    name              = &#34;Auth0&#34;
+    auth_url          = &#34;https://&lt;domain&gt;/authorize&#34;
+    token_url         = &#34;https://&lt;domain&gt;/oauth/token&#34;
+    api_url           = &#34;https://&lt;domain&gt;/userinfo&#34;
+    client_id         = &#34;&lt;client id&gt;&#34;
+    client_secret     = &#34;&lt;client secret&gt;&#34;
+    allow_sign_up     = true
+    auto_login        = false
+    scopes            = &#34;openid profile email offline_access&#34;
+    use_pkce          = true
+    use_refresh_token = true
+  }
+}</pre>
+<p>Refer to <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/sso_settings" target="_blank" rel="noopener noreferrer">Terraform Registry</a> for a complete reference on using the <code>grafana_sso_settings</code> resource.</p>
+<h2 id="configure-generic-oauth-authentication-client-using-the-grafana-configuration-file">Configure generic OAuth authentication client using the Grafana configuration file</h2>
+<p>Ensure that you have access to the <a href="../../../configure-grafana/#configuration-file-location">Grafana configuration file</a>.</p>
+<h3 id="steps">Steps</h3>
+<p>To integrate your OAuth2 provider with Grafana using our Generic OAuth authentication, follow these steps:</p>
+<ol>
+<li>
+<p>Create an OAuth2 application in your chosen OAuth2 provider.</p>
+</li>
+<li>
+<p>Set the callback URL for your OAuth2 app to <code>http://&lt;my_grafana_server_name_or_ip&gt;:&lt;grafana_server_port&gt;/login/generic_oauth</code>.</p>
+<p>Ensure that the callback URL is the complete HTTP address that you use to access Grafana via your browser, but with the appended path of <code>/login/generic_oauth</code>.</p>
+<p>For the callback URL to be correct, it might be necessary to set the <code>root_url</code> option in the <code>[server]</code>section of the Grafana configuration file. For example, if you are serving Grafana behind a proxy.</p>
+</li>
+<li>
+<p>Refer to the following table to update field values located in the <code>[auth.generic_oauth]</code> section of the Grafana configuration file:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>client_id</code>, <code>client_secret</code></td>
+          <td>These values must match the client ID and client secret from your OAuth2 app.</td>
+      </tr>
+      <tr>
+          <td><code>auth_url</code></td>
+          <td>The authorization endpoint of your OAuth2 provider.</td>
+      </tr>
+      <tr>
+          <td><code>api_url</code></td>
+          <td>The user information endpoint of your OAuth2 provider. Information returned by this endpoint must be compatible with <a href="https://connect2id.com/products/server/docs/api/userinfo" target="_blank" rel="noopener noreferrer">OpenID UserInfo</a>.</td>
+      </tr>
+      <tr>
+          <td><code>enabled</code></td>
+          <td>Enables Generic OAuth authentication. Set this value to <code>true</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Review the list of other Generic OAuth <a href="#configuration-options">configuration options</a> and complete them, as necessary.</p>
+</li>
+<li>
+<p>Optional: <a href="#configure-a-refresh-token">Configure a refresh token</a>:</p>
+<p>a. Extend the <code>scopes</code> field of <code>[auth.generic_oauth]</code> section in Grafana configuration file with refresh token scope used by your OAuth2 provider.</p>
+<p>b. Set <code>use_refresh_token</code> to <code>true</code> in <code>[auth.generic_oauth]</code> section in Grafana configuration file.</p>
+<p>c. Enable the refresh token on the provider if required.</p>
+</li>
+<li>
+<p><a href="#configure-role-mapping">Configure role mapping</a>.</p>
+</li>
+<li>
+<p>Optional: <a href="/docs/grafana/%3cGRAFANA_VERSION/setup-grafana/configure-security/configure-team-sync/">Configure team synchronization</a>.</p>
+</li>
+<li>
+<p>Restart Grafana.</p>
+<p>You should now see a Generic OAuth login button on the login page and be able to log in or sign up with your OAuth2 provider.</p>
+</li>
+</ol>
+<h3 id="configure-login">Configure login</h3>
+<p>Grafana can resolve a user&rsquo;s login from the OAuth2 ID token, user information retrieved from the OAuth2 UserInfo endpoint, or the OAuth2 access token.
+Grafana looks at these sources in the order listed until it finds a login.
+If no login is found, then the user&rsquo;s login is set to user&rsquo;s email address.</p>
+<p>Refer to the following table for information on what to configure based on how your Oauth2 provider returns a user&rsquo;s login:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Source of login</th>
+          <th>Required configuration</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>login</code> or <code>username</code> field of the OAuth2 ID token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the OAuth2 ID token.</td>
+          <td>Set <code>login_attribute_path</code> configuration option.</td>
+      </tr>
+      <tr>
+          <td><code>login</code> or <code>username</code> field of the user information from the UserInfo endpoint.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the user information from the UserInfo endpoint.</td>
+          <td>Set <code>login_attribute_path</code> configuration option.</td>
+      </tr>
+      <tr>
+          <td><code>login</code> or <code>username</code> field of the OAuth2 access token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the OAuth2 access token.</td>
+          <td>Set <code>login_attribute_path</code> configuration option.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="configure-display-name">Configure display name</h3>
+<p>Grafana can resolve a user&rsquo;s display name from the OAuth2 ID token, user information retrieved from the OAuth2 UserInfo endpoint, or the OAuth2 access token.
+Grafana looks at these sources in the order listed until it finds a display name.
+If no display name is found, then user&rsquo;s login is displayed instead.</p>
+<p>Refer to the following table for information on what you need to configure depending on how your Oauth2 provider returns a user&rsquo;s name:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Source of display name</th>
+          <th>Required configuration</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code> or <code>display_name</code> field of the OAuth2 ID token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the OAuth2 ID token.</td>
+          <td>Set <code>name_attribute_path</code> configuration option.</td>
+      </tr>
+      <tr>
+          <td><code>name</code> or <code>display_name</code> field of the user information from the UserInfo endpoint.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the user information from the UserInfo endpoint.</td>
+          <td>Set <code>name_attribute_path</code> configuration option.</td>
+      </tr>
+      <tr>
+          <td><code>name</code> or <code>display_name</code> field of the OAuth2 access token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the OAuth2 access token.</td>
+          <td>Set <code>name_attribute_path</code> configuration option.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="configure-email-address">Configure email address</h3>
+<p>Grafana can resolve the user&rsquo;s email address from the OAuth2 ID token, the user information retrieved from the OAuth2 UserInfo endpoint, the OAuth2 access token, or the OAuth2 <code>/emails</code> endpoint.
+Grafana looks at these sources in the order listed until an email address is found.
+If no email is found, then the email address of the user is set to an empty string.</p>
+<p>Refer to the following table for information on what to configure based on how the Oauth2 provider returns a user&rsquo;s email address:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Source of email address</th>
+          <th>Required configuration</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>email</code> field of the OAuth2 ID token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td><code>attributes</code> map of the OAuth2 ID token.</td>
+          <td>Set <code>email_attribute_name</code> configuration option. By default, Grafana searches for email under <code>email:primary</code> key.</td>
+      </tr>
+      <tr>
+          <td><code>upn</code> field of the OAuth2 ID token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td><code>email</code> field of the user information from the UserInfo endpoint.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the user information from the UserInfo endpoint.</td>
+          <td>Set <code>email_attribute_path</code> configuration option.</td>
+      </tr>
+      <tr>
+          <td><code>email</code> field of the OAuth2 access token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td><code>attributes</code> map of the OAuth2 access token.</td>
+          <td>Set <code>email_attribute_name</code> configuration option. By default, Grafana searches for email under <code>email:primary</code> key.</td>
+      </tr>
+      <tr>
+          <td><code>upn</code> field of the OAuth2 access token.</td>
+          <td>N/A</td>
+      </tr>
+      <tr>
+          <td>Another field of the OAuth2 access token.</td>
+          <td>Set <code>email_attribute_path</code> configuration option.</td>
+      </tr>
+      <tr>
+          <td>Email address marked as primary from the <code>/emails</code> endpoint of <br /> the OAuth2 provider (obtained by appending <code>/emails</code> to the URL <br /> configured with <code>api_url</code>)</td>
+          <td>N/A</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="configure-a-refresh-token">Configure a refresh token</h3>
+<p>When a user logs in using an OAuth2 provider, Grafana verifies that the access token has not expired. When an access token expires, Grafana uses the provided refresh token (if any exists) to obtain a new access token.</p>
+<p>Grafana uses a refresh token to obtain a new access token without requiring the user to log in again. If a refresh token doesn&rsquo;t exist, Grafana logs the user out of the system after the access token has expired.</p>
+<p>To configure Generic OAuth to use a refresh token, set <code>use_refresh_token</code> configuration option to <code>true</code> and perform one or both of the following steps, if required:</p>
+<ol>
+<li>Extend the <code>scopes</code> field of <code>[auth.generic_oauth]</code> section in Grafana configuration file with additional scopes.</li>
+<li>Enable the refresh token on the provider.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>accessTokenExpirationCheck</code> feature toggle has been removed in Grafana v10.3.0 and the <code>use_refresh_token</code> configuration value will be used instead for configuring refresh token fetching and access token expiration check.</p></blockquote></div>
+
+<h3 id="configure-role-mapping">Configure role mapping</h3>
+<p>Unless <code>skip_org_role_sync</code> option is enabled, the user&rsquo;s role will be set to the role retrieved from the auth provider upon user login.</p>
+<p>The user&rsquo;s role is retrieved using a <a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression from the <code>role_attribute_path</code> configuration option.
+Grafana will first evaluate the expression using the OAuth2 ID token. If no role is found, the expression will be evaluated using the user information obtained from the UserInfo endpoint. If still no role is found, the expression will be evaluated using the OAuth2 access token.
+To map the server administrator role, use the <code>allow_assign_grafana_admin</code> configuration option.
+Refer to <a href="#configuration-options">configuration options</a> for more information.</p>
+<p>If no valid role is found, the user is assigned the role specified by <a href="../../../configure-grafana/#auto_assign_org_role">the <code>auto_assign_org_role</code> option</a>.
+You can disable this default role assignment by setting <code>role_attribute_strict = true</code>. This setting denies user access if no role or an invalid role is returned after evaluating the <code>role_attribute_path</code> and the <code>org_mapping</code> expressions.</p>
+<p>You can use the <code>org_attribute_path</code> and <code>org_mapping</code> configuration options to assign the user to organizations and specify their role. For more information, refer to <a href="#org-roles-mapping-example">Org roles mapping example</a>. If both org role mapping (<code>org_mapping</code>) and the regular role mapping (<code>role_attribute_path</code>) are specified, then the user will get the highest of the two mapped roles.</p>
+<p>To ease configuration of a proper JMESPath expression, go to <a href="http://jmespath.org/" target="_blank" rel="noopener noreferrer">JMESPath</a> to test and evaluate expressions with custom payloads.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When using <code>org_attribute_path</code>, the value returned by the JMESPath expression must be an array, not a string.</p></blockquote></div>
+
+<h4 id="role-mapping-examples">Role mapping examples</h4>
+<p>This section includes examples of JMESPath expressions used for role mapping.</p>
+<h5 id="map-user-organization-role">Map user organization role</h5>
+<p>In this example, the user has been granted the role of an <code>Editor</code>. The role assigned is based on the value of the property <code>role</code>, which must be a valid Grafana role such as <code>Admin</code>, <code>Editor</code>, <code>Viewer</code> or <code>None</code>.</p>
+<p>Payload:</p>
+<pre>{
+    ...
+    &#34;role&#34;: &#34;Editor&#34;,
+    ...
+}</pre>
+<p>Config:</p>
+<pre>role_attribute_path = role</pre>
+<p>In the following more complex example, the user has been granted the <code>Admin</code> role. This is because they are a member of the <code>admin</code> group of their OAuth2 provider.
+If the user was a member of the <code>editor</code> group, they would be granted the <code>Editor</code> role, otherwise <code>Viewer</code>.</p>
+<p>Payload:</p>
+<pre>{
+    ...
+    &#34;groups&#34;: [
+        &#34;engineer&#34;,
+        &#34;admin&#34;,
+    ],
+    ...
+}</pre>
+<p>Config:</p>
+<pre>role_attribute_path = contains(groups[*], &#39;admin&#39;) &amp;&amp; &#39;Admin&#39; || contains(groups[*], &#39;editor&#39;) &amp;&amp; &#39;Editor&#39; || &#39;Viewer&#39;</pre>
+<h5 id="map-server-administrator-role">Map server administrator role</h5>
+<p>In the following example, the user is granted the Grafana server administrator role.</p>
+<p>Payload:</p>
+<pre>{
+    ...
+    &#34;roles&#34;: [
+        &#34;admin&#34;,
+    ],
+    ...
+}</pre>
+<p>Config:</p>
+<pre>role_attribute_path = contains(roles[*], &#39;admin&#39;) &amp;&amp; &#39;GrafanaAdmin&#39; || contains(roles[*], &#39;editor&#39;) &amp;&amp; &#39;Editor&#39; || &#39;Viewer&#39;
+allow_assign_grafana_admin = true</pre>
+<h5 id="map-one-role-to-all-users">Map one role to all users</h5>
+<p>In this example, all users will be assigned <code>Viewer</code> role regardless of the user information received from the identity provider.</p>
+<p>Config:</p>
+<pre>role_attribute_path = &#34;&#39;Viewer&#39;&#34;
+skip_org_role_sync = false</pre>
+<h4 id="org-roles-mapping-example">Org roles mapping example</h4>
+<p>In this example, the user has been granted the role of a <code>Viewer</code> in the <code>org_foo</code> org, and the role of an <code>Editor</code> in the <code>org_bar</code> and <code>org_baz</code> orgs.</p>
+<p>If the user was a member of the <code>admin</code> group, they would be granted the Grafana server administrator role.</p>
+<p>Payload:</p>
+<pre>{
+  &#34;roles&#34;: [&#34;org_foo&#34;, &#34;org_bar&#34;, &#34;another_org&#34;]
+}</pre>
+<p>Config:</p>
+<pre>role_attribute_path = contains(roles[*], &#39;admin&#39;) &amp;&amp; &#39;GrafanaAdmin&#39; || &#39;None&#39;
+allow_assign_grafana_admin = true
+org_attribute_path = roles
+org_mapping = org_foo:org_foo:Viewer org_bar:org_bar:Editor *:org_baz:Editor</pre>
+<h2 id="configure-team-synchronization">Configure team synchronization</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and to customers on select Grafana Cloud plans. For pricing information, visit <a href="/pricing/">pricing</a> or contact our sales team.</p></blockquote></div>
+
+<p>By using Team Sync, you can link your OAuth2 groups to teams within Grafana. This will automatically assign users to the appropriate teams.
+Teams for each user are synchronized when the user logs in.</p>
+<p>Generic OAuth groups can be referenced by group ID, such as <code>8bab1c86-8fba-33e5-2089-1d1c80ec267d</code> or <code>myteam</code>.
+Group information can be extracted from the OAuth2 ID token, user information from the UserInfo endpoint, or the OAuth2 access token.
+For information on configuring OAuth2 groups with Grafana using the <code>groups_attribute_path</code> configuration option, refer to <a href="#configuration-options">configuration options</a>.</p>
+<p>To learn more about Team Sync, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-team-sync/">Configure team sync</a>.</p>
+<h3 id="team-synchronization-example">Team synchronization example</h3>
+<p>Configuration:</p>
+<pre>groups_attribute_path = groups</pre>
+<p>Payload:</p>
+<pre>{
+    ...
+    &#34;groups&#34;: [
+        &#34;engineers&#34;,
+        &#34;analysts&#34;,
+    ],
+    ...
+}</pre>
+<h2 id="configuration-options">Configuration options</h2>
+<p>The following table outlines the various Generic OAuth configuration options. You can apply these options as environment variables, similar to any other configuration within Grafana. For more information, refer to <a href="../../../configure-grafana/#override-configuration-with-environment-variables">Override configuration with environment variables</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If the configuration option requires a JMESPath expression that includes a colon, enclose the entire expression in quotes to prevent parsing errors. For example <code>role_attribute_path: &quot;role:view&quot;</code></p></blockquote></div>
+
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Required</th>
+          <th>Supported on Cloud</th>
+          <th>Description</th>
+          <th>Default</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>enabled</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Enables Generic OAuth authentication.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>name</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Name that refers to the Generic OAuth authentication from the Grafana user interface.</td>
+          <td><code>OAuth</code></td>
+      </tr>
+      <tr>
+          <td><code>icon</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Icon used for the Generic OAuth authentication in the Grafana user interface.</td>
+          <td><code>signin</code></td>
+      </tr>
+      <tr>
+          <td><code>client_id</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Client ID provided by your OAuth2 app.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>client_secret</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Client secret provided by your OAuth2 app.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>auth_url</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Authorization endpoint of your OAuth2 provider.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>token_url</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Endpoint used to obtain the OAuth2 access token.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>api_url</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Endpoint used to obtain user information compatible with <a href="https://connect2id.com/products/server/docs/api/userinfo" target="_blank" rel="noopener noreferrer">OpenID UserInfo</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>auth_style</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Name of the <a href="https://pkg.go.dev/golang.org/x/oauth2#AuthStyle" target="_blank" rel="noopener noreferrer">OAuth2 AuthStyle</a> to be used when ID token is requested from OAuth2 provider. It determines how <code>client_id</code> and <code>client_secret</code> are sent to Oauth2 provider. Available values are <code>AutoDetect</code>, <code>InParams</code> and <code>InHeader</code>.</td>
+          <td><code>AutoDetect</code></td>
+      </tr>
+      <tr>
+          <td><code>scopes</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated OAuth2 scopes.</td>
+          <td><code>user:email</code></td>
+      </tr>
+      <tr>
+          <td><code>empty_scopes</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to use an empty scope during authentication.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>allow_sign_up</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Controls Grafana user creation through the Generic OAuth login. Only existing Grafana users can log in with Generic OAuth if set to <code>false</code>.</td>
+          <td><code>true</code></td>
+      </tr>
+      <tr>
+          <td><code>auto_login</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to enable users to bypass the login screen and automatically log in. This setting is ignored if you configure multiple auth providers to use auto-login.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>login_prompt</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Indicates the type of user interaction when the user logs in with the IdP. Available values are <code>login</code>, <code>consent</code> and <code>select_account</code>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>id_token_attribute_name</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>The name of the key used to extract the ID token from the returned OAuth2 token.</td>
+          <td><code>id_token</code></td>
+      </tr>
+      <tr>
+          <td><code>login_attribute_path</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td><a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for user login lookup from the user ID token. For more information on how user login is retrieved, refer to <a href="#configure-login">Configure login</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>name_attribute_path</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td><a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for user name lookup from the user ID token. This name will be used as the user&rsquo;s display name. For more information on how user display name is retrieved, refer to <a href="#configure-display-name">Configure display name</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>email_attribute_path</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td><a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for user email lookup from the user information. For more information on how user email is retrieved, refer to <a href="#configure-email-address">Configure email address</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>email_attribute_name</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Name of the key to use for user email lookup within the <code>attributes</code> map of OAuth2 ID token. For more information on how user email is retrieved, refer to <a href="#configure-email-address">Configure email address</a>.</td>
+          <td><code>email:primary</code></td>
+      </tr>
+      <tr>
+          <td><code>role_attribute_path</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td><a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for Grafana role lookup. Grafana will first evaluate the expression using the OAuth2 ID token. If no role is found, the expression will be evaluated using the user information obtained from the UserInfo endpoint. If still no role is found, the expression will be evaluated using the OAuth2 access token. The result of the evaluation should be a valid Grafana role (<code>None</code>, <code>Viewer</code>, <code>Editor</code>, <code>Admin</code> or <code>GrafanaAdmin</code>). For more information on user role mapping, refer to <a href="#configure-role-mapping">Configure role mapping</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>role_attribute_strict</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to deny user login if the Grafana org role cannot be extracted using <code>role_attribute_path</code> or <code>org_mapping</code>. For more information on user role mapping, refer to <a href="#configure-role-mapping">Configure role mapping</a>.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>skip_org_role_sync</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to stop automatically syncing user roles. This will allow you to set organization roles for your users from within Grafana manually.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>org_attribute_path</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td><a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for Grafana org to role lookup. Grafana will first evaluate the expression using the OAuth2 ID token. If no value is returned, the expression will be evaluated using the user information obtained from the UserInfo endpoint. If still no value is returned, the expression will be evaluated using the OAuth2 access token. The result of the evaluation will be mapped to org roles based on <code>org_mapping</code>. For more information on org to role mapping, refer to <a href="#org-roles-mapping-example">Org roles mapping example</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>org_mapping</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>List of comma- or space-separated <code>&lt;ExternalOrgName&gt;:&lt;OrgIdOrName&gt;:&lt;Role&gt;</code> mappings. Value can be <code>*</code> meaning &ldquo;All users&rdquo;. Role is optional and can have the following values: <code>None</code>, <code>Viewer</code>, <code>Editor</code> or <code>Admin</code>. For more information on external organization to role mapping, refer to <a href="#org-roles-mapping-example">Org roles mapping example</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>allow_assign_grafana_admin</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>Set to <code>true</code> to enable automatic sync of the Grafana server administrator role. If this option is set to <code>true</code> and the result of evaluating <code>role_attribute_path</code> for a user is <code>GrafanaAdmin</code>, Grafana grants the user the server administrator privileges and organization administrator role. If this option is set to <code>false</code> and the result of evaluating <code>role_attribute_path</code> for a user is <code>GrafanaAdmin</code>, Grafana grants the user only organization administrator role. For more information on user role mapping, refer to <a href="#configure-role-mapping">Configure role mapping</a>.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>groups_attribute_path</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td><a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for user group lookup. Grafana will first evaluate the expression using the OAuth2 ID token. If no groups are found, the expression will be evaluated using the user information obtained from the UserInfo endpoint. If still no groups are found, the expression will be evaluated using the OAuth2 access token. The result of the evaluation should be a string array of groups.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>allowed_groups</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated groups. The user should be a member of at least one group to log in. If you configure <code>allowed_groups</code>, you must also configure <code>groups_attribute_path</code>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>allowed_organizations</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated organizations. The user should be a member of at least one organization to log in.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>allowed_domains</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated domains. The user should belong to at least one domain to log in.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>team_ids</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>String list of team IDs. If set, the user must be a member of one of the given teams to log in. If you configure <code>team_ids</code>, you must also configure <code>teams_url</code> and <code>team_ids_attribute_path</code>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>team_ids_attribute_path</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>The <a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for Grafana team ID lookup within the results returned by the <code>teams_url</code> endpoint.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>teams_url</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>The URL used to query for team IDs. If not set, the default value is <code>/teams</code>. If you configure <code>teams_url</code>, you must also configure <code>team_ids_attribute_path</code>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>tls_skip_verify_insecure</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>If set to <code>true</code>, the client accepts any certificate presented by the server and any host name in that certificate. <em>You should only use this for testing</em>, because this mode leaves SSL/TLS susceptible to man-in-the-middle attacks.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>tls_client_cert</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>The path to the certificate.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>tls_client_key</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>The path to the key.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>tls_client_ca</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>The path to the trusted certificate authority list.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>use_pkce</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to use <a href="https://datatracker.ietf.org/doc/html/rfc7636" target="_blank" rel="noopener noreferrer">Proof Key for Code Exchange (PKCE)</a>. Grafana uses the SHA256 based <code>S256</code> challenge method and a 128 bytes (base64url encoded) code verifier.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>use_refresh_token</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to use refresh token and check access token expiration.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>signout_redirect_url</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>URL to redirect to after the user logs out.</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="examples-of-setting-up-generic-oauth">Examples of setting up Generic OAuth</h2>
+<p>This section includes examples of setting up Generic OAuth integration.</p>
+<h3 id="set-up-oauth2-with-descope">Set up OAuth2 with Descope</h3>
+<p>To set up Generic OAuth authentication with Descope, follow these steps:</p>
+<ol>
+<li>
+<p>Create a Descope Project <a href="https://app.descope.com/gettingStarted" target="_blank" rel="noopener noreferrer">here</a>, and go through the Getting Started Wizard to configure your authentication. You can skip step if you already have Descope project set up.</p>
+</li>
+<li>
+<p>If you wish to use a flow besides <code>Sign Up or In</code>, go to the <strong>IdP Applications</strong> menu in the console, and select your IdP application. Then alter the <strong>Flow Hosting URL</strong> query parameter <code>?flow=sign-up-or-in</code> to change which flow id you wish to use.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Update the <code>[auth.generic_oauth]</code> section of the Grafana configuration file using the values from the <strong>Settings</strong> tab:</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can get your Client ID (Descope Project ID) under <a href="https://app.descope.com/settings/project" target="_blank" rel="noopener noreferrer">Project Settings</a>. Your Client Secret (Descope Access Key) can be generated under <a href="https://app.descope.com/accesskeys" target="_blank" rel="noopener noreferrer">Access Keys</a>.</p></blockquote></div>
+
+<pre>[auth.generic_oauth]
+enabled = true
+allow_sign_up = true
+auto_login = false
+team_ids =
+allowed_organizations =
+name = Descope
+client_id = &lt;Descope Project ID&gt;
+client_secret = &lt;Descope Access Key&gt;
+scopes = openid profile email descope.claims descope.custom_claims
+auth_url = https://api.descope.com/oauth2/v1/authorize
+token_url = https://api.descope.com/oauth2/v1/token
+api_url = https://api.descope.com/oauth2/v1/userinfo
+use_pkce = true
+use_refresh_token = true</pre>
+</li>
+</ol>
+<h3 id="set-up-oauth2-with-auth0">Set up OAuth2 with Auth0</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Support for the Auth0 &ldquo;audience&rdquo; feature is not currently available in Grafana. For roles and permissions, the available options are described <a href="../../../../administration/roles-and-permissions/">here</a>.</p></blockquote></div>
+
+<p>To set up Generic OAuth authentication with Auth0, follow these steps:</p>
+<ol>
+<li>
+<p>Create an Auth0 application using the following parameters:</p>
+<ul>
+<li>Name: Grafana</li>
+<li>Type: Regular Web Application</li>
+</ul>
+</li>
+<li>
+<p>Go to the <strong>Settings</strong> tab of the application and set <strong>Allowed Callback URLs</strong> to <code>https://&lt;grafana domain&gt;/login/generic_oauth</code>.</p>
+</li>
+<li>
+<p>Click <strong>Save Changes</strong>.</p>
+</li>
+<li>
+<p>Update the <code>[auth.generic_oauth]</code> section of the Grafana configuration file using the values from the <strong>Settings</strong> tab:</p>
+<pre>[auth.generic_oauth]
+enabled = true
+allow_sign_up = true
+auto_login = false
+team_ids =
+allowed_organizations =
+name = Auth0
+client_id = &lt;client id&gt;
+client_secret = &lt;client secret&gt;
+scopes = openid profile email offline_access
+auth_url = https://&lt;domain&gt;/authorize
+token_url = https://&lt;domain&gt;/oauth/token
+api_url = https://&lt;domain&gt;/userinfo
+use_pkce = true
+use_refresh_token = true</pre>
+</li>
+</ol>
+<h3 id="set-up-oauth2-with-bitbucket">Set up OAuth2 with Bitbucket</h3>
+<p>To set up Generic OAuth authentication with Bitbucket, follow these steps:</p>
+<ol>
+<li>
+<p>Navigate to <strong>Settings &gt; Workspace setting &gt; OAuth consumers</strong> in BitBucket.</p>
+</li>
+<li>
+<p>Create an application by selecting <strong>Add consumer</strong> and using the following parameters:</p>
+<ul>
+<li>Allowed Callback URLs: <code>https://&lt;grafana domain&gt;/login/generic_oauth</code></li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Update the <code>[auth.generic_oauth]</code> section of the Grafana configuration file using the values from the <code>Key</code> and <code>Secret</code> from the consumer description:</p>
+<pre>[auth.generic_oauth]
+name = BitBucket
+enabled = true
+allow_sign_up = true
+auto_login = false
+client_id = &lt;client key&gt;
+client_secret = &lt;client secret&gt;
+scopes = account email
+auth_url = https://bitbucket.org/site/oauth2/authorize
+token_url = https://bitbucket.org/site/oauth2/access_token
+api_url = https://api.bitbucket.org/2.0/user
+teams_url = https://api.bitbucket.org/2.0/user/permissions/workspaces
+team_ids_attribute_path = values[*].workspace.slug
+team_ids =
+allowed_organizations =
+use_refresh_token = true</pre>
+</li>
+</ol>
+<p>By default, a refresh token is included in the response for the <strong>Authorization Code Grant</strong>.</p>
+<h3 id="set-up-oauth2-with-onelogin">Set up OAuth2 with OneLogin</h3>
+<p>To set up Generic OAuth authentication with OneLogin, follow these steps:</p>
+<ol>
+<li>
+<p>Create a new Custom Connector in OneLogin with the following settings:</p>
+<ul>
+<li>Name: Grafana</li>
+<li>Sign On Method: OpenID Connect</li>
+<li>Redirect URI: <code>https://&lt;grafana domain&gt;/login/generic_oauth</code></li>
+<li>Signing Algorithm: RS256</li>
+<li>Login URL: <code>https://&lt;grafana domain&gt;/login/generic_oauth</code></li>
+</ul>
+</li>
+<li>
+<p>Add an app to the Grafana Connector:</p>
+<ul>
+<li>Display Name: Grafana</li>
+</ul>
+</li>
+<li>
+<p>Update the <code>[auth.generic_oauth]</code> section of the Grafana configuration file using the client ID and client secret from the <strong>SSO</strong> tab of the app details page:</p>
+<p>Your OneLogin Domain will match the URL you use to access OneLogin.</p>
+<pre>[auth.generic_oauth]
+name = OneLogin
+enabled = true
+allow_sign_up = true
+auto_login = false
+client_id = &lt;client id&gt;
+client_secret = &lt;client secret&gt;
+scopes = openid email name
+auth_url = https://&lt;onelogin domain&gt;.onelogin.com/oidc/2/auth
+token_url = https://&lt;onelogin domain&gt;.onelogin.com/oidc/2/token
+api_url = https://&lt;onelogin domain&gt;.onelogin.com/oidc/2/me
+team_ids =
+allowed_organizations =</pre>
+</li>
+</ol>
+<h3 id="set-up-oauth2-with-dex">Set up OAuth2 with Dex</h3>
+<p>To set up Generic OAuth authentication with <a href="https://dexidp.io/" target="_blank" rel="noopener noreferrer">Dex IdP</a>, follow these
+steps:</p>
+<ol>
+<li>
+<p>Add Grafana as a client in the Dex config YAML file:</p>
+<pre>staticClients:
+  - id: &lt;client id&gt;
+    name: Grafana
+    secret: &lt;client secret&gt;
+    redirectURIs:
+      - &#39;https://&lt;grafana domain&gt;/login/generic_oauth&#39;</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Unlike many other OAuth2 providers, Dex doesn&rsquo;t provide <code>&lt;client secret&gt;</code>.
+Instead, a secret can be generated with for example <code>openssl rand -hex 20</code>.</p></blockquote></div>
+
+</li>
+<li>
+<p>Update the <code>[auth.generic_oauth]</code> section of the Grafana configuration:</p>
+<pre>[auth.generic_oauth]
+name = Dex
+enabled = true
+client_id = &lt;client id&gt;
+client_secret = &lt;client secret&gt;
+scopes = openid email profile groups offline_access
+auth_url = https://&lt;dex base uri&gt;/auth
+token_url = https://&lt;dex base uri&gt;/token
+api_url = https://&lt;dex base uri&gt;/userinfo</pre>
+<p><code>&lt;dex base uri&gt;</code> corresponds to the <code>issuer: </code> configuration in Dex (e.g. the Dex
+domain possibly including a path such as e.g. <code>/dex</code>). The <code>offline_access</code> scope is
+needed when using <a href="#configure-a-refresh-token">refresh tokens</a>.</p>
+</li>
+</ol>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<h1 id="encrypt-database-secrets-using-azure-key-vault">Encrypt database secrets using Azure Key Vault</h1>
+<p>You can use an encryption key from Azure Key Vault to encrypt secrets in the Grafana database.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>An Azure account with permission to view and create Key Vault keys and programmatic credentials to access those keys</li>
+<li>Access to the Grafana <a href="../../../configure-grafana/#configuration-file-location">configuration</a> file</li>
+</ul>
+<ol>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/key-vault/general/quick-create-portal#create-a-vault" target="_blank" rel="noopener noreferrer">Create a vault</a>.</p>
+</li>
+<li>
+<p>Create a key in the <strong>Key Vault</strong> with the name that you want by using <strong>RSA</strong> as the type and <code>2048</code> as the size with encrypt and decrypt permissions.</p>
+</li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application" target="_blank" rel="noopener noreferrer">Register an application</a> and generate a client secret for it.</p>
+</li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/key-vault/general/assign-access-policy?tabs=azure-portal" target="_blank" rel="noopener noreferrer">Assign a Key Vault access policy</a> for the key vault that you created:</p>
+</li>
+<li>
+<p>In the Key Permissions section, set encrypt and decrypt permissions, and click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>From within Grafana, turn on envelope encryption.</p>
+</li>
+<li>
+<p>Add your Azure Key Vault details to the Grafana configuration file; depending on your operating system, is usually named <code>grafana.ini</code>:
+<br><br>a. Add a new section to the configuration file, with a name in the format of <code>[security.encryption.azurekv.&lt;KEY-NAME&gt;]</code>, where <code>&lt;KEY-NAME&gt;</code> is any name that uniquely identifies this key among other provider keys.
+<br><br>b. Fill in the section with the following values:
+<br></p>
+<ul>
+<li><code>tenant_id</code>: the <strong>Directory ID</strong> (tenant) from the application that you registered.</li>
+<li><code>client_id</code>: the <strong>Application ID</strong> (client) from the application that you registered.</li>
+<li><code>client_secret</code>: the VALUE of the secret that you generated in your app. (Don&rsquo;t use the Secret ID).</li>
+<li><code>key_id</code>: the key name that you created in the key vault.</li>
+<li><code>vault_uri</code>: the URL of your key vault.</li>
+</ul>
+<p>An example of an Azure Key Vault provider section in the <code>grafana.ini</code> file is as follows:</p>
+<pre># Azure Key Vault provider setup
+;[security.encryption.azurekv.example-encryption-key]
+# Azure Application directory ID (tenant)
+tenant_id = 1234abcd-12ab-34cd-56ef-1234567890ab
+# Azure Application application ID (client).
+client_id = 1356dfgh-12ab-34cd-56ef-3322114455cc
+# Azure Application client secret.
+client_secret = FbE4X~4Jq45ERKxx823Aheb9plBjQqHHe81Sc
+# Azure Key Vault key name.
+key_id = mysecretkey
+# Azure Key Vault uri.
+vault_uri = https://my-vault-name.vault.azure.net</pre>
+</li>
+<li>
+<p>Update the <code>[security]</code> section of the <code>grafana.ini</code> configuration file with the new Encryption Provider key that you created:</p>
+<pre>[security]
+# previous encryption key, used for legacy alerts, decrypting existing secrets or used as default provider when external providers are not configured
+secret_key = AaaaAaaa
+# encryption provider key in the format &lt;PROVIDER&gt;.&lt;KEY-NAME&gt;
+encryption_provider = azurekv.example-encryption-key
+# list of configured key providers, space separated
+available_encryption_providers =  azurekv.example-encryption-key</pre>
+</li>
+<li>
+<p><a href="/docs/grafana/latest/installation/restart-grafana/">Restart Grafana</a>.</p>
+</li>
+<li>
+<p>(Optional) From the command line and the root directory of Grafana Enterprise, re-encrypt all of the secrets within the Grafana database with the new key using the following command:</p>
+<p><code>grafana cli admin secrets-migration re-encrypt</code></p>
+<p>If you do not re-encrypt existing secrets, then they will remain encrypted by the previous encryption key. Users will still be able to access them.</p>
+<p><strong>&gt; Note:</strong> This process could take a few minutes to complete, depending on the number of secrets (such as data sources) in your database. Users might experience errors while this process is running, and alert notifications might not be sent.</p>
+<p><strong>&gt; Note:</strong> If you are updating this encryption key during the initial setup of Grafana before any data sources or dashboards have been created, then this step is not necessary because there are no secrets in Grafana to migrate.</p>
+</li>
+</ol>

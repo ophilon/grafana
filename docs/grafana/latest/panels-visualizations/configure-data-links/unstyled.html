@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<h1 id="configure-data-links-and-actions">Configure data links and actions</h1>
+<p><em>Data links</em> allow you to link to other panels, dashboards, and external resources and <em>actions</em> let you trigger basic, unauthenticated, API calls.
+In both cases, you can carry out these tasks while maintaining the context of the source panel.</p>
+<h2 id="data-links">Data links</h2>
+<p>With data links, you can create links that include the series name or even the value under the cursor. For example, if your visualization shows four servers, you can add a data link to one or two of them.</p>
+<p>The link itself is accessible in different ways depending on the visualization. For the time series visualization you need to click a data point or line:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-time-series-data-link-v10.3.png"
+  alt="Time series visualization with a data link displayed" width="948"
+     height="304"/></p>
+<p>For visualizations like stat, gauge, or bar gauge you can click anywhere on the visualization to open the context menu:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-stat-data-link-v10.3.png"
+  alt="Stat visualization with a data link displayed" width="950"
+     height="302"/></p>
+<p>If there&rsquo;s only one data link in the visualization, clicking anywhere on the visualization opens the link rather than the context menu.</p>
+<h3 id="supported-visualizations">Supported visualizations</h3>
+<p>You can configure data links for the following visualizations:</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-gauge/">Bar gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Canvas</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/gauge/">Gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/">Geomap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/heatmap/">Heatmap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">Histogram</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/pie-chart/">Pie chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/">Stat</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/xy-chart/">XY chart</a></li>
+</ul>
+
+</div>
+<h2 id="actions">Actions</h2>
+<p>Using actions, you can trigger processes like starting or shutting down a server, directly from a dashboard panel. 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/#button-api-options">API settings</a> are configured in the <strong>Add action</strong> dialog box. You can also pass variables in the API editor.</p>
+<h3 id="supported-visualizations-1">Supported visualizations</h3>
+<p>You can configure actions for the following visualizations:</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/xy-chart/">XY chart</a></li>
+</ul>
+
+</div>
+<h2 id="data-link-variables">Data link and action variables</h2>
+<p>Variables in data links and actions let you send people to a detailed dashboard or trigger an API call with preserved data filters. For example, you could use variables to specify a label, time range, series, or variable selection.</p>
+<p>To see a list of available variables, enter <code>$</code> in the data link or action <strong>URL</strong> field.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>These variables changed in 6.4 so if you have an older version of Grafana, then use the version picker to select docs for an older version of Grafana.</p></blockquote></div>
+
+<p>Azure Monitor, 
+    <a href="/docs/grafana/latest/datasources/aws-cloudwatch/query-editor/#deep-link-grafana-panels-to-the-cloudwatch-console-1">CloudWatch</a>, and 
+    <a href="/docs/grafana/latest/datasources/google-cloud-monitoring/query-editor/#deep-link-from-grafana-panels-to-the-google-cloud-console-metrics-explorer">Google Cloud Monitoring</a> have pre-configured data links called <em>deep links</em>.</p>
+<p>You can also use template variables in your data links or actions URLs. For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templates and variables</a>.</p>
+<h3 id="time-range-panel-variables">Time range panel variables</h3>
+<p>These variables allow you to include the current time range in the data link or action URL:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>__url_time_range</code></td>
+          <td>Current dashboard&rsquo;s time range (for example, <code>?from=now-6h&amp;to=now</code>)</td>
+      </tr>
+      <tr>
+          <td><code>__from</code></td>
+          <td>For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#__from-and-__to">Global variables</a>.</td>
+      </tr>
+      <tr>
+          <td><code>__to</code></td>
+          <td>For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#__from-and-__to">Global variables</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>When you create data links and actions using time range variables like <code>__url_time_range</code> in the URL, you have to form the query parameter syntax yourself; that is, you must format the URL by appending query parameters using the question mark (<code>?</code>) and ampersand (<code>&amp;</code>) syntax. These characters aren&rsquo;t automatically generated.</p>
+<h3 id="series-variables">Series variables</h3>
+<p>Series-specific variables are available under <code>__series</code> namespace:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>__series.name</code></td>
+          <td>Series name to the URL</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="field-variables">Field variables</h3>
+<p>Field-specific variables are available under <code>__field</code> namespace:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>__field.name</code></td>
+          <td>The name of the field</td>
+      </tr>
+      <tr>
+          <td><code>__field.labels.&lt;LABEL&gt;</code></td>
+          <td>Label&rsquo;s value to the URL. If your label contains dots, then use <code>__field.labels[&quot;&lt;LABEL&gt;&quot;]</code> syntax.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="value-variables">Value variables</h3>
+<p>Value-specific variables are available under <code>__value</code> namespace:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>__value.time</code></td>
+          <td>Value&rsquo;s timestamp (Unix ms epoch) to the URL (for example, <code>?time=1560268814105</code>)</td>
+      </tr>
+      <tr>
+          <td><code>__value.raw</code></td>
+          <td>Raw value</td>
+      </tr>
+      <tr>
+          <td><code>__value.numeric</code></td>
+          <td>Numeric representation of a value</td>
+      </tr>
+      <tr>
+          <td><code>__value.text</code></td>
+          <td>Text representation of a value</td>
+      </tr>
+      <tr>
+          <td><code>__value.calc</code></td>
+          <td>Calculation name if the value is result of calculation</td>
+      </tr>
+  </tbody>
+</table>
+<p>Using value-specific variables in data links and actions can show different results depending on the set option of Tooltip mode.</p>
+<p>When you create data links and actions using time range variables like <code>__value.time</code> in the URL, you have to form the query parameter syntax yourself; that is, you must add the question mark (<code>?</code>) and ampersand (<code>&amp;</code>). These characters aren&rsquo;t automatically generated.</p>
+<h3 id="data-variables">Data variables</h3>
+<p>To access values and labels from other fields use:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>__data.fields[i]</code></td>
+          <td>Value of field <code>i</code> (on the same row)</td>
+      </tr>
+      <tr>
+          <td><code>__data.fields[&quot;NameOfField&quot;]</code></td>
+          <td>Value of field using name instead of index</td>
+      </tr>
+      <tr>
+          <td><code>__data.fields[1].labels.cluster</code></td>
+          <td>Access labels of another field</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="template-variables">Template variables</h3>
+<p>When linking to another dashboard that uses template variables, select variable values for whoever clicks the link.</p>
+<p><code>${var-myvar:queryparam}</code> - where <code>var-myvar</code> is the name of the template variable that matches one in the current dashboard that you want to use.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Variable state</th>
+          <th>Result in the created URL</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>selected one value</td>
+          <td><code>var-myvar=value1</code></td>
+      </tr>
+      <tr>
+          <td>selected multiple values</td>
+          <td><code>var-myvar=value1&amp;var-myvar=value2</code></td>
+      </tr>
+      <tr>
+          <td>selected <code>All</code></td>
+          <td><code>var-myvar=All</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>If you want to add all of the current dashboard&rsquo;s variables to the URL, then use <code>${__all_variables}</code>.</p>
+<h2 id="add-a-data-link">Add data links or actions</h2>
+<p>The following tasks describe how to configure data links and actions.</p>
+
+
+
+
+  <div class="br-4 base-border border-color-gray-3 docs_tabs">
+    <div x-data="app_content_tabs([&#34;Add data links&#34;,&#34;Add actions&#34;], '3031dc4ce95fadf9177f7416870920e5')" x-init="init()">
+      <div class="d-flex w-100p flex-direction-row align-items-center justify-content-flex-start d-md-none">
+        <select class="docs_tabs--select w-100p base-border-bottom border-color-gray-3" @change="toggle($event.target.value)">
+          
+          
+            <option value="Add data links" :selected="active === 'Add data links'">Add data links</option>
+          
+          
+            <option value="Add actions" :selected="active === 'Add actions'">Add actions</option>
+          
+        </select> 
+      </div>
+      <nav class="docs_tabs--navigation base-border-bottom border-color-gray-3 d-none d-md-block" role="tablist" data-codetoggle="true">
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Add data links')"
+            :class="{ 'docs_tabs--label-active': active === 'Add data links' }"
+          >
+            Add data links
+          </button>
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Add actions')"
+            :class="{ 'docs_tabs--label-active': active === 'Add actions' }"
+          >
+            Add actions
+          </button>
+        
+      </nav>
+      <div class="docs_tabs--content-container">
+        
+
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Add data links' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <p>To add a data link, follow these steps:</p>
+<ol>
+<li>
+<p>Navigate to the panel to which you want to add the data link.</p>
+</li>
+<li>
+<p>Hover over any part of the panel to display the menu icon in the upper-right corner.</p>
+</li>
+<li>
+<p>Click the menu icon and select <strong>Edit</strong> to open the panel editor.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>Data links and actions</strong> section and expand it.</p>
+</li>
+<li>
+<p>Click <strong>+ Add link</strong>.</p>
+</li>
+<li>
+<p>In the dialog box that opens, enter a <strong>Title</strong>.</p>
+<p>This is a human-readable label for the link displayed in the UI. This is a required field.</p>
+</li>
+<li>
+<p>Enter the <strong>URL</strong> to which you want to link.</p>
+<p>To add a data link variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables. This is a required field.</p>
+</li>
+<li>
+<p>If you want the link to open in a new tab, toggle the <strong>Open in a new tab</strong> switch.</p>
+</li>
+<li>
+<p>If you want the data link to open with a single click on the visualization, toggle the <strong>One click</strong> switch.</p>
+<p>Only one data link can have <strong>One click</strong> enabled at a time. <strong>One click</strong> is only supported for some visualizations.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> to save changes and close the dialog box.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+
+</div>
+
+   
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Add actions' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Actions are not supported for all visualizations. For the list of supported visualizations, refer to <a href="#supported-visualizations-1">Supported visualizations</a>.</p></blockquote></div>
+<p>To add an action, by follow these steps:</p>
+<ol>
+<li>
+<p>Navigate to the panel to which you want to add the action.</p>
+</li>
+<li>
+<p>Hover over any part of the panel to display the menu icon in the upper-right corner.</p>
+</li>
+<li>
+<p>Click the menu icon and select <strong>Edit</strong> to open the panel editor.</p>
+</li>
+<li>
+<p>Scroll down to the <strong>Data links and actions</strong> section and expand it.</p>
+</li>
+<li>
+<p>Click <strong>+ Add action</strong>.</p>
+</li>
+<li>
+<p>In the dialog box that opens, define the API call settings:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>A human-readable label for the action that&rsquo;s displayed in the UI.</td>
+      </tr>
+      <tr>
+          <td>Confirmation message</td>
+          <td>A descriptive prompt to confirm or cancel the action.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Select from <strong>POST</strong>, <strong>PUT</strong>, or <strong>GET</strong>.</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>The request URL.</p><p>To add a variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables.</td>
+      </tr>
+      <tr>
+          <td>Variables</td>
+          <td><strong>Key</strong> and <strong>Name</strong> pairs with a type selection. Click the <strong>+</strong> icon to add as many variables as you need. To add a variable to the request, prefix the key with <code>$</code>. You can set the values for the variables when performing an action.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td><strong>Key</strong> and <strong>Value</strong> pairs. Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Headers</td>
+          <td>Comprised of <strong>Key</strong> and <strong>Value</strong> pairs and a <strong>Content-Type</strong>.</p><p>Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select from the following: <strong>application/json</strong>, <strong>text/plain</strong>, <strong>application/XML</strong>, and <strong>application/x-www-form-urlencoded</strong>.</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>The body of the request.</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+<li>
+<p>Click <strong>Save</strong> to save changes and close the dialog box.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+
+</div>
+
+   
+      </div>
+    </div>
+  </div>
+
+
+<p>If you add multiple data links or actions, you can control the order in which they appear in the visualization. To do this, click and drag the data link or action to the desired position.</p>

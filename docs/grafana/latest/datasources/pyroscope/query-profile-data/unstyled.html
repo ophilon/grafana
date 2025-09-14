@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<p>/docs/grafana-cloud/visualizations/panels-visualizations/visualizations/flame-graph/</p>
+<h1 id="query-profile-data">Query profile data</h1>
+<p>You can query your profile data using the open source Grafana Profiles Drilldown app or the built-in Grafana Pyroscope data source query editor.</p>
+<ul>
+<li>Profiles Drilldown provides a queryless experience for inspecting your profiling data with opinionated workflows to assist your investigation.</li>
+<li>Data source query editor provides complete control over your data exploration and is recommended for experienced users.</li>
+</ul>
+<p>In addition, you can embed flame graph panels in Grafana dashboards.
+Refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">Flame graph panel</a> documentation for details.</p>
+<h2 id="profiles-drilldown">Profiles Drilldown</h2>
+<p>
+    <a href="/docs/grafana/latest/explore/simplified-exploration/profiles/">Grafana Profiles Drilldown</a> is a native Grafana application designed to integrate seamlessly with Pyroscope, the open source continuous profiling platform, providing a smooth, queryless experience for browsing and analyzing profiling data.</p>
+<p>You can use Profiles Drilldown in Grafana Cloud or in your own Grafana instance.
+For more information, refer to 
+    <a href="/docs/grafana/latest/explore/simplified-exploration/profiles/access/">Access or install Profiles Drilldown</a>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/explore-profiles/explore-profiles-homescreen-v0.1.17.png"
+  alt="Profiles Drilldown home screen" width="1227"
+     height="787"/></p>
+<h3 id="use-cases">Use cases</h3>
+<p>There are several different modes for viewing, analyzing, and comparing profiling data.</p>
+<p>The main use cases are the following:</p>
+<ul>
+<li>Proactive: Cutting costs, addressing latency issues, or optimizing memory usage for applications</li>
+<li>Reactive: Resolving incidents with line-level accuracy or debugging active latency/memory issues</li>
+</ul>
+<p>Profiles Drilldown provides an intuitive interface to specifically support proactivee and reactive use cases.
+You get a holistic view of all of your services and how they&rsquo;re functioning, but also the ability to drill down for more targeted root cause analysis.</p>
+<p>Profiles Drilldown offers a convenient platform to analyze profiles and get insights that are impossible to get from using other traditional signals like logs, metrics, or tracing.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=x9aPw_CbIQc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/a/grafana-pyroscope-app/profiles-explorer" target="_blank" rel="noopener noreferrer">the Grafana Play site</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/a/grafana-pyroscope-app/profiles-explorer">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="pyroscope-query-editor">Pyroscope query editor</h2>
+<p>The Pyroscope data source query editor gives you access to a profile type selector, a label selector, and collapsible options.</p>
+<p>Like Profiles Drilldown, the query editor also provides a flame graph to visualize data.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/pyroscope/query-editor/query-editor.png"
+  alt="Query editor" width="1902"
+     height="278"/></p>
+<p>To access the query editor:</p>
+<ol>
+<li>
+<p>Sign into Grafana or Grafana Cloud.</p>
+</li>
+<li>
+<p>Select your Pyroscope data source.</p>
+</li>
+<li>
+<p>From the menu, choose <strong>Explore</strong>.</p>
+</li>
+<li>
+<p>Select a profile type from the drop-down menu.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 450px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/pyroscope/query-editor/select-profile.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/pyroscope/query-editor/select-profile.png"data-srcset="/media/docs/pyroscope/query-editor/select-profile.png?w=320 320w, /media/docs/pyroscope/query-editor/select-profile.png?w=550 550w, /media/docs/pyroscope/query-editor/select-profile.png?w=750 750w, /media/docs/pyroscope/query-editor/select-profile.png?w=900 900w, /media/docs/pyroscope/query-editor/select-profile.png?w=1040 1040w, /media/docs/pyroscope/query-editor/select-profile.png?w=1240 1240w, /media/docs/pyroscope/query-editor/select-profile.png?w=1920 1920w"
+             data-sizes="auto"alt="Profile selector"width="886"height="550"title="Profile selector"/>
+           <noscript>
+             <img
+               src="/media/docs/pyroscope/query-editor/select-profile.png"
+               alt="Profile selector"width="886"height="550"title="Profile selector"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Profile selector</figcaption></a></figure>
+</li>
+<li>
+<p>Use the labels selector input to filter by labels. Pyroscope uses similar syntax to Prometheus to filter labels.
+Refer to 
+    <a href="/docs/pyroscope/latest/">Pyroscope documentation</a> for available operators and syntax.</p>
+<p>While the label selector can be left empty to query all profiles without filtering by labels, you must select a profile type or app for the query to be valid.</p>
+<p>Grafana doesn&rsquo;t show any data if the profile type or app isn’t selected when a query runs.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/pyroscope/query-editor/labels-selector.png"
+  alt="Labels selector" width="1900"
+     height="282"/></p>
+</li>
+<li>
+<p>Expand the <strong>Options</strong> section to view <strong>Query Type</strong> and <strong>Group by</strong>.
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/pyroscope/query-editor/options-section.png"
+  alt="Options section" width="1906"
+     height="416"/></p>
+</li>
+<li>
+<p>Select a query type to return the profile data. Data is shown in the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">Flame Graph</a>, metric data visualized in a graph, or both. You can only select both options in Explore. The panels used on dashboards allow only one visualization.</p>
+</li>
+</ol>
+<p>Using <strong>Group by</strong>, you can group metric data by a specified label.
+Without any <strong>Group by</strong> label, metric data aggregates over all the labels into single time series.
+You can use multiple labels to group by. Group by only effects the metric data and doesn&rsquo;t change the profile data results.</p>
+<p>In conjunction with <strong>Group by</strong>, you can set a positive number in the <strong>Limit</strong> input to limit the maximum number of time series returned by the data source. The series returned are always ordered by descending value for the total aggregated data over the time period.</p>
+<h3 id="profiles-query-results">Profiles query results</h3>
+<p>Profiles can be visualized in a flame graph.
+Refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">Flame Graph documentation</a> to learn about the visualization and its features.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/pyroscope/query-editor/flame-graph.png"
+  alt="Flame graph" width="1958"
+     height="1204"/></p>
+<p>Pyroscope returns profiles aggregated over a selected time range.
+The absolute values in the flame graph grow as the time range gets bigger while keeping the relative values meaningful.
+You can zoom in on the time range to get a higher granularity profile up to the point of a single scrape interval.</p>
+<h3 id="metrics-query-results">Metrics query results</h3>
+<p>Metrics results represent the aggregated sum value over time of the selected profile type.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/pyroscope/query-editor/metric-graph.png"
+  alt="Metrics graph" width="1942"
+     height="492"/></p>
+<p>This allows you to quickly see any spikes in the value of the scraped profiles and zoom in to a particular time range.</p>

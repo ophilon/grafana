@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<h1 id="deprecated-recorded-queries">DEPRECATED Recorded queries</h1>
+
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>Recorded queries are deprecated. Please use the new <a href="/docs/grafana/latest/alerting/alerting-rules/create-recording-rules/create-grafana-managed-recording-rules/">Grafana-managed recording rules</a> instead.</p>
+<p>To learn how to migrate your recorded queries to Grafana-managed recording rules, refer to the migration documentation <a href="/docs/grafana/latest/alerting/alerting-rules/create-recording-rules/migrate-recorded-queries/">here.</a></p></blockquote></div>
+
+<p>Recorded queries allow you to see trends over time by taking a snapshot of a data point on a set interval. This can give you insight into historic trends.</p>
+<p>For our plugins that do not return time series, it might be useful to plot historical data. For example, you might want to query ServiceNow to see a history of request response times but it can only return current point-in-time metrics.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<h2 id="how-recorded-queries-work">How recorded queries work</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>An administrator must configure a Prometheus data source and associate it with a <a href="#remote-write-target">Remote write target</a> before recorded queries can be used.</p></blockquote></div>
+
+<p>Recorded queries only work with backend data source plugins. Refer to <a href="/tutorials/build-a-data-source-backend-plugin/">Backend data source plugin</a> for more information about backend data source plugins. You can recorded four types of queries:</p>
+<ul>
+<li>single row and column - A query that returns a single row and column.</li>
+<li>row count - A query that returns meaningful rows to be counted.</li>
+<li>expression - Any expression. To learn more about creating and using expressions, see <a href="../../panels-visualizations/query-transform-data/expression-queries/">Write expression queries</a>.</li>
+<li>dataplane numeric - A query that returns <a href="/developers/dataplane/numeric">dataplane numeric kind</a> data.</li>
+</ul>
+<p>After a recorded query is created or enabled, it immediately creates a snapshot and continues to create snapshots at the set interval. The recorded query stops taking snapshots when it is disabled, deleted, or when Grafana is not running. Data points are gathered in the backend by running the recorded query and forwarding each result to a remote-write enabled Prometheus instance.</p>
+<h2 id="using-a-recorded-query">Using a recorded query</h2>
+<p>To use a recorded query, create one and add it to a dashboard. After that, it can be managed in <strong>Preferences</strong> from the <strong>Recorded queries</strong> tab.</p>
+<h3 id="create-a-recorded-query">Create a recorded query</h3>
+<ol>
+<li>Find/create a query you want to record on a dashboard in an edit panel. The query must only return one row and column. If it returns more, you can still record the number of results returned using the “count” option.
+<ul>
+<li>The query&rsquo;s data source must be a backend data source.</li>
+<li>Expressions can be used to aggregate data from a time series query. Refer to <a href="../../panels-visualizations/query-transform-data/expression-queries/">Write expression queries</a> to learn more about creating and using expressions.</li>
+</ul>
+</li>
+<li>Click the record query button located in the top right of the query editor.</li>
+<li>Enter recorded query information. All fields are required unless otherwise indicated.
+<ul>
+<li>Name - Name of the recorded query.</li>
+<li>Description - (optional) Describe the recorded query as you want it to appear in the recorded query list.</li>
+<li>Interval - The interval on which the snapshot will be taken. The interval starts when you create the recorded query and will stop if you pause or delete the recorded query. Refer to <a href="#manage-recorded-queries">Managing recorded queries</a> for more information on pausing and deleting recorded queries.</li>
+<li>Range - The relative time range of the query. If you select a range of <code>30m</code> and an interval of <code>1h</code> the query will take a snapshot every hour of the past 30 minutes.</li>
+<li>Count query results - If you want to count the rows returned from your query toggle this option on. If this option is off, your query must return one row with one value.</li>
+</ul>
+</li>
+<li>Test your recorded query by clicking the test recorded query button.</li>
+<li>Click <code>Start recording query</code> to start recording your query.</li>
+</ol>
+<h3 id="add-a-recorded-query">Add a recorded query</h3>
+<p>You can add existing recorded queries to panels in a dashboard. For each recorded query that you add, a Prometheus query is created: <code>generated_recorded_query_name{id=&quot;generated_id&quot;, name=&quot;recorded query name&quot;}</code>. The created query from Prometheus returns all the recorded query’s gathered snapshots.</p>
+<ol>
+<li>Navigate to a panel in a dashboard where you wish to add a recorded query.</li>
+<li>Click the <code>+ Recorded query</code> button located below the queries.</li>
+<li>If you want to filter recorded queries by data source, select a data source from the filter by data source drop down menu.</li>
+<li>Click the <code>Add</code> button on your recorded query to add it to the panel.</li>
+</ol>
+<p>After adding your recorded query to the panel, the panel data source will become <code>-- Mixed --</code>. Your recorded query is represented by a <code>Prometheus</code> query with a name label matching your recorded query name. Refer to <a href="../../datasources/prometheus/">Prometheus</a> to learn more about the <code>Prometheus</code> data source.</p>
+<p>If after adding a recorded query, a query with a <code>-- Mixed --</code> data source instead of <code>Prometheus</code> data source appears, this could mean that a Prometheus remote write target was not set up for recorded queries. Refer to <a href="#remote-write-target">Remote write target</a> to set up a remote write point.</p>
+<h3 id="manage-recorded-queries">Manage recorded queries</h3>
+<p>Recorded queries can be paused/activated and deleted from the Recorded queries tab in Preferences. Deleting a recorded query will remove it from Grafana, but the information that was gathered in Prometheus will still be there. Pausing a recorded query will no longer gather new data points until it is resumed.</p>
+<h3 id="remote-write-target">Remote write target</h3>
+<p>The remote write target is the Prometheus data source that recorded query data points are written to. You will need a Prometheus with remote write enabled and you will need to create a data source for this Prometheus.</p>
+<p>The remote write target can be edited by clicking <code>Edit Remote Write Target</code> in the upper right on the Recorded Queries tab in Preferences. Select the Prometheus data source that has remote write enabled and enter the remote write path.</p>

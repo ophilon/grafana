@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<h1 id="configure-an-alertmanager-contact-point">Configure an Alertmanager contact point</h1>
+<p>Use the Alertmanager integration in a contact point to send specific alerts to a different Alertmanager.</p>
+<p>If you have an existing Alertmanager running in your infrastructure, you can use a contact point to forward Grafana alerts to your Alertmanager.</p>
+<p>For example, a team might run its own Alertmanager to manage notifications from other alerting systems. That team can create alerts with Grafana and configure an Alertmanager contact point to forward only their alerts to their existing Alertmanager.</p>
+<p>This setup avoids duplicating Alertmanager configurations for better maintenance.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>To send all Grafana-managed alerts to an Alertmanager, add it as a data source and enable it to receive all alerts. With this setup, you can configure multiple Alertmanagers to receive all alerts.</p>
+<p>For setup instructions, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure Alertmanagers</a>.</p></blockquote></div>
+
+<h2 id="configure-an-alertmanager-for-a-contact-point">Configure an Alertmanager for a contact point</h2>
+<p>To create a contact point with Alertmanager integration, complete the following steps.</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</li>
+<li>Click <strong>+ Add contact point</strong>.</li>
+<li>Enter a name for the contact point.</li>
+<li>From the <strong>Integration</strong> list, select <strong>Alertmanager</strong>.</li>
+<li>In the <strong>URL</strong> field, enter the URL of the Alertmanager.</li>
+<li>(Optional) Configure <a href="#optional-settings">optional settings</a>.</li>
+<li>Click <strong>Save contact point</strong>.</li>
+</ol>
+<p>For more details on contact points, including how to test them and enable notifications, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a>.</p>
+<h2 id="alertmanager-settings">Alertmanager settings</h2>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>URL</td>
+          <td>The Alertmanager URL.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="optional-settings">Optional settings</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Basic Auth User</td>
+          <td>Username for HTTP Basic Authentication.</td>
+      </tr>
+      <tr>
+          <td>Basic Auth Password</td>
+          <td>Password for HTTP Basic Authentication.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="optional-notification-settings">Optional notification settings</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Disable resolved message</td>
+          <td>Enable this option to prevent notifications when an alert resolves.</td>
+      </tr>
+  </tbody>
+</table>

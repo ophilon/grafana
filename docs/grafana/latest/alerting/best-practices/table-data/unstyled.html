@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<h1 id="example-of-alerting-on-tabular-data">Example of alerting on tabular data</h1>
+<p>Not all data sources return time series data. SQL databases, CSV files, and some APIs often return results as rows or arrays of columns or fields — commonly referred to as tabular data.</p>
+<p>This example shows how to create an alert rule using data in table format. Grafana treats each row as a separate alert instance, as long as the data meets the expected format.</p>
+<h2 id="how-grafana-alerting-evaluates-tabular-data">How Grafana Alerting evaluates tabular data</h2>
+<p>When a query returns data in table format, Grafana transforms each row into a separate alert instance.</p>
+<p>To evaluate each row (alert instance), it expects:</p>
+<ol>
+<li><strong>Only one numeric column.</strong> This is the value used for evaluating the alert condition.</li>
+<li><strong>Non-numeric columns.</strong> These columns defines the label set. The column name becomes a label name; and the cell value becomes the label value.</li>
+<li><strong>Unique label sets per row.</strong> Each row must be uniquely identifiable by its labels. This ensures each row represents a distinct alert instance.</li>
+</ol>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>These three conditions must be met—otherwise, Grafana can’t evaluate the table data and the rule will fail.</p></blockquote></div>
+
+<h2 id="example-overview">Example overview</h2>
+<p>Imagine you store disk usage in a <code>DiskSpace</code> table and you want to trigger alerts when the available space drops below 5%.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Host</th>
+          <th>Disk</th>
+          <th>PercentFree</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2021-06-07</td>
+          <td>web1</td>
+          <td>/etc</td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td>2021-06-07</td>
+          <td>web2</td>
+          <td>/var</td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td>2021-06-07</td>
+          <td>web3</td>
+          <td>/var</td>
+          <td>8</td>
+      </tr>
+  </tbody>
+</table>
+<p>To calculate the free space per Host and Disk in this case, you can use <code>$__timeFilter</code> to filter by time but without returning the date to Grafana:</p>
+<pre>SELECT
+  Host,
+  Disk,
+  AVG(PercentFree) AS PercentFree
+FROM DiskSpace
+WHERE $__timeFilter(Time)
+GROUP BY Host, Disk</pre>
+<p>This query returns the following table response:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Host</th>
+          <th>Disk</th>
+          <th>PercentFree</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>web1</td>
+          <td>/etc</td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td>web2</td>
+          <td>/var</td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td>web3</td>
+          <td>/var</td>
+          <td>8</td>
+      </tr>
+  </tbody>
+</table>
+<p>When Alerting evaluates the query response, the data is transformed into three alert instances as previously detailed:</p>
+<ul>
+<li>The numeric column becomes the value for the alert condition.</li>
+<li>Additional columns define the label set for each alert instance.</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th>Alert instance</th>
+          <th>Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>{Host=&quot;web1&quot;, Disk=&quot;/etc&quot;}</code></td>
+          <td>3</td>
+      </tr>
+      <tr>
+          <td><code>{Host=&quot;web2&quot;, Disk=&quot;/var&quot;}</code></td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td><code>{Host=&quot;web3&quot;, Disk=&quot;/var&quot;}</code></td>
+          <td>8</td>
+      </tr>
+  </tbody>
+</table>
+<p>Finally, an alert condition that checks for less than 5% of free space (<code>$A &lt; 5</code>) would result in two alert instances firing:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Alert instance</th>
+          <th>Value</th>
+          <th>State</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>{Host=&quot;web1&quot;, Disk=&quot;/etc&quot;}</code></td>
+          <td>3</td>
+          <td>Firing</td>
+      </tr>
+      <tr>
+          <td><code>{Host=&quot;web2&quot;, Disk=&quot;/var&quot;}</code></td>
+          <td>4</td>
+          <td>Firing</td>
+      </tr>
+      <tr>
+          <td><code>{Host=&quot;web3&quot;, Disk=&quot;/var&quot;}</code></td>
+          <td>8</td>
+          <td>Normal</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="try-it-with-testdata">Try it with TestData</h2>
+<p>To test this quickly, you can simulate the table using the 
+    <a href="/docs/grafana/latest/datasources/testdata/"><strong>TestData</strong> data source</a>:</p>
+<ol>
+<li>
+<p>Add the <strong>TestData</strong> data source through the <strong>Connections</strong> menu.</p>
+</li>
+<li>
+<p>Go to <strong>Alerting</strong> and create an alert rule</p>
+</li>
+<li>
+<p>Select <strong>TestData</strong> as the data source.</p>
+</li>
+<li>
+<p>From <strong>Scenario</strong>, select <strong>CSV Content</strong> and paste this CSV:</p>
+<pre>host, disk, percentFree
+web1, /etc, 3
+web2, /var, 4
+web3, /var, 8</pre>
+</li>
+<li>
+<p>Set a condition like <code>$A &lt; 5</code> and <strong>Preview</strong> the alert.</p>
+<p>Grafana evaluates the table data and fires the two first alert instances.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/alerting/example-table-data-preview.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/alerting/example-table-data-preview.png"data-srcset="/media/docs/alerting/example-table-data-preview.png?w=320 320w, /media/docs/alerting/example-table-data-preview.png?w=550 550w, /media/docs/alerting/example-table-data-preview.png?w=750 750w, /media/docs/alerting/example-table-data-preview.png?w=900 900w, /media/docs/alerting/example-table-data-preview.png?w=1040 1040w, /media/docs/alerting/example-table-data-preview.png?w=1240 1240w, /media/docs/alerting/example-table-data-preview.png?w=1920 1920w"
+             data-sizes="auto"alt="Alert preview with tabular data using the TestData data source"width="1080"height="881"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/example-table-data-preview.png"
+               alt="Alert preview with tabular data using the TestData data source"width="1080"height="881"/>
+           </noscript></div></a></figure>
+
+   <div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+     <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+     <div>
+       <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+       <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+   This feature can be seen on <a href="https://play.grafana.org/alerting/grafana/eep7osljocvswa/view" target="_blank" rel="noopener noreferrer">this alert example</a>.</p>
+       <div class="mx-auto">
+         <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/alerting/grafana/eep7osljocvswa/view">Try it</a>
+       </div>
+     </div>
+   </div>
+
+</li>
+</ol>
+<h2 id="csv-data-with-infinity">CSV data with Infinity</h2>
+<p>Note that when the <a href="/docs/plugins/yesoreyeram-infinity-datasource/latest/csv/">Infinity plugin fetches CSV data</a>, all the columns are parsed and returned as strings. By default, this causes the query expression to fail in Alerting.</p>
+<p>To make it work, you need to format the CSV data as <a href="#how-grafana-alerting-evaluates-tabular-data">expected by Grafana Alerting</a>.</p>
+<p>In the query editor, specify the column names and their types to ensure that only one column is treated as a number.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/example-table-data-infinity-csv-data.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/example-table-data-infinity-csv-data.png"data-srcset="/media/docs/alerting/example-table-data-infinity-csv-data.png?w=320 320w, /media/docs/alerting/example-table-data-infinity-csv-data.png?w=550 550w, /media/docs/alerting/example-table-data-infinity-csv-data.png?w=750 750w, /media/docs/alerting/example-table-data-infinity-csv-data.png?w=900 900w, /media/docs/alerting/example-table-data-infinity-csv-data.png?w=1040 1040w, /media/docs/alerting/example-table-data-infinity-csv-data.png?w=1240 1240w, /media/docs/alerting/example-table-data-infinity-csv-data.png?w=1920 1920w"
+          data-sizes="auto"alt="Using the Infinity data source plugin to fetch CSV data in Alerting"width="930"height="960"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/example-table-data-infinity-csv-data.png"
+            alt="Using the Infinity data source plugin to fetch CSV data in Alerting"width="930"height="960"/>
+        </noscript></div></a></figure>
+<h2 id="differences-with-time-series-data">Differences with time series data</h2>
+<p>Working with time series is similar—each series is treated as a separate alert instance, based on its label set.</p>
+<p>The key difference is the data format:</p>
+<ul>
+<li><strong>Time series data</strong> contains multiple values over time, each with its own timestamp.
+To evaluate the alert condition, alert rules <strong>must reduce each series to a single number</strong> using a function like <code>last()</code>, <code>avg()</code>, or <code>max()</code>.</li>
+<li><strong>Tabular data</strong> doesn’t require reduction, as each row contains only a single numeric value used to evaluate the alert condition.</li>
+</ul>
+<p>For comparison, see the 
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">multi-dimensional time series data example</a>.</p>

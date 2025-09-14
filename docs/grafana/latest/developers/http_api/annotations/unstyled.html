@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<h1 id="annotations-api">Annotations API</h1>
+<p>Annotations are saved in the Grafana database (sqlite, mysql or postgres). Annotations can be organization annotations that can be shown on any dashboard by configuring an annotation data source - they are filtered by tags. Or they can be tied to a panel on a dashboard and are then only shown on that panel.</p>
+<blockquote>
+<p>If you are running Grafana Enterprise, for some endpoints you&rsquo;ll need to have specific permissions. Refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a> for more information.</p></blockquote>
+<h2 id="find-annotations">Find Annotations</h2>
+<p><code>GET /api/annotations?from=1506676478816&amp;to=1507281278816&amp;tags=tag1&amp;tags=tag2&amp;limit=100</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#annotations-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations:read</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/annotations?from=1506676478816&amp;to=1507281278816&amp;tags=tag1&amp;tags=tag2&amp;limit=100 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Query Parameters:</p>
+<ul>
+<li><code>from</code>: epoch datetime in milliseconds. Optional.</li>
+<li><code>to</code>: epoch datetime in milliseconds. Optional.</li>
+<li><code>limit</code>: number. Optional - default is 100. Max limit for results returned.</li>
+<li><code>alertId</code>: number. Optional. Find annotations for a specified alert.</li>
+<li><code>dashboardId</code>: Deprecated. Use dashboardUID instead.</li>
+<li><code>dashboardUID</code>: string. Optional. Find annotations that are scoped to a specific dashboard, when dashboardUID presents, dashboardId would be ignored.</li>
+<li><code>panelId</code>: number. Optional. Find annotations that are scoped to a specific panel</li>
+<li><code>userId</code>: number. Optional. Find annotations created by a specific user</li>
+<li><code>type</code>: string. Optional. <code>alert</code>|<code>annotation</code> Return alerts or user created annotations</li>
+<li><code>tags</code>: string. Optional. Use this to filter organization annotations. Organization annotations are annotations from an annotation data source that are not connected specifically to a dashboard or panel. To do an &ldquo;AND&rdquo; filtering with multiple tags, specify the tags parameter multiple times e.g. <code>tags=tag1&amp;tags=tag2</code>.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+[
+    {
+        &#34;id&#34;: 1124,
+        &#34;alertId&#34;: 0,
+        &#34;dashboardId&#34;: 468,
+        &#34;dashboardUID&#34;: &#34;uGlb_lG7z&#34;,
+        &#34;panelId&#34;: 2,
+        &#34;userId&#34;: 1,
+        &#34;userName&#34;: &#34;&#34;,
+        &#34;newState&#34;: &#34;&#34;,
+        &#34;prevState&#34;: &#34;&#34;,
+        &#34;time&#34;: 1507266395000,
+        &#34;timeEnd&#34;: 1507266395000,
+        &#34;text&#34;: &#34;test&#34;,
+        &#34;metric&#34;: &#34;&#34;,
+        &#34;tags&#34;: [
+            &#34;tag1&#34;,
+            &#34;tag2&#34;
+        ],
+        &#34;data&#34;: {}
+    },
+    {
+        &#34;id&#34;: 1123,
+        &#34;alertId&#34;: 0,
+        &#34;dashboardId&#34;: 468,
+        &#34;dashboardUID&#34;: &#34;jcIIG-07z&#34;,
+        &#34;panelId&#34;: 2,
+        &#34;userId&#34;: 1,
+        &#34;userName&#34;: &#34;&#34;,
+        &#34;newState&#34;: &#34;&#34;,
+        &#34;prevState&#34;: &#34;&#34;,
+        &#34;time&#34;: 1507265111000,
+        &#34;text&#34;: &#34;test&#34;,
+        &#34;metric&#34;: &#34;&#34;,
+        &#34;tags&#34;: [
+            &#34;tag1&#34;,
+            &#34;tag2&#34;
+        ],
+        &#34;data&#34;: {}
+    }
+]</pre>
+<blockquote>
+<p>Starting in Grafana v6.4 regions annotations are now returned in one entity that now includes the timeEnd property.</p></blockquote>
+<h2 id="create-annotation">Create Annotation</h2>
+<p>Creates an annotation in the Grafana database. The <code>dashboardUid</code> and <code>panelId</code> fields are optional.
+If they are not specified then an organization annotation is created and can be queried in any dashboard that adds
+the Grafana annotations data source. When creating a region annotation include the timeEnd property.</p>
+<p>The format for <code>time</code> and <code>timeEnd</code> should be epoch numbers in millisecond resolution.</p>
+<p><code>POST /api/annotations</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#annotations-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations:create</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Required JSON Body Fields</strong></p>
+<ul>
+<li><code>text</code>: description of the annotation.</li>
+</ul>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/annotations HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  &#34;dashboardUID&#34;:&#34;jcIIG-07z&#34;,
+  &#34;panelId&#34;:1,
+  &#34;time&#34;:1507037197339,
+  &#34;timeEnd&#34;:1507180805056,
+  &#34;tags&#34;:[&#34;tag1&#34;,&#34;tag2&#34;],
+  &#34;text&#34;:&#34;Annotation Description&#34;
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;message&#34;:&#34;Annotation added&#34;,
+    &#34;id&#34;: 1,
+}</pre>
+<blockquote>
+<p>The response for this HTTP request is slightly different in versions prior to v6.4. In prior versions you would
+also get an endId if you where creating a region. But in 6.4 regions are represented using a single event with time and
+timeEnd properties.</p></blockquote>
+<h2 id="create-annotation-in-graphite-format">Create Annotation in Graphite format</h2>
+<p>Creates an annotation by using Graphite-compatible event format. The <code>when</code> and <code>data</code> fields are optional. If <code>when</code> is not specified then the current time will be used as annotation&rsquo;s timestamp. The <code>tags</code> field can also be in prior to Graphite <code>0.10.0</code>
+format (string with multiple tags being separated by a space).</p>
+<p><code>POST /api/annotations/graphite</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#annotations-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations:create</code></td>
+          <td><code>annotations:type:organization</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/annotations/graphite HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+
+{
+  &#34;what&#34;: &#34;Event - deploy&#34;,
+  &#34;tags&#34;: [&#34;deploy&#34;, &#34;production&#34;],
+  &#34;when&#34;: 1467844481,
+  &#34;data&#34;: &#34;deploy of main branch happened at Wed Jul 6 22:34:41 UTC 2016&#34;
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;message&#34;:&#34;Graphite annotation added&#34;,
+    &#34;id&#34;: 1
+}</pre>
+<h2 id="update-annotation">Update Annotation</h2>
+<p><code>PUT /api/annotations/:id</code></p>
+<p>Updates all properties of an annotation that matches the specified id. To only update certain property, consider using the <a href="#patch-annotation">Patch Annotation</a> operation.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#annotations-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations:write</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Request</strong>:</p>
+<pre>PUT /api/annotations/1141 HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+Content-Type: application/json
+
+{
+  &#34;time&#34;:1507037197339,
+  &#34;timeEnd&#34;:1507180805056,
+  &#34;text&#34;:&#34;Annotation Description&#34;,
+  &#34;tags&#34;:[&#34;tag3&#34;,&#34;tag4&#34;,&#34;tag5&#34;]
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;message&#34;:&#34;Annotation updated&#34;
+}</pre>
+<h2 id="patch-annotation">Patch Annotation</h2>
+<p><code>PATCH /api/annotations/:id</code></p>
+<p>Updates one or more properties of an annotation that matches the specified id.</p>
+<p>This operation currently supports updating of the <code>text</code>, <code>tags</code>, <code>time</code> and <code>timeEnd</code> properties.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#annotations-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations:write</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Request</strong>:</p>
+<pre>PATCH /api/annotations/1145 HTTP/1.1
+Accept: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+Content-Type: application/json
+
+{
+  &#34;text&#34;:&#34;New Annotation Description&#34;,
+  &#34;tags&#34;:[&#34;tag6&#34;,&#34;tag7&#34;,&#34;tag8&#34;]
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;message&#34;:&#34;Annotation patched&#34;
+}</pre>
+<h2 id="delete-annotation-by-id">Delete Annotation By Id</h2>
+<p><code>DELETE /api/annotations/:id</code></p>
+<p>Deletes the annotation that matches the specified id.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#annotations-api">introduction</a> for an explanation.</p>
+<!-- prettier-ignore-start -->
+<table class="no-spacing-list">
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations:delete</code></td>
+          <td><ul><li><code>annotations:*</code></li><li><code>annotations:type:*</code></li><li><code>dashboards:*</code></li><li><code>dashboards:uid:*</code></li><li><code>folders:*</code></li><li><code>folders:uid:*</code></li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p><strong>Example Request</strong>:</p>
+<pre>DELETE /api/annotations/1 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;message&#34;:&#34;Annotation deleted&#34;
+}</pre>
+<h2 id="find-annotations-tags">Find Annotations Tags</h2>
+<p><code>GET /api/annotations/tags</code></p>
+<p>Find all the event tags created in the annotations.</p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#annotations-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations:read</code></td>
+          <td>N/A</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/annotations/tags?tag=out HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Query Parameters:</p>
+<ul>
+<li><code>tag</code>: Optional. A string that you can use to filter tags.</li>
+<li><code>limit</code>: Optional. A number, where the default is 100. Max limit for results returned.</li>
+</ul>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;result&#34;: {
+        &#34;tags&#34;: [
+            {
+                &#34;tag&#34;: &#34;outage&#34;,
+                &#34;count&#34;: 1
+            }
+        ]
+    }
+}</pre>

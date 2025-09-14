@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<h1 id="user-api">User API</h1>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>You can&rsquo;t authenticate to the User HTTP API with service account tokens.
+Service accounts are limited to an organization and an organization role.
+They can&rsquo;t be granted 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/#grafana-server-administrators">Grafana server administrator permissions</a>.</p>
+<p>Alternatively, you can use the 
+    <a href="/docs/grafana/latest/developers/http_api/org/#current-organization-api">Organization HTTP API</a> with service account tokens to manage users in a specific organization</p>
+<p>To use these API endpoints you have to use Basic authentication and the Grafana user must have the Grafana server administrator permission.</p>
+<p>The <code>admin</code> user that Grafana is provisioned with by default has permissions to use these API endpoints.</p></blockquote></div>
+
+<p>For Grafana Cloud customers, refer to <a href="/docs/grafana/latest/developers/http_api/org/">Organization HTTP API</a> for finding users with the org Admin role.</p>
+<blockquote>
+<p>If you are running Grafana Enterprise, for some endpoints you&rsquo;ll need to have specific permissions. Refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a> for more information.</p></blockquote>
+<h2 id="search-users">Search Users</h2>
+<p><code>GET /api/users?perpage=10&amp;page=1&amp;sort=login-asc,email-asc</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#user-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users:read</td>
+          <td>global.users:*</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/users HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Default value for the <code>perpage</code> parameter is <code>1000</code> and for the <code>page</code> parameter is <code>1</code>. Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p>The <code>sort</code> param is an optional comma separated list of options to order the search result. Accepted values for the sort filter are: <code>login-asc</code>, <code>login-desc</code>, <code>email-asc</code>, <code>email-desc</code>, <code>name-asc</code>, <code>name-desc</code>, <code>lastSeenAtAge-asc</code>, <code>lastSeenAtAge-desc</code>. By default, if <code>sort</code> is not specified, the user list will be ordered by <code>login</code>, <code>email</code> in ascending order.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;: 1,
+    &#34;name&#34;: &#34;Admin&#34;,
+    &#34;login&#34;: &#34;admin&#34;,
+    &#34;email&#34;: &#34;admin@mygraf.com&#34;,
+    &#34;isAdmin&#34;: true,
+    &#34;isDisabled&#34;: false,
+    &#34;lastSeenAt&#34;: &#34;2020-04-10T20:29:27+03:00&#34;,
+    &#34;lastSeenAtAge&#34;: &#34;2m&#34;,
+    &#34;authLabels&#34;: [&#34;OAuth&#34;]
+  },
+  {
+    &#34;id&#34;: 2,
+    &#34;name&#34;: &#34;User&#34;,
+    &#34;login&#34;: &#34;user&#34;,
+    &#34;email&#34;: &#34;user@mygraf.com&#34;,
+    &#34;isAdmin&#34;: false,
+    &#34;isDisabled&#34;: false,
+    &#34;lastSeenAt&#34;: &#34;2020-01-24T12:38:47+02:00&#34;,
+    &#34;lastSeenAtAge&#34;: &#34;2M&#34;,
+    &#34;authLabels&#34;: []
+  }
+]</pre>
+<h2 id="search-users-with-paging">Search Users with Paging</h2>
+<p><code>GET /api/users/search?perpage=10&amp;page=1&amp;query=mygraf&amp;sort=login-asc,email-asc</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#user-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users:read</td>
+          <td>global.users:*</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/users/search?perpage=10&amp;page=1&amp;query=mygraf HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Default value for the <code>perpage</code> parameter is <code>1000</code> and for the <code>page</code> parameter is <code>1</code>. The <code>totalCount</code> field in the response can be used for pagination of the user list E.g. if <code>totalCount</code> is equal to 100 users and the <code>perpage</code> parameter is set to 10 then there are 10 pages of users. The <code>query</code> parameter is optional and it will return results where the query value is contained in one of the <code>name</code>, <code>login</code> or <code>email</code> fields. Query values with spaces need to be URL encoded e.g. <code>query=Jane%20Doe</code>.</p>
+<p>The <code>sort</code> param is an optional comma separated list of options to order the search result. Accepted values for the sort filter are: <code>login-asc</code>, <code>login-desc</code>, <code>email-asc</code>, <code>email-desc</code>, <code>name-asc</code>, <code>name-desc</code>, <code>lastSeenAtAge-asc</code>, <code>lastSeenAtAge-desc</code>. By default, if <code>sort</code> is not specified, the user list will be ordered by <code>login</code>, <code>email</code> in ascending order.</p>
+<p>Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;totalCount&#34;: 2,
+  &#34;users&#34;: [
+    {
+      &#34;id&#34;: 1,
+      &#34;name&#34;: &#34;Admin&#34;,
+      &#34;login&#34;: &#34;admin&#34;,
+      &#34;email&#34;: &#34;admin@mygraf.com&#34;,
+      &#34;isAdmin&#34;: true,
+      &#34;isDisabled&#34;: false,
+      &#34;lastSeenAt&#34;: &#34;2020-04-10T20:29:27+03:00&#34;,
+      &#34;lastSeenAtAge&#39;: &#34;2m&#34;,
+      &#34;authLabels&#34;: [&#34;OAuth&#34;]
+    },
+    {
+      &#34;id&#34;: 2,
+      &#34;name&#34;: &#34;User&#34;,
+      &#34;login&#34;: &#34;user&#34;,
+      &#34;email&#34;: &#34;user@mygraf.com&#34;,
+      &#34;isAdmin&#34;: false,
+      &#34;isDisabled&#34;: false,
+      &#34;lastSeenAt&#34;: &#34;2020-01-24T12:38:47+02:00&#34;,
+      &#34;lastSeenAtAge&#34;: &#34;2M&#34;,
+      &#34;authLabels&#34;: []
+    }
+  ],
+  &#34;page&#34;: 1,
+  &#34;perPage&#34;: 10
+}</pre>
+<h2 id="get-single-user-by-id">Get single user by Id</h2>
+<p><code>GET /api/users/:id</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#user-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users:read</td>
+          <td>global.users:*</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/users/1 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;id&#34;: &#34;1&#34;,
+  &#34;email&#34;: &#34;user@mygraf.com&#34;,
+  &#34;name&#34;: &#34;admin&#34;,
+  &#34;login&#34;: &#34;admin&#34;,
+  &#34;theme&#34;: &#34;light&#34;,
+  &#34;orgId&#34;: 1,
+  &#34;isGrafanaAdmin&#34;: true,
+  &#34;isDisabled&#34;: true,
+  &#34;isExternal&#34;: false,
+  &#34;authLabels&#34;: [],
+  &#34;updatedAt&#34;: &#34;2019-09-09T11:31:26+01:00&#34;,
+  &#34;createdAt&#34;: &#34;2019-09-09T11:31:26+01:00&#34;,
+  &#34;avatarUrl&#34;: &#34;&#34;
+}</pre>
+<h2 id="get-single-user-by-usernamelogin-or-email">Get single user by Username(login) or Email</h2>
+<p><code>GET /api/users/lookup?loginOrEmail=user@mygraf.com</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#user-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users:read</td>
+          <td>global.users:*</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request using the email as option</strong>:</p>
+<pre>GET /api/users/lookup?loginOrEmail=user@mygraf.com HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p><strong>Example Request using the username as option</strong>:</p>
+<pre>GET /api/users/lookup?loginOrEmail=admin HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;id&#34;: 1,
+  &#34;email&#34;: &#34;user@mygraf.com&#34;,
+  &#34;name&#34;: &#34;admin&#34;,
+  &#34;login&#34;: &#34;admin&#34;,
+  &#34;theme&#34;: &#34;light&#34;,
+  &#34;orgId&#34;: 1,
+  &#34;isGrafanaAdmin&#34;: true,
+  &#34;isDisabled&#34;: false,
+  &#34;isExternal&#34;: false,
+  &#34;authLabels&#34;: null,
+  &#34;updatedAt&#34;: &#34;2019-09-25T14:44:37+01:00&#34;,
+  &#34;createdAt&#34;: &#34;2019-09-25T14:44:37+01:00&#34;,
+  &#34;avatarUrl&#34;:&#34;&#34;
+}</pre>
+<h2 id="user-update">User Update</h2>
+<p><code>PUT /api/users/:id</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#user-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users:write</td>
+          <td>global.users:*</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>PUT /api/users/2 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=
+
+{
+  &#34;email&#34;:&#34;user@mygraf.com&#34;,
+  &#34;name&#34;:&#34;User2&#34;,
+  &#34;login&#34;:&#34;user&#34;,
+  &#34;theme&#34;:&#34;light&#34;
+}</pre>
+<p>Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;User updated&#34;}</pre>
+<h2 id="get-organizations-for-user">Get Organizations for user</h2>
+<p><code>GET /api/users/:id/orgs</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#user-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users:read</td>
+          <td>global.users:*</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/users/1/orgs HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;orgId&#34;:1,
+    &#34;name&#34;:&#34;Main Org.&#34;,
+    &#34;role&#34;:&#34;Admin&#34;
+  }
+]</pre>
+<h2 id="get-teams-for-user">Get Teams for user</h2>
+<p><code>GET /api/users/:id/teams</code></p>
+<p><strong>Required permissions</strong></p>
+<p>See note in the <a href="#user-api">introduction</a> for an explanation.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Scope</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>users:read</td>
+          <td>global.users:*</td>
+      </tr>
+      <tr>
+          <td>teams:read</td>
+          <td>teams:*</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/users/1/teams HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;:1,
+    &#34;orgId&#34;:1,
+    &#34;name&#34;:&#34;team1&#34;,
+    &#34;email&#34;:&#34;&#34;,
+    &#34;avatarUrl&#34;:&#34;/avatar/3fcfe295eae3bcb67a49349377428a66&#34;,
+    &#34;memberCount&#34;:1
+  }
+]</pre>
+<h2 id="user">User</h2>
+<h2 id="actual-user">Actual User</h2>
+<p><code>GET /api/user</code></p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/user HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p>Requires basic authentication.</p>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;id&#34;:1,
+  &#34;email&#34;:&#34;admin@mygraf.com&#34;,
+  &#34;name&#34;:&#34;Admin&#34;,
+  &#34;login&#34;:&#34;admin&#34;,
+  &#34;theme&#34;:&#34;light&#34;,
+  &#34;orgId&#34;:1,
+  &#34;isGrafanaAdmin&#34;:true,
+  &#34;isDisabled&#34;:false
+  &#34;isExternal&#34;: false,
+  &#34;authLabels&#34;: [],
+  &#34;updatedAt&#34;: &#34;2019-09-09T11:31:26+01:00&#34;,
+  &#34;createdAt&#34;: &#34;2019-09-09T11:31:26+01:00&#34;,
+  &#34;avatarUrl&#34;: &#34;&#34;
+}</pre>
+<h2 id="change-password">Change Password</h2>
+<p><code>PUT /api/user/password</code></p>
+<p>Changes the password for the user. Requires basic authentication.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>PUT /api/user/password HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=
+
+{
+  &#34;oldPassword&#34;: &#34;old_password&#34;,
+  &#34;newPassword&#34;: &#34;new_password&#34;
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;User password changed&#34;}</pre>
+<p><strong>Change Password with a Script</strong></p>
+<p>If you need to change a password with a script, here is an example of changing the Admin password using curl with basic auth:</p>
+<pre>curl -X PUT -H &#34;Content-Type: application/json&#34; -d &#39;{
+  &#34;oldPassword&#34;: &#34;oldpass&#34;,
+  &#34;newPassword&#34;: &#34;newpass&#34;,
+  &#34;confirmNew&#34;: &#34;newpass&#34;
+}&#39; http://admin:oldpass@&lt;your_grafana_host&gt;:3000/api/user/password</pre>
+<h2 id="switch-user-context-for-a-specified-user">Switch user context for a specified user</h2>
+<p><code>POST /api/users/:userId/using/:organizationId</code></p>
+<p>Switch user context to the given organization. Requires basic authentication and that the authenticated user is a Grafana Admin.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/users/7/using/2 HTTP/1.1
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;Active organization changed&#34;}</pre>
+<h2 id="switch-user-context-for-signed-in-user">Switch user context for signed in user</h2>
+<p><code>POST /api/user/using/:organizationId</code></p>
+<p>Switch user context to the given organization.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/user/using/2 HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;Active organization changed&#34;}</pre>
+<h2 id="organizations-of-the-actual-user">Organizations of the actual User</h2>
+<p><code>GET /api/user/orgs</code></p>
+<p>Return a list of all organizations of the current user. Requires basic authentication.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/user/orgs HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Basic YWRtaW46YWRtaW4=</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;orgId&#34;:1,
+    &#34;name&#34;:&#34;Main Org.&#34;,
+    &#34;role&#34;:&#34;Admin&#34;
+  }
+]</pre>
+<h2 id="teams-that-the-actual-user-is-member-of">Teams that the actual User is member of</h2>
+<p><code>GET /api/user/teams</code></p>
+<p>Return a list of all teams that the current user is member of.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/user/teams HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;: 1,
+    &#34;orgId&#34;: 1,
+    &#34;name&#34;: &#34;MyTestTeam&#34;,
+    &#34;email&#34;: &#34;&#34;,
+    &#34;avatarUrl&#34;: &#34;\/avatar\/3f49c15916554246daa714b9bd0ee398&#34;,
+    &#34;memberCount&#34;: 1
+  }
+]</pre>
+<h2 id="star-a-dashboard">Star a dashboard</h2>
+<p><code>POST /api/user/stars/dashboard/uid/:uid</code></p>
+<p>Stars the given Dashboard for the actual user.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/user/stars/dashboard/uid/BqokFhx7z HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;Dashboard starred!&#34;}</pre>
+<h2 id="unstar-a-dashboard">Unstar a dashboard</h2>
+<p><code>DELETE /api/user/stars/dashboard/uid/:uid</code></p>
+<p>Deletes the starring of the given Dashboard for the actual user.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>DELETE /api/user/stars/dashboard/uid/BqokFhx7z HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{&#34;message&#34;:&#34;Dashboard unstarred&#34;}</pre>
+<h2 id="auth-tokens-of-the-actual-user">Auth tokens of the actual User</h2>
+<p><code>GET /api/user/auth-tokens</code></p>
+<p>Return a list of all auth tokens (devices) that the actual user currently have logged in from.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>GET /api/user/auth-tokens HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+[
+  {
+    &#34;id&#34;: 361,
+    &#34;isActive&#34;: true,
+    &#34;clientIp&#34;: &#34;127.0.0.1&#34;,
+    &#34;browser&#34;: &#34;Chrome&#34;,
+    &#34;browserVersion&#34;: &#34;72.0&#34;,
+    &#34;os&#34;: &#34;Linux&#34;,
+    &#34;osVersion&#34;: &#34;&#34;,
+    &#34;device&#34;: &#34;Other&#34;,
+    &#34;createdAt&#34;: &#34;2019-03-05T21:22:54+01:00&#34;,
+    &#34;seenAt&#34;: &#34;2019-03-06T19:41:06+01:00&#34;
+  },
+  {
+    &#34;id&#34;: 364,
+    &#34;isActive&#34;: false,
+    &#34;clientIp&#34;: &#34;127.0.0.1&#34;,
+    &#34;browser&#34;: &#34;Mobile Safari&#34;,
+    &#34;browserVersion&#34;: &#34;11.0&#34;,
+    &#34;os&#34;: &#34;iOS&#34;,
+    &#34;osVersion&#34;: &#34;11.0&#34;,
+    &#34;device&#34;: &#34;iPhone&#34;,
+    &#34;createdAt&#34;: &#34;2019-03-06T19:41:19+01:00&#34;,
+    &#34;seenAt&#34;: &#34;2019-03-06T19:41:21+01:00&#34;
+  }
+]</pre>
+<h2 id="revoke-an-auth-token-of-the-actual-user">Revoke an auth token of the actual User</h2>
+<p><code>POST /api/user/revoke-auth-token</code></p>
+<p>Revokes the given auth token (device) for the actual user. User of issued auth token (device) will no longer be logged in
+and will be required to authenticate again upon next activity.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>POST /api/user/revoke-auth-token HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;authTokenId&#34;: 364
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;message&#34;: &#34;User auth token revoked&#34;
+}</pre>

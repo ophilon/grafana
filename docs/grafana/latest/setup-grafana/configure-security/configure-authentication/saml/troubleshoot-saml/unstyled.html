@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>Following are common issues found in configuring SAML authentication in Grafana and how to resolve them.</p>
+<h3 id="troubleshoot-saml-authentication-in-grafana">Troubleshoot SAML authentication in Grafana</h3>
+<p>To troubleshoot and get more log information, enable SAML debug logging in the configuration file. Refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#filters">Configuration</a> for more information.</p>
+<pre>[log]
+filters = saml.auth:debug</pre>
+<h3 id="infinite-redirect-loop--user-gets-redirected-to-the-login-page-after-successful-login-on-the-idp-side">Infinite redirect loop / User gets redirected to the login page after successful login on the IdP side</h3>
+<p>If you experience an infinite redirect loop when <code>auto_login = true</code> or redirected to the login page after successful login, it is likely that the <code>grafana_session</code> cookie&rsquo;s SameSite setting is set to <code>Strict</code>. This setting prevents the <code>grafana_session</code> cookie from being sent to Grafana during cross-site requests. To resolve this issue, set the <code>security.cookie_samesite</code> option to <code>Lax</code> in the Grafana configuration file.</p>
+<h3 id="saml-authentication-fails-with-error">SAML authentication fails with error:</h3>
+<ul>
+<li><code>asn1: structure error: tags don't match</code></li>
+</ul>
+<p>We only support one private key format: PKCS#8.</p>
+<p>The keys may be in a different format (PKCS#1 or PKCS#12); in that case, it may be necessary to convert the private key format.</p>
+<p>The following command creates a pkcs8 key file.</p>
+<pre>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes</pre>
+<h4 id="convert-the-private-key-format-to-base64"><strong>Convert</strong> the private key format to base64</h4>
+<p>The following command converts keys to base64 format.</p>
+<p>Base64-encode the cert.pem and key.pem files:
+(-w0 switch is not needed on Mac, only for Linux)</p>
+<pre>$ base64 -w0 key.pem &gt; key.pem.base64
+$ base64 -w0 cert.pem &gt; cert.pem.base64</pre>
+<p>The base64-encoded values (<code>key.pem.base64, cert.pem.base64</code> files) are then used for certificate and <code>private_key</code>.</p>
+<p>The keys you provide should look like:</p>
+<pre>-----BEGIN PRIVATE KEY-----
+...
+...
+-----END PRIVATE KEY-----</pre>
+<h3 id="saml-login-attempts-fail-with-request-response-origin-not-allowed">SAML login attempts fail with request response <code>origin not allowed</code></h3>
+<p>When the user logs in using SAML and gets presented with <code>origin not allowed</code>, the user might be issuing the login from an IdP (identity provider) service or the user is behind a reverse proxy. This potentially happens as the CSRF checks in Grafana deem the requests to be invalid. For more information <a href="https://owasp.org/www-community/attacks/csrf" target="_blank" rel="noopener noreferrer">CSRF</a>.</p>
+<p>To solve this issue, you can configure either the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#csrf_trusted_origins"><code>csrf_trusted_origins</code></a> or 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#csrf_additional_headers"><code>csrf_additional_headers</code></a> option in the SAML configuration.</p>
+<p>Example of a configuration file:</p>
+<pre># config.ini
+...
+[security]
+csrf_trusted_origins = https://grafana.example.com
+csrf_additional_headers = X-Forwarded-Host
+...</pre>
+<h3 id="saml-login-attempts-fail-with-request-response-login-session-has-expired">SAML login attempts fail with request response &ldquo;login session has expired&rdquo;</h3>
+<p>Accessing the Grafana login page from a URL that is not the root URL of the
+Grafana server can cause the instance to return the following error: &ldquo;login session has expired&rdquo;.</p>
+<p>If you are accessing Grafana through a proxy server, ensure that cookies are correctly
+rewritten to the root URL of Grafana.
+Cookies must be set on the same URL as the <code>root_url</code> of Grafana. This is normally the reverse proxy&rsquo;s domain/address.</p>
+<p>Review the cookie settings in your proxy server configuration to ensure that cookies are
+not being discarded</p>
+<p>Review the following settings in your Grafana configuration:</p>
+<pre>[security]
+cookie_samesite = none</pre>
+<p>This setting should be set to none to allow Grafana session cookies to work correctly with redirects.</p>
+<pre>[security]
+cookie_secure = true</pre>
+<p>Ensure <code>cookie_secure</code> is set to true to ensure that cookies are only sent over HTTPS.</p>
+<h3 id="troubleshoot-graph-api-calls">Troubleshoot Graph API calls</h3>
+<p>When setting up SAML authentication with Azure AD, you may encounter issues with Graph API calls. This can happen if the Azure AD application is not properly configured to allow Graph API access.</p>
+<p>To help in the troubleshooting process, test the Graph API calls using the following commands:</p>
+<pre>curl -X POST &#34;{token_url}&#34; \
+  -H &#34;Content-Type: application/x-www-form-urlencoded&#34; \
+  -d &#34;grant_type=client_credentials&amp;client_id={client_id}&amp;client_secret={client_secret}&amp;scope=https://graph.microsoft.com/.default&#34;</pre>
+<p>Where the following values come from your <a href="../saml-configuration-options/_index.md#saml-configuration-options">SAML configuration</a>:</p>
+<ul>
+<li><code>token_url</code>: The token URL of your Azure AD application.</li>
+<li><code>client_id</code>: The client ID of your Azure AD application.</li>
+<li><code>client_secret</code>: The client secret of your Azure AD application.</li>
+</ul>
+<p>The response should look like:</p>
+<pre>{
+  &#34;access_token&#34;: &#34;...ACCESS_TOKEN...&#34;,
+  &#34;token_type&#34;: &#34;Bearer&#34;,
+  &#34;expires_in&#34;: 3600
+}</pre>
+<p>Use the <code>access_token</code> to test the Graph API calls.</p>
+<pre>curl -X GET &#34;https://graph.microsoft.com/v1.0/groups&#34; \
+  -H &#34;Authorization: Bearer ${access_token}&#34; \
+  -H &#34;Content-Type: application/json&#34;</pre>
+<p>The response should look like:</p>
+<pre>{
+  &#34;@odata.context&#34;: &#34;https://graph.microsoft.com/v1.0/$metadata#Collection(Edm.String)&#34;,
+  &#34;value&#34;: [&#34;29f2e7c8-9b9d-443c-bc62-7d8cdcfcfe59&#34;, &#34;f0224e82-0eb8-4eda-8979-0c36e98deb00&#34;]
+}</pre>
+<p>If the second call fails due to 401 or 403, you may need to check the Azure AD application settings to ensure that Graph API access is enabled.</p>

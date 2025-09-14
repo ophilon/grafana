@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!-- vale GoogleWe = NO -->
+<!-- vale We = NO -->
+<h1 id="whats-new-in-grafana-v114">What’s new in Grafana v11.4</h1>
+<p>Welcome to Grafana 11.4! This is a special release with one new feature, created in partnership with AWS. We’ve made improvements to Cloudwatch so you can query your logs using two additional query languages: Opensearch PPL and Opensearch SQL. We’ve also updated the querying experience by providing a sample of commonly-used queries, syntax highlighting in the query editor, and auto-completion suggestions for complex queries. Read on to learn more about this new feature.</p>
+<p>For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>. For the specific steps we recommend when you upgrade to v11.4, check out our 
+    <a href="/docs/grafana/latest/upgrade-guide/upgrade-v11.4/">Upgrade Guide</a>.</p>
+<h2 id="query-cloudwatch-logs-insights-with-ppl-and-sql">Query Cloudwatch Logs Insights with PPL and SQL</h2>
+<!-- Ida Štambuk, Zoe Chou -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The AWS CloudWatch data source plugin now offers two new query languages for searching through logs: OpenSearch PPL and OpenSearch SQL. You now have increased flexibility to choose a more familiar query language and to take advantage of their unique features (like the SQL JOIN command) when querying AWS CloudWatch Logs Insights. In addition to the already supported <strong>Logs Insights QL</strong> option, you can find the added query language options in the new <strong>Query language</strong> drop-down list.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/screenshot-awscw-query-languages-v11.4.png"
+  alt="CloudWatch logs explore query languages drop-down list opened" width="2042"
+     height="936"/></p>
+<p>We’ve also updated the query editor to support syntax highlighting and to provide suggestions while you type, which simplifies writing complex queries. When you select log groups, the suggestions also include <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData-discoverable-fields.html" target="_blank" rel="noopener noreferrer">discovered fields</a>.</p>
+<p>Not sure where to start? We’ve also updated our <strong>CloudWatch Logs cheat sheet</strong> with the most commonly used queries so you can paste and customize to fit exactly what you need. Clicking on any of the example queries prefills the query input field.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/screenshot-cwl-cheat-sheet-v11.4.png"
+  alt="CloudWatch Logs cheat sheet with help icon highlighted" width="2040"
+     height="1070"/></p>
+<p>For the complete list of commands supported for OpenSearch PPL and SQL, refer to the <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_AnalyzeLogData_Languages.html" target="_blank" rel="noopener noreferrer">Cloudwatch Logs Insights documentation</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=g1BfokyzF4Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

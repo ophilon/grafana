@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<h1 id="rbac-for-app-plugins">RBAC for app plugins</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>RBAC can be used to manage access to <a href="/docs/grafana/latest/administration/plugin-management/#app-plugins">app plugins</a>.
+Each app plugin grants the basic Viewer, Editor and Admin organization roles a default set of plugin permissions.
+You can use RBAC to restrict which app plugins a basic organization role has access to.
+Some app plugins have fine-grained RBAC support, which allows you to grant additional access to these app plugins to teams and users regardless of their basic organization roles.</p>
+<h2 id="restricting-access-to-app-plugins">Restricting access to app plugins</h2>
+<p>By default, Viewers, Editors and Admins have access to all App Plugins that their organization role allows them to access.
+To change this default behavior and prevent a basic organization role from accessing an App plugin, you must 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/manage-rbac-roles/#update-basic-role-permissions">update the basic role&rsquo;s permissions</a>.
+See an example of 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/plan-rbac-rollout-strategy/#prevent-viewers-from-accessing-an-app-plugin">preventing Viewers from accessing an app plugin</a> to learn more.
+To grant access to a limited set of app plugins, you will need plugin IDs. You can find them in <code>plugin.json</code> files or in the URL when you open the app plugin in the Grafana Cloud UI.</p>
+<p>Note that unless an app plugin has fine-grained RBAC support, it is not possible to grant access to this app plugin for a user whose organization role does not have access to that app plugin.</p>
+<h2 id="fine-grained-access-to-app-plugins">Fine-grained access to app plugins</h2>
+<p>Plugins with fine-grained RBAC support allow you to manage access to plugin features at a more granular level.
+For instance, you can grant admin access to an app plugin to a user with Viewer organization role. Or restrict the Editor organization role from being able to edit plugin resources.</p>
+<p>Please refer to plugin documentation to see what RBAC permissions the plugin has and what default access the plugin grants to Viewer, Editor and Admin organization roles.</p>
+<p>The following list contains app plugins that have fine-grained RBAC support.</p>
+<table>
+  <thead>
+      <tr>
+          <th>App plugin</th>
+          <th>App plugin ID</th>
+          <th>App plugin permission documentation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/">Access policies</a></td>
+          <td><code>grafana-auth-app</code></td>
+          <td>
+<figure class="warning"><figcaption>Warning</figcaption><p>[en] RENDER_LINK: docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-for-app-plugins/index.md no matching project prefix was found for the ref URI &#34;cloud-access-policies-action-definitions&#34;</p></figure>
+<figure class="warning"><figcaption>Warning</figcaption><p>[en] RENDER_LINK_FALLBACK: docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-for-app-plugins/index.md no matching project prefix was found for the ref URI &#34;cloud-access-policies-action-definitions&#34;</p></figure><a href="/404/">RBAC actions for Access Policies</a></td>
+      </tr>
+      <tr>
+          <td><a href="/docs/grafana-cloud/cost-management-and-billing/reduce-costs/metrics-costs/control-metrics-usage-via-adaptive-metrics/adaptive-metrics-plugin/">Adaptive metrics</a></td>
+          <td><code>grafana-adaptive-metrics-app</code></td>
+          <td>
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/#grafana-adaptive-metrics-action-definitions">RBAC actions for Adaptive Metrics</a></td>
+      </tr>
+      <tr>
+          <td><a href="/docs/grafana-cloud/alerting-and-irm/irm/incident/">Incident</a></td>
+          <td><code>grafana-incident-app</code></td>
+          <td>n/a</td>
+      </tr>
+      <tr>
+          <td><a href="/docs/grafana-cloud/alerting-and-irm/irm/oncall/">OnCall</a></td>
+          <td><code>grafana-oncall-app</code></td>
+          <td><a href="/docs/grafana-cloud/alerting-and-irm/irm/oncall/manage/user-and-team-management/#manage-users-and-teams-for-grafana-oncall">Configure RBAC for OnCall</a></td>
+      </tr>
+      <tr>
+          <td><a href="/docs/grafana-cloud/testing/k6/">Performance Testing (K6)</a></td>
+          <td><code>k6-app</code></td>
+          <td><a href="/docs/grafana-cloud/testing/k6/projects-and-users/configure-rbac/">Configure RBAC for K6</a></td>
+      </tr>
+      <tr>
+          <td><a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect (PDC)</a></td>
+          <td><code>grafana-pdc-app</code></td>
+          <td>n/a</td>
+      </tr>
+      <tr>
+          <td><a href="/docs/grafana-cloud/alerting-and-irm/slo/">Service Level Objective (SLO)</a></td>
+          <td><code>grafana-slo-app</code></td>
+          <td><a href="/docs/grafana-cloud/alerting-and-irm/slo/set-up/rbac/">Configure RBAC for SLO</a></td>
+      </tr>
+      <tr>
+          <td><a href="/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/">Cloud Provider</a></td>
+          <td><code>grafana-csp-app</code></td>
+          <td><a href="/docs/grafana-cloud/monitor-infrastructure/monitor-cloud-provider/rbac/">Cloud Provider Observability role-based access control</a></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="revoke-fine-grained-access-from-app-plugins">Revoke fine-grained access from app plugins</h3>
+<p>To list all the permissions granted to a basic role, use the <a href="/docs/grafana/latest/developers/http_api/access_control/#get-a-role">HTTP API endpoint to query for the role</a>.
+Basic role UIDs are listed in 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-fixed-basic-role-definitions/">RBAC role definitions list</a>.
+To remove the undesired plugin permissions from a basic role, you must 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/manage-rbac-roles/#update-basic-role-permissions">update the basic role&rsquo;s permissions</a>.</p>
+<h3 id="grant-additional-access-to-app-plugins">Grant additional access to app plugins</h3>
+<p>To grant access to app plugins, you can use the predefined <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/#fixed-roles">fixed plugin roles</a> or create <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/#custom-roles">custom roles</a> with specific plugin permissions.
+To learn about how to assign an RBAC role, refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/assign-rbac-roles/#assign-rbac-roles">the documentation on assigning RBAC roles</a>.</p>

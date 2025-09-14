@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<h1 id="node-graph">Node graph</h1>
+<p>Node graphs are useful when you need to visualize elements that are related to each other. This is done by displaying circles—or <em>nodes</em>—for each element you want to visualize, connected by lines—or <em>edges</em>. The visualization uses a directed force layout that positions the nodes into a network of connected circles.</p>
+<p>Node graphs display useful information about each node, as well as the relationships between them, allowing you to visualize complex infrastructure maps, hierarchies, or execution diagrams.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-node-graph-v11.3.png"
+  alt="Node graph visualization" width="787"
+     height="412"/></p>
+<p>The appearance of nodes and edges can also be customized in several ways including color, borders, and line style.</p>
+<p>You can use a node graph visualization if you need to show:</p>
+<ul>
+<li>Solution topologies</li>
+<li>Networks</li>
+<li>Infrastructure</li>
+<li>Organizational charts</li>
+<li>Critical path diagrams</li>
+<li>Family trees</li>
+<li>Mind maps</li>
+</ul>
+<h2 id="configure-a-node-graph-visualization">Configure a node graph visualization</h2>
+<p>The following video provides beginner steps for creating node panel visualizations. You&rsquo;ll learn the data requirements and caveats, special customizations, and much more:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=VrvsMkRwoKw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/bdodfbi3d57uoe/" target="_blank" rel="noopener noreferrer">Node graph panel</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/bdodfbi3d57uoe/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>To create node graphs, you need two datasets: one containing the records for the displayed elements (nodes) and one dataset containing the records for the connections between those elements (edges).</p>
+<h3 id="nodes-dataset">Nodes dataset</h3>
+<p>The nodes dataset must contain one alphanumeric ID field that gives each element a unique identifier. The visualization also accepts other options fields for titles, subtitles, main and secondary stats, arc information for how much of the circle border to paint, details, colors, icons, node size, and indicators for element highlighting. For more information and naming conventions for these fields, refer to the <a href="#nodes-data-frame-structure">Nodes data frame structure</a> section.</p>
+<h4 id="example">Example</h4>
+<table>
+  <thead>
+      <tr>
+          <th>id</th>
+          <th>title</th>
+          <th>subtitle</th>
+          <th>mainstat</th>
+          <th>secondarystat</th>
+          <th>color</th>
+          <th>icon</th>
+          <th>highlighted</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>node1</td>
+          <td>PC</td>
+          <td>Windows</td>
+          <td>AMD</td>
+          <td>16gbRAM</td>
+          <td>blue</td>
+          <td></td>
+          <td>true</td>
+      </tr>
+      <tr>
+          <td>node2</td>
+          <td>PC</td>
+          <td>Linux</td>
+          <td>Intel</td>
+          <td>32gbRAM</td>
+          <td>green</td>
+          <td>eye</td>
+          <td>false</td>
+      </tr>
+      <tr>
+          <td>node3</td>
+          <td>Mac</td>
+          <td>MacOS</td>
+          <td>M3</td>
+          <td>16gbRAM</td>
+          <td>gray</td>
+          <td>apps</td>
+          <td>false</td>
+      </tr>
+      <tr>
+          <td>node4</td>
+          <td>Alone</td>
+          <td>SoLonely</td>
+          <td>JustHere</td>
+          <td>NotConnected</td>
+          <td>red</td>
+          <td></td>
+          <td>false</td>
+      </tr>
+  </tbody>
+</table>
+<p>If the icon field contains a value, it’s displayed instead of the title and subtitle. For a list of of available icons, refer to <a href="https://developers.grafana.com/ui/latest/index.html?path=/story/docs-overview-icon--icons-overview" target="_blank" rel="noopener noreferrer">Icons Overview</a>.</p>
+<h3 id="edges-dataset">Edges dataset</h3>
+<p>Similar to the nodes dataset, the edges dataset needs one unique ID field for each relationship, followed by two fields containing the source and the target nodes of the edge; that is, the nodes the edge connects. Other optional fields are main and secondary stats, context menu elements, line thickness, highlight indications, line colors, and configurations to turn the connection into a dashed line. For more information and naming conventions for these fields, refer to the <a href="#edges-data-frame-structure">Edges data frame structure</a> section.</p>
+<h4 id="example-1">Example</h4>
+<table>
+  <thead>
+      <tr>
+          <th>id</th>
+          <th>source</th>
+          <th>target</th>
+          <th>mainstat</th>
+          <th>seconddarystat</th>
+          <th>thickness</th>
+          <th>highlighted</th>
+          <th>color</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>edge1</td>
+          <td>node1</td>
+          <td>node2</td>
+          <td>TheMain</td>
+          <td>TheSub</td>
+          <td>3</td>
+          <td>true</td>
+          <td>cyan</td>
+      </tr>
+      <tr>
+          <td>edge2</td>
+          <td>node3</td>
+          <td>node2</td>
+          <td>Main2</td>
+          <td>Sub2</td>
+          <td>1</td>
+          <td>false</td>
+          <td>orange</td>
+      </tr>
+  </tbody>
+</table>
+<p>If a node lacks edge connections, it’s displayed on its own outside of the network.</p>
+<h3 id="data-requirements">Data requirements</h3>
+<p>A node graph requires a specific shape of the data to be able to display its nodes and edges. This means not every data source or query can be visualized with this graph. If you want to use this as a data source developer see the section about data API.</p>
+<p>A node graph consists of <em>nodes</em> and <em>edges</em>.</p>
+<ul>
+<li>A <em>node</em> is displayed as a circle. A node might represent an application, a service, or anything else that is relevant from an application perspective.</li>
+<li>An <em>edge</em> is displayed as a line that connects two nodes. The connection might be a request, an execution, or some other relationship between the two nodes.</li>
+</ul>
+<p>Both nodes and edges can have associated metadata or statistics. The data source defines what information and values is shown, so different data sources can show different type of values or not show some values.</p>
+<h4 id="nodes">Nodes</h4>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Node graphs can show only 1,500 nodes. If this limit is crossed a warning will be visible in upper right corner, and some nodes will be hidden. You can expand hidden parts of the graph by clicking on the &ldquo;Hidden nodes&rdquo; markers in the graph.</p></blockquote></div>
+
+<p>Usually, nodes show two statistical values inside the node and two identifiers just below the node, usually name and type. Nodes can also show another set of values as a color circle around the node, with sections of different color represents different values that should add up to 1.</p>
+<p>For example, you can have the percentage of errors represented by a red portion of the circle.
+Additional details can be displayed in a context menu which is displayed when you click on the node.
+There also can be additional links in the context menu that can target either other parts of Grafana or any external link.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-node-links-v11.3.png"
+  alt="Node context menu" width="272"
+     height="296"/></p>
+<h4 id="edges">Edges</h4>
+<p>Edges can also show statistics when you hover over the edge. Similar to nodes, you can open a context menu with additional details and links by clicking on the edge.</p>
+<p>The first data source supporting this visualization is X-Ray data source for its Service map feature. For more information, refer to the <a href="/grafana/plugins/grafana-x-ray-datasource">X-Ray plugin documentation</a>.</p>
+<h2 id="node-graph-navigation">Node graph navigation</h2>
+<p>You can use pan, zoom, and other functions to navigate a node graph.</p>
+<h3 id="pan">Pan</h3>
+<p>You can pan the view by clicking outside any node or edge and dragging your mouse.</p>
+<h3 id="zoom">Zoom</h3>
+<p>Use the buttons in the lower right corner to zoom in or out. You can also use the mouse wheel or touchpad scroll, together with either Ctrl or Cmd key to do so.</p>
+<h3 id="hidden-nodes">Hidden nodes</h3>
+<p>The number of nodes shown at a given time is limited to maintain a reasonable visualization performance. Nodes that are not currently visible are hidden behind clickable markers that show an approximate number of hidden nodes that are connected by a particular edge. You can click on the marker to expand the graph around that node.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/node-graph-exploration-8.0-2.png"
+  alt="Node graph exploration" width="652"
+     height="341"/></p>
+<h3 id="grid-view">Grid view</h3>
+<p>You can switch to the grid view to have a better overview of the most interesting nodes in the graph. Grid view shows nodes in a grid without edges and can be sorted by stats shown inside the node or by stats represented by the a colored border of the nodes.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-node-graph-grid-v11.3.png"
+  alt="Node graph grid" width="788"
+     height="376"/></p>
+<p>To sort the nodes, click on the stats inside the legend. The marker next to the stat name shows which stat is currently used for sorting and sorting direction.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-node-graph-legend-v11.3.png"
+  alt="Node graph legend" width="466"
+     height="37"/></p>
+<p>Click on the node and select &ldquo;Show in Graph layout&rdquo; option to switch back to graph layout and focus on the selected node, to show it in context of the full graph.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-node-graph-view-v11.3.png"
+  alt="Node graph grid to default" width="272"
+     height="296"/></p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="node-graph-options">Node graph options</h3>
+<p>Use the following options to refine your node graph visualization.</p>
+<ul>
+<li><strong>Zoom mode</strong> - Choose how the node graph should handle zoom and scroll events.</li>
+</ul>
+<h3 id="nodes-options">Nodes options</h3>
+<p>The <strong>Nodes</strong> options section provides configurations for node behaviors.</p>
+<ul>
+<li><strong>Main stat unit</strong> - Choose which unit the main stat displays in the graph&rsquo;s nodes.</li>
+<li><strong>Secondary stat unit</strong> - Choose which unit the secondary stat displays in the graph&rsquo;s nodes.</li>
+<li><strong>Arc sections</strong> - Configure which fields define the size of the colored circle around the node and select a color for each. You can add multiple fields.</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Defining arc sections overrides the automatic detection of <code>arc__*</code> and <code>color</code> fields described in the <strong>Optional fields</strong> section of <a href="#nodes-data-frame-structure">Nodes data frame structure</a>.</p></blockquote></div>
+
+<h3 id="edges-options">Edges options</h3>
+<p>The <strong>Edges</strong> options section provides configurations for node edges behaviors.</p>
+<ul>
+<li><strong>Main stat unit</strong> - Choose which unit the main stat displays in the graph&rsquo;s edges.</li>
+<li><strong>Secondary stat unit</strong> - Choose which unit the secondary stat displays in the graph&rsquo;s edges.</li>
+</ul>
+<h3 id="data-links">Data links</h3>
+
+
+<div data-shared="visualizations/datalink-options.md">
+            <p>Data links allow you to link to other panels, dashboards, and external resources while maintaining the context of the source panel.
+You can create links that include the series name or even the value under the cursor.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Actions are not supported for this visualization.</p></blockquote></div>
+
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<p>In node graphs, some data fields may have pre-configured data links. To add a different data link in those cases, use a <a href="#field-overrides">field override</a>.</p>
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        
+<h2 id="data-api">Data API</h2>
+<p>This visualization needs a specific shape of the data to be returned from the data source in order to correctly display it.</p>
+<p>Node graphs, at minimum, require a data frame describing the edges of the graph. By default, node graphs will compute the nodes and any stats based on this data frame. Optionally a second data frame describing the nodes can be sent in case there is need to show more node specific metadata. You have to set <code>frame.meta.preferredVisualisationType = 'nodeGraph'</code> on both data frames or name them <code>nodes</code> and <code>edges</code> respectively for the node graph to render.</p>
+<h3 id="edges-data-frame-structure">Edges data frame structure</h3>
+<p>Required fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>id</td>
+          <td>string</td>
+          <td>Unique identifier of the edge.</td>
+      </tr>
+      <tr>
+          <td>source</td>
+          <td>string</td>
+          <td>Id of the source node.</td>
+      </tr>
+      <tr>
+          <td>target</td>
+          <td>string</td>
+          <td>Id of the target.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Optional fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>mainstat</td>
+          <td>string/number</td>
+          <td>First stat shown in the overlay when hovering over the edge. It can be a string showing the value as is or it can be a number. If it is a number, any unit associated with that field is also shown</td>
+      </tr>
+      <tr>
+          <td>secondarystat</td>
+          <td>string/number</td>
+          <td>Same as mainStat, but shown right under it.</td>
+      </tr>
+      <tr>
+          <td>detail__*</td>
+          <td>string/number</td>
+          <td>Any field prefixed with <code>detail__</code> will be shown in the header of context menu when clicked on the edge. Use <code>config.displayName</code> for more human readable label.</td>
+      </tr>
+      <tr>
+          <td>thickness</td>
+          <td>number</td>
+          <td>The thickness of the edge. Default: <code>1</code></td>
+      </tr>
+      <tr>
+          <td>highlighted</td>
+          <td>boolean</td>
+          <td>Sets whether the edge should be highlighted. Useful, for example, to represent a specific path in the graph by highlighting several nodes and edges. Default: <code>false</code></td>
+      </tr>
+      <tr>
+          <td>color</td>
+          <td>string</td>
+          <td>Sets the default color of the edge. It can be an acceptable HTML color string. Default: <code>#999</code></td>
+      </tr>
+      <tr>
+          <td>strokeDasharray</td>
+          <td>string</td>
+          <td>Sets the pattern of dashes and gaps used to render the edge. If unset, a solid line is used as edge. For more information and examples, refer to the <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray" target="_blank" rel="noopener noreferrer"><code>stroke-dasharray</code> MDN documentation</a>.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Starting with 10.5, <code>highlighted</code> is deprecated.
+It will be removed in a future release.
+Use <code>color</code> to indicate a highlighted edge state instead.</p></blockquote></div>
+
+<h3 id="nodes-data-frame-structure">Nodes data frame structure</h3>
+<p>Required fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>id</td>
+          <td>string</td>
+          <td>Unique identifier of the node. This ID is referenced by edge in its source and target field.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Optional fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>title</td>
+          <td>string</td>
+          <td>Name of the node visible in just under the node.</td>
+      </tr>
+      <tr>
+          <td>subtitle</td>
+          <td>string</td>
+          <td>Additional, name, type or other identifier shown under the title.</td>
+      </tr>
+      <tr>
+          <td>mainstat</td>
+          <td>string/number</td>
+          <td>First stat shown inside the node itself. It can either be a string showing the value as is or a number. If it is a number, any unit associated with that field is also shown.</td>
+      </tr>
+      <tr>
+          <td>secondarystat</td>
+          <td>string/number</td>
+          <td>Same as mainStat, but shown under it inside the node.</td>
+      </tr>
+      <tr>
+          <td>arc__*</td>
+          <td>number</td>
+          <td>Any field prefixed with <code>arc__</code> will be used to create the color circle around the node. All values in these fields should add up to 1. You can specify color using <code>config.color.fixedColor</code>.</td>
+      </tr>
+      <tr>
+          <td>detail__*</td>
+          <td>string/number</td>
+          <td>Any field prefixed with <code>detail__</code> will be shown in the header of context menu when clicked on the node. Use <code>config.displayName</code> for more human readable label.</td>
+      </tr>
+      <tr>
+          <td>color</td>
+          <td>string/number</td>
+          <td>Can be used to specify a single color instead of using the <code>arc__</code> fields to specify color sections. It can be either a string which should then be an acceptable HTML color string or it can be a number in which case the behavior depends on <code>field.config.color.mode</code> setting. This can be for example used to create gradient colors controlled by the field value.</td>
+      </tr>
+      <tr>
+          <td>icon</td>
+          <td>string</td>
+          <td>Name of the icon to show inside the node instead of the default stats. Only Grafana <a href="https://developers.grafana.com/ui/latest/index.html?path=/story/docs-overview-icon--icons-overview" target="_blank" rel="noopener noreferrer">built in icons</a>) are allowed.</td>
+      </tr>
+      <tr>
+          <td>nodeRadius</td>
+          <td>number</td>
+          <td>Radius value in pixels. Used to manage node size.</td>
+      </tr>
+      <tr>
+          <td>highlighted</td>
+          <td>boolean</td>
+          <td>Sets whether the node should be highlighted. Useful for example to represent a specific path in the graph by highlighting several nodes and edges. Default: <code>false</code></td>
+      </tr>
+  </tbody>
+</table>

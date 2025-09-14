@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<h1 id="configure-rbac">Configure RBAC</h1>
+<p>Role-based access control (RBAC) for Grafana Enterprise and Grafana Cloud provides a standardized way of granting, changing, and revoking access, so that users can view and modify Grafana resources.</p>
+<p>A user is any individual who can log in to Grafana. Each user is associated with a role that includes permissions. Permissions determine the tasks a user can perform in the system.</p>
+<p>Each permission contains one or more actions and a scope.</p>
+<h2 id="permissions">Permissions</h2>
+<p>Grafana Alerting has the following permissions.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Action</th>
+          <th>Applicable scope</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>alert.instances.external:read</code></td>
+          <td><code>datasources:*</code><br><code>datasources:uid:*</code></td>
+          <td>Read alerts and silences in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances.external:write</code></td>
+          <td><code>datasources:*</code><br><code>datasources:uid:*</code></td>
+          <td>Manage alerts and silences in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances:create</code></td>
+          <td>n/a</td>
+          <td>Create silences in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances:read</code></td>
+          <td>n/a</td>
+          <td>Read alerts and silences in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.instances:write</code></td>
+          <td>n/a</td>
+          <td>Update and expire silences in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.external:read</code></td>
+          <td><code>datasources:*</code><br><code>datasources:uid:*</code></td>
+          <td>Read templates, contact points, notification policies, and mute timings in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.external:write</code></td>
+          <td><code>datasources:*</code><br><code>datasources:uid:*</code></td>
+          <td>Manage templates, contact points, notification policies, and mute timings in data sources that support alerting.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications:write</code></td>
+          <td>n/a</td>
+          <td>Manage templates, contact points, notification policies, and mute timings in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications:read</code></td>
+          <td>n/a</td>
+          <td>Read all templates, contact points, notification policies, and mute timings in the current organization.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules.external:read</code></td>
+          <td><code>datasources:*</code><br><code>datasources:uid:*</code></td>
+          <td>Read alert rules in data sources that support alerting (Prometheus, Mimir, and Loki)</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules.external:write</code></td>
+          <td><code>datasources:*</code><br><code>datasources:uid:*</code></td>
+          <td>Create, update, and delete alert rules in data sources that support alerting (Mimir and Loki).</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:create</code></td>
+          <td><code>folders:*</code><br><code>folders:uid:*</code></td>
+          <td>Create Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder and <code>datasources:query</code> in the scope of data sources the user can query.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:delete</code></td>
+          <td><code>folders:*</code><br><code>folders:uid:*</code></td>
+          <td>Delete Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:read</code></td>
+          <td><code>folders:*</code><br><code>folders:uid:*</code></td>
+          <td>Read Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder.</td>
+      </tr>
+      <tr>
+          <td><code>alert.rules:write</code></td>
+          <td><code>folders:*</code><br><code>folders:uid:*</code></td>
+          <td>Update Grafana alert rules in a folder and its subfolders. Combine this permission with <code>folders:read</code> in a scope that includes the folder. To allow query modifications add <code>datasources:query</code> in the scope of data sources the user can query.</td>
+      </tr>
+      <tr>
+          <td><code>alert.silences:create</code></td>
+          <td><code>folders:*</code><br><code>folders:uid:*</code></td>
+          <td>Create rule-specific silences in a folder and its subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>alert.silences:read</code></td>
+          <td><code>folders:*</code><br><code>folders:uid:*</code></td>
+          <td>Read all general silences and rule-specific silences in a folder and its subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>alert.silences:write</code></td>
+          <td><code>folders:*</code><br><code>folders:uid:*</code></td>
+          <td>Update and expire rule-specific silences in a folder and its subfolders.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning:read</code></td>
+          <td>n/a</td>
+          <td>Read all Grafana alert rules, notification policies, etc via provisioning API. Permissions to folders and data source are not required.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning.secrets:read</code></td>
+          <td>n/a</td>
+          <td>Same as <code>alert.provisioning:read</code> plus ability to export resources with decrypted secrets.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning:write</code></td>
+          <td>n/a</td>
+          <td>Update all Grafana alert rules, notification policies, etc via provisioning API. Permissions to folders and data source are not required.</td>
+      </tr>
+      <tr>
+          <td><code>alert.provisioning.provenance:write</code></td>
+          <td>n/a</td>
+          <td>Set provisioning status for alerting resources. Cannot be used alone. Requires user to have permissions to access resources</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:read</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Read contact points.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers.secrets:read</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Export contact points with decrypted secrets.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:create</code></td>
+          <td>n/a</td>
+          <td>Create a new contact points. The creator is automatically granted full access to the created contact point.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:write</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Update existing contact points.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.receivers:delete</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Update and delete existing contact points.</td>
+      </tr>
+      <tr>
+          <td><code>receivers.permissions:read</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Read permissions for contact points.</td>
+      </tr>
+      <tr>
+          <td><code>receivers.permissions:write</code></td>
+          <td><code>receivers:*</code><br><code>receivers:uid:*</code></td>
+          <td>Manage permissions for contact points.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.time-intervals:read</code></td>
+          <td>n/a</td>
+          <td>Read mute time intervals.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.time-intervals:write</code></td>
+          <td>n/a</td>
+          <td>Create new or update existing mute time intervals.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.time-intervals:delete</code></td>
+          <td>n/a</td>
+          <td>Delete existing time intervals.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.templates:read</code></td>
+          <td>n/a</td>
+          <td>Read templates.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.templates:write</code></td>
+          <td>n/a</td>
+          <td>Create new or update existing templates.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.templates:delete</code></td>
+          <td>n/a</td>
+          <td>Delete existing templates.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.routes:read</code></td>
+          <td>n/a</td>
+          <td>Read notification policies.</td>
+      </tr>
+      <tr>
+          <td><code>alert.notifications.routes:write</code></td>
+          <td>n/a</td>
+          <td>Create new, update and update notification policies.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To help plan your RBAC rollout strategy, refer to <a href="/docs/grafana/next/administration/roles-and-permissions/access-control/plan-rbac-rollout-strategy/">Plan your RBAC rollout strategy</a>.</p>

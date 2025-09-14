@@ -1,0 +1,8 @@
+[{
+  "file": "docs/grafana/latest/developers/angular_deprecation/angular-plugins.md",
+	"name": "plugins-using-angularjs",
+	"permalink" : "/docs/grafana/latest/developers/angular_deprecation/angular-plugins/",
+	"relpermalink" : "/docs/grafana/latest/developers/angular_deprecation/angular-plugins/",
+	"params": {"ads":{"toc":{"id":"cloud_first_1","location":"docs_toc"}},"description":"An annotated list of Grafana plugins using AngularJS.","draft":false,"iscjklanguage":false,"keywords":["grafana","plugins","plugin","angular","deprecation","migration"],"labels":{"products":["enterprise","oss"]},"layout":"page","loki_version":"latest","meta_image_generate":true,"oncall_version":"latest","outputs":[{"mediaType":"text/html","path":"","baseName":"index","rel":"canonical","protocol":"","isPlainText":false,"isHTML":true,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":true,"weight":10},{"mediaType":"application/json","path":"","baseName":"index","rel":"alternate","protocol":"","isPlainText":true,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"unstyled","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0}],"pyroscope_version":"latest","section_title":"Documentation","section_title_singular":"Documentation","tempo_version":"latest","title":"Plugins using AngularJS"},
+	"uniqueid": "dd770dd5bd3de0e10af802e04f47e546",
+}]

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<h1 id="configure-notifications">Configure notifications</h1>
+<p>Configuring how, when, and where to send alert notifications is an essential part of your alerting system.</p>
+<p>By default, Grafana Alerting provides default notification messages with relevant alert information, so you don&rsquo;t need to configure messages initially. In the alert rule, you need to configure how to forward alerts:</p>
+<ol>
+<li>Directly to a contact point.</li>
+<li>To a contact point via notification policies (more flexible).</li>
+</ol>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alerting-configure-notifications-v2.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alerting-configure-notifications-v2.png"data-srcset="/media/docs/alerting/alerting-configure-notifications-v2.png?w=320 320w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=550 550w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=750 750w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=900 900w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=1040 1040w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=1240 1240w, /media/docs/alerting/alerting-configure-notifications-v2.png?w=1920 1920w"
+          data-sizes="auto"alt="In the alert rule, you can configure alert forwarding directly to a contact point or through notification policies"width="713"height="224"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-configure-notifications-v2.png"
+            alt="In the alert rule, you can configure alert forwarding directly to a contact point or through notification policies"width="713"height="224"/>
+        </noscript></div></a></figure>
+<p>Notification setup is essential for an effective alerting system to scale across multiple teams and services. For a quick overview about the various components involved in handling notifications, refer to the 
+    <a href="/docs/grafana/latest/alerting/fundamentals/notifications/">introduction about notifications</a>.</p>
+<p>The topics in this section include step-by-step instructions for:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configuring contact points</a> to specify where to receive alert notifications.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-notification-policy/">Configuring notification policies</a> to determine how alerts are routed to contact points.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">Templating notifications</a> to customize notification messages.</li>
+<li>
+    <a href="/docs/grafana/latest/alerting/configure-notifications/create-silence/">Configuring silences</a> or 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/mute-timings/">mute timings</a> to stop notifications.</li>
+</ul>
+<h2 id="alertmanager-architecture">Alertmanager architecture</h2>
+<p>Grafana Alerting is based on the Prometheus Alerting model, whose architecture decouples rule evaluation from notification handling.</p>
+<ul>
+<li>The alert rule evaluator, either Grafana or the data source, evaluates alert rules and triggers alerts.</li>
+<li>The alert notification manager, known as the <strong>Alertmanager</strong>, receives alerts and manages their notifications.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alerting-alertmanager-architecture.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alerting-alertmanager-architecture.png"data-srcset="/media/docs/alerting/alerting-alertmanager-architecture.png?w=320 320w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=550 550w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=750 750w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=900 900w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1040 1040w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1240 1240w, /media/docs/alerting/alerting-alertmanager-architecture.png?w=1920 1920w"
+          data-sizes="auto"alt="A diagram with the alert generator and alert manager architecture"width="669"height="240"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-alertmanager-architecture.png"
+            alt="A diagram with the alert generator and alert manager architecture"width="669"height="240"/>
+        </noscript></div></a></figure>
+<p>In Grafana, you can use different types of alert rules and configure multiple Alertmanagers.</p>
+<p>By default, Grafana uses its built-in Alertmanager, and Grafana Cloud instances include an additional Alertmanager.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/alerting/alerting-choose-alertmanager.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/alerting/alerting-choose-alertmanager.png"data-srcset="/media/docs/alerting/alerting-choose-alertmanager.png?w=320 320w, /media/docs/alerting/alerting-choose-alertmanager.png?w=550 550w, /media/docs/alerting/alerting-choose-alertmanager.png?w=750 750w, /media/docs/alerting/alerting-choose-alertmanager.png?w=900 900w, /media/docs/alerting/alerting-choose-alertmanager.png?w=1040 1040w, /media/docs/alerting/alerting-choose-alertmanager.png?w=1240 1240w, /media/docs/alerting/alerting-choose-alertmanager.png?w=1920 1920w"
+          data-sizes="auto"alt="A screenshot choosing an Alertmanager in the notification policies UI"width="950"height="117"/>
+        <noscript>
+          <img
+            src="/media/docs/alerting/alerting-choose-alertmanager.png"
+            alt="A screenshot choosing an Alertmanager in the notification policies UI"width="950"height="117"/>
+        </noscript></div></a></figure>
+<p>When having multiple Alertmanagers, note that each Alertmanager manages its own independent notification resources, such as contact points, templates, policies, silences, mute timings, and active notifications.</p>
+<p>These notification resources cannot be shared across different Alertmanagers.</p>
+<p>Use the <strong>Choose Alertmanager</strong> dropdown to select the Alertmanager you want to configure.</p>

@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<h1 id="candlestick">Candlestick</h1>
+<p>The candlestick visualization allows you to visualize data that includes a number of consistent dimensions focused on price movements, such as stock prices. The candlestick visualization includes an <a href="#open-high-low-close">Open-High-Low-Close (OHLC) mode</a>, as well as support for additional dimensions based on time series data.</p>
+<p>Candlestick visualizations build upon the foundation of the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">time series visualization</a> and include many common configuration settings.</p>
+<p>You can use a candlestick if you want to visualize, at a glance, how a price moved over time, whether it went up, down, or stayed the same, and how much it fluctuated:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A candlestick visualization"width="2690"height="1418"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candlestick-v11.6.png"
+            alt="A candlestick visualization"width="2690"height="1418"/>
+        </noscript></div></a></figure>
+<p>Each candlestick is represented as a rectangle, referred to as the <em>candlestick body</em>. The candlestick body displays the opening and closing prices during a time period. Green candlesticks represent when the price appreciated while the red candlesticks represent when the price depreciated. The lines sticking out the candlestick body are referred to as <em>wicks</em> or <em>shadows</em>, which represent the highest and lowest prices during the time period.</p>
+<p>Use a candlestick when you need to:</p>
+<ul>
+<li>Monitor and identify trends in price movements of specific assets such as stocks, currencies, or commodities.</li>
+<li>Analyze any volatility in the stock market.</li>
+<li>Provide data analysis to help with trading decisions.</li>
+</ul>
+<h2 id="configure-a-candlestick">Configure a candlestick</h2>
+<p>Once you’ve created a 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">dashboard</a>, the following video shows you how to configure a candlestick visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=IOFKBgbf3aM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/candlestick/candlestick" target="_blank" rel="noopener noreferrer">Candlestick</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/candlestick/candlestick">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>The candlestick visualization works best with price movement data for an asset. The data must include:</p>
+<ul>
+<li><strong>Timestamps</strong> - The time at which each price movement occurred.</li>
+<li><strong>Opening price</strong> - The price of the asset at the beginning of the time period.</li>
+<li><strong>Closing price</strong> - The price of the asset at the end of the time period.</li>
+<li><strong>Highest price</strong> - The highest price the asset reached during the time period.</li>
+<li><strong>Lowest price</strong> - The lowest price the asset reached during the time period.</li>
+</ul>
+<h3 id="example">Example</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Timestamps</th>
+          <th>Open</th>
+          <th>High</th>
+          <th>Low</th>
+          <th>Close</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2024-03-13 10:05:00</td>
+          <td>0.200</td>
+          <td>0.205</td>
+          <td>0.201</td>
+          <td>0.203</td>
+      </tr>
+      <tr>
+          <td>2024-03-14 10:10:10</td>
+          <td>0.204</td>
+          <td>0.205</td>
+          <td>0.201</td>
+          <td>0.200</td>
+      </tr>
+      <tr>
+          <td>2024-03-15 10:15:10</td>
+          <td>0.204</td>
+          <td>0.205</td>
+          <td>0.201</td>
+          <td>0.200</td>
+      </tr>
+      <tr>
+          <td>2024-03-16 10:20:11</td>
+          <td>0.203</td>
+          <td>0.203</td>
+          <td>0.202</td>
+          <td>0.203</td>
+      </tr>
+      <tr>
+          <td>2024-03-17 10:25:11</td>
+          <td>0.203</td>
+          <td>0.203</td>
+          <td>0.202</td>
+          <td>0.203</td>
+      </tr>
+      <tr>
+          <td>2024-03-18 10:30:12</td>
+          <td>0.202</td>
+          <td>0.202</td>
+          <td>0.201</td>
+          <td>0.201</td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is converted as follows:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A candlestick visualization showing the price movements of specific asset."width="2930"height="1226"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candles-volume-v11.6.png"
+            alt="A candlestick visualization showing the price movements of specific asset."width="2930"height="1226"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="candlestick-options">Candlestick options</h3>
+<p>The following options let you control which data is displayed in the visualization and how it appears:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Mode</td>
+          <td>Controls which dimensions are used for the visualization. Choose from:<ul><li><strong>Candles</strong> - Uses the open, high, low, and close dimensions.</li><li><strong>Volume</strong> - Uses only the volume dimension.</li><li><strong>Both</strong> - The default behavior, which displays both candles and volume values.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Candle style</td>
+          <td>Controls the appearance of the candles. Choose from:<ul><li><strong>Candles</strong> - The default display style, which creates candle-style markers between the open and close dimensions.</li><li><strong>OHLC Bars</strong> - Displays values for the four core dimensions, open, high, low, and close.</li></ul></td>
+      </tr>
+      <tr>
+          <td><a href="#color-strategy">Color strategy</a></td>
+          <td>Controls how colors are applied to dimensions. Choose from:<ul><li><strong>Since Open</strong> - This mode uses the <strong>Up color</strong> if the intra-period price movement is positive.</li><li><strong>Since Prior Close</strong> - The color of the candle is based on the inter-period price movement or change in value.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Up color/Down color</td>
+          <td>These options control which colors are used when the price movement is up or down. Note that the <strong>Color strategy</strong> selection determines if intra-period or inter-period price movement is used to select the candle or OHLC bar color.</td>
+      </tr>
+      <tr>
+          <td><a href="#open-high-low-close">Open, High, Low, Close, Volume</a></td>
+          <td>The candlestick visualization attempts to map fields from your data to these dimensions, as appropriate dimension.</td>
+      </tr>
+      <tr>
+          <td><a href="#additional-fields">Additional fields</a></td>
+          <td>The <strong>Include</strong> and <strong>Ignore</strong> options allow the candlestick visualization to display other included data such as simple moving averages, Bollinger bands and more, using the same styles and configurations available in the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">time series</a> visualization.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="color-strategy">Color strategy</h4>
+<p>The <strong>Color strategy</strong> option controls how colors are applied to dimensions. Choose from:</p>
+<ul>
+<li>
+<p><strong>Since Open</strong> - The default behavior. This mode uses the <strong>Up color</strong> if the intra-period price movement is positive. In other words, if the value on close is greater or equal to the value on open, the <strong>Up color</strong> is used.</p>
+</li>
+<li>
+<p><strong>Since Prior Close</strong> - An alternative display method where the color of the candle is based on the inter-period price movement or change in value. In other words, if the value on open is greater than the previous value on close, the <strong>Up color</strong> is used. If the value on open is lower than the previous value on close, the <strong>Down color</strong> is used.</p>
+<p>This option also triggers the <em>hollow candlestick</em> visualization mode. Hollow candlesticks indicate that the intra-period movement is positive (value is higher on close than on open), while filled candlesticks indicate the intra-period change is negative (value is lower on close than on open). To learn more, refer to the <a href="https://thetradingbible.com/how-to-read-hollow-candlesticks" target="_blank" rel="noopener noreferrer">explanation of the differences</a>.</p>
+</li>
+</ul>
+<h4 id="open-high-low-close">Open, High, Low, Close, Volume</h4>
+<p>The candlestick visualization attempts to map fields from your data to the appropriate dimension:</p>
+<ul>
+<li><strong>Open</strong> - Starting value of the given period.</li>
+<li><strong>High</strong> - Highest value of the given period.</li>
+<li><strong>Low</strong> - Lowest value of the given period.</li>
+<li><strong>Close</strong> - Final (end) value of the given period.</li>
+<li><strong>Volume</strong> - Sample count in the given period (for example, number of trades).</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The candlestick visualization legend doesn&rsquo;t display these values.</p></blockquote></div>
+
+<p>If your data can&rsquo;t be mapped to these dimensions for some reason (for example, because the column names aren&rsquo;t the same), you can map them manually using the <strong>Open</strong>, <strong>High</strong>, <strong>Low</strong>, and <strong>Close</strong> fields under the <strong>Candlestick</strong> options in the panel editor:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 400px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="Open, High, Low, and Close fields in the panel editor"width="990"height="836"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-olhc-options-v11.6.png"
+            alt="Open, High, Low, and Close fields in the panel editor"width="990"height="836"/>
+        </noscript></div></a></figure>
+<h4 id="additional-fields">Additional fields</h4>
+<p>The candlestick visualization is based on the time series visualization, and it can visualize additional data dimensions beyond open, high, low, close, and volume.
+The <strong>Include</strong> and <strong>Ignore</strong> options allow it to visualize other included data such as simple moving averages, Bollinger bands and more, using the same styles and configurations available in the 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">time series</a> visualization.</p>
+<h3 id="tooltip-options">Tooltip options</h3>
+<p>Tooltip options control the information overlay that appears when you hover over data points in the visualization.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#tooltip-mode">Tooltip mode</a></td>
+          <td>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</td>
+      </tr>
+      <tr>
+          <td><a href="#values-sort-order">Values sort order</a></td>
+          <td>This option controls the order in which values are listed in a tooltip.</td>
+      </tr>
+      <tr>
+          <td><a href="#hover-proximity">Hover proximity</a></td>
+          <td>Set the hover proximity (in pixels) to control how close the cursor must be to a data point to trigger the tooltip to display.</td>
+      </tr>
+      <tr>
+          <td>Max width</td>
+          <td>Set the maximum width of the tooltip box.</td>
+      </tr>
+      <tr>
+          <td>Max height</td>
+          <td>Set the maximum height of the tooltip box. The default is 600 pixels.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="tooltip-mode">Tooltip mode</h4>
+<p>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</p>
+<ul>
+<li><strong>Single -</strong> The hover tooltip shows only a single series, the one that you are hovering over on the visualization.</li>
+<li><strong>All -</strong> The hover tooltip shows all series in the visualization. Grafana highlights the series that you are hovering over in bold in the series list in the tooltip.</li>
+<li><strong>Hidden -</strong> Do not display the tooltip when you interact with the visualization.</li>
+</ul>
+<p>Use an override to hide individual series from the tooltip.</p>
+<h4 id="values-sort-order">Values sort order</h4>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Values sort order</strong> option is displayed. This option controls the order in which values are listed in a tooltip. Choose from the following:</p>
+<ul>
+<li><strong>None</strong> - Grafana automatically sorts the values displayed in a tooltip.</li>
+<li><strong>Ascending</strong> - Values in the tooltip are listed from smallest to largest.</li>
+<li><strong>Descending</strong> - Values in the tooltip are listed from largest to smallest.</li>
+</ul>
+<h4 id="hover-proximity">Hover proximity</h4>
+<p>Set the hover proximity (in pixels) to control how close the cursor must be to a data point to trigger the tooltip to display.
+The following screen recording shows this option in a time series visualization:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/gif-grafana-10-4-hover-proximity.gif"
+  alt="Adding a hover proximity limit for tooltips" width="1136"
+     height="490"/></p>
+<h3 id="legend-options">Legend options</h3>
+
+
+<div data-shared="visualizations/legend-options-1.md">
+            <p>Legend options control the series names and statistics that appear under or to the right of the graph. For more information about the legend, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Visibility</td>
+          <td>Toggle the switch to turn the legend on or off.</td>
+      </tr>
+      <tr>
+          <td>Mode</td>
+          <td>Use these settings to define how the legend appears in your visualization. <strong>List</strong> displays the legend as a list. This is a default display mode of the legend. <strong>Table</strong> displays the legend as a table.</td>
+      </tr>
+      <tr>
+          <td>Placement</td>
+          <td>Choose where to display the legend. <strong>Bottom</strong> places the legend below the graph. <strong>Right</strong> places the legend to the right of the graph.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Control how wide the legend is when placed on the right side of the visualization. This option is only displayed if you set the legend placement to <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>Choose which of the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">standard calculations</a> to show in the legend. You can have more than one.</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+
+        
+<h3 id="graph-styles-options">Graph styles options</h3>
+<p>The options under the <strong>Graph styles</strong> section let you control the general appearance of <a href="#additional-fields">additional fields</a> in the visualization, excluding <a href="#standard-options">color</a>.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#style">Style</a></td>
+          <td>Choose whether to display your time-series data as <strong>Lines</strong>, <strong>Bars</strong>, or <strong>Points</strong>.</td>
+      </tr>
+      <tr>
+          <td><a href="#line-interpolation">Line interpolation</a></td>
+          <td>Choose how the graph interpolates the series line.</td>
+      </tr>
+      <tr>
+          <td>Line width</td>
+          <td>Set the thickness of the series lines or the outline for bars using the <strong>Line width</strong> slider.</td>
+      </tr>
+      <tr>
+          <td>Fill opacity</td>
+          <td>Set the series area fill color using the <strong>Fill opacity</strong> slider.</td>
+      </tr>
+      <tr>
+          <td><a href="#gradient-mode">Gradient mode</a></td>
+          <td>Choose a gradient mode to control the gradient fill, which is based on the series color.</td>
+      </tr>
+      <tr>
+          <td><a href="#line-style">Line style</a></td>
+          <td>Choose a solid, dashed, or dotted line style.</td>
+      </tr>
+      <tr>
+          <td><a href="#connect-null-values">Connect null values</a></td>
+          <td>Choose how null values, which are gaps in the data, appear on the graph.</td>
+      </tr>
+      <tr>
+          <td><a href="#disconnect-values">Disconnect values</a></td>
+          <td>Choose whether to set a threshold above which values in the data should be disconnected.</td>
+      </tr>
+      <tr>
+          <td><a href="#show-points">Show points</a></td>
+          <td>Set whether to show data points to lines or bars.</td>
+      </tr>
+      <tr>
+          <td>Point size</td>
+          <td>Set the size of the points, from 1 to 40 pixels in diameter.</td>
+      </tr>
+      <tr>
+          <td><a href="#stack-series">Stack series</a></td>
+          <td>Set whether Grafana displays series on top of each other.</td>
+      </tr>
+      <tr>
+          <td><a href="#bar-alignment">Bar alignment</a></td>
+          <td>Set the position of the bar relative to a data point.</td>
+      </tr>
+      <tr>
+          <td>Bar width factor</td>
+          <td>Set the width of the bar relative to minimum space between data points. A factor of 0.5 means that the bars take up half of the available space between data points. A factor of 1.0 means that the bars take up all available space.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="style">Style</h4>
+<p>Choose whether to display your time-series data as <strong>Lines</strong>, <strong>Bars</strong>, or <strong>Points</strong>.
+You can use overrides to combine multiple styles in the same graph. Choose from the following:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Graph styles"width="2950"height="532"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candle-style-v12.0.png"
+            alt="Graph styles"width="2950"height="532"/>
+        </noscript></div></a></figure>
+<h4 id="line-interpolation">Line interpolation</h4>
+<p>Choose how the graph interpolates the series line:</p>
+<ul>
+<li><strong>Linear</strong> - Points are joined by straight lines.</li>
+<li><strong>Smooth</strong> - Points are joined by curved lines that smooths transitions between points.</li>
+<li><strong>Step before</strong> - The line is displayed as steps between points. Points are rendered at the end of the step.</li>
+<li><strong>Step after</strong> - The line is displayed as steps between points. Points are rendered at the beginning of the step.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Line interpolation styles"width="2712"height="1212"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candle-interpolation-v12.0.png"
+            alt="Line interpolation styles"width="2712"height="1212"/>
+        </noscript></div></a></figure>
+<h4 id="gradient-mode">Gradient mode</h4>
+<p>Choose a gradient mode to control the gradient fill, which is based on the series color. To change the color, use the standard color scheme field option. For more information, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">Color scheme</a>.</p>
+<ul>
+<li><strong>None</strong> - No gradient fill. This is the default setting.</li>
+<li><strong>Opacity</strong> - An opacity gradient where the opacity of the fill increases as y-axis values increase.</li>
+<li><strong>Hue</strong> - A subtle gradient that&rsquo;s based on the hue of the series color.</li>
+<li><strong>Scheme</strong> - A color gradient defined by your 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">Color scheme</a>. This setting is used for the fill area and line. For more information about scheme, refer to <a href="#scheme-gradient-mode">Scheme gradient mode</a>.</li>
+</ul>
+<p>Gradient appearance is influenced by the <strong>Fill opacity</strong> setting. The following image shows the <strong>Fill opacity</strong> set to 50.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Gradient modes"width="2944"height="602"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candle-gradient-v12.0.png"
+            alt="Gradient modes"width="2944"height="602"/>
+        </noscript></div></a></figure>
+<h5 id="scheme-gradient-mode">Scheme gradient mode</h5>
+<p>In <strong>Scheme</strong> gradient mode, the line or bar receives a gradient color defined from the selected <strong>Color scheme</strong> option in the visualization&rsquo;s <strong>Standard</strong> options.</p>
+<p>The following image shows a line chart with the <strong>Green-Yellow-Red (by value)</strong> color scheme option selected:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Gradient color scheme"width="1468"height="604"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-1-v12.0.png"
+            alt="Gradient color scheme"width="1468"height="604"/>
+        </noscript></div></a></figure>
+<p>If the <strong>Color scheme</strong> is set to <strong>From thresholds (by value)</strong> and <strong>Gradient mode</strong> is set to <strong>Scheme</strong>, then the line or bar color changes as it crosses the defined thresholds:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Gradient color scheme with thresholds"width="1470"height="604"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candle-scheme-grad-2-v12.0.png"
+            alt="Gradient color scheme with thresholds"width="1470"height="604"/>
+        </noscript></div></a></figure>
+<h4 id="line-style">Line style</h4>
+<p>Choose a solid, dashed, or dotted line style:</p>
+<ul>
+<li><strong>Solid</strong> - Display a solid line. This is the default setting.</li>
+<li><strong>Dash</strong> - Display a dashed line. When you choose this option, a list appears for you to select the length and gap (length, gap) for the line dashes. Dash spacing is 10, 10 by default.</li>
+<li><strong>Dots</strong> - Display dotted lines. When you choose this option, a list appears for you to select the gap (length = 0, gap) for the dot spacing. Dot spacing is 0, 10 by default.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Line styles"width="2946"height="678"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-candle-line-style-v12.0.png"
+            alt="Line styles"width="2946"height="678"/>
+        </noscript></div></a></figure>
+
+
+<div data-shared="visualizations/connect-null-values.md">
+            
+
+<h4 id="connect-null-values">Connect null values</h4>
+<p>Choose how null values, which are gaps in the data, appear on the graph. Null values can be connected to form a continuous line or set to a threshold above which gaps in the data are no longer connected.</p>
+<ul>
+<li><strong>Never</strong> - Time series data points with gaps in the data are never connected.</li>
+<li><strong>Always</strong> - Time series data points with gaps in the data are always connected.</li>
+<li><strong>Threshold</strong> - Specify a threshold above which gaps in the data are no longer connected. This can be useful when the connected gaps in the data are of a known size and/or within a known range, and gaps outside this range should no longer be connected.</li>
+</ul>
+
+  </div>
+
+        
+
+
+<div data-shared="visualizations/disconnect-values.md">
+            
+
+<h4 id="disconnect-values">Disconnect values</h4>
+<p>Choose whether to set a threshold above which values in the data should be disconnected.</p>
+<ul>
+<li><strong>Never</strong> - Time series data points in the data are never disconnected.</li>
+<li><strong>Threshold</strong> - Specify a threshold above which values in the data are disconnected. This can be useful when desired values in the data are of a known size and/or within a known range, and values outside this range should no longer be connected.</li>
+</ul>
+
+  </div>
+
+        
+<p>To change the color, use the standard 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">color scheme</a> field option.</p>
+<h4 id="show-points">Show points</h4>
+<p>Set whether to show data points as lines or bars. Choose from the following:</p>
+<ul>
+<li><strong>Auto</strong> - Grafana determines a point&rsquo;s visibility based on the density of the data. If the density is low, then points appear.</li>
+<li><strong>Always</strong> - Show the points regardless of how dense the dataset is.</li>
+<li><strong>Never</strong> - Don&rsquo;t show points.</li>
+</ul>
+<h4 id="stack-series">Stack series</h4>
+<p>Set whether Grafana stacks or displays series on top of each other. Be cautious when using stacking because it can create misleading graphs. To read more about why stacking might not be the best approach, refer to <a href="https://www.data-to-viz.com/caveat/stacking.html" target="_blank" rel="noopener noreferrer">The issue with stacking</a>. Choose from the following:</p>
+<ul>
+<li><strong>Off</strong> - Turns off series stacking. When <strong>Off</strong>, all series share the same space in the visualization.</li>
+<li><strong>Normal</strong> - Stacks series on top of each other.</li>
+<li><strong>100%</strong> - Stack by percentage where all series add up to 100%.</li>
+</ul>
+<h5 id="stack-series-in-groups">Stack series in groups</h5>
+<p>The stacking group option is only available as an override. For more information about creating an override, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+<ol>
+<li>
+<p>Edit the panel and click <strong>Overrides</strong>.</p>
+</li>
+<li>
+<p>Create a field override for the <strong>Stack series</strong> option.</p>
+</li>
+<li>
+<p>In stacking mode, click <strong>Normal</strong>.</p>
+</li>
+<li>
+<p>Name the stacking group in which you want the series to appear.</p>
+<p>The stacking group name option is only available when you create an override.</p>
+</li>
+</ol>
+<h4 id="bar-alignment">Bar alignment</h4>
+<p>Set the position of the bar relative to a data point. In the examples below, <strong>Show points</strong> is set to <strong>Always</strong> which makes it easier to see the difference this setting makes. The points don&rsquo;t change, but the bars change in relationship to the points. Choose from the following:</p>
+<ul>
+<li><strong>Before</strong> <img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/time-series-panel/bar-alignment-before.png"
+  alt="Bar alignment before icon" width="25"
+     height="25"/>
+The bar is drawn before the point. The point is placed on the trailing corner of the bar.</li>
+<li><strong>Center</strong> <img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/time-series-panel/bar-alignment-center.png"
+  alt="Bar alignment center icon" width="35"
+     height="29"/>
+The bar is drawn around the point. The point is placed in the center of the bar. This is the default.</li>
+<li><strong>After</strong> <img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/time-series-panel/bar-alignment-after.png"
+  alt="Bar alignment after icon" width="34"
+     height="29"/>
+The bar is drawn after the point. The point is placed on the leading corner of the bar.</li>
+</ul>
+<h3 id="axis-options">Axis options</h3>
+
+
+<div data-shared="visualizations/axis-options-2.md">
+            
+
+<p>Options under the <strong>Axis</strong> section control how the x- and y-axes are rendered. Some options don&rsquo;t take effect until you click outside of the field option box you&rsquo;re editing. You can also press <code>Enter</code>.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#placement">Placement</a></td>
+          <td>Select the placement of the y-axis.  Choose from: <strong>Auto</strong>, <strong>Left</strong>, <strong>Right</strong>, and <strong>Hidden</strong>.</td>
+      </tr>
+      <tr>
+          <td>Label</td>
+          <td>Set a y-axis text label. If you have more than one y-axis, then you can assign different labels using an override.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Set a fixed width for the axis. By default, Grafana dynamically calculates the width of an axis.</td>
+      </tr>
+      <tr>
+          <td>Show grid lines</td>
+          <td>Set the axis grid line visibility. Choose from: <strong>Auto</strong>, <strong>On</strong>, and <strong>Off</strong>.</td>
+      </tr>
+      <tr>
+          <td>Color</td>
+          <td>Set the color of the axis. Choose from:<ul><li><strong>Text</strong> - Uses panel text color.</li><li><strong>Series</strong> - Uses the colors of the series.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Show border</td>
+          <td>Set the axis border visibility.</td>
+      </tr>
+      <tr>
+          <td><a href="#scale">Scale</a></td>
+          <td>Set the y-axis values scale. Choose from: <strong>Linear</strong>, <strong>Logarithmic</strong>, and <strong>Symlog</strong>.</td>
+      </tr>
+      <tr>
+          <td>Centered zero</td>
+          <td>Set the y-axis so it&rsquo;s centered on zero. Applies to the <strong>Linear</strong> or <strong>Symlog</strong> scale options.</td>
+      </tr>
+      <tr>
+          <td><a href="#soft-min-and-soft-max">Soft min</a></td>
+          <td>Set a soft min to better control the y-axis limits.</td>
+      </tr>
+      <tr>
+          <td><a href="#soft-min-and-soft-max">Soft max</a></td>
+          <td>Set a soft max to better control the y-axis limits.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h5 id="placement">Placement</h5>
+<p>Select the placement of the y-axis. Choose from the following:</p>
+<ul>
+<li><strong>Auto</strong> - Automatically assigns the y-axis to the series. When there are two or more series with different units, Grafana assigns the left axis to the first unit and the right axis to the units that follow.</li>
+<li><strong>Left</strong> - Display all y-axes on the left side.</li>
+<li><strong>Right</strong> - Display all y-axes on the right side.</li>
+<li><strong>Hidden</strong> - Hide all axes. To selectively hide axes, 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/#add-a-field-override">Add a field override</a> that targets specific fields.</li>
+</ul>
+<h5 id="scale">Scale</h5>
+<p>Set the y-axis values scale. Choose from:</p>
+<ul>
+<li><strong>Linear</strong> - Divides the scale into equal parts.</li>
+<li><strong>Logarithmic</strong> - Use a logarithmic scale. If you select this option, in the <strong>Log base</strong> list, choose a binary (base 2) or common (base 10) logarithmic scale.</li>
+<li><strong>Symlog</strong> - Use a symmetrical logarithmic scale. If you select this option, choose also:
+<ul>
+<li><strong>Log base</strong> - Select a binary (base 2) or common (base 10) logarithmic scale.</li>
+<li><strong>Linear threshold</strong> - Set the threshold at which the scale changes from linear to logarithmic.</li>
+</ul>
+</li>
+</ul>
+<h5 id="soft-min-and-soft-max">Soft min and soft max</h5>
+<p>Set a <strong>Soft min</strong> or <strong>soft max</strong> option for better control of y-axis limits. By default, Grafana sets the range for the y-axis automatically based on the dataset.</p>
+<p><strong>Soft min</strong> and <strong>soft max</strong> settings can prevent small variations in the data from being magnified when it&rsquo;s mostly flat. In contrast, hard min and max values help prevent obscuring useful detail in the data by clipping intermittent spikes past a specific point.</p>
+<p>To define hard limits of the y-axis, set standard min/max options. For more information, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#max">Configure standard options</a>.
+The following examples shows how this option works in a time series visualization:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-soft-min-max-v12.0.png"
+  alt="Label example" width="2198"
+     height="674"/></p>
+
+  </div>
+
+        
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-2.md">
+            <p><em>Data links</em> allow you to link to other panels, dashboards, and external resources and <em>actions</em> let you trigger basic, unauthenticated, API calls.
+In both cases, you can carry out these tasks while maintaining the context of the source panel.</p>
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+<li><strong>One click</strong> - Opens the data link with a single click. Only one data link can have <strong>One click</strong> enabled at a time.</li>
+</ul>
+<p>For each action, define the following API call settings:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Title</td>
+          <td>A human-readable label for the action that&rsquo;s displayed in the UI.</td>
+      </tr>
+      <tr>
+          <td>Confirmation message</td>
+          <td>A descriptive prompt to confirm or cancel the action.</td>
+      </tr>
+      <tr>
+          <td>Method</td>
+          <td>Select from <strong>POST</strong>, <strong>PUT</strong>, or <strong>GET</strong>.</td>
+      </tr>
+      <tr>
+          <td>URL</td>
+          <td>The request URL.</p><p>To add a variable, click in the <strong>URL</strong> field and enter <code>$</code> or press Ctrl+Space or Cmd+Space to see a list of available variables.</td>
+      </tr>
+      <tr>
+          <td>Variables</td>
+          <td><strong>Key</strong> and <strong>Name</strong> pairs with a type selection. Click the <strong>+</strong> icon to add as many variables as you need. To add a variable to the request, prefix the key with <code>$</code>. You can set the values for the variables when performing an action.</td>
+      </tr>
+      <tr>
+          <td>Query parameters</td>
+          <td><strong>Key</strong> and <strong>Value</strong> pairs. Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Headers</td>
+          <td>Comprised of <strong>Key</strong> and <strong>Value</strong> pairs and a <strong>Content-Type</strong>.</p><p>Click the <strong>+</strong> icon to add as many key/value pairs as you need.</td>
+      </tr>
+      <tr>
+          <td>Content-Type</td>
+          <td>Select from the following: <strong>application/json</strong>, <strong>text/plain</strong>, <strong>application/XML</strong>, and <strong>application/x-www-form-urlencoded</strong>.</td>
+      </tr>
+      <tr>
+          <td>Body</td>
+          <td>The body of the request.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-1.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+      <tr>
+          <td>Show thresholds</td>
+          <td>Choose from a variety of display options including not displaying thresholds at all.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

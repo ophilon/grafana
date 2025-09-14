@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<h1 id="configure-mqtt-notifications">Configure MQTT notifications</h1>
+<p>Use the MQTT integration in contact points to send alert notifications to your MQTT broker.</p>
+<h2 id="configure-mqtt-for-a-contact-point">Configure MQTT for a contact point</h2>
+<p>To create a contact point with MQTT integration, complete the following steps.</p>
+<ol>
+<li>Navigate to <strong>Alerts &amp; IRM</strong> -&gt; <strong>Alerting</strong> -&gt; <strong>Contact points</strong>.</li>
+<li>Click <strong>+ Add contact point</strong>.</li>
+<li>Enter a name for the contact point.</li>
+<li>From the <strong>Integration</strong> list, select <strong>MQTT</strong>.</li>
+<li>Enter your broker URL in the <strong>Broker URL</strong> field. Supports <code>tcp</code>, <code>ssl</code>, <code>mqtt</code>, <code>mqtts</code>, <code>ws</code>, <code>wss</code> schemes. For example: <code>tcp://127.0.0.1:1883</code>.</li>
+<li>Enter the MQTT topic name in the <strong>Topic</strong> field.</li>
+<li>(Optional) Configure <a href="#optional-settings">additional settings</a>.</li>
+<li>Click <strong>Save contact point</strong>.</li>
+</ol>
+<p>For more details on contact points, including how to test them and enable notifications, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/manage-contact-points/">Configure contact points</a>.</p>
+<h3 id="required-settings">Required Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Broker URL</td>
+          <td>The URL of the MQTT broker.</td>
+      </tr>
+      <tr>
+          <td>Topic</td>
+          <td>The topic to which the message will be sent.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="optional-settings">Optional Settings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Message format</td>
+          <td>If set to <code>json</code> (default), the notification message uses the <a href="#default-json-payload">default JSON payload</a>. <br/> If set to <code>text</code>, the notification message is fully customizable.</td>
+      </tr>
+      <tr>
+          <td>Message</td>
+          <td>Depends on the <strong>Message format</strong> option. <br/> In <code>json</code> format, defines only the <code>message</code> field of the <a href="#default-json-payload">default JSON payload</a>. <br/> In <code>text</code> format, defines the <a href="#custom-payload">entire custom payload</a>. <br/> This field supports 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>.</td>
+      </tr>
+      <tr>
+          <td>Client ID</td>
+          <td>The client ID to use when connecting to the MQTT broker. If blank, a random client ID is used.</td>
+      </tr>
+      <tr>
+          <td>Username</td>
+          <td>The username to use when connecting to the MQTT broker.</td>
+      </tr>
+      <tr>
+          <td>Password</td>
+          <td>The password to use when connecting to the MQTT broker.</td>
+      </tr>
+      <tr>
+          <td>QoS</td>
+          <td>The quality of service to use when sending the message. Options are <code>At most once</code>, <code>At least once</code>, and <code>Exactly once</code>.</td>
+      </tr>
+      <tr>
+          <td>Retain</td>
+          <td>If set to true, the message will be retained by the broker.</td>
+      </tr>
+      <tr>
+          <td>TLS</td>
+          <td>TLS configuration options, including CA certificate, client certificate, and client key, and disable certificate verification.</td>
+      </tr>
+      <tr>
+          <td>Disable resolved message</td>
+          <td>Enable this option to prevent notifications when an alert resolves.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="default-json-payload">Default JSON payload</h2>
+<p>If the <strong>Message format</strong> option is <code>json</code> (the default), the payload is like this example.</p>
+<pre>{
+  &#34;receiver&#34;: &#34;My MQTT integration&#34;,
+  &#34;status&#34;: &#34;firing&#34;,
+  &#34;orgId&#34;: 1,
+  &#34;alerts&#34;: [
+    {
+      &#34;status&#34;: &#34;firing&#34;,
+      &#34;labels&#34;: {
+        &#34;alertname&#34;: &#34;High memory usage&#34;,
+        &#34;team&#34;: &#34;blue&#34;,
+        &#34;zone&#34;: &#34;us-1&#34;
+      },
+      &#34;annotations&#34;: {
+        &#34;description&#34;: &#34;The system has high memory usage&#34;,
+        &#34;runbook_url&#34;: &#34;https://myrunbook.com/runbook/1234&#34;,
+        &#34;summary&#34;: &#34;This alert was triggered for zone us-1&#34;
+      },
+      &#34;startsAt&#34;: &#34;2021-10-12T09:51:03.157076+02:00&#34;,
+      &#34;endsAt&#34;: &#34;0001-01-01T00:00:00Z&#34;,
+      &#34;generatorURL&#34;: &#34;https://play.grafana.org/alerting/1afz29v7z/edit&#34;,
+      &#34;fingerprint&#34;: &#34;c6eadffa33fcdf37&#34;,
+      &#34;silenceURL&#34;: &#34;https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT2%2Cteam%3Dblue%2Czone%3Dus-1&#34;,
+      &#34;dashboardURL&#34;: &#34;&#34;,
+      &#34;panelURL&#34;: &#34;&#34;,
+      &#34;values&#34;: {
+        &#34;B&#34;: 44.23943737541908,
+        &#34;C&#34;: 1
+      }
+    },
+    {
+      &#34;status&#34;: &#34;firing&#34;,
+      &#34;labels&#34;: {
+        &#34;alertname&#34;: &#34;High CPU usage&#34;,
+        &#34;team&#34;: &#34;blue&#34;,
+        &#34;zone&#34;: &#34;eu-1&#34;
+      },
+      &#34;annotations&#34;: {
+        &#34;description&#34;: &#34;The system has high CPU usage&#34;,
+        &#34;runbook_url&#34;: &#34;https://myrunbook.com/runbook/1234&#34;,
+        &#34;summary&#34;: &#34;This alert was triggered for zone eu-1&#34;
+      },
+      &#34;startsAt&#34;: &#34;2021-10-12T09:56:03.157076+02:00&#34;,
+      &#34;endsAt&#34;: &#34;0001-01-01T00:00:00Z&#34;,
+      &#34;generatorURL&#34;: &#34;https://play.grafana.org/alerting/d1rdpdv7k/edit&#34;,
+      &#34;fingerprint&#34;: &#34;bc97ff14869b13e3&#34;,
+      &#34;silenceURL&#34;: &#34;https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT1%2Cteam%3Dblue%2Czone%3Deu-1&#34;,
+      &#34;dashboardURL&#34;: &#34;&#34;,
+      &#34;panelURL&#34;: &#34;&#34;,
+      &#34;values&#34;: {
+        &#34;B&#34;: 44.23943737541908,
+        &#34;C&#34;: 1
+      }
+    }
+  ],
+  &#34;groupLabels&#34;: {},
+  &#34;commonLabels&#34;: {
+    &#34;team&#34;: &#34;blue&#34;
+  },
+  &#34;commonAnnotations&#34;: {},
+  &#34;externalURL&#34;: &#34;https://play.grafana.org/&#34;,
+  &#34;version&#34;: &#34;1&#34;,
+  &#34;groupKey&#34;: &#34;{}:{}&#34;,
+  &#34;message&#34;: &#34;**Firing**\n\nLabels:\n - alertname = T2\n - team = blue\n - zone = us-1\nAnnotations:\n - description = This is the alert rule checking the second system\n - runbook_url = https://myrunbook.com\n - summary = This is my summary\nSource: https://play.grafana.org/alerting/1afz29v7z/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT2%2Cteam%3Dblue%2Czone%3Dus-1\n\nLabels:\n - alertname = T1\n - team = blue\n - zone = eu-1\nAnnotations:\nSource: https://play.grafana.org/alerting/d1rdpdv7k/edit\nSilence: https://play.grafana.org/alerting/silence/new?alertmanager=grafana&amp;matchers=alertname%3DT1%2Cteam%3Dblue%2Czone%3Deu-1\n&#34;
+}</pre>
+<h3 id="body">Body</h3>
+<p>If the <strong>Message format</strong> option is <code>json</code> (the default), the payload contains the following fields.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>receiver</code></td>
+          <td>string</td>
+          <td>Name of the contact point</td>
+      </tr>
+      <tr>
+          <td><code>status</code></td>
+          <td>string</td>
+          <td>Current status of the alert, <code>firing</code> or <code>resolved</code></td>
+      </tr>
+      <tr>
+          <td><code>orgId</code></td>
+          <td>number</td>
+          <td>ID of the organization related to the payload</td>
+      </tr>
+      <tr>
+          <td><code>alerts</code></td>
+          <td>array of <a href="#alert-object">alerts</a></td>
+          <td>Alerts that are triggering</td>
+      </tr>
+      <tr>
+          <td><code>groupLabels</code></td>
+          <td>object</td>
+          <td>Labels that are used for grouping, map of string keys to string values</td>
+      </tr>
+      <tr>
+          <td><code>commonLabels</code></td>
+          <td>object</td>
+          <td>Labels that all alarms have in common, map of string keys to string values</td>
+      </tr>
+      <tr>
+          <td><code>commonAnnotations</code></td>
+          <td>object</td>
+          <td>Annotations that all alarms have in common, map of string keys to string values</td>
+      </tr>
+      <tr>
+          <td><code>externalURL</code></td>
+          <td>string</td>
+          <td>External URL to the Grafana instance sending this webhook</td>
+      </tr>
+      <tr>
+          <td><code>version</code></td>
+          <td>string</td>
+          <td>Version of the payload</td>
+      </tr>
+      <tr>
+          <td><code>groupKey</code></td>
+          <td>string</td>
+          <td>Key that is used for grouping</td>
+      </tr>
+      <tr>
+          <td><code>message</code></td>
+          <td>string</td>
+          <td>Custom message configured in <strong>Message</strong> (<strong>Optional Settings</strong>). <br/> Supports 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a>; the output is formatted as a string.</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When using the <code>json</code> <strong>Message format</strong>, only the <strong>message</strong> field of the JSON payload is customizable, and its output is formatted as a string.</p>
+<p>To customize the full payload in text or JSON format, use the <code>text</code> format and define a <a href="#custom-payload">custom payload</a>.</p></blockquote></div>
+
+<h3 id="alert-object">Alert object</h3>
+<p>The Alert object represents an alert included in the notification group, as provided by the <a href="#body"><code>alerts</code> field</a>.</p>
+
+
+<div data-shared="alerts/table-for-json-alert-object.md">
+            <table>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>status</code></td>
+          <td>string</td>
+          <td>Current status of the alert, <code>firing</code> or <code>resolved</code>.</td>
+      </tr>
+      <tr>
+          <td><code>labels</code></td>
+          <td>object</td>
+          <td>Labels that are part of this alert, map of string keys to string values.</td>
+      </tr>
+      <tr>
+          <td><code>annotations</code></td>
+          <td>object</td>
+          <td>Annotations that are part of this alert, map of string keys to string values.</td>
+      </tr>
+      <tr>
+          <td><code>startsAt</code></td>
+          <td>string</td>
+          <td>Start time of the alert.</td>
+      </tr>
+      <tr>
+          <td><code>endsAt</code></td>
+          <td>string</td>
+          <td>End time of the alert, default value when not resolved is <code>0001-01-01T00:00:00Z</code>.</td>
+      </tr>
+      <tr>
+          <td><code>values</code></td>
+          <td>object</td>
+          <td>Values that triggered the current status.</td>
+      </tr>
+      <tr>
+          <td><code>generatorURL</code></td>
+          <td>string</td>
+          <td>URL of the alert rule in the Grafana UI.</td>
+      </tr>
+      <tr>
+          <td><code>fingerprint</code></td>
+          <td>string</td>
+          <td>The labels fingerprint, alarms with the same labels will have the same fingerprint.</td>
+      </tr>
+      <tr>
+          <td><code>silenceURL</code></td>
+          <td>string</td>
+          <td>URL to silence the alert rule in the Grafana UI.</td>
+      </tr>
+      <tr>
+          <td><code>dashboardURL</code></td>
+          <td>string</td>
+          <td>A link to the Grafana Dashboard if the alert has a Dashboard UID annotation.</td>
+      </tr>
+      <tr>
+          <td><code>panelURL</code></td>
+          <td>string</td>
+          <td>A link to the panel if the alert has a Panel ID annotation.</td>
+      </tr>
+      <tr>
+          <td><code>imageURL</code></td>
+          <td>string</td>
+          <td>URL of a screenshot of a panel assigned to the rule that created this notification.</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+
+        
+<h2 id="custom-payload">Custom payload</h2>
+<p>When you set the <strong>Message format</strong> option to <code>text</code>, you can customize the entire payload of the MQTT message.</p>
+<p>In this mode, the <strong>Message</strong> option defines the entire payload. It supports 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/">notification templates</a> and can generate notification messages in plain text, JSON, or any custom format.</p>
+<p>For examples of templates that produce plain text or JSON messages, refer to 
+    <a href="/docs/grafana/latest/alerting/configure-notifications/template-notifications/examples/">notification template examples</a>.</p>

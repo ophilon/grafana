@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<h1 id="configure-alert-rules">Configure alert rules</h1>
+<p>
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/">Alert rules</a> are the central component of your alerting system.</p>
+<p>An alert rule consists of one or more queries and expressions that select the data you want to measure. It contains a condition to trigger the alert, an evaluation period that determines how often the rule is evaluated, and additional options to manage alert events and their notifications.</p>
+<p>Grafana supports two types of alert rules:</p>
+<ol>
+<li>
+<p><strong>Grafana-managed alert rules</strong> — the recommended option. They can query backend data sources—including Prometheus-based ones—and offer a 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-data-source-managed-rule/#comparison-with-grafana-managed-rules">richer feature set</a>.</p>
+</li>
+<li>
+<p><strong>Data source-managed alert rules</strong> — supported for Prometheus-based data sources (such as Mimir, Loki, and Prometheus), with rules stored in the data source itself.</p>
+<p>You can 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/alerting-migration/">convert and import data source-managed rules into Grafana-managed rules</a> to let Grafana Alerting manage them.</p>
+</li>
+</ol>
+<p>Both types of alert rules can be configured in Grafana using the <strong>+ New alert rule</strong> flow. For step-by-step instructions, refer to:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-grafana-managed-rule/">Configure Grafana-managed alert rules</a></li>
+<li>
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-data-source-managed-rule/">Configure data source-managed alert rules</a></li>
+</ul>
+<p>In Grafana Alerting, you can also 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-recording-rules/">configure recording rules</a>, which pre-compute queries and save the results as new time series metrics for use in other alert rules or dashboard queries.</p>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<h1 id="manage-provisioned-repositories-with-git-sync">Manage provisioned repositories with Git Sync</h1>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>Git Sync is an <a href="/docs/release-life-cycle/">experimental feature</a> introduced in Grafana v12 for open source and Enterprise editions. Engineering and on-call support is not available. Documentation is either limited or not provided outside of code comments. No SLA is provided. Enable the <code>provisioning</code> and <code>kubernetesDashboards</code> feature toggles in Grafana to use this feature. This feature is not publicly available in Grafana Cloud yet. Only the cloud-hosted version of GitHub (GitHub.com) is supported at this time. GitHub Enterprise is not yet compatible.</p>
+<p>Sign up for Grafana Cloud Git Sync early access using <a href="https://forms.gle/WKkR3EVMcbqsNnkD9" target="_blank" rel="noopener noreferrer">this form</a>.</p></blockquote></div>
+
+<p>After you have set up Git Sync, you can synchronize dashboards and changes to existing dashboards to your configured GitHub repository.
+If you push a change in the repository, those changes are mirrored in your Grafana instance.</p>
+<h2 id="view-current-status-of-synchronization">View current status of synchronization</h2>
+<p>Each repository synchronized with Git Sync has a dashboard that provides a summary of resources, health, pull status, webhook, sync jobs, resources, and files.
+Use the detailed information accessed in <strong>View</strong> to help troubleshoot and understand the health of your repository&rsquo;s connection with Grafana.</p>
+<p>To view the current status, follow these steps.</p>
+<ol>
+<li>Log in to your Grafana server with an account that has the Grafana Admin or Editor flag set.</li>
+<li>Select <strong>Administration</strong> in the left-side menu and then <strong>Provisioning</strong>.</li>
+<li>Locate the repository you are interested in.</li>
+<li>If you see a green <code>Up-to-date</code> label next to the repository name, then everything is syncing as expected.</li>
+<li>Select <strong>View</strong> to access detailed dashboards and reports about the synchronization history of your repository.</li>
+</ol>
+<h2 id="synchronize-changes">Synchronize changes</h2>
+<p>Synchronizing resources from provisioned repositories into your Grafana instance pulls the resources into the selected folder. Existing dashboards with the same <code>uid</code> are overwritten.</p>
+<p>To sync changes from your dashboards with your Git repository:</p>
+<ol>
+<li>From the left menu, select <strong>Administration</strong> &gt; <strong>Provisioning</strong>.</li>
+<li>Select <strong>Pull</strong> under the repository you want to sync.</li>
+<li>Wait for the synchronization process to complete.</li>
+</ol>
+<h2 id="remove-a-repository">Remove a repository</h2>
+<p>To delete a repository, follow these steps.</p>
+<ol>
+<li>Log in to your Grafana server with an account that has the Grafana Admin or Editor flag set.</li>
+<li>Select <strong>Administration</strong> in the left-side menu and then <strong>Provisioning</strong>.</li>
+<li>Locate the repository you are interested in.</li>
+<li>Select the trashcan icon in the right side to delete the chosen entry.</li>
+<li>Select <strong>Delete</strong> to confirm.</li>
+</ol>
+<p>Refer to <a href="../provisioned-dashboards">Work with provisioned dashboards</a> for information on removing provisioned files.</p>
+<h2 id="troubleshoot-synchronization">Troubleshoot synchronization</h2>
+<p>Monitor the <strong>View</strong> status page for synchronization issues and status updates. Common events include:</p>
+<ul>
+<li>Sync started</li>
+<li>Sync completed</li>
+<li>Sync failed (with error details)</li>
+<li>Sync issues</li>
+</ul>
+<h3 id="dashboard-sync-errors">Dashboard sync errors</h3>
+<ul>
+<li>If dashboards are not syncing, check if the repository URL is correct and accessible from the Grafana instance.</li>
+<li>Ensure that the configured repository branch exists and is correctly referenced.</li>
+<li>Check for conflicts in the repository that may prevent syncing.</li>
+</ul>
+<h3 id="dashboard-import-errors">Dashboard import errors</h3>
+<ul>
+<li>Validate the JSON format of the dashboard files before importing.</li>
+<li>If the import fails, check Grafana logs for error messages and troubleshoot accordingly.</li>
+</ul>

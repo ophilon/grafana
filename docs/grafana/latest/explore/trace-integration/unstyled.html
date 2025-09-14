@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<h1 id="traces-in-explore">Traces in Explore</h1>
+<p>You can use Explore to query and visualize traces from tracing data sources. Supported data sources include:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/datasources/tempo/">Tempo</a></li>
+<li>
+    <a href="/docs/grafana/latest/datasources/jaeger/">Jaeger</a></li>
+<li>
+    <a href="/docs/grafana/latest/datasources/zipkin/">Zipkin</a></li>
+<li><a href="/grafana/plugins/grafana-x-ray-datasource">X-Ray</a></li>
+<li><a href="/docs/grafana/latest/datasources/azure-monitor/">Azure Monitor</a></li>
+<li><a href="https://github.com/grafana/clickhouse-datasource" target="_blank" rel="noopener noreferrer">ClickHouse</a></li>
+<li><a href="/docs/plugins/grafana-newrelic-datasource/latest/">New Relic</a></li>
+<li><a href="/docs/plugins/yesoreyeram-infinity-datasource/latest/">Infinity</a></li>
+</ul>
+<p>Here are some references to learn more about traces and how you can use them:</p>
+<ul>
+<li>
+    <a href="/docs/tempo/latest/introduction/">Introduction to tracing</a></li>
+<li>
+    <a href="/docs/tempo/latest/traceql/trace-structure/#trace-structure">Trace structure</a></li>
+<li>
+    <a href="/docs/tempo/latest/introduction/telemetry/">Traces and telemetry</a></li>
+<li>
+    <a href="/docs/tempo/latest/introduction/solutions-with-traces/">Using traces to find solutions to problems</a></li>
+<li>
+    <a href="/docs/grafana/latest/datasources/tempo/tracing-best-practices/">Best practices for tracing</a></li>
+</ul>
+<h2 id="query-editors">Query editors</h2>
+<p>You can query and search tracing data using a data source&rsquo;s query editor. Note that data sources in Grafana have unique query editors.</p>
+<p>For information on how to use the query editor to create queries for tracing data sources, refer to the documentation for each individual data source.</p>
+<h2 id="trace-view">Trace view</h2>
+<p>Grafana&rsquo;s trace view provides an overview of a request as it travels through your system. The following sections provide detail on various elements of the trace view.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace view"width="891"height="719"title="Trace view"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view.png"
+            alt="Trace view"width="891"height="719"title="Trace view"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace view</figcaption></a></figure>
+<h3 id="header">Header</h3>
+<p>The trace view header includes the following:</p>
+<ul>
+<li><strong>Header title</strong> - Shows the name of the root span and trace ID.</li>
+<li><strong>Search</strong> - Highlights spans containing the searched text.</li>
+<li><strong>Metadata</strong> - Various metadata about the trace.</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-header.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-header.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-header.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-header.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-header.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-header.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-header.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-header.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-header.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace view header"width="890"height="60"title="Trace view header"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-header.png"
+            alt="Trace view header"width="890"height="60"title="Trace view header"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace view header</figcaption></a></figure>
+<h3 id="minimap">Minimap</h3>
+<p><strong>Minimap</strong> displays a condensed view of the trace timeline. Drag your mouse over the minimap to zoom into a smaller time range. This also updates the main timeline, making it easier to view shorter spans
+When zoomed in, hovering over the minimap displays <strong>Reset selection</strong>, which resets the zoom.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-minimap.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-minimap.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-minimap.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-minimap.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-minimap.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-minimap.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-minimap.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-minimap.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-minimap.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace view minimap example"width="888"height="80"title="Trace view minimap example"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-minimap.png"
+            alt="Trace view minimap example"width="888"height="80"title="Trace view minimap example"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace view minimap example</figcaption></a></figure>
+<h3 id="timeline">Timeline</h3>
+<p>Timeline shows list of spans within the trace. Each span row consists of the following components:</p>
+<ul>
+<li><strong>Expand children</strong> - Expands or collapses all the children spans of the selected span.</li>
+<li><strong>Service name</strong> - Name of the service logged the span.</li>
+<li><strong>Operation name</strong> - Name of the operation that this span represents.</li>
+<li><strong>Span duration bar</strong> - Visual representation of the operation duration within the trace.</li>
+</ul>
+<p>Click anywhere on the span row to reveal span details.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-timeline.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-timeline.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-timeline.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-timeline.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-timeline.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-timeline.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-timeline.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-timeline.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-timeline.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace view timeline"width="889"height="227"title="Trace view timeline"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-timeline.png"
+            alt="Trace view timeline"width="889"height="227"title="Trace view timeline"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace view timeline</figcaption></a></figure>
+<h3 id="span-details">Span details</h3>
+<p>Traces are composed of one or more spans.
+A span is a unit of work within a trace that has a start time relative to the beginning of the trace, a duration and an operation name for the unit of work.
+It usually has a reference to a parent span, unless it’s the first span, the root span, in a trace.
+It frequently includes key/value attributes that are relevant to the span itself, for example the HTTP method used in the request, as well as other metadata such as the service name, sub-span events, or links to other spans.</p>
+<p>You can expand any span in a trace and view the details, including the span and resource attributes.</p>
+<p>For more information about spans and traces, refer to <a href="/docs/tempo/latest/introduction/">Introduction to tracing</a> in the Tempo documentation.</p>
+<p>Span details include span attributes, resource attributes, events, and links.</p>
+<h4 id="span-and-resource-attributes">Span and resource attributes</h4>
+<p><strong>Span attributes</strong> are key-value pairs that provide metadata about a specific span. They give context to the operation being performed, such as information about the request, response, or any relevant operational details. For example, if the span deals with calling another service via HTTP, an attribute could include the HTTP URL (maybe as the span attribute key <code>http.url</code>) and the HTTP status code returned (as the span attribute <code>http.status_code</code>).</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace view span attributes"width="1656"height="1089"title="Trace view span attributes"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-span-span-attributes.png"
+            alt="Trace view span attributes"width="1656"height="1089"title="Trace view span attributes"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace view span attributes</figcaption></a></figure>
+<p><strong>Resource attributes</strong> are key-value pairs that describe the environment or entity that is producing the trace. They capture static information about the origin of traces, like the application name or the service version.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace view span resource attributes"width="1656"height="525"title="Trace view span resource attributes"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-span-resource-attributes.png"
+            alt="Trace view span resource attributes"width="1656"height="525"title="Trace view span resource attributes"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace view span resource attributes</figcaption></a></figure>
+<p>Span attributes are specific to a particular operation, while resource attributes are associated with the whole trace or the entire service emitting the spans. Refer to 
+    <a href="/docs/tempo/latest/operations/best-practices/#span-and-resource-attributes">Span and resource attributes</a> for more detail.</p>
+<h4 id="events">Events</h4>
+<p>Events are log-like records attached to a span that represent an occurrence during its execution. They record notable moments or occurrences within the span&rsquo;s lifecycle, such as errors, warnings, or checkpoints. If an error occurs during an operation, an event can be added to the span to indicate what went wrong and when. Events include a timestamp, name, and key-value pairs attributes that provide additional context or details about the event.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-span-events.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-span-events.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-span-events.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-span-events.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-span-events.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-span-events.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-span-events.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-span-events.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-span-events.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace view span events"width="1652"height="1281"title="Trace view span events"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-span-events.png"
+            alt="Trace view span events"width="1652"height="1281"title="Trace view span events"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace view span events</figcaption></a></figure>
+<h4 id="links">Links</h4>
+<p>Links show relationships between spans that are not in a direct parent-child relationship. They represent associations between spans that happen concurrently or across separate trace trees, linking traces that originated from separate sources but are logically connected, such as background job processing initiated from a web request. You might use links when a trace passes through an asynchronous queue or when correlating traces from different services.</p>
+<h3 id="span-filters">Span filters</h3>
+<p>Span filters allow you to refine the spans displayed in the trace timeline viewer.
+The more filters you add, the more specific the filtered spans become.
+Click on a trace to access Span filters.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/tempo/screenshot-grafana-tempo-span-filters-v10-1.png"
+  alt="Screenshot of span filtering" width="833"
+     height="239"/></p>
+<p>You can add one or more of the following filters:</p>
+<ul>
+<li><strong>Service name</strong> - Filter by selecting a service name from the dropdown.</li>
+<li><strong>Span name</strong> - Filter by selecting a span name from the dropdown.</li>
+<li><strong>Duration</strong> - Filter by duration. Accepted units include ns, us, ms, s, m, h.</li>
+<li><strong>Tags</strong> - Filter by tags, process tags, or log fields in your span.</li>
+</ul>
+<p>To only show the spans you have matched, toggle <strong>Show matches only</strong>.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/datasources/tempo/span-filters/">Span filters</a> for more in depth information.</p>
+<p>Watch the following video to learn more about filtering trace spans in Grafana:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=VP2XV3IIc80" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></p>
+<h3 id="trace-to-logs">Trace to logs</h3>
+<p>You can navigate from a span in a trace view directly to logs relevant for that span.
+This feature is available for the Tempo, Jaeger, and Zipkin data sources.
+Refer to each individual data source&rsquo;s documentation for configuration instructions.</p>
+<p>Click the document icon to open a split view in Explore with the configured data source and query relevant logs for the span.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png?w=1920 1920w"
+          data-sizes="auto"alt="Trace to logs"width="975"height="507"title="Trace to logs"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-trace-to-logs.png"
+            alt="Trace to logs"width="975"height="507"title="Trace to logs"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Trace to logs</figcaption></a></figure>
+<h3 id="trace-to-metrics">Trace to metrics</h3>
+<p>You can navigate from a span in a trace view directly to metrics relevant for that span.
+This feature is available for the Tempo, Jaeger, and Zipkin data sources.</p>
+<p>Refer to each individual data source&rsquo;s documentation for configuration instructions.
+For Tempo, refer to 
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#trace-to-metrics">Trace to metrics configuration</a>.</p>
+<h3 id="trace-to-profiles">Trace to profiles</h3>
+<p>Using Trace to profiles, you can use Grafana’s ability to correlate different signals by adding the functionality to link between traces and profiles.</p>
+<p>For Tempo refer to 
+    <a href="/docs/grafana/latest/datasources/tempo/configure-tempo-data-source/#trace-to-profiles">Trace to profiles</a> for configuration instructions.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png"data-srcset="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=320 320w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=550 550w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=750 750w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=900 900w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=1040 1040w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=1240 1240w, /static/img/docs/tempo/profiles/tempo-trace-to-profile.png?w=1920 1920w"
+          data-sizes="auto"alt="Selecting a link in the span queries the profile data source"width="2089"height="1112"/>
+        <noscript>
+          <img
+            src="/static/img/docs/tempo/profiles/tempo-trace-to-profile.png"
+            alt="Selecting a link in the span queries the profile data source"width="2089"height="1112"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h3 id="trace-correlations">Trace correlations</h3>
+<p>You can use 
+    <a href="/docs/grafana/latest/administration/correlations/">correlations</a> to define custom links that appear in the trace view based on trace and span information.</p>
+<p>For Tempo, refer to 
+    <a href="/docs/grafana/latest/datasources/tempo/traces-in-grafana/trace-correlations/">Trace correlations</a> for configuration instructions.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/tempo/screenshot-grafana-trace-view-correlations.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/tempo/screenshot-grafana-trace-view-correlations.png"data-srcset="/media/docs/tempo/screenshot-grafana-trace-view-correlations.png?w=320 320w, /media/docs/tempo/screenshot-grafana-trace-view-correlations.png?w=550 550w, /media/docs/tempo/screenshot-grafana-trace-view-correlations.png?w=750 750w, /media/docs/tempo/screenshot-grafana-trace-view-correlations.png?w=900 900w, /media/docs/tempo/screenshot-grafana-trace-view-correlations.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-trace-view-correlations.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-trace-view-correlations.png?w=1920 1920w"
+          data-sizes="auto"alt="Using correlations for a trace"width="1400"height="1170"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-trace-view-correlations.png"
+            alt="Using correlations for a trace"width="1400"height="1170"class="docs-image--no-shadow"/>
+        </noscript></div></a></figure>
+<h2 id="node-graph">Node graph</h2>
+<p>You can also expand the node graph for a displayed trace. If the data source supports it, this displays spans of the trace as nodes in the graph, or provides additional context, such as a service graph based on the current trace.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/">Node graph</a> for additional information.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The node graph requires data to be returned from the data source in a specific format to display correctly. Refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/#data-api">Data API</a>, <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/#nodes-data-frame-structure">Nodes data frame structure</a> and <a href="/docs/grafana/latest/panels-visualizations/visualizations/node-graph/#data-requirements">Node graph data requirements</a> for additional information and configuration instructions.</p></blockquote></div>
+
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/tempo/screenshot-grafana-node-graph.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/tempo/screenshot-grafana-node-graph.png"data-srcset="/media/docs/tempo/screenshot-grafana-node-graph.png?w=320 320w, /media/docs/tempo/screenshot-grafana-node-graph.png?w=550 550w, /media/docs/tempo/screenshot-grafana-node-graph.png?w=750 750w, /media/docs/tempo/screenshot-grafana-node-graph.png?w=900 900w, /media/docs/tempo/screenshot-grafana-node-graph.png?w=1040 1040w, /media/docs/tempo/screenshot-grafana-node-graph.png?w=1240 1240w, /media/docs/tempo/screenshot-grafana-node-graph.png?w=1920 1920w"
+          data-sizes="auto"alt="Node graph"width="892"height="551"title="Node graph"/>
+        <noscript>
+          <img
+            src="/media/docs/tempo/screenshot-grafana-node-graph.png"
+            alt="Node graph"width="892"height="551"title="Node graph"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Node graph</figcaption></a></figure>
+<h2 id="service-graph">Service graph</h2>
+<p>A service graph visualizes rates, error rates, and durations (RED), along with service relationships.
+After the requirements are configured, this pre-configured view is immediately available.</p>
+<p>For additional information refer to the following documentation:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/datasources/tempo/service-graph/">Service Graph and Service Graph view</a></li>
+<li>
+    <a href="/docs/tempo/latest/metrics-generator/service-graph-view/">Service graph view</a> in Tempo documentation</li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+    style="max-width: 900px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/grafana-cloud/apm-overview.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/grafana-cloud/apm-overview.png"data-srcset="/static/img/docs/grafana-cloud/apm-overview.png?w=320 320w, /static/img/docs/grafana-cloud/apm-overview.png?w=550 550w, /static/img/docs/grafana-cloud/apm-overview.png?w=750 750w, /static/img/docs/grafana-cloud/apm-overview.png?w=900 900w, /static/img/docs/grafana-cloud/apm-overview.png?w=1040 1040w, /static/img/docs/grafana-cloud/apm-overview.png?w=1240 1240w, /static/img/docs/grafana-cloud/apm-overview.png?w=1920 1920w"
+          data-sizes="auto"alt="Service graph view"width="1266"height="915"title="Service graph view"/>
+        <noscript>
+          <img
+            src="/static/img/docs/grafana-cloud/apm-overview.png"
+            alt="Service graph view"width="1266"height="915"title="Service graph view"class="docs-image--no-shadow"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Service graph view</figcaption></a></figure>

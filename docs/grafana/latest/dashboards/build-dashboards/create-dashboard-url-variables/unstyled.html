@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<h1 id="dashboard-url-variables">Dashboard URL variables</h1>
+<p>Dashboard URL 
+    <a href="/docs/grafana/latest/dashboards/variables/">variables</a> allow you to provide more context when you share a dashboard URL.</p>
+<p>For example, you could share a basic URL to your dashboard that looks like this:</p>
+<pre>https://${your-domain}/path/to/your/dashboard</pre>
+<p>This allows someone to navigate to the dashboard, but doesn&rsquo;t provide any helpful context that might be available.</p>
+<p>Instead, you can add dashboard variables, passed as query parameters in the dashboard URL, to provide a URL like this:</p>
+<pre>https://${your-domain}/path/to/your/dashboard?var-example=value</pre>
+<p>This allows you to provide added context to the dashboard when someone navigates to it.</p>
+<h2 id="variables-as-query-parameters">Variables as query parameters</h2>
+<p>Grafana interprets query string parameters prefixed with <code>var-</code> as variables in the given dashboard.</p>
+<p>For example:</p>
+<pre>https://${your-domain}/path/to/your/dashboard?var-example=value</pre>
+<p>In this URL, the query parameter <code>var-example=value</code> represents the dashboard variable <code>example</code> with a value of <code>value</code>.</p>
+<h3 id="multiple-values-for-a-variable">Multiple values for a variable</h3>
+<p>To pass multiple values, repeat the variable parameter once for each value:</p>
+<pre>https://${your-domain}/path/to/your/dashboard?var-example=value1&amp;var-example=value2</pre>
+<p>Grafana interprets <code>var-example=value1&amp;var-example=value2</code> as the dashboard variable <code>example</code> with two values: <code>value1</code> and <code>value2</code>.</p>
+<h3 id="example">Example</h3>
+<p><a href="https://play.grafana.org/d/000000074/alerting?var-app=backend&amp;var-server=backend_01&amp;var-server=backend_03&amp;var-interval=1h" target="_blank" rel="noopener noreferrer">This dashboard in Grafana Play</a> passes the variable <code>server</code> with multiple values, and the variables <code>app</code> and <code>interval</code> with a single value each.</p>
+<h2 id="ad-hoc-filters">Ad hoc filters</h2>
+<p>Ad hoc filters apply key/value filters to all metric queries that use the specified data source. For more information, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/add-template-variables/#add-ad-hoc-filters">Add ad hoc filters</a>.</p>
+<p>To pass an ad hoc filter as a query parameter, use the variable syntax to pass the ad hoc filter variable. Then provide the key, operator, and value as a pipe-separated list.</p>
+<p>For example:</p>
+<pre>https://${your-domain}/path/to/your/dashboard?var-adhoc=example_key|=|example_value</pre>
+<p>In this URL, the query parameter <code>var-adhoc=key|=|value</code> applies the ad hoc filter configured as the <code>adhoc</code> dashboard variable using the <code>example_key</code> key, the <code>=</code> operator, and the <code>example_value</code> value.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When sharing URLs with ad hoc filters, remember to encode the URL. In the preceding example, replace the pipes (<code>|</code>) with <code>%7C</code> and the equality operator (<code>=</code>) with <code>%3D</code>.</p></blockquote></div>
+
+<h3 id="example-1">Example</h3>
+<p><a href="https://play.grafana.org/d/p-k6QtkGz/template-redux?var-interval=$__auto&amp;orgId=1&amp;from=now-5m&amp;to=now&amp;timezone=utc&amp;var-query=$__all&amp;var-query2=$__all&amp;var-query3=$__all&amp;var-Filters=job%7C%3D%7Cmetrictank%2Ftsdb-gw&amp;var-textbox=foo&amp;var-custom=lisa&amp;var-datasource=grafanacloud-demoinfra-prom" target="_blank" rel="noopener noreferrer">This dashboard in Grafana Play</a> passes the ad hoc filter variable <code>Filters</code> with the filter value <code>job = metrictank/tsdb-gw</code>.</p>
+<h2 id="time-range-control-using-the-url">Time range control using the URL</h2>
+
+
+<div data-shared="dashboards/time-range-URLs.md">
+            <p>You can control the time range of a dashboard by providing the following query parameters in the dashboard URL:</p>
+<ul>
+<li><code>from</code> - Defines the lower limit of the time range, specified in ms, epoch, or relative time.</li>
+<li><code>to</code> - Defines the upper limit of the time range, specified in ms, epoch, or relative time.</li>
+<li><code>time</code> and <code>time.window</code> - Defines a time range from <code>time-time.window/2</code> to <code>time+time.window/2</code>. Both parameters should be specified in <code>ms</code>. For example <code>?time=1500000000000&amp;time.window=10000</code> results in a 10-second time range from 1499999995000 to 1500000005000`.</li>
+<li><code>timezone</code> - Defines the time zone. For example <code>timezone=Europe/Madrid</code>.</li>
+</ul>
+<p>Since these aren&rsquo;t variables, they don&rsquo;t require the <code>var-</code> prefix.</p>
+<p>The following example shows a dashboard with the time range of the last five minutes:</p>
+<pre>https://${your-domain}/path/to/your/dashboard?from=now-5m&amp;to=now</pre>
+</div>
+
+        
+<h2 id="variables-in-dashboard-links">Variables in dashboard links</h2>
+<p>When you create dashboard links the dashboard settings, you can have current dashboard variables included in the link by selecting that option:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png"data-srcset="/media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png?w=1920 1920w"
+          data-sizes="auto"alt="Dashboard link page with variables option selected"width="658"height="680"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-dashboard-link-variables-11.1.png"
+            alt="Dashboard link page with variables option selected"width="658"height="680"/>
+        </noscript></div></a></figure>
+<p>For steps to add variables to dashboard links, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/">Manage dashboard links</a>.</p>

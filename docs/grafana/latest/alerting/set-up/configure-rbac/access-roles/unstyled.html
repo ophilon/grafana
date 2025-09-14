@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<h1 id="manage-access-using-roles">Manage access using roles</h1>
+<p>In Grafana Enterprise and Grafana Cloud, there are Basic, Fixed, and Custom roles.</p>
+<h2 id="basic-roles">Basic roles</h2>
+<p>There are four basic roles: Admin, Editor, Viewer, and No basic role. Each basic role contains a number of fixed roles.</p>
+<p>The No basic role allows you to further customize access by assigning fixed roles to users, which you can also modify. You can also create and assign custom roles to a user with No basic role.</p>
+<p>Details of the basic roles and the access they provide for Grafana Alerting are below.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Role</th>
+          <th>Access</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Admin</td>
+          <td>Write access to alert rules, notification resources (notification API, contact points, templates, time intervals, notification policies, and silences), and provisioning.</td>
+      </tr>
+      <tr>
+          <td>Editor</td>
+          <td>Write access to alert rules, notification resources (notification API, contact points, templates, time intervals, notification policies, and silences), and provisioning.</td>
+      </tr>
+      <tr>
+          <td>Viewer</td>
+          <td>Read access to alert rules, notification resources (notification API, contact points, templates, time intervals, notification policies, and silences).</td>
+      </tr>
+      <tr>
+          <td>No basic role</td>
+          <td>A blank canvas to assign fixed or custom roles and craft permissions more precisely. For example, if you want to give a user the ability to see alert rules, but not notification settings, add No basic role and then the fixed role Rules reader.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="fixed-roles">Fixed roles</h2>
+<p>A fixed role is a group of multiple permissions.</p>
+<p>Fixed roles provide users more granular access to create, view, and update Alerting resources than you would have with basic roles alone.</p>
+<p>Details of the fixed roles and the access they provide for Grafana Alerting are below.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Display name in UI / Fixed role</th>
+          <th>Permissions</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Silences Writer: <code>fixed:alerting.instances:writer</code></td>
+          <td>All permissions from <code>fixed:alerting.instances:reader</code> and<br> <code>alert.instances:create</code><br><code>alert.instances:write</code> for organization scope <br> <code>alert.instances.external:write</code> for scope <code>datasources:*</code></td>
+          <td>Add and update silences in Grafana and external providers.</td>
+      </tr>
+      <tr>
+          <td>Instances and Silences Reader: <code>fixed:alerting.instances:reader</code></td>
+          <td><code>alert.instances:read</code> for organization scope <br> <code>alert.instances.external:read</code> for scope <code>datasources:*</code></td>
+          <td>Read alert instances and silences in Grafana and external providers.</td>
+      </tr>
+      <tr>
+          <td>Notifications Writer: <code>fixed:alerting.notifications:writer</code></td>
+          <td>All permissions from <code>fixed:alerting.routes:writer</code>,<br> <code>fixed:alerting.receivers:creator</code>,<br> <code>fixed:alerting.receivers:writer</code>,<br> <code>fixed:alerting.templates:writer</code>,<br> <code>fixed:alerting.time-intervals:writer</code>and<br> <code>alert.notifications:write</code>for organization scope<br><code>alert.notifications.external:read</code> for scope <code>datasources:*</code></td>
+          <td>Add, update, and delete notification policies and contact points in Grafana and external providers.</td>
+      </tr>
+      <tr>
+          <td>Notifications Reader: <code>fixed:alerting.notifications:reader</code></td>
+          <td>All permissions from <code>fixed:alerting.routes:reader</code>,<br> <code>fixed:alerting.receivers:reader</code>,<br> <code>fixed:alerting.templates:reader</code>,<br> <code>fixed:alerting.time-intervals:reader</code>and<br> <code>alert.notifications:read</code> for organization scope<br><code>alert.notifications.external:read</code> for scope <code>datasources:*</code></td>
+          <td>Read notification policies and contact points in Grafana and external providers.</td>
+      </tr>
+      <tr>
+          <td>Rules Writer: <code>fixed:alerting.rules:writer</code></td>
+          <td>All permissions from <code>fixed:alerting.rules:reader</code> and <br> <code>alert.rule:create</code> <br> <code>alert.rule:write</code> <br> <code>alert.rule:delete</code> <br> <code>alert.silences:create</code> <br> <code>alert.silences:write</code> for scope <code>folders:*</code> <br> <code>alert.rules.external:write</code> for scope <code>datasources:*</code></td>
+          <td>Create, update, and delete all alert rules and manage rule-specific silences.</td>
+      </tr>
+      <tr>
+          <td>Rules Reader: <code>fixed:alerting.rules:reader</code></td>
+          <td><code>alert.rule:read</code>, <code>alert.silences:read</code> for scope <code>folders:*</code> <br> <code>alert.rules.external:read</code> for scope <code>datasources:*</code> <br> <code>alert.notifications.time-intervals:read</code> <br> <code>alert.notifications.receivers:list</code></td>
+          <td>Read all alert rules and rule-specific silences in Grafana and external providers.</td>
+      </tr>
+      <tr>
+          <td>Full access: <code>fixed:alerting:writer</code></td>
+          <td>All permissions from <code>fixed:alerting.rules:writer</code> <br><code>fixed:alerting.instances:writer</code><br><code>fixed:alerting.notifications:writer</code></td>
+          <td>Add, update, and delete alert rules, silences, contact points, and notification policies in Grafana and external providers.</td>
+      </tr>
+      <tr>
+          <td>Full read-only access: <code>fixed:alerting:reader</code></td>
+          <td>All permissions from <code>fixed:alerting.rules:reader</code> <br><code>fixed:alerting.instances:reader</code><br><code>fixed:alerting.notifications:reader</code></td>
+          <td>Read alert rules, alert instances, silences, contact points, and notification policies in Grafana and external providers.</td>
+      </tr>
+      <tr>
+          <td>Read via Provisioning API + Export Secrets: <code>fixed:alerting.provisioning.secrets:reader</code></td>
+          <td><code>alert.provisioning:read</code> and <code>alert.provisioning.secrets:read</code></td>
+          <td>Read alert rules, alert instances, silences, contact points, and notification policies using the provisioning API and use export with decrypted secrets.</td>
+      </tr>
+      <tr>
+          <td>Access to alert rules provisioning API: <code>fixed:alerting.provisioning:writer</code></td>
+          <td><code>alert.provisioning:read</code> and <code>alert.provisioning:write</code></td>
+          <td>Manage all alert rules, notification policies, contact points, templates, in the organization using the provisioning API.</td>
+      </tr>
+      <tr>
+          <td>Set provisioning status: <code>fixed:alerting.provisioning.status:writer</code></td>
+          <td><code>alert.provisioning.provenance:write</code></td>
+          <td>Set provisioning rules for Alerting resources. Should be used together with other regular roles (Notifications Writer and/or Rules Writer.)</td>
+      </tr>
+      <tr>
+          <td>Contact Point Reader: <code>fixed:alerting.receivers:reader</code></td>
+          <td><code>alert.notifications.receivers:read</code> for scope <code>receivers:*</code></td>
+          <td>Read all contact points.</td>
+      </tr>
+      <tr>
+          <td>Contact Point Creator: <code>fixed:alerting.receivers:creator</code></td>
+          <td><code>alert.notifications.receivers:create</code></td>
+          <td>Create a new contact point. The user is automatically granted full access to the created contact point.</td>
+      </tr>
+      <tr>
+          <td>Contact Point Writer: <code>fixed:alerting.receivers:writer</code></td>
+          <td><code>alert.notifications.receivers:read</code>, <code>alert.notifications.receivers:write</code>, <code>alert.notifications.receivers:delete</code> for scope <code>receivers:*</code> and <br> <code>alert.notifications.receivers:create</code></td>
+          <td>Create a new contact point and manage all existing contact points.</td>
+      </tr>
+      <tr>
+          <td>Templates Reader: <code>fixed:alerting.templates:reader</code></td>
+          <td><code>alert.notifications.templates:read</code></td>
+          <td>Read all notification templates.</td>
+      </tr>
+      <tr>
+          <td>Templates Writer: <code>fixed:alerting.templates:writer</code></td>
+          <td><code>alert.notifications.templates:read</code>, <code>alert.notifications.templates:write</code>, <code>alert.notifications.templates:delete</code></td>
+          <td>Create new and manage existing notification templates.</td>
+      </tr>
+      <tr>
+          <td>Time Intervals Reader: <code>fixed:alerting.time-intervals:reader</code></td>
+          <td><code>alert.notifications.time-intervals:read</code></td>
+          <td>Read all time intervals.</td>
+      </tr>
+      <tr>
+          <td>Time Intervals Writer: <code>fixed:alerting.time-intervals:writer</code></td>
+          <td><code>alert.notifications.time-intervals:read</code>, <code>alert.notifications.time-intervals:write</code>, <code>alert.notifications.time-intervals:delete</code></td>
+          <td>Create new and manage existing time intervals.</td>
+      </tr>
+      <tr>
+          <td>Notification Policies Reader: <code>fixed:alerting.routes:reader</code></td>
+          <td><code>alert.notifications.routes:read</code></td>
+          <td>Read all time intervals.</td>
+      </tr>
+      <tr>
+          <td>Notification Policies Writer: <code>fixed:alerting.routes:writer</code></td>
+          <td><code>alert.notifications.routes:read</code> <code>alert.notifications.routes:write</code></td>
+          <td>Create new and manage existing time intervals.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="create-custom-roles">Create custom roles</h2>
+<p>Create custom roles of your own to manage permissions. Custom roles contain unique combinations of permissions, actions and scopes. Create a custom role when basic roles and fixed roles do not meet your permissions requirements.</p>
+<p>For more information on creating custom roles, refer to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/manage-rbac-roles/#create-custom-roles">Create custom roles</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>It is not recommended to create custom roles that include <code>alerting.notifications.receiver</code> actions with a scope other than <code>receivers:*</code>. The UID used in the scope is not stable and changes whenever a contact point is renamed.</p></blockquote></div>
+
+<h3 id="examples">Examples</h3>
+<p>The following examples give you an idea of how you can combine permissions for Grafana Alerting.</p>
+<p>A custom role for read access to alert rules in folder F:</p>
+<!-- prettier-ignore-start -->
+<pre>PUT access-control/roles
+{
+	&#34;name&#34;: &#34;custom:alert_rules_reader&#34;,
+	&#34;displayName&#34;: &#34;Alert rule reader in folder F&#34;,
+	&#34;description&#34;: &#34;Read access to rules in folder F that use DS1 and DS2&#34;,
+	&#34;permissions&#34;: [
+    	{
+        	&#34;action&#34;: &#34;alert.rules:read&#34;,
+        	&#34;scope&#34;: &#34;folders:uid:UID_F&#34;
+    	},
+    	{
+        	&#34;action&#34;: &#34;folders:read&#34;,
+        	&#34;scope&#34;: &#34;folders:uid:UID_F&#34;
+    	}
+	]
+}</pre>
+<!-- prettier-ignore-end -->
+<p>A custom role for write access to alert rules that uses simplified routing:</p>
+<!-- prettier-ignore-start -->
+<pre>PUT access-control/roles
+{
+	&#34;name&#34;: &#34;custom:alert_rules_updater&#34;,
+	&#34;displayName&#34;: &#34;Alert rules editor in folder F&#34;,
+	&#34;description&#34;: &#34;Edit access to rules in folder F that use DS1 and DS2&#34;,
+	&#34;permissions&#34;: [
+    	{
+        	&#34;action&#34;: &#34;alert.rules:read&#34;,
+        	&#34;scope&#34;: &#34;folders:uid:UID_F&#34;
+    	},
+    	{
+        	&#34;action&#34;: &#34;alert.rules:read&#34;,
+        	&#34;scope&#34;: &#34;folders:uid:UID_F&#34;
+    	},
+    	{
+        	&#34;action&#34;: &#34;alert.rules:write&#34;,
+        	&#34;scope&#34;: &#34;folders:uid:UID_F&#34;
+    	},
+    	{
+        	&#34;action&#34;: &#34;alert.rules:create&#34;,
+        	&#34;scope&#34;: &#34;folders:uid:UID_F&#34;
+    	},
+    	{
+        	&#34;action&#34;: &#34;alert.notifications.receivers:list&#34;,
+    	},
+{
+        	&#34;action&#34;: &#34;alert.notifications.time-intervals:read&#34;,
+    	},
+	]
+}</pre>
+<!-- prettier-ignore-end -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Delete the last two permissions if you aren’t using simplified notification routing.</p></blockquote></div>
+
+<h2 id="assign-roles">Assign roles</h2>
+<p>To assign roles, complete the following steps.</p>
+<ol>
+<li>Navigate to Administration &gt; Users and access &gt; Users, Teams, or Service Accounts.</li>
+<li>Search for the user, team or service account you want to add a role for.</li>
+<li>Select the role you want to assign.</li>
+</ol>

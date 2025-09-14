@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<h1 id="add-variables">Add variables</h1>
+<!-- vale Grafana.Spelling = NO -->
+<p>The following table lists the types of variables shipped with Grafana.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">Variable type</th>
+          <th style="text-align: left">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">Query</td>
+          <td style="text-align: left">Query-generated list of values such as metric names, server names, sensor IDs, data centers, and so on. <a href="#add-a-query-variable">Add a query variable</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Custom</td>
+          <td style="text-align: left">Define the variable options manually using a comma-separated list. <a href="#add-a-custom-variable">Add a custom variable</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Text box</td>
+          <td style="text-align: left">Display a free text input field with an optional default value. <a href="#add-a-text-box-variable">Add a text box variable</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Constant</td>
+          <td style="text-align: left">Define a hidden constant. <a href="#add-a-constant-variable">Add a constant variable</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Data source</td>
+          <td style="text-align: left">Quickly change the data source for an entire dashboard. <a href="#add-a-data-source-variable">Add a data source variable</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Interval</td>
+          <td style="text-align: left">Interval variables represent time spans. <a href="#add-an-interval-variable">Add an interval variable</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Ad hoc filters</td>
+          <td style="text-align: left">Key/value filters that are automatically added to all metric queries for a data source (Prometheus, Loki, InfluxDB, and Elasticsearch only). <a href="#add-ad-hoc-filters">Add ad hoc filters</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Global variables</td>
+          <td style="text-align: left">Built-in variables that can be used in expressions in the query editor. Refer to <a href="#global-variables">Global variables</a>.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">Chained variables</td>
+          <td style="text-align: left">Variable queries can contain other variables. Refer to <a href="#chained-variables">Chained variables</a>.</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="enter-general-options">Enter General options</h2>
+<p>You must enter general options for any type of variable that you create.
+To create a variable, follow these steps:</p>
+<ol>
+<li>
+<p>Click <strong>Edit</strong> in the top-right corner of the dashboard.</p>
+</li>
+<li>
+<p>Click <strong>Settings</strong>.</p>
+</li>
+<li>
+<p>Go to the <strong>Variables</strong> tab.</p>
+</li>
+<li>
+<p>Click <strong>Add variable</strong>, or if there are already existing variables, <strong>+ New variable</strong>.</p>
+</li>
+<li>
+<p>Choose an option in the <strong>Select variable type</strong> drop-down list.</p>
+</li>
+<li>
+<p>Enter a <strong>Name</strong> for the variable.</p>
+</li>
+<li>
+<p>(Optional) In the <strong>Label</strong> field, enter the display name for the variable drop-down list.</p>
+<p>If you don&rsquo;t enter a display name, then the drop-down list label is the variable name.</p>
+</li>
+<li>
+<p>Choose a <strong>Show on dashboard</strong> option:</p>
+<ul>
+<li><strong>Label and value</strong> - The variable drop-down list displays the variable <strong>Name</strong> or <strong>Label</strong> value. This is the default.</li>
+<li><strong>Value:</strong> The variable drop-down list only displays the selected variable value and a down arrow.</li>
+<li><strong>Nothing:</strong> No variable drop-down list is displayed on the dashboard.</li>
+</ul>
+</li>
+<li>
+<p>Click one of the following links to complete the steps for adding your selected variable type:</p>
+<ul>
+<li><a href="#add-a-query-variable">Query</a></li>
+<li><a href="#add-a-custom-variable">Custom</a></li>
+<li><a href="#add-a-text-box-variable">Textbox</a></li>
+<li><a href="#add-a-constant-variable">Constant</a></li>
+<li><a href="#add-a-data-source-variable">Data source</a></li>
+<li><a href="#add-an-interval-variable">Interval</a></li>
+<li><a href="#add-ad-hoc-filters">Ad hoc filters</a></li>
+</ul>
+</li>
+</ol>
+<!-- vale Grafana.Spelling = YES -->
+<h3 id="variable-best-practices">Variable best practices</h3>
+<ul>
+<li>Variable drop-down lists are displayed in the order in which they&rsquo;re listed in the <strong>Variables</strong> in dashboard settings, so put the variables that you will change often at the top, so they will be shown first (far left on the dashboard).</li>
+<li>By default, variables don&rsquo;t have a default value. This means that the topmost value in the drop-down list is always preselected. If you want to pre-populate a variable with an empty value, you can use the following workaround in the variable settings:
+<ol>
+<li>Select the <strong>Include All Option</strong> checkbox.</li>
+<li>In the <strong>Custom all value</strong> field, enter a value like <code>+</code>.</li>
+</ol>
+</li>
+</ul>
+<h2 id="add-a-query-variable">Add a query variable</h2>
+<p>Query variables enable you to write a data source query that can return a list of metric names, tag values, or keys. For example, a query variable might return a list of server names, sensor IDs, or data centers. The variable values change as they dynamically fetch options with a data source query.</p>
+<p>Query variables are generally only supported for strings. If your query returns numbers or any other data type, you might need to convert them to strings to use them as variables. For the Azure data source, for example, you can use the <a href="https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/tostringfunction" target="_blank" rel="noopener noreferrer"><code>tostring</code></a> function for this purpose.</p>
+<p>Query expressions can contain references to other variables and in effect create linked variables. Grafana detects this and automatically refreshes a variable when one of its linked variables change.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Query expressions are different for each data source. For more information, refer to the documentation for your 
+    <a href="/docs/grafana/latest/datasources/">data source</a>.</p></blockquote></div>
+
+<ol>
+<li>
+<p><a href="#enter-general-options">Enter general options</a>.</p>
+</li>
+<li>
+<p>Under the <strong>Query options</strong> section of the page, select a target data source in the <strong>Data source</strong> drop-down list.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to see more options, including adding a data source (Admins only).
+For more information about data sources, refer to 
+    <a href="/docs/grafana/latest/datasources/#add-a-data-source">Add a data source</a>.</p>
+</li>
+<li>
+<p>In the <strong>Query type</strong> drop-down list, select one of the following options:</p>
+<ul>
+<li><strong>Label names</strong></li>
+<li><strong>Label values</strong></li>
+<li><strong>Metrics</strong></li>
+<li><strong>Query result</strong></li>
+<li><strong>Series query</strong></li>
+<li><strong>Classic query</strong></li>
+</ul>
+</li>
+<li>
+<p>In the <strong>Query</strong> field, enter a query.</p>
+<ul>
+<li>The query field varies according to your data source. Some data sources have custom query editors.</li>
+<li>Each data source defines how the variable values are extracted. The typical implementation uses every string value returned from the data source response as a variable value. Make sure to double-check the documentation for the data source.</li>
+<li>Some data sources let you provide custom &ldquo;display names&rdquo; for the values. For instance, the PostgreSQL, MySQL, and Microsoft SQL Server plugins handle this by looking for fields named <code>__text</code> and <code>__value</code> in the result. Other data sources may look for <code>text</code> and <code>value</code> or use a different approach. Always remember to double-check the documentation for the data source.</li>
+<li>If you need more room in a single input field query editor, then hover your cursor over the lines in the lower right corner of the field and drag downward to expand.</li>
+</ul>
+</li>
+<li>
+<p>(Optional) In the <strong>Regex</strong> field, type a regular expression to filter or capture specific parts of the names returned by your data source query. To see examples, refer to <a href="#filter-variables-with-regex">Filter variables with a regular expression</a>.</p>
+</li>
+<li>
+<p>In the <strong>Sort</strong> drop-down list, select the sort order for values to be displayed in the dropdown list. The default option, <strong>Disabled</strong>, means that the order of options returned by your data source query is used.</p>
+</li>
+<li>
+<p>Under <strong>Refresh</strong>, select when the variable should update options:</p>
+<ul>
+<li><strong>On dashboard load</strong> - Queries the data source every time the dashboard loads. This slows down dashboard loading, because the variable query needs to be completed before dashboard can be initialized.</li>
+<li><strong>On time range change</strong> - Queries the data source every time the dashboard loads and when the dashboard time range changes. Use this option if your variable options query contains a time range filter or is dependent on the dashboard time range.</li>
+</ul>
+</li>
+<li>
+<p>(Optional) Configure the settings in the <a href="#configure-variable-selection-options">Selection Options</a> section:</p>
+<ul>
+<li><strong>Multi-value</strong> - Enables multiple values to be selected at the same time.</li>
+<li><strong>Include All option</strong> - Enables an option to include all variables.</li>
+</ul>
+</li>
+<li>
+<p>In the <strong>Preview of values</strong> section, Grafana displays a list of the current variable values. Review them to ensure they match what you expect.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="add-a-custom-variable">Add a custom variable</h2>
+<p>Use a <em>custom</em> variable for a value that does not change, such as a number or a string.</p>
+<p>For example, if you have server names or region names that never change, then you might want to create them as custom variables rather than query variables. Because they do not change, you might use them in <a href="#chained-variables">chained variables</a> rather than other query variables. That would reduce the number of queries Grafana must send when chained variables are updated.</p>
+<ol>
+<li>
+<p><a href="#enter-general-options">Enter general options</a>.</p>
+</li>
+<li>
+<p>Under the <strong>Custom options</strong> section of the page, in the <strong>Values separated by comma</strong> field, enter the values for this variable in a comma-separated list.</p>
+<p>You can include numbers, strings, or key/value pairs separated by a space and a colon. For example, <code>key1 : value1,key2 : value2</code>.</p>
+</li>
+<li>
+<p>(Optional) Configure the settings in the <a href="#configure-variable-selection-options">Selection Options</a> section:</p>
+<ul>
+<li><strong>Multi-value</strong> - Enables multiple values to be selected at the same time.</li>
+<li><strong>Include All option</strong> - Enables an option to include all variables.</li>
+</ul>
+</li>
+<li>
+<p>In the <strong>Preview of values</strong> section, Grafana displays a list of the current variable values. Review them to ensure they match what you expect.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="add-a-text-box-variable">Add a text box variable</h2>
+<p><em>Text box</em> variables display a free text input field with an optional default value. This is the most flexible variable, because you can enter any value. Use this type of variable if you have metrics with high cardinality or if you want to update multiple panels in a dashboard at the same time.</p>
+<p>For more information about cardinality, refer to <a href="/blog/2022/02/15/what-are-cardinality-spikes-and-why-do-they-matter/">What are cardinality spikes and why do they matter?</a></p>
+<ol>
+<li>
+<p><a href="#enter-general-options">Enter general options</a>.</p>
+</li>
+<li>
+<p>(Optional) Under the <strong>Text options</strong> section of the page, in the <strong>Default value</strong> field, enter the default value for the variable.</p>
+<p>If you do not enter anything in this field, then Grafana displays an empty text box for users to type text into.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="add-a-constant-variable">Add a constant variable</h2>
+<p><em>Constant</em> variables enable you to define a hidden constant. This is useful for metric path prefixes for dashboards you want to share. When you export a dashboard, constant variables are converted to import options.</p>
+<p>Constant variables are <em>not</em> flexible. Each constant variable only holds one value, and it cannot be updated unless you update the variable settings.</p>
+<p>Constant variables are useful when you have complex values that you need to include in queries but don&rsquo;t want to retype in every query. For example, if you had a server path called <code>i-0b6a61efe2ab843gg</code>, then you could replace it with a variable called <code>$path_gg</code>.</p>
+<ol>
+<li>
+<p><a href="#enter-general-options">Enter general options</a>.</p>
+</li>
+<li>
+<p>Under the <strong>Constant options</strong> section of the page, in the <strong>Value</strong> field, enter the variable value.</p>
+<p>You can enter letters, numbers, and symbols. You can even use wildcards if you use 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/#raw">raw format</a>.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="add-a-data-source-variable">Add a data source variable</h2>
+<p><em>Data source</em> variables enable you to quickly change the data source for an entire dashboard. They are useful if you have multiple instances of a data source, perhaps in different environments.</p>
+<ol>
+<li>
+<p><a href="#enter-general-options">Enter general options</a>.</p>
+</li>
+<li>
+<p>Under the <strong>Data source options</strong> section of the page, in the <strong>Type</strong> drop-down list, select the target data source for the variable.</p>
+</li>
+<li>
+<p>(Optional) In <strong>Instance name filter</strong>, enter a regular expression filter for which data source instances to choose from in the variable value drop-down list.</p>
+<p>Leave this field empty to display all instances.</p>
+</li>
+<li>
+<p>(Optional) Configure the settings in the <a href="#configure-variable-selection-options">Selection Options</a> section:</p>
+<ul>
+<li><strong>Multi-value</strong> - Enables multiple values to be selected at the same time.</li>
+<li><strong>Include All option</strong> - Enables an option to include all variables.</li>
+</ul>
+</li>
+<li>
+<p>In the <strong>Preview of values</strong> section, Grafana displays a list of the current variable values. Review them to ensure they match what you expect.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h2 id="add-an-interval-variable">Add an interval variable</h2>
+<p>Use an <em>interval</em> variable to represents time spans such as <code>1m</code>,<code>1h</code>, <code>1d</code>. You can think of them as a dashboard-wide &ldquo;group by time&rdquo; command. Interval variables change how the data is grouped in the visualization. You can also use the Auto Option to return a set number of data points per time span.</p>
+<p>You can use an interval variable as a parameter to group by time (for InfluxDB), date histogram interval (for Elasticsearch), or as a summarize function parameter (for Graphite).</p>
+<ol>
+<li>
+<p><a href="#enter-general-options">Enter general options</a>.</p>
+</li>
+<li>
+<p>Under the <strong>Interval options</strong> section, in the <strong>Values</strong> field, enter the time range intervals that you want to appear in the variable drop-down list.</p>
+<p>The following time units are supported: <code>s (seconds)</code>, <code>m (minutes)</code>, <code>h (hours)</code>, <code>d (days)</code>, <code>w (weeks)</code>, <code>M (months)</code>, and <code>y (years)</code>. You can also accept or edit the default values: <code>1m,10m,30m,1h,6h,12h,1d,7d,14d,30d</code>.</p>
+</li>
+<li>
+<p>(Optional) Select on the <strong>Auto option</strong> checkbox if you want to add the <code>auto</code> option to the list.</p>
+<p>This option allows you to specify how many times the current time range should be divided to calculate the current <code>auto</code> time span. If you turn it on, then two more options appear:</p>
+<ul>
+<li><strong>Step count</strong> - Select the number of times the current time range is divided to calculate the value, similar to the <strong>Max data points</strong> query option. For example, if the current visible time range is 30 minutes, then the <code>auto</code> interval groups the data into 30 one-minute increments. The default value is 30 steps.</li>
+<li><strong>Min interval</strong> - The minimum threshold below which the step count intervals does not divide the time. To continue the 30 minute example, if the minimum interval is set to 2m, then Grafana would group the data into 15 two-minute increments.</li>
+</ul>
+</li>
+<li>
+<p>In the <strong>Preview of values</strong> section, Grafana displays a list of the current variable values. Review them to ensure they match what you expect.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<h3 id="interval-variable-examples">Interval variable examples</h3>
+<p>The following example shows a template variable <code>myinterval</code> in a Graphite function:</p>
+<pre>summarize($myinterval, sum, false)</pre>
+<p>The following example shows a more complex Graphite example, from the <a href="https://play.grafana.org/d/000000056/graphite-templated-nested?editPanel=2&amp;orgId=1" target="_blank" rel="noopener noreferrer">Graphite Template Nested Requests panel</a>:</p>
+<pre>groupByNode(summarize(movingAverage(apps.$app.$server.counters.requests.count, 5), &#39;$interval&#39;, &#39;sum&#39;, false), 2, &#39;sum&#39;)</pre>
+<!-- vale Grafana.WordList = NO -->
+<!-- vale Grafana.Spelling = NO -->
+<h2 id="add-ad-hoc-filters">Add ad hoc filters</h2>
+<p><em>Ad hoc filters</em> are one of the most complex and flexible variable options available.
+Instead of a regular list of variable options, this variable allows you to build a dashboard-wide ad hoc query.</p>
+<p>Ad hoc filters let you add label/value filters that are automatically added to all metric queries that use the specified data source.
+Unlike other variables, you don&rsquo;t use ad hoc filters in queries.
+Instead, you use ad hoc filters to write filters for existing queries.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Not all data sources support ad hoc filters.
+Examples of those that do include Prometheus, Loki, InfluxDB, and Elasticsearch.</p></blockquote></div>
+
+<p>To create an ad hoc filter, follow these steps:</p>
+<ol>
+<li>
+<p><a href="#enter-general-options">Enter general options</a>.</p>
+</li>
+<li>
+<p>Under the <strong>Ad-hoc options</strong> section of the page, select a target data source in the <strong>Data source</strong> drop-down list.</p>
+<p>You can also click <strong>Open advanced data source picker</strong> to see more options, including adding a data source (Admins only).
+For more information about data sources, refer to 
+    <a href="/docs/grafana/latest/datasources/#add-a-data-source">Add a data source</a>.</p>
+</li>
+<li>
+<p>(Optional) To provide the filter dimensions as comma-separated values (CSV), toggle the <strong>Use static key dimensions</strong> switch on, and then enter the values in the space provided.</p>
+</li>
+<li>
+<p>Click <strong>Save dashboard</strong>.</p>
+</li>
+<li>
+<p>Enter an optional description of your dashboard changes, and then click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<p>Now you can 
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/#filter-dashboard-data">filter data on the dashboard</a>.</p>
+<!-- vale Grafana.Spelling = YES -->
+<!-- vale Grafana.WordList = YES -->
+<h2 id="configure-variable-selection-options">Configure variable selection options</h2>
+<p><strong>Selection Options</strong> are a feature you can use to manage variable option selections. All selection options are optional, and they are off by default.</p>
+<h3 id="multi-value-variables">Multi-value variables</h3>
+<p>Interpolating a variable with multiple values selected is tricky as it is not straight forward how to format the multiple values into a string that is valid in the given context where the variable is used. Grafana tries to solve this by allowing each data source plugin to inform the templating interpolation engine what format to use for multiple values.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <strong>Custom all value</strong> option on the variable must be blank for Grafana to format all values into a single string. If it is left blank, then Grafana concatenates (adds together) all the values in the query. Something like <code>value1,value2,value3</code>. If a custom <code>all</code> value is used, then instead the value is something like <code>*</code> or <code>all</code>.</p></blockquote></div>
+
+<h4 id="multi-value-variables-with-a-graphite-data-source">Multi-value variables with a Graphite data source</h4>
+<p>Graphite uses glob expressions. A variable with multiple values would, in this case, be interpolated as <code>{host1,host2,host3}</code> if the current variable value was <em>host1</em>, <em>host2</em>, and <em>host3</em>.</p>
+<h4 id="multi-value-variables-with-a-prometheus-or-influxdb-data-source">Multi-value variables with a Prometheus or InfluxDB data source</h4>
+<p>InfluxDB and Prometheus use regular expressions, so the same variable would be interpolated as <code>(host1|host2|host3)</code>. Every value would also be regular expression escaped. If not, a value with a regular expression control character would break the regular expression.</p>
+<h4 id="multi-value-variables-with-an-elastic-data-source">Multi-value variables with an Elastic data source</h4>
+<p>Elasticsearch uses Lucene query syntax, so the same variable would be formatted as <code>(&quot;host1&quot; OR &quot;host2&quot; OR &quot;host3&quot;)</code>. In this case, every value must be escaped so that the value only contains Lucene control words and quotation marks.</p>
+<h4 id="variable-indexing">Variable indexing</h4>
+<p>If you have a multi-value variable that&rsquo;s formatted as an array, you can use array positions to reference the values rather than the actual values.
+You can use this functionality in dashboard panels to filter data, and when you do so, the array is maintained.</p>
+<p>To reference variable values this way, use the following syntax:</p>
+<pre>${query0.0}</pre>
+<p>The preceding syntax references the first, or <code>0</code>, position in the array.</p>
+<p>In the following example, there&rsquo;s an array of three values, <code>1t</code>, <code>2t</code>, and <code>3t</code>, and rather than referencing those values, the panel query references the second value in the array using the syntax <code>${query0.1}</code>:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png"data-srcset="/media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png?w=1920 1920w"
+          data-sizes="auto"alt="Panel query using variable indexing to reference a value"width="2362"height="1258"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-indexed-variables-v12.1.png"
+            alt="Panel query using variable indexing to reference a value"width="2362"height="1258"/>
+        </noscript></div></a></figure>
+<h4 id="troubleshoot-multi-value-variables">Troubleshoot multi-value variables</h4>
+<p>Automatic escaping and formatting can cause problems and it can be tricky to grasp the logic behind it. Especially for InfluxDB and Prometheus where the use of regular expression syntax requires that the variable is used in regular expression operator context.</p>
+<p>If you do not want Grafana to do this automatic regular expression escaping and formatting, then you must do one of the following:</p>
+<ul>
+<li>Turn off the <strong>Multi-value</strong> or <strong>Include All option</strong> options.</li>
+<li>Use the 
+    <a href="/docs/grafana/latest/dashboards/variables/variable-syntax/#raw">raw variable format</a>.</li>
+</ul>
+<h3 id="include-all-option">Include All option</h3>
+<p>Grafana adds an <code>All</code> option to the variable dropdown list. If a user selects this option, then all variable options are selected.</p>
+<h3 id="custom-all-value">Custom all value</h3>
+<p>This option is only visible if the <strong>Include All option</strong> is selected.</p>
+<p>Enter regular expressions, globs, or Lucene syntax in the <strong>Custom all value</strong> field to define the value of the <code>All</code> option.</p>
+<p>By default the <code>All</code> value includes all options in combined expression. This can become very long and can have performance problems. Sometimes it can be better to specify a custom all value, like a wildcard regular expression.</p>
+<p>In order to have custom regular expression, globs, or Lucene syntax in the <strong>Custom all value</strong> option, it is never escaped so you have to think about what is a valid value for your data source.</p>
+<h2 id="global-variables">Global variables</h2>
+<p>Grafana has global built-in variables that can be used in expressions in the query editor. This topic lists them in alphabetical order and defines them. These variables are useful in queries, dashboard links, panel links, and data links.</p>
+<h3 id="__dashboard"><code>$__dashboard</code></h3>
+<p>This variable is the name of the current dashboard.</p>
+<h3 id="__from-and-__to"><code>$__from</code> and <code>$__to</code></h3>
+<p>Grafana has two built-in time range variables: <code>$__from</code> and <code>$__to</code>. They are currently always interpolated as epoch milliseconds by default, but you can control date formatting.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Syntax</th>
+          <th>Example result</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>${__from}</code></td>
+          <td>1594671549254</td>
+          <td>Unix millisecond epoch</td>
+      </tr>
+      <tr>
+          <td><code>${__from:date}</code></td>
+          <td>2020-07-13T20:19:09.254Z</td>
+          <td>No arguments, defaults to ISO 8601/RFC 3339</td>
+      </tr>
+      <tr>
+          <td><code>${__from:date:iso}</code></td>
+          <td>2020-07-13T20:19:09.254Z</td>
+          <td>ISO 8601/RFC 3339</td>
+      </tr>
+      <tr>
+          <td><code>${__from:date:seconds}</code></td>
+          <td>1594671549</td>
+          <td>Unix seconds epoch</td>
+      </tr>
+      <tr>
+          <td><code>${__from:date:YYYY-MM}</code></td>
+          <td>2020-07</td>
+          <td>Any custom <a href="https://momentjs.com/docs/#/displaying/" target="_blank" rel="noopener noreferrer">date format</a> that does not include the <code>:</code> character. Uses browser time. Use <code>:date</code> or <code>:date:iso</code> for UTC</td>
+      </tr>
+  </tbody>
+</table>
+<p>The syntax above also works with <code>${__to}</code>.</p>
+<p>You can use this variable in URLs, as well. For example, you can send a user to a dashboard that shows a time range from six hours ago until now: <a href="https://play.grafana.org/d/000000012/grafana-play-home?viewPanel=2&amp;orgId=1?from=now-6h&amp;to=now" target="_blank" rel="noopener noreferrer">https://play.grafana.org/d/000000012/grafana-play-home?viewPanel=2&orgId=1?from=now-6h&to=now</a></p>
+<h3 id="__interval"><code>$__interval</code></h3>
+<p>You can use the <code>$__interval</code> variable as a parameter to group by time (for InfluxDB, MySQL, Postgres, MSSQL), Date histogram interval (for Elasticsearch), or as a <em>summarize</em> function parameter (for Graphite).</p>
+<p>Grafana automatically calculates an interval that can be used to group by time in queries. When there are more data points than can be shown on a graph, then queries can be made more efficient by grouping by a larger interval. It is more efficient to group by 1 day than by 10s when looking at 3 months of data. The graph looks the same and the query is faster. The <code>$__interval</code> is calculated using the time range and the width of the graph (the number of pixels).</p>
+<p>Approximate Calculation: <code>(to - from) / resolution</code></p>
+<p>For example, when the time range is 1 hour and the graph is full screen, then the interval might be calculated to <code>2m</code> - points are grouped in 2 minute intervals. If the time range is 6 months and the graph is full screen, then the interval might be <code>1d</code> (1 day) - points are grouped by day.</p>
+<p>In the InfluxDB data source, the legacy variable <code>$interval</code> is the same variable. <code>$__interval</code> should be used instead.</p>
+<p>The InfluxDB and Elasticsearch data sources have <code>Group by time interval</code> fields that are used to hard code the interval or to set the minimum limit for the <code>$__interval</code> variable (by using the <code>&gt;</code> syntax -&gt; <code>&gt;10m</code>).</p>
+<h3 id="__interval_ms"><code>$__interval_ms</code></h3>
+<p>This variable is the <code>$__interval</code> variable in milliseconds, not a time interval formatted string. For example, if the <code>$__interval</code> is <code>20m</code> then the <code>$__interval_ms</code> is <code>1200000</code>.</p>
+<h3 id="__name"><code>$__name</code></h3>
+<p>This variable is only available in the <strong>Singlestat</strong> panel and can be used in the prefix or suffix fields on the Options tab. The variable is replaced with the series name or alias.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <strong>Singlestat</strong> panel is no longer available from Grafana 8.0.</p></blockquote></div>
+
+<h3 id="__org"><code>$__org</code></h3>
+<p>This variable is the ID of the current organization.
+<code>${__org.name}</code> is the name of the current organization.</p>
+<h3 id="__user"><code>$__user</code></h3>
+<p><code>${__user.id}</code> is the ID of the current user.
+<code>${__user.login}</code> is the login handle of the current user.
+<code>${__user.email}</code> is the email for the current user.</p>
+<h3 id="__range"><code>$__range</code></h3>
+<p>Currently only supported for Prometheus and Loki data sources. This variable represents the range for the current dashboard. It is calculated by <code>to - from</code>. It has a millisecond and a second representation called <code>$__range_ms</code> and <code>$__range_s</code>.</p>
+<h3 id="__rate_interval"><code>$__rate_interval</code></h3>
+<p>Currently only supported for Prometheus data sources. The <code>$__rate_interval</code> variable is meant to be used in the rate function. Refer to 
+    <a href="/docs/grafana/latest/datasources/prometheus/template-variables/#use-**rate_interval">Prometheus query variables</a> for details.</p>
+<h3 id="__rate_interval_ms"><code>$__rate_interval_ms</code></h3>
+<p>This variable is the <code>$__rate_interval</code> variable in milliseconds, not a time-interval-formatted string. For example, if the <code>$__rate_interval</code> is <code>20m</code> then the <code>$__rate_interval_ms</code> is <code>1200000</code>.</p>
+<h3 id="timefilter-or-__timefilter"><code>$timeFilter</code> or <code>$__timeFilter</code></h3>
+<p>The <code>$timeFilter</code> variable returns the currently selected time range as an expression. For example, the time range interval <code>Last 7 days</code> expression is <code>time &gt; now() - 7d</code>.</p>
+<p>This is used in several places, including:</p>
+<ul>
+<li>The WHERE clause for the InfluxDB data source. Grafana adds it automatically to InfluxDB queries when in Query Editor mode. You can add it manually in Text Editor mode: <code>WHERE $timeFilter</code>.</li>
+<li>Log Analytics queries in the Azure Monitor data source.</li>
+<li>SQL queries in MySQL, Postgres, and MSSQL.</li>
+<li>The <code>$__timeFilter</code> variable is used in the MySQL data source.</li>
+</ul>
+<h3 id="__timezone"><code>$__timezone</code></h3>
+<p>The <code>$__timezone</code> variable returns the currently selected time zone, either <code>utc</code> or an entry of the IANA time zone database (for example, <code>America/New_York</code>).</p>
+<p>If the currently selected time zone is <em>Browser Time</em>, Grafana tries to determine your browser time zone.</p>
+<h2 id="chained-variables">Chained variables</h2>
+<p><em>Chained variables</em>, also called <em>linked variables</em> or <em>nested variables</em>, are query variables with one or more other variables in their variable query. This section explains how chained variables work and provides links to example dashboards that use chained variables.</p>
+<p>Chained variable queries are different for every data source, but the premise is the same for all. You can use chained variable queries in any data source that allows them.</p>
+<p>Extremely complex linked templated dashboards are possible, 5 or 10 levels deep. Technically, there is no limit to how deep or complex you can go, but the more links you have, the greater the query load.</p>
+<h3 id="grafana-play-dashboard-examples">Grafana Play dashboard examples</h3>
+<p>The following Grafana Play dashboards contain fairly simple chained variables, only two layers deep. To view the variables and their settings, click <strong>Edit</strong>
+and then <strong>Settings</strong>; then go to the <strong>Variables</strong> tab. Both examples are expanded in the following section.</p>
+<ul>
+<li><a href="https://play.grafana.org/d/000000056/graphite-templated-nested?orgId=1&amp;var-app=country&amp;var-server=All&amp;var-interval=1h" target="_blank" rel="noopener noreferrer">Graphite Templated Nested</a></li>
+<li><a href="https://play.grafana.org/d/e7bad3ef-db0c-4bbd-8245-b85c0b2ca2b9/influx-2-73a-hourly-electric-grid-monitor-for-us?orgId=1&amp;refresh=1m" target="_blank" rel="noopener noreferrer">InfluxDB Templated</a></li>
+</ul>
+<h3 id="examples-explained">Examples explained</h3>
+<p>Variables are useful to reuse dashboards and dynamically change what is shown in dashboards. Chained variables are especially useful to filter what you see.</p>
+<p>Create parent/child relationship in a variable, sort of a tree structure where you can select different levels of filters.</p>
+<p>The following sections explain the linked examples in the dashboards above in depth and builds on them. While the examples are data source-specific, the concepts can be applied broadly.</p>
+<h4 id="graphite-example">Graphite example</h4>
+<p>In this example, there are several applications. Each application has a different subset of servers. It is based on the <a href="https://play.grafana.org/d/000000056/graphite-templated-nested?orgId=1&amp;var-app=country&amp;var-server=All&amp;var-interval=1h" target="_blank" rel="noopener noreferrer">Graphite Templated Nested</a>.</p>
+<p>Now, you could make separate variables for each metric source, but then you have to know which server goes with which app. A better solution is to use one variable to filter another. In this example, when the user changes the value of the <code>app</code> variable, it changes the dropdown options returned by the <code>server</code> variable. Both variables use the <strong>Multi-value</strong> option and <strong>Include all option</strong>, enabling users to select some or all options presented at any time.</p>
+<h5 id="app-variable"><code>app</code> variable</h5>
+<p>The query for this variable basically says, &ldquo;Find all the applications that exist.&rdquo;</p>
+<pre>apps.*</pre>
+<p>The values returned are <code>backend</code>, <code>country</code>, <code>fakesite</code>, and <code>All</code>.</p>
+<h5 id="server-variable"><code>server</code> variable</h5>
+<p>The query for this variable basically says, &ldquo;Find all servers for the currently chosen application.&rdquo;</p>
+<pre>apps.$app.*</pre>
+<p>If the user selects <code>backend</code>, then the query changes to:</p>
+<pre>apps.backend.*</pre>
+<p>The query returns all servers associated with <code>backend</code>, including <code>backend_01</code>, <code>backend_02</code>, and so on.</p>
+<p>If the user selects <code>fakesite</code>, then the query changes to:</p>
+<pre>apps.fakesite.*</pre>
+<p>The query returns all servers associated with <code>fakesite</code>, including <code>web_server_01</code>, <code>web_server_02</code>, and so on.</p>
+<h5 id="more-variables">More variables</h5>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This example is theoretical. The Graphite server used in the example does not contain CPU metrics.</p></blockquote></div>
+
+<p>The dashboard stops at two levels, but you could keep going. For example, if you wanted to get CPU metrics for selected servers, you could copy the <code>server</code> variable and extend the query so that it reads:</p>
+<pre>apps.$app.$server.cpu.*</pre>
+<p>This query basically says, &ldquo;Find the CPU metrics for the selected server.&rdquo;</p>
+<p>Depending on what variable options the user selects, you could get queries like:</p>
+<pre>apps.backend.backend_01.cpu.*
+apps.{backend.backend_02,backend_03}.cpu.*
+apps.fakesite.web_server_01.cpu.*</pre>
+<h4 id="influxdb-example">InfluxDB example</h4>
+<p>In this example, you have several data centers. Each data center has a different subset of hosts. It is based on the <a href="https://play.grafana.org/d/e7bad3ef-db0c-4bbd-8245-b85c0b2ca2b9/influx-2-73a-hourly-electric-grid-monitor-for-us?orgId=1&amp;refresh=1m" target="_blank" rel="noopener noreferrer">InfluxDB Templated</a> dashboard.</p>
+<p>In this example, when the user changes the value of the <code>datacenter</code> variable, it changes the dropdown options returned by the <code>host</code> variable. The <code>host</code> variable uses the <strong>Multi-value</strong> option and <strong>Include all option</strong>, allowing users to select some or all options presented at any time. The <code>datacenter</code> does not use either option, so you can only select one data center at a time.</p>
+<h5 id="datacenter-variable"><code>datacenter</code> variable</h5>
+<p>The query for this variable basically says, &ldquo;Find all the data centers that exist.&rdquo;</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;datacenter&#34;</pre>
+<p>The values returned are <code>America</code>, <code>Africa</code>, <code>Asia</code>, and <code>Europe</code>.</p>
+<h5 id="host-variable"><code>host</code> variable</h5>
+<p>The query for this variable basically says, &ldquo;Find all hosts for the currently chosen data center.&rdquo;</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;hostname&#34; WHERE &#34;datacenter&#34; =~ /^$datacenter$/</pre>
+<p>If the user selects <code>America</code>, then the query changes to:</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;hostname&#34; WHERE &#34;datacenter&#34; =~ /^America/</pre>
+<p>The query returns all servers associated with <code>America</code>, including <code>server1</code>, <code>server2</code>, and so on.</p>
+<p>If the user selects <code>Europe</code>, then the query changes to:</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;hostname&#34; WHERE &#34;datacenter&#34; =~ /^Europe/</pre>
+<p>The query returns all servers associated with <code>Europe</code>, including <code>server3</code>, <code>server4</code>, and so on.</p>
+<h5 id="more-variables-1">More variables</h5>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This example is theoretical. The InfluxDB server used in the example does not contain CPU metrics.</p></blockquote></div>
+
+<p>The dashboard stops at two levels, but you could keep going. For example, if you wanted to get CPU metrics for selected hosts, you could copy the <code>host</code> variable and extend the query so that it reads:</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;cpu&#34; WHERE &#34;datacenter&#34; =~ /^$datacenter$/ AND &#34;host&#34; =~ /^$host$/</pre>
+<p>This query basically says, &ldquo;Find the CPU metrics for the selected host.&rdquo;</p>
+<p>Depending on what variable options the user selects, you could get queries like:</p>
+<pre>SHOW TAG VALUES WITH KEY = &#34;cpu&#34; WHERE &#34;datacenter&#34; =~ /^America/ AND &#34;host&#34; =~ /^server2/
+SHOW TAG VALUES WITH KEY = &#34;cpu&#34; WHERE &#34;datacenter&#34; =~ /^Africa/ AND &#34;host&#34; =~ /^server/7/
+SHOW TAG VALUES WITH KEY = &#34;cpu&#34; WHERE &#34;datacenter&#34; =~ /^Europe/ AND &#34;host&#34; =~ /^server3+server4/</pre>
+<h3 id="best-practices-and-tips">Best practices and tips</h3>
+<p>The following practices make your dashboards and variables easier to use.</p>
+<h4 id="new-linked-variables-creation">New linked variables creation</h4>
+<ul>
+<li>Chaining variables create parent/child dependencies. You can envision them as a ladder or a tree.</li>
+<li>The easiest way to create a new chained variable is to copy the variable that you want to base the new one on. In the variable list, click the <strong>Duplicate variable</strong> icon to the right of the variable entry to create a copy. You can then add on to the query for the parent variable.</li>
+<li>New variables created this way appear at the bottom of the list. You might need to drag it to a different position in the list to get it into a logical order.</li>
+</ul>
+<h4 id="variable-order">Variable order</h4>
+<p>You can change the orders of variables in the dashboard variable list by clicking the up and down arrows on the right side of each entry. Grafana lists variable dropdowns left to right according to this list, with the variable at the top on the far left.</p>
+<ul>
+<li>List variables that do not have dependencies at the top, before their child variables.</li>
+<li>Each variable should follow the one it is dependent on.</li>
+<li>Remember there is no indication in the UI of which variables have dependency relationships. List the variables in a logical order to make it easy on other users (and yourself).</li>
+</ul>
+<h4 id="complexity-consideration">Complexity consideration</h4>
+<p>The more layers of dependency you have in variables, the longer it takes to update dashboards after you change variables.</p>
+<p>For example, if you have a series of four linked variables (country, region, server, metric) and you change a root variable value (country), then Grafana must run queries for all the dependent variables before it updates the visualizations in the dashboard.</p>
+<!-- vale Grafana.WordList = NO -->
+<h2 id="filter-variables-with-regex">Filter variables with regular expressions</h2>
+<!-- vale Grafana.WordList = NO -->
+<p>Using the <strong>Regex</strong> query option, you filter the list of options returned by the variable query or modify the options returned.</p>
+<p>This page shows how to use a regular expression to filter/modify values in the variable dropdown.</p>
+<p>Using the <strong>Regex</strong> query option, you filter the list of options returned by the Variable query or modify the options returned. For more information, refer to the Mozilla guide on <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank" rel="noopener noreferrer">Regular expressions</a>.</p>
+<p>Examples of filtering on the following list of options:</p>
+<pre>backend_01
+backend_02
+backend_03
+backend_04</pre>
+<h3 id="filter-so-that-only-the-options-that-end-with-01-or-02-are-returned">Filter so that only the options that end with <code>01</code> or <code>02</code> are returned:</h3>
+<p><strong>Regex</strong>:</p>
+<pre>/(01|02)$/</pre>
+<p>Result:</p>
+<pre>backend_01
+backend_02</pre>
+<h3 id="filter-and-modify-the-options-using-a-regular-expression-to-capture-group-to-return-part-of-the-text">Filter and modify the options using a regular expression to capture group to return part of the text:</h3>
+<p><strong>Regex</strong>:</p>
+<pre>/.*(01|02)/</pre>
+<p>Result:</p>
+<pre>01
+02</pre>
+<h3 id="filter-and-modify---prometheus-example">Filter and modify - Prometheus Example</h3>
+<p>List of options:</p>
+<pre>up{instance=&#34;demo.robustperception.io:9090&#34;,job=&#34;prometheus&#34;} 1 1521630638000
+up{instance=&#34;demo.robustperception.io:9093&#34;,job=&#34;alertmanager&#34;} 1 1521630638000
+up{instance=&#34;demo.robustperception.io:9100&#34;,job=&#34;node&#34;} 1 1521630638000</pre>
+<p><strong>Regex</strong>:</p>
+<pre>/.*instance=&#34;([^&#34;]*).*/</pre>
+<p>Result:</p>
+<pre>demo.robustperception.io:9090
+demo.robustperception.io:9093
+demo.robustperception.io:9100</pre>
+<h3 id="filter-and-modify-using-named-text-and-value-capture-groups">Filter and modify using named text and value capture groups</h3>
+<p>Using named capture groups, you can capture separate &rsquo;text&rsquo; and &lsquo;value&rsquo; parts from the options returned by the variable query. This allows the variable drop-down list to contain a friendly name for each value that can be selected.</p>
+<p>For example, when querying the <code>node_hwmon_chip_names</code> Prometheus metric, the <code>chip_name</code> is a lot friendlier than the <code>chip</code> value. So the following variable query result:</p>
+<pre>node_hwmon_chip_names{chip=&#34;0000:d7:00_0_0000:d8:00_0&#34;,chip_name=&#34;enp216s0f0np0&#34;} 1
+node_hwmon_chip_names{chip=&#34;0000:d7:00_0_0000:d8:00_1&#34;,chip_name=&#34;enp216s0f0np1&#34;} 1
+node_hwmon_chip_names{chip=&#34;0000:d7:00_0_0000:d8:00_2&#34;,chip_name=&#34;enp216s0f0np2&#34;} 1
+node_hwmon_chip_names{chip=&#34;0000:d7:00_0_0000:d8:00_3&#34;,chip_name=&#34;enp216s0f0np3&#34;} 1</pre>
+<p>Passed through the following regular expression:</p>
+<pre>/chip_name=&#34;(?&lt;text&gt;[^&#34;]+)|chip=&#34;(?&lt;value&gt;[^&#34;]+)/g</pre>
+<p>Would produce the following drop-down list:</p>
+<pre>Display Name          Value
+------------          -------------------------
+enp216s0f0np0         0000:d7:00_0_0000:d8:00_0
+enp216s0f0np1         0000:d7:00_0_0000:d8:00_1
+enp216s0f0np2         0000:d7:00_0_0000:d8:00_2
+enp216s0f0np3         0000:d7:00_0_0000:d8:00_3</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Only <code>text</code> and <code>value</code> capture group names are supported.</p></blockquote></div>
+

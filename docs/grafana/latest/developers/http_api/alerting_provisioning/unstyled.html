@@ -1,0 +1,4695 @@
+<!DOCTYPE html>
+<h1 id="alerting-provisioning-http-api">Alerting provisioning HTTP API</h1>
+
+
+<div data-shared="alerts/alerting_provisioning.md">
+            <p>The Alerting Provisioning HTTP API can be used to create, modify, and delete resources relevant to Grafana-managed alerts. This API is the one used by our <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs" target="_blank" rel="noopener noreferrer">Grafana Terraform provider</a>.</p>
+<p>For more information on the differences between Grafana-managed and data source-managed alerts, refer to 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/">Introduction to alert rules</a>.</p>
+<blockquote>
+<p>If you are running Grafana Enterprise, you need to add specific permissions for some endpoints. For more information, refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/custom-role-actions-scopes/">Role-based access control permissions</a>.</p></blockquote>
+<h2 id="grafana-managed-endpoints">Grafana-managed endpoints</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>In the Alerting provisioning HTTP API, the endpoints use a JSON format that differs from the format returned by the <code>export</code> endpoints.</p>
+<p>The <code>export</code> endpoints allow you to export alerting resources in a JSON format suitable for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">provisioning via files</a>. However, this format cannot be used to update resources via the HTTP API.</p></blockquote></div>
+
+<h3 id="alert-rules">Alert rules</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>URI</th>
+          <th>Name</th>
+          <th>Summary</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DELETE</td>
+          <td>/api/v1/provisioning/alert-rules/:uid</td>
+          <td><a href="#route-delete-alert-rule">route delete alert rule</a></td>
+          <td>Delete a specific alert rule by UID.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/alert-rules/:uid</td>
+          <td><a href="#route-get-alert-rule">route get alert rule</a></td>
+          <td>Get a specific alert rule by UID.</td>
+      </tr>
+      <tr>
+          <td>POST</td>
+          <td>/api/v1/provisioning/alert-rules</td>
+          <td><a href="#route-post-alert-rule">route post alert rule</a></td>
+          <td>Create a new alert rule.</td>
+      </tr>
+      <tr>
+          <td>PUT</td>
+          <td>/api/v1/provisioning/alert-rules/:uid</td>
+          <td><a href="#route-put-alert-rule">route put alert rule</a></td>
+          <td>Update an existing alert rule.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/alert-rules/:uid/export</td>
+          <td><a href="#route-get-alert-rule-export">route get alert rule export</a></td>
+          <td>Export an alert rule in provisioning file format.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/folder/:folderUid/rule-groups/:group</td>
+          <td><a href="#route-get-alert-rule-group">route get alert rule group</a></td>
+          <td>Get a rule group.</td>
+      </tr>
+      <tr>
+          <td>PUT</td>
+          <td>/api/v1/provisioning/folder/:folderUid/rule-groups/:group</td>
+          <td><a href="#route-put-alert-rule-group">route put alert rule group</a></td>
+          <td>Create or update a rule group.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/folder/:folderUid/rule-groups/:group/export</td>
+          <td><a href="#route-get-alert-rule-group-export">route get alert rule group export</a></td>
+          <td>Export an alert rule group in provisioning file format.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/alert-rules</td>
+          <td><a href="#route-get-alert-rules">route get alert rules</a></td>
+          <td>Get all the alert rules.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/alert-rules/export</td>
+          <td><a href="#route-get-alert-rules-export">route get alert rules export</a></td>
+          <td>Export all alert rules in provisioning file format.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example request for new alert rule:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">POST /api/v1/provisioning/alert-rules
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;title&#34;: &#34;TEST-API_1&#34;,
+  &#34;ruleGroup&#34;: &#34;API&#34;,
+  &#34;folderUID&#34;: &#34;SET_FOLDER_UID&#34;,
+  &#34;noDataState&#34;: &#34;OK&#34;,
+  &#34;execErrState&#34;: &#34;OK&#34;,
+  &#34;for&#34;: &#34;5m&#34;,
+  &#34;orgId&#34;: 1,
+  &#34;uid&#34;: &#34;&#34;,
+  &#34;condition&#34;: &#34;B&#34;,
+  &#34;annotations&#34;: {
+    &#34;summary&#34;: &#34;test_api_1&#34;
+  },
+  &#34;labels&#34;: {
+    &#34;API&#34;: &#34;test1&#34;
+  },
+  &#34;data&#34;: [
+    {
+      &#34;refId&#34;: &#34;A&#34;,
+      &#34;queryType&#34;: &#34;&#34;,
+      &#34;relativeTimeRange&#34;: {
+        &#34;from&#34;: 600,
+        &#34;to&#34;: 0
+      },
+      &#34;datasourceUid&#34;: &#34;XXXXXXXXX-XXXXXXXXX-XXXXXXXXXX&#34;,
+      &#34;model&#34;: {
+        &#34;expr&#34;: &#34;up&#34;,
+        &#34;hide&#34;: false,
+        &#34;intervalMs&#34;: 1000,
+        &#34;maxDataPoints&#34;: 43200,
+        &#34;refId&#34;: &#34;A&#34;
+      }
+    },
+    {
+      &#34;refId&#34;: &#34;B&#34;,
+      &#34;queryType&#34;: &#34;&#34;,
+      &#34;relativeTimeRange&#34;: {
+        &#34;from&#34;: 0,
+        &#34;to&#34;: 0
+      },
+      &#34;datasourceUid&#34;: &#34;-100&#34;,
+      &#34;model&#34;: {
+        &#34;conditions&#34;: [
+          {
+            &#34;evaluator&#34;: {
+              &#34;params&#34;: [6],
+              &#34;type&#34;: &#34;gt&#34;
+            },
+            &#34;operator&#34;: {
+              &#34;type&#34;: &#34;and&#34;
+            },
+            &#34;query&#34;: {
+              &#34;params&#34;: [&#34;A&#34;]
+            },
+            &#34;reducer&#34;: {
+              &#34;params&#34;: [],
+              &#34;type&#34;: &#34;last&#34;
+            },
+            &#34;type&#34;: &#34;query&#34;
+          }
+        ],
+        &#34;datasource&#34;: {
+          &#34;type&#34;: &#34;__expr__&#34;,
+          &#34;uid&#34;: &#34;-100&#34;
+        },
+        &#34;hide&#34;: false,
+        &#34;intervalMs&#34;: 1000,
+        &#34;maxDataPoints&#34;: 43200,
+        &#34;refId&#34;: &#34;B&#34;,
+        &#34;type&#34;: &#34;classic_conditions&#34;
+      }
+    }
+  ]
+}</code></pre>
+  </div>
+</div><h4 id="example-response">Example Response:</h4>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  &#34;id&#34;: 1,
+  &#34;uid&#34;: &#34;XXXXXXXXX&#34;,
+  &#34;orgID&#34;: 1,
+  &#34;folderUID&#34;: &#34;SET_FOLDER_UID&#34;,
+  &#34;ruleGroup&#34;: &#34;API3&#34;,
+  &#34;title&#34;: &#34;TEST-API_1&#34;,
+  &#34;condition&#34;: &#34;B&#34;,
+  &#34;data&#34;: [
+    {
+      &#34;refId&#34;: &#34;A&#34;,
+      &#34;queryType&#34;: &#34;&#34;,
+      &#34;relativeTimeRange&#34;: {
+        &#34;from&#34;: 600,
+        &#34;to&#34;: 0
+      },
+      &#34;datasourceUid&#34;: &#34;XXXXXXXXX-XXXXXXXXX-XXXXXXXXXX&#34;,
+      &#34;model&#34;: {
+        &#34;expr&#34;: &#34;up&#34;,
+        &#34;hide&#34;: false,
+        &#34;intervalMs&#34;: 1000,
+        &#34;maxDataPoints&#34;: 43200,
+        &#34;refId&#34;: &#34;A&#34;
+      }
+    },
+    {
+      &#34;refId&#34;: &#34;B&#34;,
+      &#34;queryType&#34;: &#34;&#34;,
+      &#34;relativeTimeRange&#34;: {
+        &#34;from&#34;: 0,
+        &#34;to&#34;: 0
+      },
+      &#34;datasourceUid&#34;: &#34;-100&#34;,
+      &#34;model&#34;: {
+        &#34;conditions&#34;: [
+          {
+            &#34;evaluator&#34;: {
+              &#34;params&#34;: [
+                6
+              ],
+              &#34;type&#34;: &#34;gt&#34;
+            },
+            &#34;operator&#34;: {
+              &#34;type&#34;: &#34;and&#34;
+            },
+            &#34;query&#34;: {
+              &#34;params&#34;: [
+                &#34;A&#34;
+              ]
+            },
+            &#34;reducer&#34;: {
+              &#34;params&#34;: [],
+              &#34;type&#34;: &#34;last&#34;
+            },
+            &#34;type&#34;: &#34;query&#34;
+          }
+        ],
+        &#34;datasource&#34;: {
+          &#34;type&#34;: &#34;__expr__&#34;,
+          &#34;uid&#34;: &#34;-100&#34;
+        },
+        &#34;hide&#34;: false,
+        &#34;intervalMs&#34;: 1000,
+        &#34;maxDataPoints&#34;: 43200,
+        &#34;refId&#34;: &#34;B&#34;,
+        &#34;type&#34;: &#34;classic_conditions&#34;
+      }
+    }
+  ],
+  &#34;updated&#34;: &#34;2024-08-02T13:19:32.609640048Z&#34;,
+  &#34;noDataState&#34;: &#34;OK&#34;,
+  &#34;execErrState&#34;: &#34;OK&#34;,
+  &#34;for&#34;: &#34;5m&#34;,
+  &#34;annotations&#34;: {
+    &#34;summary&#34;: &#34;test_api_1&#34;
+  },
+  &#34;labels&#34;: {
+    &#34;API&#34;: &#34;test1&#34;
+  },
+  &#34;provenance&#34;: &#34;api&#34;,
+  &#34;isPaused&#34;: false,
+  &#34;notification_settings&#34;: null,
+  &#34;record&#34;: null
+}</code></pre>
+  </div>
+</div><h3 id="contact-points">Contact points</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>URI</th>
+          <th>Name</th>
+          <th>Summary</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DELETE</td>
+          <td>/api/v1/provisioning/contact-points/:uid</td>
+          <td><a href="#route-delete-contactpoints">route delete contactpoints</a></td>
+          <td>Delete a contact point.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/contact-points</td>
+          <td><a href="#route-get-contactpoints">route get contactpoints</a></td>
+          <td>Get all the contact points.</td>
+      </tr>
+      <tr>
+          <td>POST</td>
+          <td>/api/v1/provisioning/contact-points</td>
+          <td><a href="#route-post-contactpoints">route post contactpoints</a></td>
+          <td>Create a contact point.</td>
+      </tr>
+      <tr>
+          <td>PUT</td>
+          <td>/api/v1/provisioning/contact-points/:uid</td>
+          <td><a href="#route-put-contactpoint">route put contactpoint</a></td>
+          <td>Update an existing contact point.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/contact-points/export</td>
+          <td><a href="#route-get-contactpoints-export">route get contactpoints export</a></td>
+          <td>Export all contact points in provisioning file format.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request for all the contact points:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">GET /api/v1/provisioning/contact-points
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</code></pre>
+  </div>
+</div><p><strong>Example Response:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    &#34;uid&#34;: &#34;&#34;,
+    &#34;name&#34;: &#34;email receiver&#34;,
+    &#34;type&#34;: &#34;email&#34;,
+    &#34;settings&#34;: {
+      &#34;addresses&#34;: &#34;&lt;example@email.com&gt;&#34;
+    },
+    &#34;disableResolveMessage&#34;: false
+  }
+]</code></pre>
+  </div>
+</div><h3 id="notification-policies">Notification policies</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>URI</th>
+          <th>Name</th>
+          <th>Summary</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DELETE</td>
+          <td>/api/v1/provisioning/policies</td>
+          <td><a href="#route-reset-policy-tree">route reset policy tree</a></td>
+          <td>Clears the notification policy tree.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/policies</td>
+          <td><a href="#route-get-policy-tree">route get policy tree</a></td>
+          <td>Get the notification policy tree.</td>
+      </tr>
+      <tr>
+          <td>PUT</td>
+          <td>/api/v1/provisioning/policies</td>
+          <td><a href="#route-put-policy-tree">route put policy tree</a></td>
+          <td>Sets the notification policy tree.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/policies/export</td>
+          <td><a href="#route-get-policy-tree-export">route get policy tree export</a></td>
+          <td>Export the notification policy tree in provisioning file format.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request for exporting the notification policy tree in YAML format:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">GET /api/v1/provisioning/policies/export?format=yaml
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</code></pre>
+  </div>
+</div><p><strong>Example Response:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">HTTP/1.1 200 OK
+Content-Type: text/yaml
+
+apiVersion: 1
+policies:
+    - orgId: 1
+      receiver: My Contact Email Point
+      group_by:
+        - grafana_folder
+        - alertname
+      routes:
+        - receiver: My Contact Email Point
+          object_matchers:
+            - - monitor
+              - =
+              - testdata
+          mute_time_intervals:
+            - weekends</code></pre>
+  </div>
+</div><h3 id="notification-template-groups">Notification template groups</h3>
+<p>Template groups enable you to define multiple notification templates (<code>{{ define &quot;&quot; }}</code>) within a single group. They can be managed from the Grafana Alerting UI.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>URI</th>
+          <th>Name</th>
+          <th>Summary</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DELETE</td>
+          <td>/api/v1/provisioning/templates/:name</td>
+          <td><a href="#route-delete-template">route delete template</a></td>
+          <td>Delete a notification template group.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/templates/:name</td>
+          <td><a href="#route-get-template">route get template</a></td>
+          <td>Get a notification template group.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/templates</td>
+          <td><a href="#route-get-templates">route get template</a></td>
+          <td>Get all notification template groups.</td>
+      </tr>
+      <tr>
+          <td>PUT</td>
+          <td>/api/v1/provisioning/templates/:name</td>
+          <td><a href="#route-put-template">route put template</a></td>
+          <td>Create or update a notification template group.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request for all notification template groups:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">GET /api/v1/provisioning/templates
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</code></pre>
+  </div>
+</div><p><strong>Example Response:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    &#34;name&#34;: &#34;custom_email.message&#34;,
+    &#34;template&#34;: &#34;{{ define \&#34;custom_email.message\&#34; }}\n  Custom alert!\n{{ end }}&#34;,
+    &#34;provenance&#34;: &#34;file&#34;
+  },
+  {
+    &#34;name&#34;: &#34;custom_email.subject&#34;,
+    &#34;template&#34;: &#34;{{ define \&#34;custom_email.subject\&#34; }}\n{{ len .Alerts.Firing }} firing alert(s), {{ len .Alerts.Resolved }} resolved alert(s)\n{{ end }}&#34;,
+    &#34;provenance&#34;: &#34;file&#34;
+  }
+]</code></pre>
+  </div>
+</div><h3 id="mute-timings">Mute timings</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>URI</th>
+          <th>Name</th>
+          <th>Summary</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DELETE</td>
+          <td>/api/v1/provisioning/mute-timings/:name</td>
+          <td><a href="#route-delete-mute-timing">route delete mute timing</a></td>
+          <td>Delete a mute timing.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/mute-timings/:name</td>
+          <td><a href="#route-get-mute-timing">route get mute timing</a></td>
+          <td>Get a mute timing.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/mute-timings</td>
+          <td><a href="#route-get-mute-timings">route get mute timings</a></td>
+          <td>Get all the mute timings.</td>
+      </tr>
+      <tr>
+          <td>POST</td>
+          <td>/api/v1/provisioning/mute-timings</td>
+          <td><a href="#route-post-mute-timing">route post mute timing</a></td>
+          <td>Create a new mute timing.</td>
+      </tr>
+      <tr>
+          <td>PUT</td>
+          <td>/api/v1/provisioning/mute-timings/:name</td>
+          <td><a href="#route-put-mute-timing">route put mute timing</a></td>
+          <td>Replace an existing mute timing.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/mute-timings/export</td>
+          <td><a href="#route-get-mute-timings-export">route get mute timings export</a></td>
+          <td>Export all mute timings in provisioning file format.</td>
+      </tr>
+      <tr>
+          <td>GET</td>
+          <td>/api/v1/provisioning/mute-timings/:name/export</td>
+          <td><a href="#route-get-mute-timing-export">route get mute timing export</a></td>
+          <td>Export a mute timing in provisioning file format.</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Example Request for all mute timings:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">GET /api/v1/provisioning/mute-timings
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</code></pre>
+  </div>
+</div><p><strong>Example Response:</strong></p>
+<div class="code-snippet "><div class="lang-toolbar">
+    <span class="lang-toolbar__item">http</span>
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+    <div class="lang-toolbar__border"></div>
+  </div><div class="code-snippet ">
+    <pre data-expanded="false"><code class="language-http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    &#34;name&#34;: &#34;weekends&#34;,
+    &#34;time_intervals&#34;: [
+      {
+        &#34;weekdays&#34;: [
+          &#34;saturday&#34;,
+          &#34;sunday&#34;
+        ]
+      }
+    ],
+    &#34;version&#34;: &#34;&#34;,
+    &#34;provenance&#34;: &#34;file&#34;
+  }
+]</code></pre>
+  </div>
+</div><h3 id="edit-resources-in-the-grafana-ui">Edit resources in the Grafana UI</h3>
+<p>By default, you cannot edit API-provisioned alerting resources in Grafana.</p>
+<p>To enable editing these resources in the Grafana UI, add the <strong><code>X-Disable-Provenance: true</code></strong> header to the following API requests:</p>
+<ul>
+<li><a href="#route-put-alert-rule-group"><code>PUT /api/v1/provisioning/folder/{FolderUID}/rule-groups/{Group}</code></a>: This action also sets the provenance for the rule group and all its alert rules.</li>
+<li><a href="#route-post-alert-rule"><code>POST /api/v1/provisioning/alert-rules</code></a>: The provenance of the new alert rule must match the provenance value configured for its rule group.</li>
+<li><a href="##route-post-contactpoints"><code>POST /api/v1/provisioning/contact-points</code></a></li>
+<li><a href="#route-post-mute-timing"><code>POST /api/v1/provisioning/mute-timings</code></a></li>
+<li><a href="#route-put-template"><code>PUT /api/v1/provisioning/templates/{name}</code></a></li>
+<li><a href="#route-put-policy-tree"><code>PUT /api/v1/provisioning/policies</code></a></li>
+</ul>
+<p>To reset the notification policy tree to the default and unlock it for editing in the Grafana UI, use:</p>
+<ul>
+<li><a href="#route-reset-policy-tree"><code>DELETE /api/v1/provisioning/policies</code></a></li>
+</ul>
+<h2 id="data-source-managed-resources">Data source-managed resources</h2>
+<p>The Alerting Provisioning HTTP API can only be used to manage Grafana-managed alert resources. To manage resources related to 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-data-source-managed-rule/">data source-managed alerts</a>, consider the following tools:</p>
+<ul>
+<li>
+    <a href="/docs/mimir/latest/manage/tools/mimirtool/">mimirtool</a>: to interact with the Mimir alertmanager and ruler configuration.</li>
+<li><a href="https://github.com/grafana/cortex-tools#cortextool" target="_blank" rel="noopener noreferrer">cortex-tools</a>: to interact with the Cortex alertmanager and ruler configuration.</li>
+<li>
+    <a href="/docs/loki/latest/alert/#lokitool">lokitool</a>: to configure the Loki Ruler.</li>
+</ul>
+<p>Alternatively, the <a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/grafana/grafana/main/pkg/services/ngalert/api/tooling/post.json" target="_blank" rel="noopener noreferrer">Grafana Alerting API</a> can be used to access data from data source-managed alerts. This API is primarily intended for internal usage, with the exception of the <code>/api/v1/provisioning/</code> endpoints. It&rsquo;s important to note that internal APIs may undergo changes without prior notice and are not officially supported for user consumption.</p>
+<p>For Prometheus, <code>amtool</code> can also be used to interact with the <a href="https://petstore.swagger.io/?url=https://raw.githubusercontent.com/prometheus/alertmanager/main/api/v2/openapi.yaml#/" target="_blank" rel="noopener noreferrer">AlertManager API</a>.</p>
+<h2 id="paths">Paths</h2>
+<h3 id="delete-a-specific-alert-rule-by-uid-routedeletealertrule"><span id="route-delete-alert-rule"></span> Delete a specific alert rule by UID. (<em>RouteDeleteAlertRule</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">DELETE /api/v1/provisioning/alert-rules/:uid</code></pre>
+  </div>
+</div><h4 id="parameters">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>UID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Alert rule UID</td>
+      </tr>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-delete-alert-rule-204">204</a></td>
+          <td>No Content</td>
+          <td>The alert rule was deleted successfully.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-delete-alert-rule-204-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses">Responses</h4>
+<h5 id="204---the-alert-rule-was-deleted-successfully"><span id="route-delete-alert-rule-204"></span> 204 - The alert rule was deleted successfully.</h5>
+<p>Status: No Content</p>
+<h6 id="schema"><span id="route-delete-alert-rule-204-schema"></span> Schema</h6>
+<h3 id="delete-a-contact-point-routedeletecontactpoints"><span id="route-delete-contactpoints"></span> Delete a contact point. (<em>RouteDeleteContactpoints</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">DELETE /api/v1/provisioning/contact-points/:uid</code></pre>
+  </div>
+</div><h4 id="parameters-1">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>UID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>UID is the contact point unique identifier</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-1">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-delete-contactpoints-204">204</a></td>
+          <td>No Content</td>
+          <td>The contact point was deleted successfully.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-delete-contactpoints-204-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-1">Responses</h4>
+<h5 id="204---the-contact-point-was-deleted-successfully"><span id="route-delete-contactpoints-204"></span> 204 - The contact point was deleted successfully.</h5>
+<p>Status: No Content</p>
+<h6 id="schema-1"><span id="route-delete-contactpoints-204-schema"></span> Schema</h6>
+<h3 id="delete-a-mute-timing-routedeletemutetiming"><span id="route-delete-mute-timing"></span> Delete a mute timing. (<em>RouteDeleteMuteTiming</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">DELETE /api/v1/provisioning/mute-timings/:name</code></pre>
+  </div>
+</div><h4 id="parameters-2">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Mute timing name</td>
+      </tr>
+      <tr>
+          <td><code>version</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Current version of the resource. Used for optimistic concurrency validation. Keep empty to bypass validation.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-2">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-delete-mute-timing-204">204</a></td>
+          <td>No Content</td>
+          <td>The mute timing was deleted successfully.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-delete-mute-timing-204-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-delete-mute-timing-409">409</a></td>
+          <td>Conflict</td>
+          <td>GenericPublicError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-delete-mute-timing-409-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-2">Responses</h4>
+<h5 id="204---the-mute-timing-was-deleted-successfully"><span id="route-delete-mute-timing-204"></span> 204 - The mute timing was deleted successfully.</h5>
+<p>Status: No Content</p>
+<h6 id="schema-2"><span id="route-delete-mute-timing-204-schema"></span> Schema</h6>
+<h5 id="409---conflict"><span id="route-delete-mute-timing-409"></span> 409 - Conflict</h5>
+<p>Status: Conflict</p>
+<h6 id="schema-3"><span id="route-delete-mute-timing-409-schema"></span> Schema</h6>
+<p><a href="#generic-public-error">GenericPublicError</a></p>
+<h3 id="delete-a-notification-template-group-routedeletetemplate"><span id="route-delete-template"></span> Delete a notification template group. (<em>RouteDeleteTemplate</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">DELETE /api/v1/provisioning/templates/:name</code></pre>
+  </div>
+</div><h4 id="parameters-3">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Name of the template group</td>
+      </tr>
+      <tr>
+          <td><code>version</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Current version of the resource. Used for optimistic concurrency validation. Keep empty to bypass validation.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-3">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-delete-template-204">204</a></td>
+          <td>No Content</td>
+          <td>The template was deleted successfully.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-delete-template-204-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-delete-template-409">409</a></td>
+          <td>Conflict</td>
+          <td>GenericPublicError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-delete-template-409-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-3">Responses</h4>
+<h5 id="204---the-template-was-deleted-successfully"><span id="route-delete-template-204"></span> 204 - The template was deleted successfully.</h5>
+<p>Status: No Content</p>
+<h6 id="schema-4"><span id="route-delete-template-204-schema"></span> Schema</h6>
+<h5 id="409---conflict-1"><span id="route-delete-template-409"></span> 409 - Conflict</h5>
+<p>Status: Conflict</p>
+<h6 id="schema-5"><span id="route-delete-template-409-schema"></span> Schema</h6>
+<p><a href="#generic-public-error">GenericPublicError</a></p>
+<h3 id="get-a-specific-alert-rule-by-uid-routegetalertrule"><span id="route-get-alert-rule"></span> Get a specific alert rule by UID. (<em>RouteGetAlertRule</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/alert-rules/:uid</code></pre>
+  </div>
+</div><h4 id="parameters-4">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>UID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Alert rule UID</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-4">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-alert-rule-200">200</a></td>
+          <td>OK</td>
+          <td>ProvisionedAlertRule</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-alert-rule-404">404</a></td>
+          <td>Not Found</td>
+          <td>Not found.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-4">Responses</h4>
+<h5 id="200---provisionedalertrule"><span id="route-get-alert-rule-200"></span> 200 - ProvisionedAlertRule</h5>
+<p>Status: OK</p>
+<h6 id="schema-6"><span id="route-get-alert-rule-200-schema"></span> Schema</h6>
+<p><a href="#provisioned-alert-rule">ProvisionedAlertRule</a></p>
+<h5 id="404---not-found"><span id="route-get-alert-rule-404"></span> 404 - Not found.</h5>
+<p>Status: Not Found</p>
+<h6 id="schema-7"><span id="route-get-alert-rule-404-schema"></span> Schema</h6>
+<h3 id="export-an-alert-rule-in-provisioning-file-format-routegetalertruleexport"><span id="route-get-alert-rule-export"></span> Export an alert rule in provisioning file format. (<em>RouteGetAlertRuleExport</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/alert-rules/:uid/export</code></pre>
+  </div>
+</div>
+
+<div data-shared="alerts/alerting-provisioning-export-produces.md">
+            <h4 id="produces">Produces</h4>
+<ul>
+<li><code>application/json</code></li>
+<li><code>application/yaml</code></li>
+<li><code>application/terraform+hcl</code></li>
+<li><code>text/yaml</code></li>
+<li><code>text/hcl</code></li>
+</ul>
+<p>These outputs are for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">file provisioning</a> or 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Terraform provisioning</a>, and they-including the JSON output—cannot be used to update resources via the HTTP API.</p>
+</div>
+
+        
+<h4 id="parameters-5">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>UID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Alert rule UID</td>
+      </tr>
+      <tr>
+          <td><code>download</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether to initiate a download of the file or not.</td>
+      </tr>
+      <tr>
+          <td><code>format</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td><code>yaml</code></td>
+          <td>Format of the downloaded file, either <code>yaml</code>, <code>json</code> or <code>hcl</code>. Accept header can also be used, but the query parameter will take precedence.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-5">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-alert-rule-export-200">200</a></td>
+          <td>OK</td>
+          <td>AlertingFileExport</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-export-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-alert-rule-export-404">404</a></td>
+          <td>Not Found</td>
+          <td>Not found.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-export-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-5">Responses</h4>
+<h5 id="200---alertingfileexport"><span id="route-get-alert-rule-export-200"></span> 200 - AlertingFileExport</h5>
+<p>Status: OK</p>
+<h6 id="schema-8"><span id="route-get-alert-rule-export-200-schema"></span> Schema</h6>
+<p><a href="#alerting-file-export">AlertingFileExport</a></p>
+<h5 id="404---not-found-1"><span id="route-get-alert-rule-export-404"></span> 404 - Not found.</h5>
+<p>Status: Not Found</p>
+<h6 id="schema-9"><span id="route-get-alert-rule-export-404-schema"></span> Schema</h6>
+<h3 id="get-a-rule-group-routegetalertrulegroup"><span id="route-get-alert-rule-group"></span> Get a rule group. (<em>RouteGetAlertRuleGroup</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/folder/:folderUid/rule-groups/:group</code></pre>
+  </div>
+</div><h4 id="parameters-6">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>FolderUID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>Group</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-6">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-alert-rule-group-200">200</a></td>
+          <td>OK</td>
+          <td>AlertRuleGroup</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-group-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-alert-rule-group-404">404</a></td>
+          <td>Not Found</td>
+          <td>Not found.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-group-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-6">Responses</h4>
+<h5 id="200---alertrulegroup"><span id="route-get-alert-rule-group-200"></span> 200 - AlertRuleGroup</h5>
+<p>Status: OK</p>
+<h6 id="schema-10"><span id="route-get-alert-rule-group-200-schema"></span> Schema</h6>
+<p><a href="#alert-rule-group">AlertRuleGroup</a></p>
+<h5 id="404---not-found-2"><span id="route-get-alert-rule-group-404"></span> 404 - Not found.</h5>
+<p>Status: Not Found</p>
+<h6 id="schema-11"><span id="route-get-alert-rule-group-404-schema"></span> Schema</h6>
+<h3 id="export-an-alert-rule-group-in-provisioning-file-format-routegetalertrulegroupexport"><span id="route-get-alert-rule-group-export"></span> Export an alert rule group in provisioning file format. (<em>RouteGetAlertRuleGroupExport</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/folder/:folderUid/rule-groups/:group/export</code></pre>
+  </div>
+</div>
+
+<div data-shared="alerts/alerting-provisioning-export-produces.md">
+            <h4 id="produces">Produces</h4>
+<ul>
+<li><code>application/json</code></li>
+<li><code>application/yaml</code></li>
+<li><code>application/terraform+hcl</code></li>
+<li><code>text/yaml</code></li>
+<li><code>text/hcl</code></li>
+</ul>
+<p>These outputs are for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">file provisioning</a> or 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Terraform provisioning</a>, and they-including the JSON output—cannot be used to update resources via the HTTP API.</p>
+</div>
+
+        
+<h4 id="parameters-7">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>FolderUID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>Group</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>download</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether to initiate a download of the file or not.</td>
+      </tr>
+      <tr>
+          <td><code>format</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td><code>yaml</code></td>
+          <td>Format of the downloaded file, either <code>yaml</code>, <code>json</code> or <code>hcl</code>. Accept header can also be used, but the query parameter will take precedence.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-7">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-alert-rule-group-export-200">200</a></td>
+          <td>OK</td>
+          <td>AlertingFileExport</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-group-export-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-alert-rule-group-export-404">404</a></td>
+          <td>Not Found</td>
+          <td>Not found.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rule-group-export-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-7">Responses</h4>
+<h5 id="200---alertingfileexport-1"><span id="route-get-alert-rule-group-export-200"></span> 200 - AlertingFileExport</h5>
+<p>Status: OK</p>
+<h6 id="schema-12"><span id="route-get-alert-rule-group-export-200-schema"></span> Schema</h6>
+<p><a href="#alerting-file-export">AlertingFileExport</a></p>
+<h5 id="404---not-found-3"><span id="route-get-alert-rule-group-export-404"></span> 404 - Not found.</h5>
+<p>Status: Not Found</p>
+<h6 id="schema-13"><span id="route-get-alert-rule-group-export-404-schema"></span> Schema</h6>
+<h3 id="get-all-the-alert-rules-routegetalertrules"><span id="route-get-alert-rules"></span> Get all the alert rules. (<em>RouteGetAlertRules</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/alert-rules</code></pre>
+  </div>
+</div><h4 id="all-responses-8">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-alert-rules-200">200</a></td>
+          <td>OK</td>
+          <td>ProvisionedAlertRules</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rules-200-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-8">Responses</h4>
+<h5 id="200---provisionedalertrules"><span id="route-get-alert-rules-200"></span> 200 - ProvisionedAlertRules</h5>
+<p>Status: OK</p>
+<h6 id="schema-14"><span id="route-get-alert-rules-200-schema"></span> Schema</h6>
+<p><a href="#provisioned-alert-rules">ProvisionedAlertRules</a></p>
+<h3 id="export-all-alert-rules-in-provisioning-file-format-routegetalertrulesexport"><span id="route-get-alert-rules-export"></span> Export all alert rules in provisioning file format. (<em>RouteGetAlertRulesExport</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/alert-rules/export</code></pre>
+  </div>
+</div>
+
+<div data-shared="alerts/alerting-provisioning-export-produces.md">
+            <h4 id="produces">Produces</h4>
+<ul>
+<li><code>application/json</code></li>
+<li><code>application/yaml</code></li>
+<li><code>application/terraform+hcl</code></li>
+<li><code>text/yaml</code></li>
+<li><code>text/hcl</code></li>
+</ul>
+<p>These outputs are for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">file provisioning</a> or 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Terraform provisioning</a>, and they-including the JSON output—cannot be used to update resources via the HTTP API.</p>
+</div>
+
+        
+<h4 id="parameters-8">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>download</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether to initiate a download of the file or not.</td>
+      </tr>
+      <tr>
+          <td><code>format</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td><code>yaml</code></td>
+          <td>Format of the downloaded file, either <code>yaml</code>, <code>json</code> or <code>hcl</code>. Accept header can also be used, but the query parameter will take precedence.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-9">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-alert-rules-export-200">200</a></td>
+          <td>OK</td>
+          <td>AlertingFileExport</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rules-export-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-alert-rules-export-404">404</a></td>
+          <td>Not Found</td>
+          <td>Not found.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-alert-rules-export-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-9">Responses</h4>
+<h5 id="200---alertingfileexport-2"><span id="route-get-alert-rules-export-200"></span> 200 - AlertingFileExport</h5>
+<p>Status: OK</p>
+<h6 id="schema-15"><span id="route-get-alert-rules-export-200-schema"></span> Schema</h6>
+<p><a href="#alerting-file-export">AlertingFileExport</a></p>
+<h5 id="404---not-found-4"><span id="route-get-alert-rules-export-404"></span> 404 - Not found.</h5>
+<p>Status: Not Found</p>
+<h6 id="schema-16"><span id="route-get-alert-rules-export-404-schema"></span> Schema</h6>
+<h3 id="get-all-the-contact-points-routegetcontactpoints"><span id="route-get-contactpoints"></span> Get all the contact points. (<em>RouteGetContactpoints</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/contact-points</code></pre>
+  </div>
+</div><h4 id="parameters-9">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Filter by name</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-10">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-contactpoints-200">200</a></td>
+          <td>OK</td>
+          <td>ContactPoints</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-contactpoints-200-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-10">Responses</h4>
+<h5 id="200---contactpoints"><span id="route-get-contactpoints-200"></span> 200 - ContactPoints</h5>
+<p>Status: OK</p>
+<h6 id="schema-17"><span id="route-get-contactpoints-200-schema"></span> Schema</h6>
+<p><a href="#contact-points">ContactPoints</a></p>
+<h3 id="export-all-contact-points-in-provisioning-file-format-routegetcontactpointsexport"><span id="route-get-contactpoints-export"></span> Export all contact points in provisioning file format. (<em>RouteGetContactpointsExport</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/contact-points/export</code></pre>
+  </div>
+</div>
+
+<div data-shared="alerts/alerting-provisioning-export-produces.md">
+            <h4 id="produces">Produces</h4>
+<ul>
+<li><code>application/json</code></li>
+<li><code>application/yaml</code></li>
+<li><code>application/terraform+hcl</code></li>
+<li><code>text/yaml</code></li>
+<li><code>text/hcl</code></li>
+</ul>
+<p>These outputs are for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">file provisioning</a> or 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Terraform provisioning</a>, and they-including the JSON output—cannot be used to update resources via the HTTP API.</p>
+</div>
+
+        
+<h4 id="parameters-10">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>decrypt</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether any contained secure settings should be decrypted or left redacted. Redacted settings will contain RedactedValue instead. Currently, only org admin can view decrypted secure settings.</td>
+      </tr>
+      <tr>
+          <td><code>download</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether to initiate a download of the file or not.</td>
+      </tr>
+      <tr>
+          <td><code>format</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td><code>yaml</code></td>
+          <td>Format of the downloaded file, either <code>yaml</code>, <code>json</code> or <code>hcl</code>. Accept header can also be used, but the query parameter will take precedence.</td>
+      </tr>
+      <tr>
+          <td><code>name</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Filter by name</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-11">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-contactpoints-export-200">200</a></td>
+          <td>OK</td>
+          <td>AlertingFileExport</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-contactpoints-export-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-contactpoints-export-403">403</a></td>
+          <td>Forbidden</td>
+          <td>PermissionDenied</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-contactpoints-export-403-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-11">Responses</h4>
+<h5 id="200---alertingfileexport-3"><span id="route-get-contactpoints-export-200"></span> 200 - AlertingFileExport</h5>
+<p>Status: OK</p>
+<h6 id="schema-18"><span id="route-get-contactpoints-export-200-schema"></span> Schema</h6>
+<p><a href="#alerting-file-export">AlertingFileExport</a></p>
+<h5 id="403---permissiondenied"><span id="route-get-contactpoints-export-403"></span> 403 - PermissionDenied</h5>
+<p>Status: Forbidden</p>
+<h6 id="schema-19"><span id="route-get-contactpoints-export-403-schema"></span> Schema</h6>
+<p><a href="#permission-denied">PermissionDenied</a></p>
+<h3 id="get-a-mute-timing-routegetmutetiming"><span id="route-get-mute-timing"></span> Get a mute timing. (<em>RouteGetMuteTiming</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/mute-timings/:name</code></pre>
+  </div>
+</div><h4 id="parameters-11">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Mute timing name</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-12">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-mute-timing-200">200</a></td>
+          <td>OK</td>
+          <td>MuteTimeInterval</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-mute-timing-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-mute-timing-404">404</a></td>
+          <td>Not Found</td>
+          <td>Not found.</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-mute-timing-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-12">Responses</h4>
+<h5 id="200---mutetimeinterval"><span id="route-get-mute-timing-200"></span> 200 - MuteTimeInterval</h5>
+<p>Status: OK</p>
+<h6 id="schema-20"><span id="route-get-mute-timing-200-schema"></span> Schema</h6>
+<p><a href="#mute-time-interval">MuteTimeInterval</a></p>
+<h5 id="404---not-found-5"><span id="route-get-mute-timing-404"></span> 404 - Not found.</h5>
+<p>Status: Not Found</p>
+<h6 id="schema-21"><span id="route-get-mute-timing-404-schema"></span> Schema</h6>
+<h3 id="get-all-the-mute-timings-routegetmutetimings"><span id="route-get-mute-timings"></span> Get all the mute timings. (<em>RouteGetMuteTimings</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/mute-timings</code></pre>
+  </div>
+</div><h4 id="all-responses-13">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-mute-timings-200">200</a></td>
+          <td>OK</td>
+          <td>MuteTimings</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-mute-timings-200-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-13">Responses</h4>
+<h5 id="200---mutetimings"><span id="route-get-mute-timings-200"></span> 200 - MuteTimings</h5>
+<p>Status: OK</p>
+<h6 id="schema-22"><span id="route-get-mute-timings-200-schema"></span> Schema</h6>
+<p><a href="#mute-timings">MuteTimings</a></p>
+<h3 id="export-all-mute-timings-in-provisioning-file-format-routegetmutetimingsexport"><span id="route-get-mute-timings-export"></span> Export all mute timings in provisioning file format. (<em>RouteGetMuteTimingsExport</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/mute-timings/export</code></pre>
+  </div>
+</div>
+
+<div data-shared="alerts/alerting-provisioning-export-produces.md">
+            <h4 id="produces">Produces</h4>
+<ul>
+<li><code>application/json</code></li>
+<li><code>application/yaml</code></li>
+<li><code>application/terraform+hcl</code></li>
+<li><code>text/yaml</code></li>
+<li><code>text/hcl</code></li>
+</ul>
+<p>These outputs are for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">file provisioning</a> or 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Terraform provisioning</a>, and they-including the JSON output—cannot be used to update resources via the HTTP API.</p>
+</div>
+
+        
+<h4 id="parameters-12">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>download</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether to initiate a download of the file or not.</td>
+      </tr>
+      <tr>
+          <td><code>format</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td><code>yaml</code></td>
+          <td>Format of the downloaded file, either <code>yaml</code>, <code>json</code> or <code>hcl</code>. Accept header can also be used, but the query parameter will take precedence.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-14">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-mute-timings-export-200">200</a></td>
+          <td>OK</td>
+          <td>MuteTimingsExport</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-mute-timings-export-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-mute-timings-export-403">403</a></td>
+          <td>Forbidden</td>
+          <td>PermissionDenied</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-mute-timings-export-403-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-14">Responses</h4>
+<h5 id="200---mutetimingsexport"><span id="route-get-mute-timings-export-200"></span> 200 - MuteTimingsExport</h5>
+<p>Status: OK</p>
+<h6 id="schema-23"><span id="route-get-mute-timings-export-200-schema"></span> Schema</h6>
+<p><a href="#alerting-file-export">AlertingFileExport</a></p>
+<h5 id="403---permissiondenied-1"><span id="route-get-mute-timings-export-403"></span> 403 - PermissionDenied</h5>
+<p>Status: Forbidden</p>
+<h6 id="schema-24"><span id="route-get-mute-timings-export-403-schema"></span> Schema</h6>
+<p><a href="#permission-denied">PermissionDenied</a></p>
+<h3 id="export-a-mute-timing-in-provisioning-file-format-routegetmutetimingexport"><span id="route-get-mute-timing-export"></span> Export a mute timing in provisioning file format. (<em>RouteGetMuteTimingExport</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/mute-timings/:name/export</code></pre>
+  </div>
+</div>
+
+<div data-shared="alerts/alerting-provisioning-export-produces.md">
+            <h4 id="produces">Produces</h4>
+<ul>
+<li><code>application/json</code></li>
+<li><code>application/yaml</code></li>
+<li><code>application/terraform+hcl</code></li>
+<li><code>text/yaml</code></li>
+<li><code>text/hcl</code></li>
+</ul>
+<p>These outputs are for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">file provisioning</a> or 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Terraform provisioning</a>, and they-including the JSON output—cannot be used to update resources via the HTTP API.</p>
+</div>
+
+        
+<h4 id="parameters-13">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Mute timing name.</td>
+      </tr>
+      <tr>
+          <td><code>download</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether to initiate a download of the file or not.</td>
+      </tr>
+      <tr>
+          <td><code>format</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td><code>yaml</code></td>
+          <td>Format of the downloaded file, either <code>yaml</code>, <code>json</code> or <code>hcl</code>. Accept header can also be used, but the query parameter will take precedence.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-15">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-mute-timing-export-200">200</a></td>
+          <td>OK</td>
+          <td>MuteTimingExport</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-mute-timings-export-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-mute-timing-export-403">403</a></td>
+          <td>Forbidden</td>
+          <td>PermissionDenied</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-mute-timings-export-403-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-15">Responses</h4>
+<h5 id="200---mutetimingexport"><span id="route-get-mute-timing-export-200"></span> 200 - MuteTimingExport</h5>
+<p>Status: OK</p>
+<h6 id="schema-25"><span id="route-get-mute-timing-export-200-schema"></span> Schema</h6>
+<p><a href="#alerting-file-export">AlertingFileExport</a></p>
+<h5 id="403---permissiondenied-2"><span id="route-get-mute-timing-export-403"></span> 403 - PermissionDenied</h5>
+<p>Status: Forbidden</p>
+<h6 id="schema-26"><span id="route-get-mute-timing-export-403-schema"></span> Schema</h6>
+<p><a href="#permission-denied">PermissionDenied</a></p>
+<h3 id="get-the-notification-policy-tree-routegetpolicytree"><span id="route-get-policy-tree"></span> Get the notification policy tree. (<em>RouteGetPolicyTree</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/policies</code></pre>
+  </div>
+</div><h4 id="all-responses-16">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-policy-tree-200">200</a></td>
+          <td>OK</td>
+          <td>Route</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-policy-tree-200-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-16">Responses</h4>
+<h5 id="200---route"><span id="route-get-policy-tree-200"></span> 200 - Route</h5>
+<p>Status: OK</p>
+<h6 id="schema-27"><span id="route-get-policy-tree-200-schema"></span> Schema</h6>
+<p><a href="#route">Route</a></p>
+<h3 id="export-the-notification-policy-tree-in-provisioning-file-format-routegetpolicytreeexport"><span id="route-get-policy-tree-export"></span> Export the notification policy tree in provisioning file format. (<em>RouteGetPolicyTreeExport</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/policies/export</code></pre>
+  </div>
+</div>
+
+<div data-shared="alerts/alerting-provisioning-export-produces.md">
+            <h4 id="produces">Produces</h4>
+<ul>
+<li><code>application/json</code></li>
+<li><code>application/yaml</code></li>
+<li><code>application/terraform+hcl</code></li>
+<li><code>text/yaml</code></li>
+<li><code>text/hcl</code></li>
+</ul>
+<p>These outputs are for 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">file provisioning</a> or 
+    <a href="/docs/grafana/latest/alerting/set-up/provision-alerting-resources/file-provisioning/">Terraform provisioning</a>, and they-including the JSON output—cannot be used to update resources via the HTTP API.</p>
+</div>
+
+        
+<h4 id="parameters-14">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>download</code></td>
+          <td>query</td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Whether to initiate a download of the file or not.</td>
+      </tr>
+      <tr>
+          <td><code>format</code></td>
+          <td>query</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td><code>yaml</code></td>
+          <td>Format of the downloaded file, either <code>yaml</code>, <code>json</code> or <code>hcl</code>. Accept header can also be used, but the query parameter will take precedence.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-17">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-policy-tree-export-200">200</a></td>
+          <td>OK</td>
+          <td>AlertingFileExport</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-policy-tree-export-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-policy-tree-export-404">404</a></td>
+          <td>Not Found</td>
+          <td>NotFound</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-policy-tree-export-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-17">Responses</h4>
+<h5 id="200---alertingfileexport-4"><span id="route-get-policy-tree-export-200"></span> 200 - AlertingFileExport</h5>
+<p>Status: OK</p>
+<h6 id="schema-28"><span id="route-get-policy-tree-export-200-schema"></span> Schema</h6>
+<p><a href="#alerting-file-export">AlertingFileExport</a></p>
+<h5 id="404---notfound"><span id="route-get-policy-tree-export-404"></span> 404 - NotFound</h5>
+<p>Status: Not Found</p>
+<h6 id="schema-29"><span id="route-get-policy-tree-export-404-schema"></span> Schema</h6>
+<p><a href="#not-found">NotFound</a></p>
+<h3 id="get-a-notification-template-group-routegettemplate"><span id="route-get-template"></span> Get a notification template group. (<em>RouteGetTemplate</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/templates/:name</code></pre>
+  </div>
+</div><h4 id="parameters-15">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Name of the template group</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="all-responses-18">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-template-200">200</a></td>
+          <td>OK</td>
+          <td>NotificationTemplate</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-template-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-get-template-404">404</a></td>
+          <td>Not Found</td>
+          <td>GenericPublicError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-template-404-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-18">Responses</h4>
+<h5 id="200---notificationtemplate"><span id="route-get-template-200"></span> 200 - NotificationTemplate</h5>
+<p>Status: OK</p>
+<h6 id="schema-30"><span id="route-get-template-200-schema"></span> Schema</h6>
+<p><a href="#notification-template">NotificationTemplate</a></p>
+<h5 id="404---not-found-6"><span id="route-get-template-404"></span> 404 - Not found.</h5>
+<p><a href="#generic-public-error">GenericPublicError</a></p>
+<h6 id="schema-31"><span id="route-get-template-404-schema"></span> Schema</h6>
+<h3 id="get-all-notification-template-groups-routegettemplates"><span id="route-get-templates"></span> Get all notification template groups. (<em>RouteGetTemplates</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">GET /api/v1/provisioning/templates</code></pre>
+  </div>
+</div><h4 id="all-responses-19">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-get-templates-200">200</a></td>
+          <td>OK</td>
+          <td>NotificationTemplates</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-get-templates-200-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-19">Responses</h4>
+<h5 id="200---notificationtemplates"><span id="route-get-templates-200"></span> 200 - NotificationTemplates</h5>
+<p>Status: OK</p>
+<h6 id="schema-32"><span id="route-get-templates-200-schema"></span> Schema</h6>
+<p><a href="#notification-templates">NotificationTemplates</a></p>
+<h3 id="create-a-new-alert-rule-routepostalertrule"><span id="route-post-alert-rule"></span> Create a new alert rule. (<em>RoutePostAlertRule</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">POST /api/v1/provisioning/alert-rules</code></pre>
+  </div>
+</div><p>This action creates a new alert rule.</p>
+<p>The provenance (<code>X-Disable-Provenance</code>) of the new rule must match the provenance configured for its rule group. Mixing provisioned and unprovisioned alert rules within the same rule group is not allowed.</p>
+<h4 id="parameters-16">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#provisioned-alert-rule">ProvisionedAlertRule</a></td>
+          <td><code>models.ProvisionedAlertRule</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-20">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-post-alert-rule-201">201</a></td>
+          <td>Created</td>
+          <td>ProvisionedAlertRule</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-post-alert-rule-201-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-post-alert-rule-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-post-alert-rule-400-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-20">Responses</h4>
+<h5 id="201---provisionedalertrule"><span id="route-post-alert-rule-201"></span> 201 - ProvisionedAlertRule</h5>
+<p>Status: Created</p>
+<h6 id="schema-33"><span id="route-post-alert-rule-201-schema"></span> Schema</h6>
+<p><a href="#provisioned-alert-rule">ProvisionedAlertRule</a></p>
+<h5 id="400---validationerror"><span id="route-post-alert-rule-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-34"><span id="route-post-alert-rule-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h3 id="create-a-contact-point-routepostcontactpoints"><span id="route-post-contactpoints"></span> Create a contact point. (<em>RoutePostContactpoints</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">POST /api/v1/provisioning/contact-points</code></pre>
+  </div>
+</div><p>When creating a contact point, the <code>EmbeddedContactPoint.name</code> property determines if the new contact point is added to an existing one. In the UI, contact points with the same name are grouped together under a single contact point.</p>
+<h4 id="parameters-17">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#embedded-contact-point">EmbeddedContactPoint</a></td>
+          <td><code>models.EmbeddedContactPoint</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-21">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-post-contactpoints-202">202</a></td>
+          <td>Accepted</td>
+          <td>EmbeddedContactPoint</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-post-contactpoints-202-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-post-contactpoints-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-post-contactpoints-400-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-21">Responses</h4>
+<h5 id="202---embeddedcontactpoint"><span id="route-post-contactpoints-202"></span> 202 - EmbeddedContactPoint</h5>
+<p>Status: Accepted</p>
+<h6 id="schema-35"><span id="route-post-contactpoints-202-schema"></span> Schema</h6>
+<p><a href="#embedded-contact-point">EmbeddedContactPoint</a></p>
+<h5 id="400---validationerror-1"><span id="route-post-contactpoints-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-36"><span id="route-post-contactpoints-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h3 id="create-a-new-mute-timing-routepostmutetiming"><span id="route-post-mute-timing"></span> Create a new mute timing. (<em>RoutePostMuteTiming</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">POST /api/v1/provisioning/mute-timings</code></pre>
+  </div>
+</div><h4 id="parameters-18">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#mute-time-interval">MuteTimeInterval</a></td>
+          <td><code>models.MuteTimeInterval</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-22">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-post-mute-timing-201">201</a></td>
+          <td>Created</td>
+          <td>MuteTimeInterval</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-post-mute-timing-201-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-post-mute-timing-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-post-mute-timing-400-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-22">Responses</h4>
+<h5 id="201---mutetimeinterval"><span id="route-post-mute-timing-201"></span> 201 - MuteTimeInterval</h5>
+<p>Status: Created</p>
+<h6 id="schema-37"><span id="route-post-mute-timing-201-schema"></span> Schema</h6>
+<p><a href="#mute-time-interval">MuteTimeInterval</a></p>
+<h5 id="400---validationerror-2"><span id="route-post-mute-timing-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-38"><span id="route-post-mute-timing-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h3 id="update-an-existing-alert-rule-routeputalertrule"><span id="route-put-alert-rule"></span> Update an existing alert rule. (<em>RoutePutAlertRule</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">PUT /api/v1/provisioning/alert-rules/:uid</code></pre>
+  </div>
+</div><h4 id="parameters-19">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>UID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Alert rule UID</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#provisioned-alert-rule">ProvisionedAlertRule</a></td>
+          <td><code>models.ProvisionedAlertRule</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-23">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-put-alert-rule-200">200</a></td>
+          <td>OK</td>
+          <td>ProvisionedAlertRule</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-alert-rule-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-alert-rule-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-alert-rule-400-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-23">Responses</h4>
+<h5 id="200---provisionedalertrule-1"><span id="route-put-alert-rule-200"></span> 200 - ProvisionedAlertRule</h5>
+<p>Status: OK</p>
+<h6 id="schema-39"><span id="route-put-alert-rule-200-schema"></span> Schema</h6>
+<p><a href="#provisioned-alert-rule">ProvisionedAlertRule</a></p>
+<h5 id="400---validationerror-3"><span id="route-put-alert-rule-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-40"><span id="route-put-alert-rule-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h3 id="create-or-update-a-rule-group-routeputalertrulegroup"><span id="route-put-alert-rule-group"></span> Create or update a rule group. (<em>RoutePutAlertRuleGroup</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">PUT /api/v1/provisioning/folder/:folderUid/rule-groups/:group</code></pre>
+  </div>
+</div><p>This action also changes the provenance setting (<code>X-Disable-Provenance</code>) for all alert rules in the alert group.</p>
+<h4 id="parameters-20">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>FolderUID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>Group</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI. This also applies to all alert rules within the alert group.</td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#alert-rule-group">AlertRuleGroup</a></td>
+          <td><code>models.AlertRuleGroup</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>This action is idempotent and rules included in this body will overwrite configured rules for the group</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-24">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-put-alert-rule-group-200">200</a></td>
+          <td>OK</td>
+          <td>AlertRuleGroup</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-alert-rule-group-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-alert-rule-group-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-alert-rule-group-400-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-24">Responses</h4>
+<h5 id="200---alertrulegroup-1"><span id="route-put-alert-rule-group-200"></span> 200 - AlertRuleGroup</h5>
+<p>Status: OK</p>
+<h6 id="schema-41"><span id="route-put-alert-rule-group-200-schema"></span> Schema</h6>
+<p><a href="#alert-rule-group">AlertRuleGroup</a></p>
+<h5 id="400---validationerror-4"><span id="route-put-alert-rule-group-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-42"><span id="route-put-alert-rule-group-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h3 id="update-an-existing-contact-point-routeputcontactpoint"><span id="route-put-contactpoint"></span> Update an existing contact point. (<em>RoutePutContactpoint</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">PUT /api/v1/provisioning/contact-points/:uid</code></pre>
+  </div>
+</div><h4 id="parameters-21">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>UID</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>UID is the contact point unique identifier</td>
+      </tr>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#embedded-contact-point">EmbeddedContactPoint</a></td>
+          <td><code>models.EmbeddedContactPoint</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-25">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-put-contactpoint-202">202</a></td>
+          <td>Accepted</td>
+          <td>Ack</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-contactpoint-202-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-contactpoint-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-contactpoint-400-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-25">Responses</h4>
+<h5 id="202---ack"><span id="route-put-contactpoint-202"></span> 202 - Ack</h5>
+<p>Status: Accepted</p>
+<h6 id="schema-43"><span id="route-put-contactpoint-202-schema"></span> Schema</h6>
+<p><a href="#ack">Ack</a></p>
+<h5 id="400---validationerror-5"><span id="route-put-contactpoint-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-44"><span id="route-put-contactpoint-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h3 id="replace-an-existing-mute-timing-routeputmutetiming"><span id="route-put-mute-timing"></span> Replace an existing mute timing. (<em>RoutePutMuteTiming</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">PUT /api/v1/provisioning/mute-timings/:name</code></pre>
+  </div>
+</div><h4 id="parameters-22">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th>Required</th>
+          <th style="text-align: center">Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td>✓</td>
+          <td style="text-align: center"></td>
+          <td>Mute timing name</td>
+      </tr>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td></td>
+          <td style="text-align: center"></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#mute-time-interval">MuteTimeInterval</a></td>
+          <td><code>models.MuteTimeInterval</code></td>
+          <td></td>
+          <td style="text-align: center"></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-26">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-put-mute-timing-200">200</a></td>
+          <td>OK</td>
+          <td>MuteTimeInterval</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-mute-timing-200-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-mute-timing-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-mute-timing-400-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-mute-timing-409">409</a></td>
+          <td>Conflict</td>
+          <td>GenericPublicError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-mute-timing-409-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-26">Responses</h4>
+<h5 id="200---mutetimeinterval-1"><span id="route-put-mute-timing-200"></span> 200 - MuteTimeInterval</h5>
+<p>Status: OK</p>
+<h6 id="schema-45"><span id="route-put-mute-timing-200-schema"></span> Schema</h6>
+<p><a href="#mute-time-interval">MuteTimeInterval</a></p>
+<h5 id="400---validationerror-6"><span id="route-put-mute-timing-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-46"><span id="route-put-mute-timing-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h5 id="409---conflict-2"><span id="route-put-mute-timing-409"></span> 409 - Conflict</h5>
+<p>Status: Conflict</p>
+<h6 id="schema-47"><span id="route-put-mute-timing-409-schema"></span> Schema</h6>
+<p><a href="#generic-public-error">GenericPublicError</a></p>
+<h3 id="sets-the-notification-policy-tree-routeputpolicytree"><span id="route-put-policy-tree"></span> Sets the notification policy tree. (<em>RoutePutPolicyTree</em>)</h3>
+
+
+<div data-shared="alerts/warning-provisioning-tree.md">
+            
+
+<div class="admonition admonition-warning"><blockquote><p class="title text-uppercase">Warning</p><p>Since the policy tree is a single resource, provisioning it will overwrite all policies in the notification policy tree. However, it does not affect internal policies created when alert rules directly select a contact point.</p></blockquote></div>
+
+</div>
+
+        
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">PUT /api/v1/provisioning/policies</code></pre>
+  </div>
+</div><h4 id="parameters-23">Parameters</h4>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#route">Route</a></td>
+          <td><code>models.Route</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>The new notification routing tree to use</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-27">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-put-policy-tree-202">202</a></td>
+          <td>Accepted</td>
+          <td>Ack</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-policy-tree-202-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-policy-tree-400">400</a></td>
+          <td>Bad Request</td>
+          <td>ValidationError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-policy-tree-400-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-27">Responses</h4>
+<h5 id="202---ack-1"><span id="route-put-policy-tree-202"></span> 202 - Ack</h5>
+<p>Status: Accepted</p>
+<h6 id="schema-48"><span id="route-put-policy-tree-202-schema"></span> Schema</h6>
+<p><a href="#ack">Ack</a></p>
+<h5 id="400---validationerror-7"><span id="route-put-policy-tree-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-49"><span id="route-put-policy-tree-400-schema"></span> Schema</h6>
+<p><a href="#validation-error">ValidationError</a></p>
+<h3 id="create-or-update-a-notification-template-group-routeputtemplate"><span id="route-put-template"></span> Create or update a notification template group. (<em>RoutePutTemplate</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">PUT /api/v1/provisioning/templates/:name</code></pre>
+  </div>
+</div><div class="responsive-table-wrapper">
+    <h4 id="parameters">Parameters</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th>Required</th>
+          <th style="text-align: center">Default</th>
+          <th>Description</th>
+          <th></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>path</td>
+          <td>string</td>
+          <td>string</td>
+          <td>✓</td>
+          <td style="text-align: center"></td>
+          <td>Name of the template group</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>X-Disable-Provenance: true</code></td>
+          <td>header</td>
+          <td>string</td>
+          <td>string</td>
+          <td></td>
+          <td style="text-align: center"></td>
+          <td>Allows editing of provisioned resources in the Grafana UI</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>Body</code></td>
+          <td>body</td>
+          <td><a href="#notification-template-content">NotificationTemplateContent</a></td>
+          <td><code>models.NotificationTemplateContent</code></td>
+          <td></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h4 id="all-responses-28">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-put-template-202">202</a></td>
+          <td>Accepted</td>
+          <td>NotificationTemplate</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-template-202-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-template-400">400</a></td>
+          <td>Bad Request</td>
+          <td>GenericPublicError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-template-400-schema">schema</a></td>
+      </tr>
+      <tr>
+          <td><a href="#route-put-template-409">409</a></td>
+          <td>Conflict</td>
+          <td>GenericPublicError</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-put-template-409-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-28">Responses</h4>
+<h5 id="202---notificationtemplate"><span id="route-put-template-202"></span> 202 - NotificationTemplate</h5>
+<p>Status: Accepted</p>
+<h6 id="schema-50"><span id="route-put-template-202-schema"></span> Schema</h6>
+<p><a href="#notification-template">NotificationTemplate</a></p>
+<h5 id="400---validationerror-8"><span id="route-put-template-400"></span> 400 - ValidationError</h5>
+<p>Status: Bad Request</p>
+<h6 id="schema-51"><span id="route-put-template-400-schema"></span> Schema</h6>
+<p><a href="#generic-public-error">GenericPublicError</a></p>
+<h5 id="409---conflict-3"><span id="route-put-template-409"></span> 409 - Conflict</h5>
+<p>Status: Conflict</p>
+<h6 id="schema-52"><span id="route-put-template-409-schema"></span> Schema</h6>
+<p><a href="#generic-public-error">GenericPublicError</a></p>
+<h3 id="clears-the-notification-policy-tree-routeresetpolicytree"><span id="route-reset-policy-tree"></span> Clears the notification policy tree. (<em>RouteResetPolicyTree</em>)</h3>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">DELETE /api/v1/provisioning/policies</code></pre>
+  </div>
+</div><h4 id="all-responses-29">All responses</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Code</th>
+          <th>Status</th>
+          <th>Description</th>
+          <th style="text-align: center">Has headers</th>
+          <th>Schema</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#route-reset-policy-tree-202">202</a></td>
+          <td>Accepted</td>
+          <td>Ack</td>
+          <td style="text-align: center"></td>
+          <td><a href="#route-reset-policy-tree-202-schema">schema</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="responses-29">Responses</h4>
+<h5 id="202---ack-2"><span id="route-reset-policy-tree-202"></span> 202 - Ack</h5>
+<p>Status: Accepted</p>
+<h6 id="schema-53"><span id="route-reset-policy-tree-202-schema"></span> Schema</h6>
+<p><a href="#ack">Ack</a></p>
+<h2 id="models">Models</h2>
+<h3 id="ack"><span id="ack"></span> Ack</h3>
+<p><a href="#interface">interface{}</a></p>
+<h3 id="alertquery"><span id="alert-query"></span> AlertQuery</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>datasourceUid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Grafana data source unique identifier; it should be &lsquo;<strong>expr</strong>&rsquo; for a Server Side Expression operation.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>model</code></td>
+          <td><a href="#interface">interface{}</a></td>
+          <td><code>interface{}</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>JSON is the raw JSON query and includes the above properties as well as custom properties.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>queryType</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>QueryType is an optional identifier for the type of query. It can be used to distinguish different types of queries.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>refId</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>RefID is the unique identifier of the query, set by the frontend call.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>relativeTimeRange</code></td>
+          <td><a href="#relative-time-range">RelativeTimeRange</a></td>
+          <td><code>RelativeTimeRange</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="alertqueryexport"><span id="alert-query-export"></span> AlertQueryExport</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>datasourceUid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>model</code></td>
+          <td><a href="#interface">interface{}</a></td>
+          <td><code>interface{}</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>queryType</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>refId</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>relativeTimeRange</code></td>
+          <td><a href="#relative-time-range">RelativeTimeRange</a></td>
+          <td><code>RelativeTimeRange</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="alertruleexport"><span id="alert-rule-export"></span> AlertRuleExport</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations</code></td>
+          <td>map of string</td>
+          <td><code>map[string]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>condition</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>dashboardUid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>data</code></td>
+          <td>[]<a href="#alert-query-export">AlertQueryExport</a></td>
+          <td><code>[]*AlertQueryExport</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>execErrState</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>for</code></td>
+          <td><a href="#duration">Duration</a></td>
+          <td>Duration</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>isPaused</code></td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>labels</code></td>
+          <td>map of string</td>
+          <td><code>map[string]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>noDataState</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>panelId</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>title</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>uid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="alertrulegroup"><span id="alert-rule-group"></span> AlertRuleGroup</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folderUid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>interval</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>rules</code></td>
+          <td>[]<a href="#provisioned-alert-rule">ProvisionedAlertRule</a></td>
+          <td><code>[]*ProvisionedAlertRule</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>title</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="alertrulegroupexport"><span id="alert-rule-group-export"></span> AlertRuleGroupExport</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>folder</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>interval</code></td>
+          <td><a href="#duration">Duration</a></td>
+          <td>Duration</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>name</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>orgId</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>rules</code></td>
+          <td>[]<a href="#alert-rule-export">AlertRuleExport</a></td>
+          <td><code>[]*AlertRuleExport</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="alertingfileexport"><span id="alerting-file-export"></span> AlertingFileExport</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>apiVersion</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>contactPoints</code></td>
+          <td>[]<a href="#contact-point-export">ContactPointExport</a></td>
+          <td><code>[]*ContactPointExport</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>groups</code></td>
+          <td>[]<a href="#alert-rule-group-export">AlertRuleGroupExport</a></td>
+          <td><code>[]*AlertRuleGroupExport</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>policies</code></td>
+          <td>[]<a href="#notification-policy-export">NotificationPolicyExport</a></td>
+          <td><code>[]*NotificationPolicyExport</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="contactpointexport"><span id="contact-point-export"></span> ContactPointExport</h3>
+<p><strong>Properties</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>orgId</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>receivers</code></td>
+          <td>[]<a href="#receiver-export">ReceiverExport</a></td>
+          <td><code>[]*ReceiverExport</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="contactpoints"><span id="contact-points"></span> ContactPoints</h3>
+<p>[]<a href="#embedded-contact-point">EmbeddedContactPoint</a></p>
+<h3 id="duration"><span id="duration"></span> Duration</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Duration</code></td>
+          <td>string</td>
+          <td>int64</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="embeddedcontactpoint"><span id="embedded-contact-point"></span> EmbeddedContactPoint</h3>
+<p>EmbeddedContactPoint is the contact point type used by Grafana-managed alerts.</p>
+<p>When creating a contact point, the <code>EmbeddedContactPoint.name</code> property determines if the new contact point is added to an existing one. In the UI, contact points with the same name are grouped together under a single contact point.</p>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>disableResolveMessage</code></td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td>false</td>
+      </tr>
+      <tr>
+          <td><code>name</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td><code>name</code> groups multiple contact points with the same name in the UI.</td>
+          <td><code>webhook_1</code></td>
+      </tr>
+      <tr>
+          <td><code>provenance</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>settings</code></td>
+          <td><a href="#json">JSON</a></td>
+          <td>JSON</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>type</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td><code>webhook</code></td>
+      </tr>
+      <tr>
+          <td><code>uid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>UID is the unique identifier of the contact point. The UID can be set by the user.</td>
+          <td><code>my_external_reference</code></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="json"><span id="json"></span> Json</h3>
+<p><a href="#interface">interface{}</a></p>
+<h3 id="matchregexps"><span id="match-regexps"></span> MatchRegexps</h3>
+<p><a href="#match-regexps">MatchRegexps</a></p>
+<h3 id="matchtype"><span id="match-type"></span> MatchType</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>MatchType</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="matcher"><span id="matcher"></span> Matcher</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Name</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>Type</code></td>
+          <td><a href="#match-type">MatchType</a></td>
+          <td>MatchType</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>Value</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="matchers"><span id="matchers"></span> Matchers</h3>
+<blockquote>
+<p>Matchers is a slice of Matchers that is sortable, implements Stringer, and
+provides a Matches method to match a LabelSet against all Matchers in the
+slice. Note that some users of Matchers might require it to be sorted.</p></blockquote>
+<p>[]<a href="#matcher">Matcher</a></p>
+<h3 id="mutetimeinterval"><span id="mute-time-interval"></span> MuteTimeInterval</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>time_intervals</code></td>
+          <td>[]<a href="#time-interval">TimeInterval</a></td>
+          <td><code>[]*TimeInterval</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>version</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Version of resource</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="mutetimingexport"><span id="mute-timing-export"></span> MuteTimingExport</h3>
+<p><strong>Properties</strong></p>
+<h3 id="mutetimingsexport"><span id="mute-timings-export"></span> MuteTimingsExport</h3>
+<p><strong>Properties</strong></p>
+<h3 id="mutetimings"><span id="mute-timings"></span> MuteTimings</h3>
+<p>[]<a href="#mute-time-interval">MuteTimeInterval</a></p>
+<h3 id="notfound"><span id="not-found"></span> NotFound</h3>
+<p><a href="#interface">interface{}</a></p>
+<h3 id="notificationpolicyexport"><span id="notification-policy-export"></span> NotificationPolicyExport</h3>
+<p><strong>Properties</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Policy</code></td>
+          <td><a href="#route-export">RouteExport</a></td>
+          <td><a href="#route-export">RouteExport</a></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>inline</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>orgId</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="notificationtemplate"><span id="notification-template"></span> NotificationTemplate</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>name</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>provenance</code></td>
+          <td><a href="#provenance">Provenance</a></td>
+          <td><a href="#provenance">Provenance</a></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>template</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>version</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Version of resource</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="notificationtemplatecontent"><span id="notification-template-content"></span> NotificationTemplateContent</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>template</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>version</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Version of resource. Should be empty for new templates.</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="notificationtemplates"><span id="notification-templates"></span> NotificationTemplates</h3>
+<p>[]<a href="#notification-template">NotificationTemplate</a></p>
+<h3 id="objectmatchers"><span id="object-matchers"></span> ObjectMatchers</h3>
+<p><a href="#matchers">Matchers</a></p>
+<h4 id="inlined-models">Inlined models</h4>
+<h3 id="permissiondenied"><span id="permission-denied"></span> PermissionDenied</h3>
+<p><a href="#interface">interface{}</a></p>
+<h3 id="provenance"><span id="provenance"></span> Provenance</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Provenance</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="provisionedalertrule"><span id="provisioned-alert-rule"></span> ProvisionedAlertRule</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>annotations</code></td>
+          <td>map of string</td>
+          <td><code>map[string]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Optional key-value pairs. <code>__dashboardUid__</code> and <code>__panelId__</code> must be set together; one cannot be set without the other.</td>
+          <td><code>{&quot;runbook_url&quot;:&quot;https://supercoolrunbook.com/page/13&quot;}</code></td>
+      </tr>
+      <tr>
+          <td><code>condition</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td><code>A</code></td>
+      </tr>
+      <tr>
+          <td><code>data</code></td>
+          <td>[]<a href="#alert-query">AlertQuery</a></td>
+          <td><code>[]*AlertQuery</code></td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td><code>[{&quot;datasourceUid&quot;:&quot;__expr__&quot;,&quot;model&quot;:{&quot;conditions&quot;:[{&quot;evaluator&quot;:{&quot;params&quot;:[0,0],&quot;type&quot;:&quot;gt&quot;},&quot;operator&quot;:{&quot;type&quot;:&quot;and&quot;},&quot;query&quot;:{&quot;params&quot;:[]},&quot;reducer&quot;:{&quot;params&quot;:[],&quot;type&quot;:&quot;avg&quot;},&quot;type&quot;:&quot;query&quot;}],&quot;datasource&quot;:{&quot;type&quot;:&quot;__expr__&quot;,&quot;uid&quot;:&quot;__expr__&quot;},&quot;expression&quot;:&quot;1 == 1&quot;,&quot;hide&quot;:false,&quot;intervalMs&quot;:1000,&quot;maxDataPoints&quot;:43200,&quot;refId&quot;:&quot;A&quot;,&quot;type&quot;:&quot;math&quot;},&quot;queryType&quot;:&quot;&quot;,&quot;refId&quot;:&quot;A&quot;,&quot;relativeTimeRange&quot;:{&quot;from&quot;:0,&quot;to&quot;:0}}]</code></td>
+      </tr>
+      <tr>
+          <td>execErrState</td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>folderUID</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td><code>project_x</code></td>
+      </tr>
+      <tr>
+          <td><code>for</code></td>
+          <td><a href="#duration">Duration</a></td>
+          <td><a href="#duration">Duration</a></td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>id</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>int64</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>isPaused</code></td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>labels</code></td>
+          <td>map of string</td>
+          <td><code>map[string]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td><code>{&quot;team&quot;:&quot;sre-team-1&quot;}</code></td>
+      </tr>
+      <tr>
+          <td><code>noDataState</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>orgID</code></td>
+          <td>int64 (formatted integer)</td>
+          <td>`int64</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>provenance</code></td>
+          <td><a href="#provenance">Provenance</a></td>
+          <td><a href="#provenance">Provenance</a></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>ruleGroup</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td><code>eval_group_1</code></td>
+      </tr>
+      <tr>
+          <td><code>title</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td></td>
+          <td><code>Always firing</code></td>
+      </tr>
+      <tr>
+          <td><code>uid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>updated</code></td>
+          <td>date-time (formatted string)</td>
+          <td><code>strfmt.DateTime</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="provisionedalertrules"><span id="provisioned-alert-rules"></span> ProvisionedAlertRules</h3>
+<p>[]<a href="#provisioned-alert-rule">ProvisionedAlertRule</a></p>
+<h3 id="rawmessage"><span id="raw-message"></span> RawMessage</h3>
+<p><a href="#interface">interface{}</a></p>
+<h3 id="receiverexport"><span id="receiver-export"></span> ReceiverExport</h3>
+<p><strong>Properties</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>disableResolveMessage</code></td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>settings</code></td>
+          <td><a href="#raw-message">RawMessage</a></td>
+          <td>RawMessage</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>type</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>uid</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="regexp"><span id="regexp"></span> Regexp</h3>
+<blockquote>
+<p>A Regexp is safe for concurrent use by multiple goroutines,
+except for configuration methods, such as Longest.</p></blockquote>
+<p><a href="#interface">interface{}</a></p>
+<h3 id="relativetimerange"><span id="relative-time-range"></span> RelativeTimeRange</h3>
+<blockquote>
+<p>RelativeTimeRange is the per query start and end time
+for requests.</p></blockquote>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>from</code></td>
+          <td><a href="#duration">Duration</a></td>
+          <td>Duration</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>to</code></td>
+          <td><a href="#duration">Duration</a></td>
+          <td>Duration</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="route"><span id="route"></span> Route</h3>
+<blockquote>
+<p>A Route is a node that contains definitions of how to handle alerts. This is modified
+from the upstream alertmanager in that it adds the ObjectMatchers property.</p></blockquote>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>continue</code></td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>group_by</code></td>
+          <td>[]string</td>
+          <td><code>[]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>group_interval</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>group_wait</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>match</code></td>
+          <td>map of string</td>
+          <td><code>map[string]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Deprecated. Remove before v1.0 release.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>match_re</code></td>
+          <td><a href="#match-regexps">MatchRegexps</a></td>
+          <td><code>MatchRegexps</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>matchers</code></td>
+          <td><a href="#matchers">Matchers</a></td>
+          <td><code>Matchers</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>mute_time_intervals</code></td>
+          <td>[]string</td>
+          <td><code>[]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>object_matchers</code></td>
+          <td><a href="#object-matchers">ObjectMatchers</a></td>
+          <td><code>ObjectMatchers</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>provenance</code></td>
+          <td><a href="#provenance">Provenance</a></td>
+          <td>Provenance</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>receiver</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>repeat_interval</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>routes</code></td>
+          <td>[]<a href="#route">Route</a></td>
+          <td><code>[]*Route</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="routeexport"><span id="route-export"></span> RouteExport</h3>
+<blockquote>
+<p>RouteExport is the provisioned file export of definitions.Route. This is needed to hide fields that aren&rsquo;t usable in
+provisioning file format. An alternative would be to define a custom MarshalJSON and MarshalYAML that excludes them.</p></blockquote>
+<p><strong>Properties</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>continue</code></td>
+          <td>boolean</td>
+          <td><code>bool</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>group_by</code></td>
+          <td>[]string</td>
+          <td><code>[]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>group_interval</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>group_wait</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>match</code></td>
+          <td>map of string</td>
+          <td><code>map[string]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Deprecated. Remove before v1.0 release.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>match_re</code></td>
+          <td><a href="#match-regexps">MatchRegexps</a></td>
+          <td><code>MatchRegexps</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>matchers</code></td>
+          <td><a href="#matchers">Matchers</a></td>
+          <td><code>Matchers</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>mute_time_intervals</code></td>
+          <td>[]string</td>
+          <td><code>[]string</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>object_matchers</code></td>
+          <td><a href="#object-matchers">ObjectMatchers</a></td>
+          <td><code>ObjectMatchers</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>receiver</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>repeat_interval</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>routes</code></td>
+          <td>[]<a href="#route-export">RouteExport</a></td>
+          <td><code>[]*RouteExport</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="timeinterval"><span id="time-interval"></span> TimeInterval</h3>
+<blockquote>
+<p>TimeInterval describes intervals of time. ContainsTime will tell you if a golang time is contained
+within the interval.</p></blockquote>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>days_of_month</code></td>
+          <td>[]string</td>
+          <td>[]string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>location</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>months</code></td>
+          <td>[]string</td>
+          <td>[]string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>times</code></td>
+          <td>[]<a href="#time-range">TimeRange</a></td>
+          <td><code>[]*TimeRange</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>weekdays</code></td>
+          <td>[]string</td>
+          <td>[]string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>years</code></td>
+          <td>[]string</td>
+          <td>[]string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="timerange"><span id="time-range"></span> TimeRange</h3>
+<blockquote>
+<p>For example, 4:00PM to End of the day would Begin at 1020 and End at 1440.</p></blockquote>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>end_time</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td><code>&quot;end_time&quot;: &quot;24:00&quot;</code></td>
+      </tr>
+      <tr>
+          <td><code>start_time</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td><code>&quot;start_time&quot;: &quot;18:00&quot;</code></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="validationerror"><span id="validation-error"></span> ValidationError</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>msg</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td></td>
+          <td><code>error message</code></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<h3 id="genericpublicerror"><span id="generic-public-error"></span> GenericPublicError</h3>
+<p><strong>Properties</strong></p>
+<div class="responsive-table-wrapper">
+    <table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Go type</th>
+          <th style="text-align: center">Required</th>
+          <th>Default</th>
+          <th>Description</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>statusCode</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>HTTP Status Code</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>messageId</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center">✓</td>
+          <td></td>
+          <td>Unique code of the error</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>message</code></td>
+          <td>string</td>
+          <td>string</td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Error message</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>extra</code></td>
+          <td>map of any</td>
+          <td><code>map[string]any</code></td>
+          <td style="text-align: center"></td>
+          <td></td>
+          <td>Extra information about the error. Format is specific to the error code.</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+        

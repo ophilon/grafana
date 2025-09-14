@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<h1 id="query-history-api">Query history API</h1>
+<p>This API can be used to add queries to Query history. It requires that the user is logged in and that Query history feature is enabled in config file.</p>
+<h2 id="add-query-to-query-history">Add query to Query history</h2>
+<p><code>POST /api/query-history</code></p>
+<p>Adds query to query history.</p>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/query-history HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+{
+  &#34;datasourceUid&#34;: &#34;PE1C5CBDA0504A6A3&#34;,
+  &#34;queries&#34;: [
+    {
+        &#34;refId&#34;: &#34;A&#34;,
+        &#34;key&#34;: &#34;Q-87fed8e3-62ba-4eb2-8d2a-4129979bb4de-0&#34;,
+        &#34;scenarioId&#34;: &#34;csv_content&#34;,
+        &#34;datasource&#34;: {
+            &#34;type&#34;: &#34;testdata&#34;,
+            &#34;uid&#34;: &#34;PD8C576611E62080A&#34;
+        }
+    }
+]
+}</pre>
+<p>JSON body schema:</p>
+<ul>
+<li><strong>datasourceUid</strong> – Data source uid.</li>
+<li><strong>queries</strong> – JSON of query or queries.</li>
+</ul>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;result&#34;: {
+    &#34;uid&#34;: &#34;Ahg678z&#34;,
+    &#34;datasourceUid&#34;: &#34;PE1C5CBDA0504A6A3&#34;,
+    &#34;createdBy&#34;: 1,
+    &#34;createdAt&#34;: 1643630762,
+    &#34;starred&#34;: false,
+    &#34;comment&#34;: &#34;&#34;,
+    &#34;queries&#34;: [
+      {
+        &#34;refId&#34;: &#34;A&#34;,
+        &#34;key&#34;: &#34;Q-87fed8e3-62ba-4eb2-8d2a-4129979bb4de-0&#34;,
+        &#34;scenarioId&#34;: &#34;csv_content&#34;,
+        &#34;datasource&#34;: {
+            &#34;type&#34;: &#34;testdata&#34;,
+            &#34;uid&#34;: &#34;PD8C576611E62080A&#34;
+        }
+      }
+    ]
+  }
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> - Errors (invalid JSON, missing or invalid fields)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="query-history-search">Query history search</h2>
+<p><code>GET /api/query-history</code></p>
+<p>Returns a list of queries in the query history that matches the search criteria. Query history search supports pagination. Use the <code>limit</code> parameter to control the maximum number of queries returned; the default limit is 100. You can also use the <code>page</code> query parameter to fetch queries from any page other than the first one.</p>
+<p>Query parameters:</p>
+<ul>
+<li><strong>datasourceUid</strong> - Filter the query history for the selected data source. To perform an &ldquo;AND&rdquo; filtering with multiple data sources, specify the data source parameter using the following format: <code>datasourceUid=uid1&amp;datasourceUid=uid2</code>.</li>
+<li><strong>searchString</strong> – Filter the query history based on the content.</li>
+<li><strong>sort</strong> - Specify the sorting order. Sorting can be <code>time-asc</code> or <code>time-desc</code>. The default is <code>time-desc</code>.</li>
+<li><strong>onlyStarred</strong> - Search for queries that are starred. Defaults to <code>false</code>.</li>
+<li><strong>page</strong> - Search supports pagination. Specify which page number to return. Use the limit parameter to specify the number of queries per page.</li>
+<li><strong>limit</strong> - Limits the number of returned query history items per page. The default is 100 queries per page.</li>
+<li><strong>from/to</strong> - Specifies time range for the query history search. The time can be either epoch timestamps in milliseconds or relative using Grafana time units. For example, now-5m.</li>
+</ul>
+<p><strong>Example request for query history search</strong>:</p>
+<pre>GET /api/query-history?datasourceUid=&#34;PE1C5CBDA0504A6A3&#34;&amp;datasourceUid=&#34;FG1C1CBDA0504A6EL&#34;&amp;searchString=&#34;ALERTS&#34;&amp;sort=&#34;time-asc&#34; HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response for query history search</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;result&#34;: {
+    &#34;totalCount&#34;: 150,
+    &#34;page&#34;: 1,
+    &#34;perPage&#34;: 100
+    &#34;queryHistory&#34;:[{
+    &#34;uid&#34;: &#34;Ahg678z&#34;,
+    &#34;datasourceUid&#34;: &#34;PE1C5CBDA0504A6A3&#34;,
+    &#34;createdBy&#34;: 1,
+    &#34;createdAt&#34;: 1643630762,
+    &#34;starred&#34;: false,
+    &#34;comment&#34;: &#34;&#34;,
+    &#34;queries&#34;: [
+      {
+        &#34;refId&#34;: &#34;A&#34;,
+        &#34;key&#34;: &#34;Q-87fed8e3-62ba-4eb2-8d2a-4129979bb4de-0&#34;,
+        &#34;scenarioId&#34;: &#34;csv_content&#34;,
+        &#34;datasource&#34;: {
+            &#34;type&#34;: &#34;testdata&#34;,
+            &#34;uid&#34;: &#34;PE1C5CBDA0504A6A3&#34;
+        }
+      }
+    ]
+  }]
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="delete-query-from-query-history-by-uid">Delete query from Query history by UID</h2>
+<p><code>DELETE /api/query-history/:uid</code></p>
+<p>Deletes the query in query history that matches the specified uid. It requires that the user is logged in and that Query history feature is enabled in config file.</p>
+<p><strong>Example Request</strong>:</p>
+<pre>DELETE /api/query-history/P8zM2I1nz HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+    &#34;message&#34;: &#34;Query deleted&#34;,
+    &#34;id&#34;: 28
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="update-comment-of-query-in-query-history-by-uid">Update comment of query in Query history by UID</h2>
+<p><code>PATCH /api/query-history/:uid</code></p>
+<p>Updates comment of a query with a specific uid that is stored in the query history.</p>
+<p>Query parameters:</p>
+<ul>
+<li><strong>comment</strong> – New comment that will be added to the specified query.</li>
+</ul>
+<p><strong>Example Request</strong>:</p>
+<pre>PATCH /api/query-history/P8zM2I1nz HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+{
+  &#34;comment&#34;: &#34;Debugging query&#34;,
+}</pre>
+<p><strong>Example Response</strong>:</p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;result&#34;: {
+    &#34;uid&#34;: &#34;P8zM2I1nz&#34;,
+    &#34;datasourceUid&#34;: &#34;PE1C5CBDA0504A6A3&#34;,
+    &#34;createdBy&#34;: 1,
+    &#34;createdAt&#34;: 1643630762,
+    &#34;starred&#34;: false,
+    &#34;comment&#34;: &#34;Debugging query&#34;,
+    &#34;queries&#34;: [
+      {
+        &#34;refId&#34;: &#34;A&#34;,
+        &#34;key&#34;: &#34;Q-87fed8e3-62ba-4eb2-8d2a-4129979bb4de-0&#34;,
+        &#34;scenarioId&#34;: &#34;csv_content&#34;,
+        &#34;datasource&#34;: {
+            &#34;type&#34;: &#34;testdata&#34;,
+            &#34;uid&#34;: &#34;PD8C576611E62080A&#34;
+        }
+      }
+    ]
+  }
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>400</strong> - Errors (invalid JSON, missing or invalid fields)</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="star-query-in-query-history">Star query in Query history</h2>
+<p><code>POST /api/query-history/star/:uid</code></p>
+<p>Stars query in query history.</p>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/query-history/star/P8zM2I1nz HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;result&#34;: {
+    &#34;uid&#34;: &#34;P8zM2I1nz&#34;,
+    &#34;datasourceUid&#34;: &#34;PE1C5CBDA0504A6A3&#34;,
+    &#34;createdBy&#34;: 1,
+    &#34;createdAt&#34;: 1643630762,
+    &#34;starred&#34;: false,
+    &#34;comment&#34;: &#34;Debugging query&#34;,
+    &#34;queries&#34;: [
+      {
+        &#34;refId&#34;: &#34;A&#34;,
+        &#34;key&#34;: &#34;Q-87fed8e3-62ba-4eb2-8d2a-4129979bb4de-0&#34;,
+        &#34;scenarioId&#34;: &#34;csv_content&#34;,
+        &#34;datasource&#34;: {
+            &#34;type&#34;: &#34;testdata&#34;,
+            &#34;uid&#34;: &#34;PD8C576611E62080A&#34;
+        }
+      }
+    ]
+  }
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>
+<h2 id="unstar-query-in-query-history">Unstar query in Query history</h2>
+<p><code>DELETE /api/query-history/star/:uid</code></p>
+<p>Removes stars from query in query history.</p>
+<p><strong>Example request:</strong></p>
+<pre>DELETE /api/query-history/star/P8zM2I1nz  HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk</pre>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+{
+  &#34;result&#34;: {
+    &#34;uid&#34;: &#34;P8zM2I1nz&#34;,
+    &#34;datasourceUid&#34;: &#34;PE1C5CBDA0504A6A3&#34;,
+    &#34;createdBy&#34;: 1,
+    &#34;createdAt&#34;: 1643630762,
+    &#34;starred&#34;: false,
+    &#34;comment&#34;: &#34;Debugging query&#34;,
+    &#34;queries&#34;: [
+      {
+        &#34;refId&#34;: &#34;A&#34;,
+        &#34;key&#34;: &#34;Q-87fed8e3-62ba-4eb2-8d2a-4129979bb4de-0&#34;,
+        &#34;scenarioId&#34;: &#34;csv_content&#34;,
+        &#34;datasource&#34;: {
+            &#34;type&#34;: &#34;testdata&#34;,
+            &#34;uid&#34;: &#34;PD8C576611E62080A&#34;
+        }
+      }
+    ]
+  }
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – OK</li>
+<li><strong>401</strong> – Unauthorized</li>
+<li><strong>500</strong> – Internal error</li>
+</ul>

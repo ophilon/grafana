@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<h1 id="get-started-with-explore">Get started with Explore</h1>
+<p>Explore is your gateway for querying, analyzing, and aggregating data in Grafana. It allows you to visually explore and iterate until you develop a working query or set of queries for building visualizations and conducting data analysis. If your data source supports graph and table data, there&rsquo;s no need to create a dashboard, as Explore can display the results in both formats. This facilitates quick, detailed, real-time data analysis.</p>
+<p>With Explore you can:</p>
+<ul>
+<li>Create visualizations to integrate into your dashboards.</li>
+<li>Create queries using mixed data sources.</li>
+<li>Create multiple queries within a single interface.</li>
+<li>Understand the shape of your data across various data sources.</li>
+<li>Perform real time data exploration and analysis.</li>
+</ul>
+<p>Key features include:</p>
+<ul>
+<li>Query editor, based on specific data source, to create and iterate queries.</li>
+<li>
+    <a href="/docs/grafana/latest/explore/query-management/">Query history</a> to track and maintain your queries.</li>
+<li>
+    <a href="/docs/grafana/latest/explore/explore-inspector/">Query inspector</a> to help troubleshoot query performance.</li>
+</ul>
+
+
+<p>Watch the following video to get started using Explore:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=1q3YzX2DDM4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>In order to access Explore, you must have either the <code>editor</code> or <code>administrator</code> basic role or the <code>data sources explore</code> role. Refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/">Role and permissions</a> for more information on what each role can access.</p>
+<p>Refer to 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">Role-based access control (RBAC)</a> in Grafana Enterprise to understand how you can manage Explore with role-based permissions.</p>
+<h2 id="explore-elements">Explore elements</h2>
+<p>Explore consists of a toolbar, outline, query editor, the ability to add multiple queries, a query history and a query inspector.</p>
+<ul>
+<li>
+<p><strong>Outline</strong> - Keeps track of the queries and visualization panels created in Explore. Refer to <a href="#content-outline">Content outline</a> for more detail.</p>
+</li>
+<li>
+<p><strong>Toolbar</strong> - Provides quick access to frequently used tools and settings.</p>
+<ul>
+<li><strong>Data source picker</strong> - Select a data source from the dropdown menu, or use absolute time.</li>
+<li><strong>Split</strong> - Click to compare visualizations side by side. Refer to <a href="#split-and-compare">Split and compare</a> for additional detail.</li>
+<li><strong>Add</strong> - Click to add your exploration to a dashboard. You can also use this to declare an incident,create a forecast, detect outliers and to run an investigation.</li>
+<li><strong>Time picker</strong> - Select a time range form the time picker. You can also enter an absolute time range. Refer to <a href="#time-picker">Time picker</a> for more information.</li>
+<li><strong>Run query</strong> - Click to run your query.</li>
+</ul>
+</li>
+<li>
+<p><strong>Query editor</strong> - Interface where you construct the query for a specific data source. Query editor elements differ based on data source. In order to run queries across multiple data sources you need to select <strong>Mixed</strong> from the data source picker.</p>
+</li>
+<li>
+<p><strong>+ Add query</strong> - Add additional queries.</p>
+</li>
+<li>
+<p><strong>+ Add from saved queries</strong> - Add a saved query. If you&rsquo;ve already written a query, you can click the <strong>Replace with saved query</strong> icon to use a previously saved query instead. To 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#save-a-query">save the query</a> for reuse, click the <strong>Save query</strong> icon.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#saved-queries">Saved queries</a> is in <a href="/docs/release-life-cycle/">public preview</a> in Grafana Enterprise and Cloud only.</p></blockquote></div>
+
+</li>
+<li>
+<p><strong>Query history</strong> - Query history contains the list of queries that you created in Explore. You can also add queries from the history to your saved queries. Refer to 
+    <a href="/docs/grafana/latest/explore/query-management/#query-history">Query history</a> for detailed information on working with your query history.</p>
+</li>
+<li>
+<p><strong>Query inspector</strong> - Provides detailed statistics regarding your query. Inspector functions as a kind of debugging tool that &ldquo;inspects&rdquo; your query. It provides query statistics under <strong>Stats</strong>, request response time under <strong>Query</strong>, data frame details under <strong>{} JSON</strong>, and the shape of your data under <strong>Data</strong>. Refer to <a href="/docs/grafana/latest/explore/explore-inspector/">Query inspector in Explore</a> for additional information.</p>
+</li>
+</ul>
+<h2 id="access-explore">Access Explore</h2>
+<p>To access Explore:</p>
+<ol>
+<li>
+<p>Click on <strong>Explore</strong> in the left side menu.</p>
+<p>To start with an existing query from a dashboard panel, select the Explore option from the Panel menu in the upper right. This opens an Explore page with the panel&rsquo;s query, enabling you to tweak or iterate the query outside your dashboard.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p docs-image--no-shadow"
+       style="max-width: 941px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png?w=1920 1920w"
+             data-sizes="auto"alt="Panel menu with Explore option"width="941"height="309"title="Panel menu with Explore option"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/panels-visualizations/screenshot-panel-menu-10.1.png"
+               alt="Panel menu with Explore option"width="941"height="309"title="Panel menu with Explore option"class="docs-image--no-shadow"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Panel menu with Explore option</figcaption></a></figure>
+</li>
+<li>
+<p>Select a data source from the drop-down in the upper left.</p>
+</li>
+<li>
+<p>Using the query editor provided for the specific data source, begin writing your query. Each query editor differs based on each data source&rsquo;s unique elements.</p>
+</li>
+</ol>
+<p>Some query editors provide a <strong>Kick start your query</strong> option, which gives you a list of basic pre-written queries. Refer to 
+    <a href="/docs/grafana/latest/datasources/#use-query-editors">Use query editors</a> to see how to use various query editors. For general information on querying data sources in Grafana, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/">Query and transform data</a>.</p>
+<p>Based on specific data source, certain query editors allow you to select the label or labels to add to your query. Labels are fields that consist of key/value pairs representing information in the data. Some data sources allow for selecting fields.</p>
+<ol>
+<li>Click <strong>Run query</strong> in the upper right to run your query.</li>
+</ol>
+<h2 id="content-outline">Content outline</h2>
+<p>The content outline is a side navigation bar that keeps track of the queries and visualizations you created in Explore. It allows you to navigate between them quickly.</p>
+<p>The content outline works in a split view, with a separate outline generated for each pane.</p>
+<p>To open the content outline:</p>
+<ol>
+<li>Click the Outline button in the top left corner of the Explore screen.</li>
+</ol>
+<p>You can then click on any panel icon in the content outline to navigate to that panel.</p>
+<h2 id="split-and-compare">Split and compare</h2>
+<p>The split view enables easy side-by-side comparison of visualizations or simultaneous viewing of related data on a single page.</p>
+<p>To open the split view:</p>
+<ol>
+<li>Click the split button to duplicate the current query and split the page into two side-by-side queries.</li>
+<li>Run and re-run queries as often as needed.</li>
+</ol>
+<p>You can select a different data source, or different metrics and label filters for the new query, allowing you to compare the same query across two different servers or compare the staging environment with the production environment.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 950px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png?w=1920 1920w"
+          data-sizes="auto"alt="Screenshot of Explore screen split"width="1746"height="850"title="Screenshot of Explore screen split"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-explore-split-10.1.png"
+            alt="Screenshot of Explore screen split"width="1746"height="850"title="Screenshot of Explore screen split"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Screenshot of Explore screen split</figcaption></a></figure>
+<p>You can also link the time pickers for both panels by clicking on one of the time-sync buttons attached to the time pickers. When linked, changing the time in one panel automatically updates the other, keeping the start and end times synchronized. This ensures that both split panels display data for the same time interval.</p>
+<p>Click <strong>Close</strong> to quit split view.</p>
+<h2 id="time-picker">Time picker</h2>
+<p>Use the time picker to select a time range for your query. The default is <strong>last hour</strong>. You can select a different option from the dropdown or use an absolute time range. You can also change the timezone associated with the query, or use a fiscal year.</p>
+<ol>
+<li>Click <strong>Change time settings</strong> to change the timezone or apply a fiscal year.</li>
+</ol>
+<p>Refer to 
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/#set-dashboard-time-range">Set dashboard time range</a> for more information on absolute and relative time ranges. You can also 
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/#control-the-time-range-using-a-url">control the time range using a URL</a>.</p>
+<h2 id="mixed-data-source">Mixed data source</h2>
+<p>Select <strong>Mixed</strong> from the data source dropdown to run queries across multiple data sources in the same panel. When you select Mixed, you can select a different data source for each new query that you add.</p>
+<h2 id="share-explore-urls">Share Explore URLs</h2>
+<p>When using Explore, the URL in the browser address bar updates as you make changes to the queries. You can share or bookmark this URL.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Explore may generate long URLs, which some tools, like messaging or videoconferencing applications, might truncate due to fixed message lengths. In such cases, Explore displays a warning and loads a default state.
+If you encounter issues when sharing Explore links in these applications, you can generate shortened links. See <a href="#share-shortened-link">Share shortened link</a> for more information.</p></blockquote></div>
+
+<h3 id="generate-explore-urls-from-external-tools">Generate Explore URLs from external tools</h3>
+<p>Because Explore URLs have a defined structure, you can build a URL from external tools and open it in Grafana. The URL structure is:</p>
+<pre>http://&lt;grafana_url&gt;/explore?panes=&lt;panes&gt;&amp;schemaVersion=&lt;schema_version&gt;&amp;orgId=&lt;org_id&gt;</pre>
+<p>where:</p>
+<ul>
+<li><code>org_id</code> is the organization ID</li>
+<li><code>schema_version</code> is the schema version (should be set to the latest version which is <code>1</code>)</li>
+<li><code>panes</code> is a URL-encoded JSON object of panes, where each key is the pane ID and each value is an object matching the following schema:</li>
+</ul>
+<pre>{
+  datasource: string; // the pane&#39;s root datasource UID, or `-- Mixed --` for mixed datasources
+  queries: {
+    refId: string; // an alphanumeric identifier for this query, must be unique within the pane, i.e. &#34;A&#34;, &#34;B&#34;, &#34;C&#34;, etc.
+    datasource: {
+      uid: string; // the query&#39;s datasource UID ie: &#34;AD7864H6422&#34;
+      type: string; // the query&#39;s datasource type-id, i.e: &#34;loki&#34;
+    }
+    // ... any other datasource-specific query parameters
+  }[]; // array of queries for this pane
+  range: {
+    from: string; // the start time, in milliseconds since epoch
+    to: string; // the end time, in milliseconds since epoch
+  }
+}</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>from</code> and <code>to</code> also accept relative ranges defined in 
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/#time-units-and-relative-ranges">Time units and relative ranges</a>.</p></blockquote></div>
+
+<h2 id="share-shortened-link">Share shortened link</h2>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in Grafana 7.3 and later versions.</p></blockquote></div>
+
+<p>The Share shortened link capability allows you to create smaller and simpler URLs of the format <code>/goto/:uid</code> instead of using longer URLs with query parameters. To create a shortened link to the executed query, click the <strong>Share</strong> option in the Explore toolbar.</p>
+<p>A shortened link that&rsquo;s not accessed automatically gets deleted after a 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#short_links">configurable period</a>, which defaults to seven days. However, if the link is accessed at least once, it will not be deleted.</p>
+<h3 id="share-shortened-links-with-absolute-time">Share shortened links with absolute time</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in Grafana 10.3 and later versions.</p></blockquote></div>
+
+<p>Shortened links have two options: relative time (e.g., from two hours ago to now) or absolute time (e.g., from 8am to 10am). By default, sharing a shortened link copies the selected time range, whether it&rsquo;s relative or absolute.</p>
+<p>To create a short link with an absolute time:</p>
+<ol>
+<li>Click the dropdown button next to the share shortened link button.</li>
+<li>Select one of the options under <strong>Time-Sync URL Links</strong>.</li>
+</ol>
+<p>This ensures that anyone receiving the link will see the same data you see, regardless of when they open it. Your selected time range will remain unaffected.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>Now that you are familiar with Explore you can:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/">Build dashboards</a></li>
+<li>Create a wide variety of 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/">visualizations</a></li>
+<li>
+    <a href="/docs/grafana/latest/explore/logs-integration/">Work with logs</a></li>
+<li>
+    <a href="/docs/grafana/latest/explore/trace-integration/">Work with traces</a></li>
+<li>
+    <a href="/docs/grafana/latest/explore/correlations-editor-in-explore/">Create and use correlations</a></li>
+</ul>

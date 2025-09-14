@@ -1,0 +1,15 @@
+[{
+  "file": "docs/helm-charts/mimir-distributed/_index.md",
+	"name": "",
+	"permalink" : "/docs/helm-charts/mimir-distributed/",
+	"relpermalink" : "/docs/helm-charts/mimir-distributed/",
+	"params": {"ads":{"toc":{"id":"cloud_first_1","location":"docs_toc"}},"draft":false,"iscjklanguage":false,"layout":"page","meta_image_generate":true,"outputs":[{"mediaType":"text/html","path":"","baseName":"index","rel":"canonical","protocol":"","isPlainText":false,"isHTML":true,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":true,"weight":10},{"mediaType":"application/json","path":"","baseName":"index","rel":"alternate","protocol":"","isPlainText":true,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"menu","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"unstyled","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0}],"section_title":"Documentation","section_title_singular":"Documentation"},
+	"uniqueid": "7664a36c276d0606e01220f96c96d796",
+},{
+  "file": "docs/helm-charts/tempo-distributed/_index.md",
+	"name": "",
+	"permalink" : "/docs/helm-charts/tempo-distributed/",
+	"relpermalink" : "/docs/helm-charts/tempo-distributed/",
+	"params": {"ads":{"toc":{"id":"cloud_first_1","location":"docs_toc"}},"draft":false,"iscjklanguage":false,"layout":"page","meta_image_generate":true,"outputs":[{"mediaType":"text/html","path":"","baseName":"index","rel":"canonical","protocol":"","isPlainText":false,"isHTML":true,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":true,"weight":10},{"mediaType":"application/json","path":"","baseName":"index","rel":"alternate","protocol":"","isPlainText":true,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"menu","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0},{"mediaType":"text/html","path":"","baseName":"unstyled","rel":"alternate","protocol":"","isPlainText":false,"isHTML":false,"noUgly":false,"ugly":false,"notAlternative":false,"root":false,"permalinkable":false,"weight":0}],"section_title":"Documentation","section_title_singular":"Documentation"},
+	"uniqueid": "339ce2b6fc9ef5360e0b9d631a913ce0",
+}]

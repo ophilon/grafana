@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<h1 id="traceql-query-structure">TraceQL query structure</h1>
+
+
+<div data-shared="traceql-query-structure.md">
+            <!--  TraceQL query structure -->
+<p>The purpose of TraceQL is to search or query for spans.
+The query returns a set of spans, also called a spanset.</p>
+<p>A TraceQL query can select traces based on:</p>
+<ul>
+<li>span attributes, timing, and duration</li>
+<li>structural relationships between spans</li>
+<li>aggregated data from the spans in a trace</li>
+</ul>
+<p>Refer to 
+    <a href="/docs/tempo/latest/introduction/trace-structure/">Trace Structure</a> for information about trace structure, intrinsics, and span resources and attributes.</p>
+<p>A query is structured as a pipeline of operations (filters and aggregators).
+The query expression is evaluated on one trace at a time, selecting or discarding spans from the result.
+At each stage of the query pipeline, the selected spans for a trace are grouped in a spanset (set of spans).
+The associated trace is also returned. The result of the query is the spansets (and their associated traces) for all the traces evaluated.</p>
+<p>The simplest query is this one:</p>
+<div class="code-snippet code-snippet__mini"><div class="lang-toolbar__mini">
+    <span class="code-clipboard">
+      <button x-data="app_code_snippet()" x-init="init()" @click="copy()">
+        <img class="code-clipboard__icon" src="/media/images/icons/icon-copy-small-2.svg" alt="Copy code to clipboard" width="14" height="13">
+        <span>Copy</span>
+      </button>
+    </span>
+  </div><div class="code-snippet code-snippet__border">
+    <pre data-expanded="false"><code class="language-none">{ }</code></pre>
+  </div>
+</div><p>The curly braces encompass the select/filter conditions.
+In theory, each span (and the trace it belongs to) matching those conditions is returned by the query.
+In the previous example, since there are no filter conditions, all spans are matching and thus returned with their associated traces.</p>
+<p>In practice, the query is performed against a defined time interval, relative (for example, the last 3 hours) or absolute (for example, from X date-time to Y date-time).
+The query response is also limited by the number of traces (<strong>Limit</strong>) and spans per spanset (<strong>Span Limit</strong>).</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/tempo/traceql/TraceQL-in-Grafana.png"
+  alt="TraceQL in Grafana" width="3006"
+     height="1544"/></p>
+<ol>
+<li>TraceQL query editor</li>
+<li>Query options: <strong>Limit</strong>, <strong>Span Limit</strong> and <strong>Table Format</strong> (Traces or Spans).</li>
+<li>Trace (by Trace ID). The <strong>Name</strong> and <strong>Service</strong> columns are displaying the trace root span name and associated service.</li>
+<li>Spans associated to the Trace</li>
+</ol>
+</div>
+
+        

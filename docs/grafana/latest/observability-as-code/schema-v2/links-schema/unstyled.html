@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<h1 id="links"><code>links</code></h1>
+<p>The <code>links</code> schema is the configuration for links with references to other dashboards or external websites.
+Following are the default JSON fields:</p>
+<pre>  &#34;links&#34;: [
+    {
+      &#34;asDropdown&#34;: false,
+      &#34;icon&#34;: &#34;&#34;,
+      &#34;includeVars&#34;: false,
+      &#34;keepTime&#34;: false,
+      &#34;tags&#34;: [],
+      &#34;targetBlank&#34;: false,
+      &#34;title&#34;: &#34;&#34;,
+      &#34;tooltip&#34;: &#34;&#34;,
+      &#34;type&#34;: &#34;link&#34;,
+    },
+  ],</pre>
+<h2 id="dashboardlink"><code>DashboardLink</code></h2>
+<p>The following table explains the usage of the dashboard link JSON fields.
+The table includes default and other fields:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Usage</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>title</td>
+          <td>string. Title to display with the link.</td>
+      </tr>
+      <tr>
+          <td>type</td>
+          <td><code>DashboardLinkType</code>. Link type. Accepted values are:<ul><li>dashboards - To refer to another dashboard</li><li>link - To refer to an external resource</li></ul></td>
+      </tr>
+      <tr>
+          <td>icon</td>
+          <td>string. Icon name to be displayed with the link.</td>
+      </tr>
+      <tr>
+          <td>tooltip</td>
+          <td>string. Tooltip to display when the user hovers their mouse over it.</td>
+      </tr>
+      <tr>
+          <td>url?</td>
+          <td>string. Link URL. Only required/valid if the type is link.</td>
+      </tr>
+      <tr>
+          <td>tags</td>
+          <td>string. List of tags to limit the linked dashboards. If empty, all dashboards will be displayed. Only valid if the type is dashboards.</td>
+      </tr>
+      <tr>
+          <td>asDropdown</td>
+          <td>bool. If true, all dashboards links will be displayed in a dropdown. If false, all dashboards links will be displayed side by side. Only valid if the type is dashboards. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>targetBlank</td>
+          <td>bool. If true, the link will be opened in a new tab. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>includeVars</td>
+          <td>bool. If true, includes current template variables values in the link as query params. Default is <code>false</code>.</td>
+      </tr>
+      <tr>
+          <td>keepTime</td>
+          <td>bool. If true, includes current time range in the link as query params. Default is <code>false</code>.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->

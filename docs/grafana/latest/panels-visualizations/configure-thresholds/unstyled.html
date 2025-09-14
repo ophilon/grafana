@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<h1 id="configure-thresholds">Configure thresholds</h1>
+<p>In dashboards, a threshold is a value or limit you set for a metric that&rsquo;s reflected visually when it&rsquo;s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>Using thresholds, you can color grid lines and regions in a time series visualization:
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png"
+  alt="Time series visualization with green, blue, and purple threshold lines and regions" width="944"
+     height="299"/></p>
+<p>You can color the background or value text in a stat visualization:
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-value-v10.4.png"
+  alt="Stat visualization with three values in green and orange" width="943"
+     height="299"/></p>
+<p>You can define regions and region colors in a state timeline:
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-state-timeline-v10.4.png"
+  alt="State timeline with green, blue, and pink region thresholds" width="940"
+     height="300"/></p>
+<p>You can also use thresholds to:</p>
+<ul>
+<li>Color lines in a time series visualization</li>
+<li>Color the gauge and threshold markers in a gauge</li>
+<li>Color markers in a geomap</li>
+<li>Color cell text or background in a table</li>
+</ul>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/000000167/" target="_blank" rel="noopener noreferrer">Threshold example</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/000000167/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-visualizations">Supported visualizations</h2>
+<p>You can set thresholds in the following visualizations:</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-gauge/">Bar gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/">Canvas</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/gauge/">Gauge</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/">Geomap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">Histogram</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/stat/">Stat</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/table/">Table</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a></li>
+</ul>
+
+</div>
+<h2 id="default-thresholds">Default thresholds</h2>
+<p>On visualizations that support thresholds, Grafana has the following default threshold settings:</p>
+<ul>
+<li>80 = red</li>
+<li>Base = green</li>
+<li>Mode = Absolute</li>
+<li>Show thresholds = Off (for some visualizations); for more information, see the <a href="#show-thresholds">Show thresholds</a> option.</li>
+</ul>
+<h2 id="thresholds-options">Thresholds options</h2>
+<p>You can set the following options to further define how thresholds look.</p>
+<h3 id="threshold-value">Threshold value</h3>
+<p>This number is the value that triggers the threshold. You can also set the color associated with the threshold in this field.</p>
+<p>The <strong>Base</strong> value represents minus infinity. By default, it&rsquo;s set to the color green, which is generally the “good” color.</p>
+<h3 id="thresholds-mode">Thresholds mode</h3>
+<p>There are two threshold modes:</p>
+<ul>
+<li><strong>Absolute</strong> thresholds are defined by a number. For example, 80 on a scale of 1 to 150.</li>
+<li><strong>Percentage</strong> thresholds are defined relative to minimum or maximum. For example, 80 percent.</li>
+</ul>
+<h3 id="show-thresholds">Show thresholds</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This option is supported for the bar chart, candlestick, time series, and trend visualizations.</p></blockquote></div>
+
+<p>Set if and how thresholds are shown with the following options.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Example</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Off</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>As lines</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png?w=1920 1920w"
+          data-sizes="auto"alt="Visualization with threshold as a line"width="943"height="299"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-v10.4.png"
+            alt="Visualization with threshold as a line"width="943"height="299"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>As lines (dashed)</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png?w=1920 1920w"
+          data-sizes="auto"alt="Visualization with threshold as a dashed line"width="944"height="300"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-v10.4.png"
+            alt="Visualization with threshold as a dashed line"width="944"height="300"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>As filled regions</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png?w=1920 1920w"
+          data-sizes="auto"alt="Visualization with threshold as a region"width="943"height="297"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-regions-v10.4.png"
+            alt="Visualization with threshold as a region"width="943"height="297"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>As filled regions and lines</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png?w=1920 1920w"
+          data-sizes="auto"alt="Visualization with threshold as a region and line"width="944"height="299"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-lines-regions-v10.4.png"
+            alt="Visualization with threshold as a region and line"width="944"height="299"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>As filled regions and lines (dashed)</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png?w=1920 1920w"
+          data-sizes="auto"alt="Visualization with threshold as a region and dashed line"width="942"height="298"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-thresholds-dashed-lines-regions-v10.4.png"
+            alt="Visualization with threshold as a region and dashed line"width="942"height="298"/>
+        </noscript></div></a></figure></td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="add-a-threshold">Add a threshold</h2>
+<p>You can add as many thresholds to a visualization as you want. Grafana automatically sorts thresholds values from highest to lowest.</p>
+<ol>
+<li>Navigate to the panel you want to update.</li>
+<li>Hover over any part of the panel you want to work on to display the menu on the top right corner.</li>
+<li>Click the menu and select <strong>Edit</strong>.</li>
+<li>Scroll to the <strong>Thresholds</strong> section or enter <code>thresholds</code> in the search bar at the top of the panel edit pane.</li>
+<li>Click <strong>+ Add threshold</strong>.</li>
+<li>Enter a new threshold value or use the up and down arrows at the right side of the field to increase or decrease the value incrementally.</li>
+<li>Click the colored circle to the left of the threshold value to open the color picker, where you can update the threshold color.</li>
+<li>Under <strong>Thresholds mode</strong>, select either <strong>Absolute</strong> or <strong>Percentage</strong>.</li>
+<li>Under <strong>Show thresholds</strong>, set how the threshold is displayed or turn it off.</li>
+<li>Click <strong>Save dashboard</strong>.</li>
+<li>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</li>
+</ol>
+<p>To delete a threshold, navigate to the panel that contains the threshold and click the trash icon next to the threshold you want to remove.</p>

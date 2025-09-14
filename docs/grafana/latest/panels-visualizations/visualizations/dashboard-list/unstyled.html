@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<h1 id="dashboard-list">Dashboard list</h1>
+<p>Dashboard lists allow you to display dynamic links to other dashboards. You can configure the list to use starred dashboards, recently viewed dashboards, a search query, and dashboard tags.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A dashboard list visualization"width="2678"height="1126"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-dashboard-list-v11.6.png"
+            alt="A dashboard list visualization"width="2678"height="1126"/>
+        </noscript></div></a></figure>
+<p>On each dashboard load, this panel queries the dashboard list, always providing the most up-to-date results.</p>
+<p>You can use a dashboard list visualization to display a list of important dashboards that you want to track.</p>
+<h2 id="configure-a-dashboard-list-visualization">Configure a dashboard list visualization</h2>
+<p>Once you’ve created a 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">dashboard</a>, the following video shows you how to configure a dashboard list visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=MserjWGWsh8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/fdlojrg7daebka/" target="_blank" rel="noopener noreferrer">Dashboard List Visualization</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/fdlojrg7daebka/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="dashboard-list-options">Dashboard list options</h3>
+<p>Use the following options to refine your dashboard list visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Include current time range</td>
+          <td>Propagate the time range of the current dashboard to the dashboard list links. When you click a link, the linked dashboard opens with the indicated time range already set.</td>
+      </tr>
+      <tr>
+          <td>Include current template variable values</td>
+          <td>Include template variables that are being used as query parameters in the dashboard list link. When you click the link, any matching templates in the linked dashboard are set to the values from the link. Learn more in 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard-url-variables/">Dashboard URL variables</a>.</td>
+      </tr>
+      <tr>
+          <td>Starred</td>
+          <td>Display starred dashboards in alphabetical order.</td>
+      </tr>
+      <tr>
+          <td>Recently viewed</td>
+          <td>Display recently viewed dashboards in alphabetical order.</td>
+      </tr>
+      <tr>
+          <td>Search</td>
+          <td>Display dashboards returned by search. You must enter at least one value in the search fields, <strong>Query</strong> or <strong>Tags</strong>. Variable interpolation is supported for both fields. For example, <code>$my_var</code> or <code>${my_var}</code>.</td>
+      </tr>
+      <tr>
+          <td>Show headings</td>
+          <td>Headings for enabled sections are displayed. Sections are:<ul><li><strong>Starred</strong></li><li><strong>Recently viewed</strong></li><li><strong>Search</strong></li></td>
+      </tr>
+      <tr>
+          <td>Show folder names</td>
+          <td>Display the name of the folder where the dashboard is located.</td>
+      </tr>
+      <tr>
+          <td>Max items</td>
+          <td>Set the maximum number of items to list per section. If you enter &ldquo;10&rdquo; and enable <strong>Starred</strong> and <strong>Recently viewed</strong> dashboards, the panel displays up to 20 total dashboards, 10 in each section.</td>
+      </tr>
+      <tr>
+          <td><a href="#query">Query</a></td>
+          <td>Search by dashboard name. This option is only applied when the <strong>Search</strong> switch is toggled on.</td>
+      </tr>
+      <tr>
+          <td><a href="#folder">Folder</a></td>
+          <td>Only dashboards from the selected folder are displayed in the dashboard list. This option is only applied when the <strong>Search</strong> switch is toggled on.</td>
+      </tr>
+      <tr>
+          <td><a href="#tags">Tags</a></td>
+          <td>Search by tags. This option is only applied when the <strong>Search</strong> switch is toggled on.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="query">Query</h4>
+<p>Use this field to search by dashboard name. Query terms are case-insensitive and partial values are accepted.
+For example, if you have dashboards called &ldquo;Indoor Temps&rdquo; and &ldquo;Outdoor temp&rdquo;, entering the word &ldquo;temp&rdquo; returns both results.
+This option is only applied when the <strong>Search</strong> switch is toggled on.</p>
+<h4 id="folder">Folder</h4>
+<p>Only dashboards from the selected folder are included in search results and displayed in the dashboard list.
+To include all dashboards in search results, select the top-level <strong>Dashboards</strong> folder.
+This option is only applied when the <strong>Search</strong> switch is toggled on.</p>
+<h4 id="tags">Tags</h4>
+<p>Enter tags by which you want to search. Note that tags don&rsquo;t appear as you type, and they&rsquo;re case sensitive.
+Tag search uses an <code>OR</code> condition, so if a dashboard has one of the defined tags, it&rsquo;s included in the list.</p>
+<p>When multiple tags and strings appear, the dashboard list displays those matching <em>all</em> conditions.</p>
+<p>This option is only applied when the <strong>Search</strong> switch is toggled on.</p>

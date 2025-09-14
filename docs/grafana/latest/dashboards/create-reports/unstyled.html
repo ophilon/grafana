@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<h1 id="create-and-manage-reports">Create and manage reports</h1>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The redesigned reporting feature is currently in public preview. Grafana Labs offers limited support, and breaking changes might occur prior to the feature being made generally available. To use this feature, enable the <code>newShareReportDrawer</code> feature toggle in your Grafana configuration file or, for Grafana Cloud, contact Support.</p></blockquote></div>
+
+<p><strong>Reporting</strong> allows you to send automated and scheduled emails from any of your dashboards.
+You can configure several elements of these reports and generate PDFs and CSV files.
+Any changes you make to a dashboard used in a report are reflected the next time the report is sent.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 600px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-report-config-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-report-config-v12.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-report-config-v12.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-report-config-v12.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-report-config-v12.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-report-config-v12.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-report-config-v12.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-report-config-v12.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-report-config-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="The report configuration screen"width="1484"height="1826"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-report-config-v12.0.png"
+            alt="The report configuration screen"width="1484"height="1826"/>
+        </noscript></div></a></figure>
+<h2 id="requirements">Requirements</h2>
+<p>For Grafana Enterprise, the Reporting feature has the following requirements:</p>
+<ul>
+<li>SMTP must be configured for reports to be sent. Refer to 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#smtp">SMTP configuration documentation</a> for more information.</li>
+<li>The <a href="/grafana/plugins/grafana-image-renderer">Grafana image renderer plugin</a> (v3.10+) must be installed or the remote rendering service must be set up. Refer to 
+    <a href="/docs/grafana/latest/setup-grafana/image-rendering/">Image rendering</a> for more information.</li>
+</ul>
+<h3 id="rendering-configuration">Rendering configuration</h3>
+<p>By default, attachments (PDFs, CSV files, and embedded images) larger than 10 MB are not sent, which keeps email servers from rejecting the email.
+You can increase or decrease this limit in the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/enterprise-configuration/#max_attachment_size_mb">reporting configuration</a>.</p>
+<p>When a report file is generated, it&rsquo;s temporarily written to the corresponding folder (<code>csv</code>, <code>pdf</code>, <code>png</code>) in the Grafana <code>data</code> folder.
+A background job runs every 10 minutes and removes temporary files.
+You can set how long a file should be stored before being removed by configuring the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#temp_data_lifetime"><code>temp_data_lifetime</code></a> setting in your <code>ini</code> file.</p>
+<h2 id="access-control">Access control</h2>
+<p>Only organization administrators can create reports by default.
+You can customize who can create reports with 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">role-based access control (RBAC)</a>.</p>
+<p>When 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/">RBAC</a> is enabled, you need to have the relevant 
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/">permissions</a> to create and manage reports.
+Refer to specific guides to understand what permissions are required.</p>
+<h2 id="create-a-report">Create a report</h2>
+<p>The report creation process is multi-step, but you don&rsquo;t need to complete these steps in order.</p>
+<p>You can also save the report as a draft at any point during the initial creation process.</p>
+<p>You can create directly from a dashboard or from the <strong>Reporting</strong> page.
+Select one of the following tabs for directions on each option.</p>
+<p>To create a report, follow these steps:</p>
+
+
+
+
+  <div class="br-4 base-border border-color-gray-3 docs_tabs">
+    <div x-data="app_content_tabs([&#34;Create a report directly from a dashboard&#34;,&#34;Create a report from Reporting&#34;], 'e4ccd9d2c369360ac60c12e2c8af3dc1')" x-init="init()">
+      <div class="d-flex w-100p flex-direction-row align-items-center justify-content-flex-start d-md-none">
+        <select class="docs_tabs--select w-100p base-border-bottom border-color-gray-3" @change="toggle($event.target.value)">
+          
+          
+            <option value="Create a report directly from a dashboard" :selected="active === 'Create a report directly from a dashboard'">Create a report directly from a dashboard</option>
+          
+          
+            <option value="Create a report from Reporting" :selected="active === 'Create a report from Reporting'">Create a report from Reporting</option>
+          
+        </select> 
+      </div>
+      <nav class="docs_tabs--navigation base-border-bottom border-color-gray-3 d-none d-md-block" role="tablist" data-codetoggle="true">
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Create a report directly from a dashboard')"
+            :class="{ 'docs_tabs--label-active': active === 'Create a report directly from a dashboard' }"
+          >
+            Create a report directly from a dashboard
+          </button>
+        
+        
+          <button
+            class="docs_tabs--label f-14 bg-transparent color-gray-11 py-8 px-1"
+            data-toggle="tab"
+            role="tab"
+            @click="toggle('Create a report from Reporting')"
+            :class="{ 'docs_tabs--label-active': active === 'Create a report from Reporting' }"
+          >
+            Create a report from Reporting
+          </button>
+        
+      </nav>
+      <div class="docs_tabs--content-container">
+        
+
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Create a report directly from a dashboard' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <ol>
+<li>
+<p>In the main menu, click <strong>Dashboards</strong>.</p>
+</li>
+<li>
+<p>Navigate to the dashboard from which you want to create a report.</p>
+</li>
+<li>
+<p>Click the <strong>Share</strong> drop-down list in the top-right corner of the dashboard.</p>
+</li>
+<li>
+<p>Click <strong>Schedule report</strong>.</p>
+<p>The <strong>Schedule report</strong> drawer opens. Any other reports using this dashboard are listed in the drawer. You can also click <strong>See all reports</strong> to navigate to <strong>Reporting</strong> for a full list of reports generated from all dashboards.</p>
+</li>
+<li>
+<p>Click <strong>+ Create a new report</strong>.</p>
+</li>
+<li>
+<p>Update the name of the report, if needed.</p>
+<p>By default, the report name is the name of the dashboard.</p>
+</li>
+<li>
+<p>Expand and complete each section of the report, as needed:</p>
+<ul>
+<li><a href="#1-dashboards">Dashboards</a></li>
+<li><a href="#2-schedule">Schedule</a></li>
+<li><a href="#3-email-settings">Email settings</a></li>
+<li><a href="#4-recipients">Recipients</a></li>
+<li><a href="#5-attachments">Attachments</a></li>
+</ul>
+</li>
+<li>
+<p>Click one of the following buttons at the bottom of the <strong>Schedule report</strong> drawer:</p>
+<ul>
+<li>
+<p>The menu icon to access the following options:</p>
+<ul>
+<li><strong>Download CSV</strong></li>
+<li><strong>Preview PDF</strong></li>
+<li><strong>Report settings</strong> - Takes you to <strong>Reporting</strong> in a new browser tab and opens the <strong>Report template settings</strong> drawer, where you can configure organization-level report settings.</li>
+</ul>
+</li>
+<li>
+<p><strong>Send preview</strong> - Send a preview of the report to your desired recipient. You can choose to use the report recipients:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="The Send preview modal"width="832"height="666"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png"
+            alt="The Send preview modal"width="832"height="666"/>
+        </noscript></div></a></figure>
+</li>
+<li>
+<p><strong>Schedule report</strong> - The report is sent according the schedule you&rsquo;ve set.</p>
+</li>
+<li>
+<p><strong>Save draft</strong> - You can save a draft at any point during the initial report creation process, even if it&rsquo;s missing required fields. The report won&rsquo;t be sent according to its schedule while it&rsquo;s a draft.</p>
+</li>
+</ul>
+<p>If you click the <strong>x</strong> at the top of the drawer without scheduling or saving the report as a draft, the report is discarded. This action can&rsquo;t be reversed.</p>
+</li>
+<li>
+<p>When you finish configuring the report, click the <strong>x</strong> at the top of the <strong>Schedule report</strong> drawer to close it.</p>
+</li>
+</ol>
+
+</div>
+
+
+
+
+<div
+  class="docs_tabs--content py-1 px-2"
+  :class="active === 'Create a report from Reporting' ? 'd-block' : 'd-none'"
+  id=""
+  role="tabpanel"
+  aria-labelledby=""
+>
+  <ol>
+<li>
+<p>In the main menu, click <strong>Dashboards &gt; Reporting</strong>.</p>
+</li>
+<li>
+<p>Click <strong>+ Create a new report</strong>.</p>
+<p>The <strong>Schedule report</strong> drawer opens.</p>
+</li>
+<li>
+<p>Enter a name for the report.</p>
+</li>
+<li>
+<p>Expand and complete each section of the report, as needed:</p>
+<ul>
+<li><a href="#1-dashboards">Dashboards</a></li>
+<li><a href="#2-schedule">Schedule</a></li>
+<li><a href="#3-email-settings">Email settings</a></li>
+<li><a href="#4-recipients">Recipients</a></li>
+<li><a href="#5-attachments">Attachments</a></li>
+</ul>
+</li>
+<li>
+<p>Click one of the following buttons at the bottom of the <strong>Schedule report</strong> drawer:</p>
+<ul>
+<li>
+<p>The menu icon to access the following options:</p>
+<ul>
+<li><strong>Download CSV</strong></li>
+<li><strong>Preview PDF</strong></li>
+<li><strong>Report settings</strong> - Opens the <strong>Report template settings</strong> drawer, where you can configure organization-level report settings.</li>
+</ul>
+</li>
+<li>
+<p><strong>Send preview</strong> - Send a preview of the report to your desired recipient. You can choose to use the report recipients:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="The Send preview modal"width="832"height="666"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-send-preview-v12.0.png"
+            alt="The Send preview modal"width="832"height="666"/>
+        </noscript></div></a></figure>
+</li>
+<li>
+<p><strong>Schedule report</strong> - The report is sent according the schedule you&rsquo;ve set.</p>
+</li>
+<li>
+<p><strong>Save draft</strong> - Save a draft at any point during the initial report creation process, even if it&rsquo;s missing required fields. The report won&rsquo;t be sent according to its schedule while it&rsquo;s a draft.</p>
+</li>
+</ul>
+<p>If you click the <strong>x</strong> at the top of the drawer without scheduling or saving the report as a draft, the report is discarded. This action can&rsquo;t be reversed.</p>
+</li>
+<li>
+<p>When you finish configuring the report, click the <strong>x</strong> at the top of the <strong>Schedule report</strong> drawer to close it.</p>
+</li>
+</ol>
+
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+
+<h3 id="1-dashboards">1. Dashboards</h3>
+<p>At this step, select the dashboard or dashboards on which the report is based, as well as the variables and time ranges for those dashboards.
+The options are:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Source dashboard (required)</td>
+          <td>Select or update the dashboard from which you want to generate the report. If you&rsquo;ve created your report directly from a dashboard, this field is already filled in with the name of the current dashboard.</td>
+      </tr>
+      <tr>
+          <td><a href="#time-range">Time range</a></td>
+          <td>Update the report time range. If you&rsquo;ve created the report directly from a dashboard, the default time range is that of the dashboard. Otherwise, the default time range is <strong>Last 6 hours</strong>.</td>
+      </tr>
+      <tr>
+          <td><a href="#customize-template-variables">Customize template variables</a></td>
+          <td>Select and customize the variable values for the selected dashboard. This section is only displayed if the dashboard has variables.</td>
+      </tr>
+      <tr>
+          <td>+ Add dashboard</td>
+          <td>Add more dashboards to the report.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="time-range">Time range</h4>
+<p>If you leave the <strong>Time range</strong> field empty, reports use the saved time range of the dashboard.
+Optionally, you can change the time range of the report by setting it in the <strong>Time range</strong> field.
+If specified, the custom time range overrides the time range from the report&rsquo;s dashboard.</p>
+<h4 id="customize-template-variables">Customize template variables</h4>
+<p>Configure report-specific template variables for the dashboard.
+The variables that you select override the variables from the dashboard.
+For detailed information about using template variables, refer to 
+    <a href="/docs/grafana/latest/dashboards/variables/">Variables</a>.</p>
+<p>The query variables saved with a report might become out of date if the results of that query change.
+For example, if your template variable queries for a list of hostnames and a new hostname is added, then it won&rsquo;t be included in the report.
+If that occurs, the selected variables must be manually updated in the report.
+If you select the <strong>All</strong> value for the template variable or if you keep the dashboard&rsquo;s original variable selection, then the report stays up-to-date as new values are added.</p>
+<p>This option is only displayed if the dashboard has variables.</p>
+<h3 id="2-schedule">2. Schedule</h3>
+<p>At this step, set scheduling information.
+Options vary depending on the frequency you select.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Schedule</td>
+          <td>Choose one of the following:<ul><li><strong>Send now</strong> sends the report immediately after you save it. To stop sending the report at some point in the future, add an end date.</li><li><strong>Send later</strong> schedules a report for a later date. When you select this option, the required <strong>Start date</strong>, <strong>Start time</strong>, and <strong>Time zone</strong> options are displayed.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Frequency</td>
+          <td>You can schedule reports to be sent once, repeated on an hourly, daily, weekly, or monthly basis, or sent at custom intervals.</td>
+      </tr>
+      <tr>
+          <td>Start date</td>
+          <td>Set the date when the report should start being sent.</td>
+      </tr>
+      <tr>
+          <td>Start time</td>
+          <td>Set the time when the report should start being sent.</td>
+      </tr>
+      <tr>
+          <td><a href="#time-zone">Time zone</a></td>
+          <td>Set the time zone of the report.</td>
+      </tr>
+      <tr>
+          <td>End date</td>
+          <td>Set the date when the report should stop being sent. If you leave this field empty, the report is sent out indefinitely.</td>
+      </tr>
+      <tr>
+          <td>Send only from Monday to Friday</td>
+          <td>For reports that have an hourly or daily frequency, you can choose to send them only from Monday to Friday.</td>
+      </tr>
+      <tr>
+          <td>Send on the last day of the month</td>
+          <td>When you schedule a report with a monthly frequency, and set the start date between the 29th and the 31st of the month, the report is only sent during the months that have those dates. If you want the report to be sent every month, select the <strong>Send on the last day of the month</strong> option. This way, the report is sent on the last day of every month regardless of how many days there are in the month.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="time-zone">Time zone</h4>
+<p>Reports use the time zone of the dashboard from which they&rsquo;re generated.
+You can control the time zone for your reports by setting the dashboard to a specific time zone.
+Note that this affects the display of the dashboard for all users.</p>
+<p>If a dashboard has the <strong>Browser Time</strong> setting, the reports generated from that dashboard use the time zone of the Grafana server.
+As a result, this time zone might not match the time zone of users creating or receiving the report.
+If you want to use a specific time zone, save the dashboard with a fixed time zone instead of <strong>Browser Time</strong></p>
+<p>Each dashboard&rsquo;s time zone setting is visible in the 
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/#set-dashboard-time-range">time range controls</a>.</p>
+<h3 id="3-email-settings">3. Email settings</h3>
+<p>At this step, configure the report email:</p>
+<!-- vale Grafana.GoogleLyHyphens = NO -->
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Email subject</td>
+          <td>If you leave this field empty, the report name is used as the email subject line.</td>
+      </tr>
+      <tr>
+          <td>Message</td>
+          <td>The body of the message in the report email.</td>
+      </tr>
+      <tr>
+          <td>Reply-to-email address</td>
+          <td>The address that appears in the <strong>Reply to</strong> field of the email.</td>
+      </tr>
+      <tr>
+          <td>Include a dashboard link</td>
+          <td>Include links to the dashboards in the report email.</td>
+      </tr>
+      <tr>
+          <td>Embed dashboard image</td>
+          <td>The report email is sent with an images of the dashboards embedded in it so recipients see them at a glance.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<!-- vale Grafana.GoogleLyHyphens = YES -->
+<h3 id="4-recipients">4. Recipients</h3>
+<p>Enter the email addresses of the people or teams that you want to receive the report, separated by commas or semicolons.</p>
+<h3 id="5-attachments">5. Attachments</h3>
+<p>At this step, select one or more report attachment options.
+You can select multiple options, but you must select <em>at least one</em>:</p>
+<ul>
+<li><strong>Attach the report as a PDF</strong> - Attach the report as one PDF file.</li>
+<li><strong><a href="#table-data-in-pdf">Attach a separate PDF of table data</a></strong> - Attach a separate PDF file to the report email for each table panel on the selected dashboard. Public preview only.</li>
+<li><strong>Attach a CSV file of table panel data</strong> - Attach a CSV file to the report email for each table panel on the selected dashboard.</li>
+</ul>
+<h4 id="pdf-format">PDF format</h4>
+<p>If you selected a PDF attachment, configure the following formatting options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Orientation</td>
+          <td>Set the report orientation in <strong>Portrait</strong> or <strong>Landscape</strong>. Refer to the <a href="#layout-and-orientation">Layout and orientation table</a> to see examples.</td>
+      </tr>
+      <tr>
+          <td>Layout</td>
+          <td>Select one of the following:<ul><li><strong>Simple</strong> - Renders each panel as full-width across the PDF.</li><li><strong>Grid</strong> - Renders the PDF with the same panel arrangement and width as the source dashboard.</li></ul>Refer to the <a href="#layout-and-orientation">Layout and orientation table</a> to see examples.</td>
+      </tr>
+      <tr>
+          <td>Zoom</td>
+          <td>Zoom in to enlarge text in your PDF or zoom out to see more data (like table columns) per panel.</td>
+      </tr>
+      <tr>
+          <td>Combine all dashboard PDFs in one file</td>
+          <td>Click the checkbox if you want to generate one PDF file for all the dashboards included in the report. This option is only displayed if there are multiple dashboards in the report.</td>
+      </tr>
+      <tr>
+          <td>Show template variables</td>
+          <td>Click the checkbox to show dashboard variables. This option is only displayed if the report contains variables.</td>
+      </tr>
+      <tr>
+          <td><a href="#table-data-in-pdf">Include table data as PDF appendix</a></td>
+          <td>Add an appendix of the dashboard table data to the report PDF. This is useful when there&rsquo;s more data in your table visualization than can be shown in the dashboard PDF. <em>Public preview only.</em></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h5 id="layout-and-orientation">Layout and orientation</h5>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Layout</th>
+          <th>Orientation</th>
+          <th>Description</th>
+          <th>Preview</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Simple</td>
+          <td>Portrait</td>
+          <td>Generates an A4 page in portrait mode with three panels per page.</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/reports_portrait_preview.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/reports_portrait_preview.png"data-srcset="/static/img/docs/enterprise/reports_portrait_preview.png?w=320 320w, /static/img/docs/enterprise/reports_portrait_preview.png?w=550 550w, /static/img/docs/enterprise/reports_portrait_preview.png?w=750 750w, /static/img/docs/enterprise/reports_portrait_preview.png?w=900 900w, /static/img/docs/enterprise/reports_portrait_preview.png?w=1040 1040w, /static/img/docs/enterprise/reports_portrait_preview.png?w=1240 1240w, /static/img/docs/enterprise/reports_portrait_preview.png?w=1920 1920w"
+          data-sizes="auto"alt="Simple layout in portrait"width="595"height="841"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reports_portrait_preview.png"
+            alt="Simple layout in portrait"width="595"height="841"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>Simple</td>
+          <td>Landscape</td>
+          <td>Generates an A4 page in landscape mode with a single panel per page.</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/reports_landscape_preview.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/reports_landscape_preview.png"data-srcset="/static/img/docs/enterprise/reports_landscape_preview.png?w=320 320w, /static/img/docs/enterprise/reports_landscape_preview.png?w=550 550w, /static/img/docs/enterprise/reports_landscape_preview.png?w=750 750w, /static/img/docs/enterprise/reports_landscape_preview.png?w=900 900w, /static/img/docs/enterprise/reports_landscape_preview.png?w=1040 1040w, /static/img/docs/enterprise/reports_landscape_preview.png?w=1240 1240w, /static/img/docs/enterprise/reports_landscape_preview.png?w=1920 1920w"
+          data-sizes="auto"alt="Simple layout in landscape"width="841"height="595"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reports_landscape_preview.png"
+            alt="Simple layout in landscape"width="841"height="595"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>Grid</td>
+          <td>Portrait</td>
+          <td>Generates an A4 page in portrait mode with panels arranged in the same way as at the original dashboard.</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/reports_grid_portrait_preview.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/reports_grid_portrait_preview.png"data-srcset="/static/img/docs/enterprise/reports_grid_portrait_preview.png?w=320 320w, /static/img/docs/enterprise/reports_grid_portrait_preview.png?w=550 550w, /static/img/docs/enterprise/reports_grid_portrait_preview.png?w=750 750w, /static/img/docs/enterprise/reports_grid_portrait_preview.png?w=900 900w, /static/img/docs/enterprise/reports_grid_portrait_preview.png?w=1040 1040w, /static/img/docs/enterprise/reports_grid_portrait_preview.png?w=1240 1240w, /static/img/docs/enterprise/reports_grid_portrait_preview.png?w=1920 1920w"
+          data-sizes="auto"alt="Grid layout in portrait"width="943"height="1335"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reports_grid_portrait_preview.png"
+            alt="Grid layout in portrait"width="943"height="1335"/>
+        </noscript></div></a></figure></td>
+      </tr>
+      <tr>
+          <td>Grid</td>
+          <td>Landscape</td>
+          <td>Generates an A4 page in landscape mode with panels arranged in the same way as in the original dashboard.</td>
+          <td><figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 500px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/enterprise/reports_grid_landscape_preview.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/enterprise/reports_grid_landscape_preview.png"data-srcset="/static/img/docs/enterprise/reports_grid_landscape_preview.png?w=320 320w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=550 550w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=750 750w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=900 900w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=1040 1040w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=1240 1240w, /static/img/docs/enterprise/reports_grid_landscape_preview.png?w=1920 1920w"
+          data-sizes="auto"alt="Grid layout in landscape"width="1397"height="987"/>
+        <noscript>
+          <img
+            src="/static/img/docs/enterprise/reports_grid_landscape_preview.png"
+            alt="Grid layout in landscape"width="1397"height="987"/>
+        </noscript></div></a></figure></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="table-data-in-pdf">Table data in PDF</h4>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in public preview (<code>pdfTables</code> feature toggle) in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> v10.3+ with the <a href="/grafana/plugins/grafana-image-renderer">Grafana image renderer plugin</a> v3.0+, as well as in <a href="/docs/grafana-cloud/">Grafana Cloud</a>.</p></blockquote></div>
+
+<p>When there&rsquo;s more data in your table visualizations than can be shown in the dashboard PDF, you can select one of these two options to access all table visualization data as PDF in your reports:</p>
+<ul>
+<li><strong>Include table data as PDF appendix</strong> - Adds an appendix to the dashboard PDF.</li>
+<li><strong>Attach a separate PDF of table data</strong> - Generates a separate PDF file.</li>
+</ul>
+<h2 id="send-a-report-using-the-api">Send a report using the API</h2>
+<p>You can send reports programmatically with the 
+    <a href="/docs/grafana/latest/developers/http_api/reporting/#send-a-report">send report</a> endpoint using the HTTP API.</p>
+<h2 id="manage-reports">Manage reports</h2>
+<p>You can view and manage all your reports, and create new ones, on the <strong>Reporting</strong> page:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="The Reporting page"width="2250"height="892"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-reporting-page-v12.0.png"
+            alt="The Reporting page"width="2250"height="892"/>
+        </noscript></div></a></figure>
+<p>Alternatively, from any dashboard you can view and manage any reports generated from that dashboard, as well as create a new report
+You can also navigate to the list of all reports from the dashboard-specific list:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="The open Report schedule drawer with an existing report"width="2634"height="1262"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/dashboards/screenshot-report-drawer-v12.0.png"
+            alt="The open Report schedule drawer with an existing report"width="2634"height="1262"/>
+        </noscript></div></a></figure>
+<h3 id="edit-reports">Edit reports</h3>
+<p>To edit a report, follow these steps:</p>
+<ol>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>In the main menu, click <strong>Dashboards &gt; Reporting</strong>.</li>
+<li>Navigate to the dashboard from which the report was generated and click <strong>Share &gt; Schedule report</strong>.</li>
+</ul>
+</li>
+<li>
+<p>Click the row of the report you want to update.</p>
+</li>
+<li>
+<p>Make the necessary changes.</p>
+</li>
+<li>
+<p>Click <strong>Update report</strong>.</p>
+</li>
+<li>
+<p>Click the <strong>x</strong> at the top of the drawer to close it.</p>
+</li>
+</ol>
+<h3 id="pause-or-resume-reports">Pause or resume reports</h3>
+<p>You can pause and resume sending reports from the report list view.
+To do this, follow these steps:</p>
+<ol>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>In the main menu, click <strong>Dashboards &gt; Reporting</strong>.</li>
+<li>Navigate to the dashboard from which the report was generated and click <strong>Share &gt; Schedule report</strong>.</li>
+</ul>
+</li>
+<li>
+<p>On the row of the report you want to update, do one of the following:</p>
+<ul>
+<li>Click the pause icon - The report won&rsquo;t be sent according to its schedule until it&rsquo;s resumed.</li>
+<li>Click the resume icon - The report resumes on its previous schedule.</li>
+</ul>
+</li>
+</ol>
+<p>You can also pause or resume a report from <strong>Update report</strong> drawer.</p>
+<h3 id="delete-reports">Delete reports</h3>
+<p>To delete a report, follow these steps:</p>
+<ol>
+<li>
+<p>Do one of the following:</p>
+<ul>
+<li>In the main menu, click <strong>Dashboards &gt; Reporting</strong>.</li>
+<li>Navigate to the dashboard from which the report was generated and click <strong>Share &gt; Schedule report</strong>.</li>
+</ul>
+</li>
+<li>
+<p>On the row of the report you want to update, click the trash can icon.</p>
+</li>
+<li>
+<p>Click <strong>Delete</strong> to confirm.</p>
+</li>
+</ol>
+<p>You can also delete a report from <strong>Update report</strong> drawer.</p>
+<p>Deleting a report is irreversible.</p>
+<h2 id="troubleshoot-reporting">Troubleshoot Reporting</h2>
+<p>To troubleshoot and get more log information, enable debug logging in the configuration file.
+Refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#filters">log filters configuration documentation</a> for more information.</p>
+<pre>[log]
+filters = rendering:debug,report.api:debug,report.render:debug,report.scheduler:debug,report.sender:debug,report.service:debug</pre>

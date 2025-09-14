@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<h1 id="annotations-list">Annotations list</h1>
+<p>The annotations list shows a list of available annotations you can use to view annotated data. Various options are available to filter the list based on tags and on the current dashboard.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="The annotations list visualization"width="2310"height="976"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-annotations-list-viz-v12.0.png"
+            alt="The annotations list visualization"width="2310"height="976"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="annotation-query-options">Annotation query options</h3>
+<p>The following options control the source query for the list of annotations:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#query-filter">Query filter</a></td>
+          <td>Specify which annotations are included in the list.</td>
+      </tr>
+      <tr>
+          <td><a href="#time-range">Time Range</a></td>
+          <td>Specify whether the list should be limited to the current time range.</td>
+      </tr>
+      <tr>
+          <td>Tags</td>
+          <td>Filter the annotations by tags. You can add multiple tags to refine the list. Optionally, leave the tag list empty and filter in view mode by selecting tags that are listed as part of the results on the panel itself.</td>
+      </tr>
+      <tr>
+          <td>Limit</td>
+          <td>Limit the number of results returned.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="query-filter">Query filter</h4>
+<p>Use the <strong>Query filter</strong> option to create a list of annotations from all dashboards in your organization or the current dashboard in which this panel is located.
+Choose from:</p>
+<ul>
+<li><strong>All dashboards</strong> - List annotations from all dashboards in the current organization.</li>
+<li><strong>This dashboard</strong> - Limit the list to the annotations on the current dashboard.</li>
+</ul>
+<h4 id="time-range">Time Range</h4>
+<p>Specify whether the list should be limited to the current time range.
+Choose from:</p>
+<ul>
+<li><strong>None</strong> - No time range limit for the annotations query.</li>
+<li><strong>This dashboard</strong> - Limit the list to the time range of the dashboard where the annotations list is available.</li>
+</ul>
+<h3 id="display-options">Display options</h3>
+<p>These options control additional metadata included in the annotations list display:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Show user</td>
+          <td>Show or hide which user created the annotation.</td>
+      </tr>
+      <tr>
+          <td>Show time</td>
+          <td>Show or hide the time the annotation creation time.</td>
+      </tr>
+      <tr>
+          <td>Show tags</td>
+          <td>Show or hide the tags associated with an annotation. Note that you can use the tags to filter the annotations list.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="link-behavior-options">Link behavior options</h3>
+<p>Use the following options to control the behavior of annotation links in the list:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Link target</td>
+          <td>Set how to view the annotated data. Choose from:<ul><li><strong>Panel</strong> - The link takes you directly to a full-screen view of the panel with the corresponding annotation.</li><li><strong>Dashboard</strong> - Focuses the annotation in the context of a complete dashboard.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Time before</td>
+          <td>Set the time range before the annotation. Use duration string values like <code>1h</code> for one hour and <code>10m</code> for 10 minutes.</td>
+      </tr>
+      <tr>
+          <td>Time after</td>
+          <td>Set the time range after the annotation.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->

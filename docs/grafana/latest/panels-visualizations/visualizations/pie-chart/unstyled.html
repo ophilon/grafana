@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<h1 id="pie-chart">Pie chart</h1>
+<p>A pie chart is a graph that displays data as segments of a circle proportional to the whole, making it look like a sliced pie. Each slice corresponds to a value or measurement.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-pie-chart-v11.4.png"
+  alt="Pie chart visualizations" width="954"
+     height="348"/></p>
+<p>The pie chart visualization is ideal when you have data that adds up to a total and you want to show the proportion of each value compared to other slices, as well as to the whole of the pie.</p>
+<p>You can use a pie chart if you need to compare:</p>
+<ul>
+<li>Browser share distribution in the market</li>
+<li>Incident causes per category</li>
+<li>Network traffic sources</li>
+<li>User demographics</li>
+</ul>
+<h2 id="configure-a-pie-chart-visualization">Configure a pie chart visualization</h2>
+<p>The following video guides you through the creation steps and common customizations of pie chart visualizations and is great for beginners:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=A_lDhM9w4_g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/ktMs4D6Mk/" target="_blank" rel="noopener noreferrer">Grafana Bar Charts and Pie Charts</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/ktMs4D6Mk/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>The pie chart is different from other visualizations in that it will only display one pie, regardless of the number of datasets, fields, or records queried in it.</p>
+<p>To create a pie chart visualization, you need a dataset containing a set of numeric values either in rows, columns, or both.</p>
+<h3 id="example---one-row">Example - One row</h3>
+<p>The easiest way to provide data for a pie chart visualization is in a dataset with a single record (or row) containing the fields (or columns) that you want in the pie, as in the following example. The default settings of the pie chart visualization automatically display each column as a slice of the pie.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Value1</th>
+          <th>Value2</th>
+          <th>Value3</th>
+          <th>Optional</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>5</td>
+          <td>3</td>
+          <td>2</td>
+          <td>Sums10</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-pie-example1.png"
+  alt="Pie chart visualization with multiple values in a single row" width="1200"
+     height="307"/></p>
+<h3 id="example---multiple-rows">Example - Multiple rows</h3>
+<p>If you need to use numeric data that&rsquo;s in multiple rows, the default <strong>Show</strong> parameter of the visualization <a href="#value-options">Value options</a> is set to <strong>Calculate</strong> and use data from the last row.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Value</th>
+          <th>Label</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>5</td>
+          <td>Value1</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Value2</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>Value3</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-pie-example2.png"
+  alt="Pie chart visualization with multiple row values showing the last one" width="1200"
+     height="307"/></p>
+<p>By default, the visualization is configured to <a href="#value-options">calculate</a> a single value per column or series and to display only the last row of data.</p>
+<p>To allow values in multiple rows to be displayed, change the <strong>Show</strong> setting in the <a href="#value-options">Value options</a> from <strong>Calculate</strong> to <strong>All values</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-pie-example3.png"
+  alt="Pie chart visualization with multiple row values showing all values" width="1200"
+     height="307"/></p>
+<h3 id="example---multiple-rows-and-columns">Example - Multiple rows and columns</h3>
+<p>If your dataset contains multiple rows and columns with numeric data, by default only the last row&rsquo;s values are summed.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Value1</th>
+          <th>Value2</th>
+          <th>Value3</th>
+          <th>Optional</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>5</td>
+          <td>3</td>
+          <td>2</td>
+          <td>Sums10</td>
+      </tr>
+      <tr>
+          <td>10</td>
+          <td>6</td>
+          <td>4</td>
+          <td>Sums20</td>
+      </tr>
+      <tr>
+          <td>20</td>
+          <td>8</td>
+          <td>2</td>
+          <td>Sums30</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-pie-example4.png"
+  alt="Pie chart visualization with multiple rows and columns showing the last one" width="1200"
+     height="307"/></p>
+<p>If you want to display all the cells, change the <strong>Show</strong> setting in the <a href="#value-options">Value options</a> from <strong>Calculate</strong> to <strong>All values</strong>. This also labels the elements by concatenating all the text fields (if you have any) with the column name.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-pie-example5.png"
+  alt="Pie chart visualization with multiple rows and columns showing the all values" width="1200"
+     height="307"/></p>
+<p>If you want to display only the values from a given field (or column), once the <strong>Show</strong> setting in the <a href="#value-options">Value options</a> is set to <strong>All values</strong>, set the <strong>Fields</strong> option to the column you wish to sum in the display. The value labels are also concatenated as indicated before.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-pie-example6.png"
+  alt="Pie chart visualization with multiple rows and columns showing values from one column" width="1200"
+     height="307"/></p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="value-options">Value options</h3>
+<p>Use the following options to refine the value in your visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Show</td>
+          <td>Set how much information to show. Choose from:<ul><li><strong>Calculate</strong> - Reduces each value to a single value per series.</li><li><strong>All values</strong> - Displays every value from a single series.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Calculation</td>
+          <td>If you chose <strong>Calculate</strong> as your <strong>Show</strong> option, select a calculation to reduce each series. For information about available calculations, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a>.</td>
+      </tr>
+      <tr>
+          <td>Limit</td>
+          <td>If you chose <strong>All values</strong> as your <strong>Show</strong> option, enter a value to limit the number of values displayed.</td>
+      </tr>
+      <tr>
+          <td>Fields</td>
+          <td>Select which field or fields to display in the visualization. Each field name is available on the list, or you can select one of the following options:<ul><li><strong>Numeric fields</strong> - All fields with numerical values.</li><li><strong>All fields</strong> - All fields that are not removed by transformations.</li><li><strong>Time</strong> - All fields with time values.</li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="pie-chart-options">Pie chart options</h3>
+<p>Use these options to refine how your visualization looks.</p>
+<h4 id="pie-chart-type">Pie chart type</h4>
+<p>Select the pie chart display style. Choose from <strong>Pie</strong> or <strong>Donut</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-pie-chart-types.png"
+  alt="Pie chart types" width="744"
+     height="393"/></p>
+<h4 id="slice-sorting">Slice sorting</h4>
+<p>By default, the pie chart is sorted so that the slices decrease in size clockwise around the circle.
+You can configure the sorting of the slices, and by extension the legend, with the following options:</p>
+<ul>
+<li><strong>Descending</strong> - The slices decrease in size, clockwise (default).</li>
+<li><strong>Ascending</strong> - The slices increase in size, clockwise.</li>
+<li><strong>None</strong> - No sorting is applied. The original order of the data is maintained.</li>
+</ul>
+<h4 id="labels">Labels</h4>
+<p>Select labels to display on the pie chart. You can select more than one.</p>
+<ul>
+<li><strong>Name</strong> - The series or field name.</li>
+<li><strong>Percent</strong> - The percentage of the whole.</li>
+<li><strong>Value</strong> - The raw numerical value.</li>
+</ul>
+<p>Labels are displayed in white over the body of the chart. You might need to select darker chart colors to make them more visible. Long names or numbers might be clipped.</p>
+<p>The following example shows a pie chart with <strong>Name</strong> and <strong>Percent</strong> labels displayed:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 350px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png"data-srcset="/static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png?w=320 320w, /static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png?w=550 550w, /static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png?w=750 750w, /static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png?w=900 900w, /static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png?w=1040 1040w, /static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png?w=1240 1240w, /static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png?w=1920 1920w"
+          data-sizes="auto"alt="Pie chart labels"width="400"height="398"/>
+        <noscript>
+          <img
+            src="/static/img/docs/pie-chart-panel/pie-chart-labels-7-5.png"
+            alt="Pie chart labels"width="400"height="398"/>
+        </noscript></div></a></figure>
+<h3 id="tooltip-options">Tooltip options</h3>
+
+
+<div data-shared="visualizations/tooltip-options-1.md">
+            
+
+<p>Tooltip options control the information overlay that appears when you hover over data points in the visualization.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#tooltip-mode">Tooltip mode</a></td>
+          <td>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</td>
+      </tr>
+      <tr>
+          <td><a href="#values-sort-order">Values sort order</a></td>
+          <td>This option controls the order in which values are listed in a tooltip.</td>
+      </tr>
+      <tr>
+          <td>Hide zeros</td>
+          <td>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Hide zeros</strong> option is displayed. This option controls whether or not series with <code>0</code> values are shown in the list in the tooltip.</td>
+      </tr>
+      <tr>
+          <td>Max width</td>
+          <td>Set the maximum width of the tooltip box.</td>
+      </tr>
+      <tr>
+          <td>Max height</td>
+          <td>Set the maximum height of the tooltip box. The default is 600 pixels.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="tooltip-mode">Tooltip mode</h4>
+<p>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</p>
+<ul>
+<li><strong>Single</strong> - The hover tooltip shows only a single series, the one that you are hovering over on the visualization.</li>
+<li><strong>All</strong> - The hover tooltip shows all series in the visualization. Grafana highlights the series that you are hovering over in bold in the series list in the tooltip.</li>
+<li><strong>Hidden</strong> - Do not display the tooltip when you interact with the visualization.</li>
+</ul>
+<p>Use an override to hide individual series from the tooltip.</p>
+<h4 id="values-sort-order">Values sort order</h4>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Values sort order</strong> option is displayed. This option controls the order in which values are listed in a tooltip. Choose from the following:</p>
+<ul>
+<li><strong>None</strong> - Grafana automatically sorts the values displayed in a tooltip.</li>
+<li><strong>Ascending</strong> - Values in the tooltip are listed from smallest to largest.</li>
+<li><strong>Descending</strong> - Values in the tooltip are listed from largest to smallest.</li>
+</ul>
+
+  </div>
+
+        
+<h3 id="legend-options">Legend options</h3>
+<p>Use these settings to define how the legend appears in your visualization. For more information about the legend, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a>.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Visibility</td>
+          <td>Toggle the switch to turn the legend on or off.</td>
+      </tr>
+      <tr>
+          <td>Mode</td>
+          <td>Use these settings to define how the legend appears in your visualization. Choose from:<ul><li><strong>List</strong> - Displays the legend as a list. This is a default display mode of the legend.</li><li><strong>Table</strong> - Displays the legend as a table.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Placement</td>
+          <td>Select where to display the legend. Choose <strong>Bottom</strong> or <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Control how wide the legend is when placed on the right side of the visualization. This option is only displayed if you set the legend placement to <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Legend values</td>
+          <td>Select values to display in the legend. You can select more than one:<ul><li><strong>Percent</strong> - The percentage of the whole.</li><li><strong>Value</strong> - The raw numerical value.</li></ul></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-1.md">
+            <p>Data links allow you to link to other panels, dashboards, and external resources while maintaining the context of the source panel.
+You can create links that include the series name or even the value under the cursor.
+To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Actions are not supported for this visualization.</p></blockquote></div>
+
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+</ul>
+<p>Data links for this visualization don&rsquo;t include the <strong>One click</strong> switch, however, if there&rsquo;s only one data link configured, that data link has single-click functionality.
+If multiple data links are configured, then clicking the visualization opens a menu that displays all the data links.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

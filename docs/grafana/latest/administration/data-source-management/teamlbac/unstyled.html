@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<h1 id="label-based-access-control-lbac-for-data-sources">Label Based Access Control (LBAC) for data sources</h1>
+<p>Label Based Access Control (LBAC) for data sources simplifies and streamlines data source access management based on team memberships.
+Label-Based Access Control (LBAC) allows fine-grained access control to data sources by filtering logs or metrics based on labels. It lets administrators configure access rules for teams, ensuring that users only query data relevant to their assigned permissions.</p>
+<h2 id="supported-data-sources">Supported Data Sources</h2>
+<h3 id="feature-availability">Feature availability</h3>
+<p>LBAC for data sources is currently for <code>Loki</code> and <code>Prometheus</code>. Support for additional data sources may be added in future updates.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Data source</th>
+          <th>Grafana Cloud</th>
+          <th>Grafana Enterprise</th>
+          <th>Cross-tenant query support</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Loki</td>
+          <td>GA</td>
+          <td>GA (requires GEL - Grafana Enterprise Logs)</td>
+          <td>❌</td>
+      </tr>
+      <tr>
+          <td>Prometheus</td>
+          <td>GA</td>
+          <td>GA (requires GEM - Grafana Enterprise Metrics)</td>
+          <td>❌</td>
+      </tr>
+  </tbody>
+</table>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>For enterprise this feature requires Grafana Enterprise Metrics (GEM) or Grafana Enterprise Logs (GEL) to function.</p></blockquote></div>
+
+<p><strong>LBAC for data sources offers:</strong></p>
+<ul>
+<li>Team-based access control using <code>LogQL</code> rules.</li>
+<li>Simplified data source management by consolidating multiple sources into one.</li>
+<li>Dashboard reuse across teams with tailored access.</li>
+</ul>
+<p>You can configure user access based upon team memberships using <code>LogQL</code>.
+LBAC for data sources controls access to logs or metrics depending on the rules set for each team.</p>
+<p>This feature addresses two common challenges faced by Grafana users:</p>
+<ol>
+<li>Having a high number of Grafana Cloud data sources.
+LBAC for data sources lets Grafana administrators reduce the total number of data sources per instance from hundreds, to one.</li>
+<li>Using the same dashboard across multiple teams.
+LBAC for data sources lets Grafana Teams use the same dashboard with different access control rules.</li>
+</ol>
+<p>To set up LBAC for data sources for a Loki data source, refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/configure-teamlbac-for-loki/">Configure LBAC for Loki Data Source</a>.
+To set up LBAC for data sources for a Prometheus data source, refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/configure-teamlbac-for-prometheus/">Configure LBAC for Prometheus Data Source</a>.</p>
+<h2 id="logs-and-metrics-filtering-with-lbac">Logs and Metrics Filtering with LBAC</h2>
+<p>LBAC for data sources enables you to filter access for both logs and metrics. By defining rules with label selectors, you can specify:</p>
+<ul>
+<li><strong>Logs</strong>: Control access to log lines using LogQL queries with labels such as <code>namespace</code> or <code>cluster</code>.</li>
+<li><strong>Metrics</strong>: Control access to metric data points using LogQL with labels such as <code>job</code> or <code>region</code> and access for metrics <code>__name__</code>.</li>
+</ul>
+<p>This flexibility allows teams to use the same data source for multiple use cases while maintaining secure access boundaries.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To be able to use LBAC for data sources metrics, you need to enable the feature toggle <code>teamHttpHeadersMimir</code> on your Grafana instance.</p>
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li>There is a set number of rules to be configured within a data source, depending on the size of the rules.
+<ul>
+<li>Around ~500-600 rules is the upper limit.</li>
+</ul>
+</li>
+<li>If there are no LBAC for data sources rules for a user&rsquo;s team, that user can query all logs or metrics.</li>
+<li>If an administrator is part of a team with LBAC for data sources rules, those rules are applied to the administrator requests.</li>
+<li>Cloud Access Policy (CAP) LBAC rules override LBAC for data sources rules.
+CAP are the access controls from Grafana Cloud.</li>
+<li>Note that these data sources must be created manually - provisioning is not yet supported.</li>
+<li>Cross-tenant querying is currently not supported</li>
+</ul>
+<p>You must remove any label selectors from your Cloud Access Policy that is configured for the data source, otherwise the CAP label selectors override the LBAC for data sources rules. For more information about CAP label selectors, refer to <a href="/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/label-access-policies/">Use label-based access control (LBAC) with access policies</a>.</p>
+<h2 id="data-source-permissions">Data source permissions</h2>
+<ul>
+<li>Data source permissions allow the users access to query the data source.</li>
+<li>Administrators set the permissions at the data source level.</li>
+<li>All the teams and users that are part of the data source inherit those permissions.</li>
+</ul>
+<h2 id="recommended-setup">Recommended setup</h2>
+<p>It&rsquo;s recommended that you create a single data source for using LBAC for data sources rules so you have a clear separation of data sources using LBAC for data sources and those that aren&rsquo;t.
+All teams should have with only teams having <code>query</code> permission.
+You should create another data source configured without LBAC for data sources for full access.</p>
+<h2 id="lbac-rules">LBAC rules</h2>
+<p>Grafana adds LBAC for data sources rules to the HTTP request via the data source.</p>
+<p>If you configure multiple rules for a team, each rule is evaluated separately.
+Query results include lines that match any of the rules.</p>
+<p>Only users with data source <code>Admin</code> permissions can edit LBAC for data sources rules in the <strong>Data source permissions</strong> tab because changing LBAC rules requires the same access level as editing data source permissions.</p>
+<p>To set up LBAC for data sources for a data source, refer to 
+    <a href="/docs/grafana/latest/administration/data-source-management/teamlbac/configure-teamlbac-for-loki/">Configure LBAC for data sources</a>.</p>
+<h2 id="provisioning-of-lbac-rules">Provisioning of LBAC rules</h2>
+<p>We recommend using our Terraform provider to set up provisioning for <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source_config_lbac_rules" target="_blank" rel="noopener noreferrer">Resource data source config LBAC rules</a>. Refer to our provider documentation to learn how to configure rules for a data source.</p>

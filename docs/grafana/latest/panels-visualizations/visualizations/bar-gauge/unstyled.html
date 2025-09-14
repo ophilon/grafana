@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<h1 id="bar-gauge">Bar gauge</h1>
+<p>Bar gauges simplify your data by reducing every field to a single value. You choose how Grafana calculates the reduction. This visualization can show one or more bar gauges depending on how many series, rows, or columns your query returns.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/v66/bar_gauge_cover.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/v66/bar_gauge_cover.png"data-srcset="/static/img/docs/v66/bar_gauge_cover.png?w=320 320w, /static/img/docs/v66/bar_gauge_cover.png?w=550 550w, /static/img/docs/v66/bar_gauge_cover.png?w=750 750w, /static/img/docs/v66/bar_gauge_cover.png?w=900 900w, /static/img/docs/v66/bar_gauge_cover.png?w=1040 1040w, /static/img/docs/v66/bar_gauge_cover.png?w=1240 1240w, /static/img/docs/v66/bar_gauge_cover.png?w=1920 1920w"
+          data-sizes="auto"alt="Bar gauge panel"width="1102"height="385"/>
+        <noscript>
+          <img
+            src="/static/img/docs/v66/bar_gauge_cover.png"
+            alt="Bar gauge panel"width="1102"height="385"/>
+        </noscript></div></a></figure>
+<p>The bar gauge visualization displays values as bars with various lengths or fills proportional to the values they represent. They differ from traditional bar charts in that they act as gauges displaying metrics between ranges. One example is a thermometer displaying body temperature in a bar filling up.</p>
+<p>You can use a bar gauge visualization when you need to show:</p>
+<ul>
+<li>Key performance indicators (KPIs)</li>
+<li>System health</li>
+<li>Savings goals</li>
+<li>Attendance</li>
+<li>Process completion rates</li>
+</ul>
+<h2 id="configure-a-bar-gauge-visualization">Configure a bar gauge visualization</h2>
+<p>The following video shows you how to create and configure a bar gauge visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=7PhDysObEXA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/vmie2cmWz/" target="_blank" rel="noopener noreferrer">Bar Gauge</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/vmie2cmWz/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>To create a bar gauge visualization, you need a dataset querying at least one numeric field. Every numeric field in the dataset is displayed as a bar gauge. Text or time fields aren&rsquo;t required but if they&rsquo;re present, they&rsquo;re used for labeling.</p>
+<h3 id="example-1">Example 1</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Label</th>
+          <th>Value1</th>
+          <th>Value2</th>
+          <th>Value3</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Row1</td>
+          <td>5</td>
+          <td>3</td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-bargauge-example1.png"
+  alt="Bar gauge with single row of data" width="1200"
+     height="307"/></p>
+<p>The minimum and maximum range for the bar gauges is automatically pulled from the largest and smallest numeric values in the dataset. You can also manually define the minimum and maximum values as indicated in the <a href="#standard-options">Standard options</a> section.</p>
+<p>You can also define the minimum and maximum from the dataset provided.</p>
+<h3 id="example-2">Example 2</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Label</th>
+          <th>Value</th>
+          <th>Max</th>
+          <th>Min</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Row1</td>
+          <td>3</td>
+          <td>6</td>
+          <td>1</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-bargauge-example2.png"
+  alt="Bar gauge with single row of data including maximum and minimum" width="1200"
+     height="307"/></p>
+<p>If you don’t want to show gauges for the min and max values, you can configure only one field to be displayed as described in the <a href="#value-options">Value options</a> section.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-bargauge-example3.png"
+  alt="Bar gauge, single row of data with max and min displaying value" width="1200"
+     height="307"/></p>
+<p>Even if the min and max aren’t displayed, the visualization still pulls the range from the data set.</p>
+<h3 id="example-3">Example 3</h3>
+<p>The bar gauge visualization also supports multiple records (rows) in the dataset.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Label</th>
+          <th>Value1</th>
+          <th>Value2</th>
+          <th>Value3</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Row1</td>
+          <td>5</td>
+          <td>3</td>
+          <td>2</td>
+      </tr>
+      <tr>
+          <td>Row2</td>
+          <td>10</td>
+          <td>6</td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td>Row3</td>
+          <td>20</td>
+          <td>8</td>
+          <td>2</td>
+      </tr>
+  </tbody>
+</table>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-bargauge-example4.png"
+  alt="Bar gauge with multiple rows of data displaying last row" width="1200"
+     height="307"/></p>
+<p>By default, the visualization is configured to <a href="#value-options">calculate</a> a single value per column or series and to display only the last set of data. However, it derives the minimum and maximum from the full dataset even if those values aren’t visible. In this example, that means only the last row of data is displayed in the gauges and the minimum and maximum values are defined as 2 and 20, pulled from the whole dataset.</p>
+<p>If you want to show one gauge per cell you can change the <strong>Show</strong> setting from <strong>Calculate</strong> to <strong>All values</strong> and each bar is labeled by concatenating the text column with each value&rsquo;s column name.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-grafana-12.1-bargauge-example5.png"
+  alt="Bar gauge with multiple rows of data displaying all the values" width="1200"
+     height="307"/></p>
+<p>For more information on these settings, refer to <a href="#value-options">Value options</a>.</p>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="value-options">Value options</h3>
+<p>Use the following options to refine how your visualization displays the value:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Show</td>
+          <td>Set how Grafana displays your data. Choose from:<ul><li><strong>Calculate</strong> - Show a calculated value based on all rows.</li><li><strong>All values</strong> - Show a separate value for every row. If you select this option, then you can also limit the number of rows to display.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Calculation</td>
+          <td>If you chose <strong>Calculate</strong> as your <strong>Show</strong> option, select a reducer function that Grafana will use to reduce many fields to a single value. For a list of available calculations, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">Calculation types</a>.</td>
+      </tr>
+      <tr>
+          <td>Limit</td>
+          <td>If you chose <strong>All values</strong> as your <strong>Show</strong> option, enter the maximum number of rows to display. The default is 5,000.</td>
+      </tr>
+      <tr>
+          <td>Fields</td>
+          <td>Select the fields display in the panel.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="bar-gauge-options">Bar gauge options</h3>
+<p>Adjust how the gauge is displayed.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Orientation</td>
+          <td>Choose a stacking direction:<ul><li><strong>Auto</strong> - Grafana determines the best orientation.</li><li><strong>Horizontal</strong> - Bars stretch horizontally, left to right.</li><li><strong>Vertical</strong> - Bars stretch vertically, bottom to top.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Display mode</td>
+          <td>Choose a display mode:<ul><li><strong>Gradient</strong> - Threshold levels define a gradient.</li><li><strong>Retro LCD</strong> - The bar is split into sections that are lit or unlit.</li><li><strong>Basic</strong> - Single color based on the matching threshold.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Value display</td>
+          <td>Choose a value display mode:<ul><li><strong>Value color</strong> - Value color is determined by value.</li><li><strong>Text color</strong> - Value color is default text color.</li><li><strong>Hidden</strong> - Values are hidden.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Name placement</td>
+          <td>Set the name placement mode when the bar gauge orientation is <strong>Auto</strong> or <strong>Horizontal</strong>. Choose from:<ul><li><strong>Auto</strong> - Grafana determines the best placement.</li><li><strong>Top</strong> - Names are placed on top of each bar gauge.</li><li><strong>Left</strong> - Names are placed to the left of each bar gauge.</li><li><strong>Hidden</strong> - Names are hidden.</li></ul> <p>When the bar gauge is in the vertical orientation, choose from <strong>Auto</strong> (names are always placed at the bottom of each bar) or <strong>Hidden</strong>.</p></td>
+      </tr>
+      <tr>
+          <td>Show unfilled area</td>
+          <td>Select if you want to render the unfilled region of the bars as dark gray. Not applicable to <strong>Retro LCD</strong> display mode.</td>
+      </tr>
+      <tr>
+          <td>Bar size</td>
+          <td>Choose a bar size mode:<ul><li><strong>Auto</strong> - Grafana determines the best bar size.</li><li><strong>Manual</strong> - Manually configure the bar size.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Min width</td>
+          <td>Limit the minimum width of the bar column when the gauge is oriented vertically or is in <strong>Auto</strong> mode. Automatically shows the x-axis scroll bar when there&rsquo;s a large amount of data.<p>This option only applies when the <strong>Bar size</strong> mode is set to <strong>Manual</strong>.</p></td>
+      </tr>
+      <tr>
+          <td>Min height</td>
+          <td>Limit the minimum height of the bar row when the bar gauge is oriented horizontally or is in <strong>Auto</strong> mode. Automatically shows the y-axis scroll bar when there&rsquo;s a large amount of data. <p>This option only applies when the <strong>Bar size</strong> mode is set to <strong>Manual</strong>.</p></td>
+      </tr>
+      <tr>
+          <td>Max height</td>
+          <td>Limit the maximum height of the bar row when the bar gauge is oriented horizontally or is in <strong>Auto</strong> mode. Automatically shows the y-axis scroll bar when there&rsquo;s a large amount of data. <p>This option only applies when the <strong>Bar size</strong> mode is set to <strong>Manual</strong>.</p></td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="legend-options">Legend options</h3>
+
+
+<div data-shared="visualizations/legend-options-1.md">
+            <p>Legend options control the series names and statistics that appear under or to the right of the graph. For more information about the legend, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Visibility</td>
+          <td>Toggle the switch to turn the legend on or off.</td>
+      </tr>
+      <tr>
+          <td>Mode</td>
+          <td>Use these settings to define how the legend appears in your visualization. <strong>List</strong> displays the legend as a list. This is a default display mode of the legend. <strong>Table</strong> displays the legend as a table.</td>
+      </tr>
+      <tr>
+          <td>Placement</td>
+          <td>Choose where to display the legend. <strong>Bottom</strong> places the legend below the graph. <strong>Right</strong> places the legend to the right of the graph.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Control how wide the legend is when placed on the right side of the visualization. This option is only displayed if you set the legend placement to <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>Choose which of the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">standard calculations</a> to show in the legend. You can have more than one.</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+
+        
+<h3 id="text-size-options">Text size options</h3>
+<p>Set the sizes of the following text elements in pixels:</p>
+<ul>
+<li><strong>Title</strong> - Bar name</li>
+<li><strong>Value</strong> - Bar value</li>
+</ul>
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options-1.md">
+            <p>Data links allow you to link to other panels, dashboards, and external resources while maintaining the context of the source panel.
+You can create links that include the series name or even the value under the cursor.
+To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Actions are not supported for this visualization.</p></blockquote></div>
+
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+</ul>
+<p>Data links for this visualization don&rsquo;t include the <strong>One click</strong> switch, however, if there&rsquo;s only one data link configured, that data link has single-click functionality.
+If multiple data links are configured, then clicking the visualization opens a menu that displays all the data links.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-2.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

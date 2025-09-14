@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<h1 id="example-of-dynamic-thresholds-per-dimension">Example of dynamic thresholds per dimension</h1>
+<p>In Grafana Alerting, each alert rule supports only one condition expression.</p>
+<p>That&rsquo;s enough in many cases—most alerts use a fixed numeric threshold like <code>latency &gt; 3s</code> or <code>error_rate &gt; 5%</code> to determine their state.</p>
+<p>As your alerting setup grows, you may find that different targets require different threshold values.</p>
+<p>Instead of duplicating alert rules, you can assign a <strong>different threshold value to each target</strong>—while keeping the same condition. This simplifies alert maintenance.</p>
+<p>This example shows how to do that using 
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">multi-dimensional alerts</a> and a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#math">Math expression</a>.</p>
+<h2 id="example-overview">Example overview</h2>
+<p>You&rsquo;re monitoring latency across multiple API services. Initially, you want to get alerted if the 95th percentile latency (<code>p95_api_latency</code>) exceeds 3 seconds, so your alert rule uses a single static threshold:</p>
+<pre>p95_api_latency &gt; 3</pre>
+<p>But the team quickly finds that some services require stricter thresholds. For example, latency for payment APIs should stay under 1.5s, while background jobs can tolerate up to 5s. The team establishes different thresholds per service:</p>
+<ul>
+<li><code>p95_api_latency{service=&quot;checkout-api&quot;}</code>: must stay under <code>1.5s</code>.</li>
+<li><code>p95_api_latency{service=&quot;auth-api&quot;}</code>: also strict, <code>1.5s</code>.</li>
+<li><code>p95_api_latency{service=&quot;catalog-api&quot;}</code>: less critical, <code>3s</code>.</li>
+<li><code>p95_api_latency{service=&quot;async-tasks&quot;}</code>: background jobs can tolerate up to <code>5s</code>.</li>
+</ul>
+<p>You want to avoid creating one alert rule per service—this is harder to maintain.</p>
+<p>In Grafana Alerting, you can define one alert rule that monitors multiple similar components like this scenario. This is called 
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">multi-dimensional alerts</a>: one alert rule, many alert instances—<strong>one per unique label set</strong>.</p>
+<p>But there&rsquo;s an issue: Grafana supports only <strong>one alert condition per rule</strong>.</p>
+<pre>One alert rule
+├─ One condition ( e.g., $A &gt; 3)
+│  └─ Applies to all returned series in $A
+│     ├─ {service=&#34;checkout-api&#34;}
+│     ├─ {service=&#34;auth-api&#34;}
+│     ├─ {service=&#34;catalog-api&#34;}
+│     └─ {service=&#34;async-tasks&#34;}</pre>
+<p>To evaluate per-service thresholds, you need a distinct threshold value for each returned series.</p>
+<h2 id="dynamic-thresholds-using-a-math-expression">Dynamic thresholds using a Math expression</h2>
+<p>You can create a dynamic alert condition by operating on two queries with a 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#math">Math expression</a>.</p>
+<ul>
+<li><code>$A</code> for query results (e.g., <code>p95_api_latency</code>).</li>
+<li><code>$B</code> for per-service thresholds (from CSV data or another query).</li>
+<li><code>$A &gt; $B</code> is the <em>Math</em> expression that defines the alert condition.</li>
+</ul>
+<p>Grafana evaluates the <em>Math</em> expression <strong>per series</strong>, by joining series from <code>$A</code> and <code>$B</code> based on their shared labels before applying the expression.</p>
+<p>Here’s an example of an arithmetic operation:</p>
+
+
+<div data-shared="alerts/math-example.md">
+            <ul>
+<li><code>$A</code> returns series <code>{host=&quot;web01&quot;} 30</code> and <code>{host=&quot;web02&quot;} 20</code>.</li>
+<li><code>$B</code> returns series <code>{host=&quot;web01&quot;} 10</code> and <code>{host=&quot;web02&quot;} 0</code>.</li>
+<li><code>$A + $B</code> returns <code>{host=&quot;web01&quot;} 40</code> and <code>{host=&quot;web02&quot;} 20</code>.</li>
+</ul>
+</div>
+
+        
+<p>In practice, you must align your threshold input with the label sets returned by your alert query.</p>
+<p>The following table illustrates how a per-service threshold is evaluated in the previous example:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">$A: p95 latency query</th>
+          <th style="text-align: left">$B: threshold value</th>
+          <th style="text-align: left">$C: $A&gt;$B</th>
+          <th style="text-align: left">State</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>{service=&quot;checkout-api&quot;} 3</code></td>
+          <td style="text-align: left"><code>{service=&quot;checkout-api&quot;} 1.5</code></td>
+          <td style="text-align: left"><code>{service=&quot;checkout-api&quot;} 1</code></td>
+          <td style="text-align: left"><strong>Firing</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>{service=&quot;auth-api&quot;} 1</code></td>
+          <td style="text-align: left"><code>{service=&quot;auth-api&quot;} 1.5</code></td>
+          <td style="text-align: left"><code>{service=&quot;auth-api&quot;} 0</code></td>
+          <td style="text-align: left"><strong>Normal</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>{service=&quot;catalog-api&quot;} 2</code></td>
+          <td style="text-align: left"><code>{service=&quot;catalog-api&quot;} 3</code></td>
+          <td style="text-align: left"><code>{service=&quot;catalog-api&quot;} 0</code></td>
+          <td style="text-align: left"><strong>Normal</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>{service=&quot;sync-work&quot;} 3</code></td>
+          <td style="text-align: left"><code>{service=&quot;sync-work&quot;} 5</code></td>
+          <td style="text-align: left"><code>{service=&quot;sync-work&quot;} 0</code></td>
+          <td style="text-align: left"><strong>Normal</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>In this example:</p>
+<ul>
+<li><code>$A</code> comes from the <code>p95_api_latency</code> query.</li>
+<li><code>$B</code> is manually defined with a threshold value for each series in <code>$A</code>.</li>
+<li>The alert condition compares <code>$A&gt;$B</code> using a <em>Math</em> relational operator (e.g., <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>==</code>, <code>!=</code>) that joins series by matching labels.</li>
+<li>Grafana evaluates the alert condition and sets the firing state where the condition is true.</li>
+</ul>
+<p>The <em>Math</em> expression works as long as each series in <code>$A</code> can be matched with exactly one series in <code>$B</code>. They must align in a way that produces a one-to-one match between series in <code>$A</code> and <code>$B</code>.</p>
+
+
+<div class="admonition admonition-caution"><blockquote><p class="title text-uppercase">Caution</p><p>If a series in one query doesn’t match any series in the other, it’s excluded from the result and a warning message is displayed:</p>
+<p><em>1 items <strong>dropped from union(s)</strong>: [&quot;$A &gt; $B&quot;: ($B: {service=payment-api})]</em></p></blockquote></div>
+
+<p><strong>Labels in both series don’t need to be identical</strong>. If labels are a subset of the other, they can join. For example:</p>
+<ul>
+<li><code>$A</code> returns series <code>{host=&quot;web01&quot;, job=&quot;event&quot;}</code> 30 and <code>{host=&quot;web02&quot;, job=&quot;event&quot;}</code> 20.</li>
+<li><code>$B</code> returns series <code>{host=&quot;web01&quot;}</code> 10 and <code>{host=&quot;web02&quot;}</code> 0.</li>
+<li><code>$A</code> + <code>$B</code> returns <code>{host=&quot;web01&quot;, job=&quot;event&quot;}</code> 40 and <code>{host=&quot;web02&quot;, job=&quot;event&quot;}</code> 20.</li>
+</ul>
+<h2 id="try-it-with-testdata">Try it with TestData</h2>
+<p>You can use the 
+    <a href="/docs/grafana/latest/datasources/testdata/">TestData data source</a> to replicate this example:</p>
+<ol>
+<li>
+<p>Add the <strong>TestData</strong> data source through the <strong>Connections</strong> menu.</p>
+</li>
+<li>
+<p>Create an alert rule.</p>
+<p>Navigate to <strong>Alerting</strong> → <strong>Alert rules</strong> and click <strong>New alert rule</strong>.</p>
+</li>
+<li>
+<p>Simulate a query (<code>$A</code>) that returns latencies for each service.</p>
+<p>Select <strong>TestData</strong> as the data source and configure the scenario.</p>
+<ul>
+<li>
+<p>Scenario: Random Walk</p>
+</li>
+<li>
+<p>Alias: latency</p>
+</li>
+<li>
+<p>Labels: service=api-$seriesIndex</p>
+</li>
+<li>
+<p>Series count: 4</p>
+</li>
+<li>
+<p>Start value: 1</p>
+</li>
+<li>
+<p>Min: 1, Max: 4</p>
+<p>This uses <code>$seriesIndex</code> to assign unique service labels: <code>api-0</code>, <code>api-1</code>, etc.</p>
+</li>
+</ul>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png"data-srcset="/media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png?w=320 320w, /media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png?w=550 550w, /media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png?w=750 750w, /media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png?w=900 900w, /media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png?w=1040 1040w, /media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png?w=1240 1240w, /media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png?w=1920 1920w"
+             data-sizes="auto"alt="TestData data source returns 4 series to simulate latencies for distinct API services."width="2330"height="1348"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/example-dynamic-thresholds-latency-series-v2.png"
+               alt="TestData data source returns 4 series to simulate latencies for distinct API services."width="2330"height="1348"/>
+           </noscript></div></a></figure>
+</li>
+<li>
+<p>Define per-service thresholds with static data.</p>
+<p>Add a new query (<code>$B</code>) and select <strong>TestData</strong> as the data source.</p>
+<p>From <strong>Scenario</strong>, select <strong>CSV Content</strong> and paste this CSV:</p>
+<pre> service,value
+ api-0,1.5
+ api-1,1.5
+ api-2,3
+ api-3,5</pre>
+<p>The <code>service</code> column must match the labels from <code>$A</code>.</p>
+<p>The <code>value</code> column is a numeric value used for the alert comparison.</p>
+<p>For details on CSV format requirements, see 
+    <a href="/docs/grafana/latest/alerting/best-practices/table-data/">table data examples</a>.</p>
+</li>
+<li>
+<p>Add a new <strong>Reduce</strong> expression (<code>$C</code>).</p>
+<ul>
+<li>Type: Reduce</li>
+<li>Input: A</li>
+<li>Function: Mean</li>
+<li>Name: C</li>
+</ul>
+<p>This calculates the average latency for each service: <code>api-0</code>, <code>api-1</code>, etc.</p>
+</li>
+<li>
+<p>Add a new <strong>Math</strong> expression.</p>
+<ul>
+<li>Type: Math</li>
+<li>Expression: <code>$C &gt; $B</code></li>
+<li>Set this expression as the <strong>alert condition</strong>.</li>
+</ul>
+<p>This fires if the average latency (<code>$C</code>) exceeds the threshold from <code>$B</code> for any service.</p>
+</li>
+<li>
+<p><strong>Preview</strong> the alert.</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p "
+       style="max-width: 750px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link captioned"
+           href="/media/docs/alerting/example-dynamic-thresholds-preview-v3.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload mb-0"
+             data-src="/media/docs/alerting/example-dynamic-thresholds-preview-v3.png"data-srcset="/media/docs/alerting/example-dynamic-thresholds-preview-v3.png?w=320 320w, /media/docs/alerting/example-dynamic-thresholds-preview-v3.png?w=550 550w, /media/docs/alerting/example-dynamic-thresholds-preview-v3.png?w=750 750w, /media/docs/alerting/example-dynamic-thresholds-preview-v3.png?w=900 900w, /media/docs/alerting/example-dynamic-thresholds-preview-v3.png?w=1040 1040w, /media/docs/alerting/example-dynamic-thresholds-preview-v3.png?w=1240 1240w, /media/docs/alerting/example-dynamic-thresholds-preview-v3.png?w=1920 1920w"
+             data-sizes="auto"alt="Alert preview evaluating multiple series with distinct threshold values"width="1175"height="873"title="Alert preview evaluating multiple series with distinct threshold values"/>
+           <noscript>
+             <img
+               src="/media/docs/alerting/example-dynamic-thresholds-preview-v3.png"
+               alt="Alert preview evaluating multiple series with distinct threshold values"width="1175"height="873"title="Alert preview evaluating multiple series with distinct threshold values"/>
+           </noscript></div><figcaption class="w-100p caption text-gray-13  ">Alert preview evaluating multiple series with distinct threshold values</figcaption></a></figure>
+
+   <div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+     <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+     <div>
+       <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+       <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+   This feature can be seen on <a href="https://play.grafana.org/alerting/grafana/aep7osljvuku8e/view" target="_blank" rel="noopener noreferrer">this alert example</a>.</p>
+       <div class="mx-auto">
+         <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/alerting/grafana/aep7osljvuku8e/view">Try it</a>
+       </div>
+     </div>
+   </div>
+
+</li>
+</ol>
+<h2 id="other-use-cases">Other use cases</h2>
+<p>This example showed how to build a single alert rule with different thresholds per series using 
+    <a href="/docs/grafana/latest/alerting/best-practices/multi-dimensional-alerts/">multi-dimensional alerts</a> and 
+    <a href="/docs/grafana/latest/alerting/fundamentals/alert-rules/queries-conditions/#math">Math expressions</a>.</p>
+<p>This approach scales well when monitoring similar components with distinct reliability goals.</p>
+<p>By aligning series from two queries, you can apply a dynamic threshold—one value per label set—without duplicating rules.</p>
+<p>While this example uses static CSV content to define thresholds, the same technique works in other scenarios:</p>
+<ul>
+<li><strong>Dynamic thresholds from queries or recording rules</strong>: Fetch threshold values from a real-time query, or from 
+    <a href="/docs/grafana/latest/alerting/alerting-rules/create-recording-rules/">custom recording rules</a>.</li>
+<li><strong>Combine multiple conditions</strong>: Build more advanced threshold logic by combining multiple conditions—such as latency, error rate, or traffic volume.</li>
+</ul>
+<p>For example, you can define a PromQL expression that sets a latency threshold which adjusts based on traffic—allowing higher response times during periods of high-load.</p>
+<pre>(
+  // Fires when p95 latency &gt; 2s during usual traffic (≤ 1000 req/s)
+  service:latency:p95 &gt; 2 and service:request_rate:rate1m &lt;= 1000
+)
+or
+(
+  // Fires when p95 latency &gt; 4s during high traffic (&gt; 1000 req/s)
+  service:latency:p95 &gt; 4 and service:request_rate:rate1m &gt; 1000
+)</pre>

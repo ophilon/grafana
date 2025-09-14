@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<h1 id="migrate-from-grafana-ossenterprise-to-grafana-cloud-manually">Migrate from Grafana OSS/Enterprise to Grafana Cloud manually</h1>
+<p>This migration guide is designed to assist Grafana OSS/Enterprise users in seamlessly transitioning manually to Grafana Cloud.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>There isn&rsquo;t yet a standard method for importing existing data into Grafana Cloud from self-managed databases.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-tip"><blockquote><p class="title text-uppercase">Tip</p><p>You can use the 
+    <a href="/docs/grafana/latest/administration/migration-guide/cloud-migration-assistant/">Grafana Cloud Migration Assistant</a>, generally available in Grafana v12, to automatically migrate your resources to Grafana Cloud.</p></blockquote></div>
+
+<h2 id="plan-and-perform-a-manual-migration">Plan and perform a manual migration</h2>
+<p>If you need to migrate resources beyond what is supported by the Grafana Cloud Migration Assistant, you can migrate them manually with this guide. Moving your team from Grafana OSS/Enterprise to Grafana Cloud manually involves some coordination and communication in addition to the technical migration in the following documentation.</p>
+<p>If you are an existing Grafana OSS/Enterprise customer, contact your account team at Grafana Labs to plan a transition period, arrange licenses, and learn how much your Grafana Cloud subscription costs in comparison to Grafana OSS/Enterprise. The account team can also offer specific guidance and arrange professional services to assist with your migration if needed.</p>
+<p>Evaluate Grafana Cloud&rsquo;s security and compliance policies at the <a href="https://trust.grafana.com/" target="_blank" rel="noopener noreferrer">Grafana Labs Trust Center</a>.</p>
+<p>You may choose to test Grafana Cloud for some time before migrating your entire organization. To do so, set up a “test” stack in Cloud and migrate resources there first. If you use Grafana Alerting, make sure to set up a different contact point so that alerts do not fire twice.</p>
+<p>When you decide to migrate, set aside a day of cutover during which users should not create new dashboards or alerts. Migrate any newly-created resources, turn on your production Alerting contact points and notification policies in Cloud and turn them off in Grafana OSS/Enterprise, and notify your users. You may also choose to redirect the Grafana OSS/Enterprise URL to your Grafana Cloud URL.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Component</th>
+          <th>Migration Effort</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Folders</td>
+          <td>Low</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>Dashboards</td>
+          <td>Low</td>
+          <td>Data source references might need to be renamed</td>
+      </tr>
+      <tr>
+          <td>Alerts</td>
+          <td>Medium</td>
+          <td>Data source based alerts might need to be adapted</td>
+      </tr>
+      <tr>
+          <td>Plugins</td>
+          <td>Medium</td>
+          <td>Depends on the feature set of the plugin</td>
+      </tr>
+      <tr>
+          <td>Data sources</td>
+          <td>High</td>
+          <td>If the data sources reference any secrets, you need to provide them again</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Ensure you have the following:</p>
+<ul>
+<li>A <a href="/docs/grafana-cloud/get-started/">Grafana Cloud Stack</a> and access to a Linux Machine (or a working WSL2 installation) to run the code snippets in this guide.</li>
+<li>Administrator access to a Grafana Cloud stack. To check you access level, Go to <code>/orgs/&lt;your-org-name&gt;/members</code></li>
+<li>Administrator access to your existing Grafana OSS/Enterprise instance. To check your access level, Go to <code>https://&lt;grafana-onprem-url&gt;/admin/users</code></li>
+<li>Access to the credentials used to connect to your data sources. For example, API keys or usernames and passwords. Since this information is encrypted, it cannot be copied from one instance to the other.</li>
+<li>If some of your data sources are only available from inside your network, refer to the requirements for <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private Data Source Connect</a></li>
+<li>For Plugins, Reports and Playlists only: The <a href="https://github.com/curl/curl" target="_blank" rel="noopener noreferrer">curl</a> and <a href="https://jqlang.github.io/jq/download/" target="_blank" rel="noopener noreferrer">jq</a> command line tools</li>
+</ul>
+<h2 id="upgrade-grafana-ossenterprise-to-the-latest-version">Upgrade Grafana OSS/Enterprise to the latest version</h2>
+<p>Grafana Cloud stacks generally run the latest version of Grafana. In order to avoid issues during migration, upgrade Grafana by following our guides <a href="/docs/grafana/latest/upgrade-guide/">here</a>.</p>
+<h2 id="migrate-grafana-resources">Migrate Grafana resources</h2>
+<p>In this guide, the term <strong>&ldquo;resources&rdquo;</strong> refers to things you create in Grafana, like dashboards, folders, alerts, data sources, and permissions.</p>
+<p>The process of migration works by pulling the existing resources (like dashboards and folders) from the old Grafana instance, modifying them if necessary, and then pushing them to the new Grafana Cloud instance.</p>
+<p>In the provided code snippets throughout this migration guide, you need to substitute specific placeholders with your actual credentials and instance URLs. Make the following replacements before executing the scripts:</p>
+<ul>
+<li><code>$GRAFANA_SOURCE_TOKEN</code> with the access token from your Grafana OSS/Enterprise instance.</li>
+<li><code>$GRAFANA_DEST_TOKEN</code> with the access token from your Grafana Cloud instance.</li>
+<li><code>$GRAFANA_ONPREM_INSTANCE_URL</code> with the URL of your Grafana OSS/Enterprise instance. For example: <code>https://grafana.mydomain.com</code></li>
+<li><code>$GRAFANA_CLOUD_INSTANCE_URL</code> with the URL of your Grafana Cloud instance. For example: <code>https://myorganization.grafana.net</code></li>
+</ul>
+<h3 id="migrate-grafana-plugins">Migrate Grafana Plugins</h3>
+<p>Migration of plugins is the first step when transitioning from Grafana OSS/Enterprise to Grafana Cloud, given that plugins are integral components that influence the functionality and display of other Grafana resources, such as dashboards.</p>
+<ol>
+<li>
+<p>To retrieve the Plugins installed in your Grafana OSS/Enterprise instance, issue an HTTP GET request to the <code>/api/plugins</code> endpoint. Use the following shell command:</p>
+<pre>response=$(curl -s -H &#34;Accept: application/json&#34; -H &#34;Authorization: Bearer $GRAFANA_SOURCE_TOKEN&#34; &#34;${GRAFANA_ONPREM_INSTANCE_URL}/api/plugins&#34;)
+
+plugins=$(echo $response | jq &#39;[.[] | select(.signatureType == &#34;community&#34; or (.signatureType != &#34;internal&#34; and .signatureType != &#34;&#34;)) | {name: .id, version: .info.version}]&#39;)
+
+echo &#34;$plugins&#34; &gt; plugins.json</pre>
+<p>The command provided above will carry out an HTTP request to this endpoint and accomplish several tasks:</p>
+<ul>
+<li>It issues a GET request to the <code>/api/plugins</code> endpoint of your Grafana OSS/Enterprise instance to retrieve a list of installed plugins.</li>
+<li>It filters out the list to only include community plugins and those signed by external parties.</li>
+<li>It extracts the plugin ID and version before storing them in a <code>plugins.json</code> file.</li>
+</ul>
+</li>
+<li>
+<p>To import the plugins in your Grafana Cloud Instance, execute the following command. This command constructs an HTTP POST request to <code>/api/instances/&lt;stack_slug&gt;/plugins</code></p>
+<pre>CLOUD_INSTANCE=$GRAFANA_CLOUD_INSTANCE_URL
+
+stack_slug=&#34;${CLOUD_INSTANCE#*//}&#34;
+stack_slug=&#34;${stack_slug%%.*}&#34;
+jq -c &#39;.[]&#39; plugins.json | while IFS= read -r plugin; do
+  name=$(echo &#34;$plugin&#34; | jq -r &#39;.name&#39;)
+  version=$(echo &#34;$plugin&#34; | jq -r &#39;.version&#39;)
+  echo &#34;Adding plugin $name with version $version to stack $stack_slug&#34;
+  response=$(curl -s -X POST &#34;/api/instances/$stack_slug/plugins&#34; \
+            -H &#34;Authorization: Bearer &lt;GRAFANA_CLOUD_ACCESS_TOKEN&gt;&#34; \
+            -H &#34;Content-Type: application/json&#34; \
+            -d &#34;{\&#34;plugin\&#34;: \&#34;$name\&#34;, \&#34;version\&#34;: \&#34;$version\&#34;}&#34;)
+  echo &#34;POST response for plugin $name version $version: $response&#34;
+done</pre>
+<p>Replace <code>&lt;GRAFANA_CLOUD_ACCESS_TOKEN&gt;</code> with your Grafana Cloud Access Policy Token. To create a new one, refer to Grafana Cloud <a href="/docs/grafana-cloud/account-management/authentication-and-permissions/access-policies/">access policies documentation</a></p>
+<p>This script iterates through each plugin listed in the <code>plugins.json</code> file:</p>
+<ul>
+<li>It constructs a POST request for each plugin to add it to the specified Grafana Cloud instance.</li>
+<li>It reports back the response for each POST request to give you confirmation or information about any issues that occurred.</li>
+</ul>
+</li>
+</ol>
+<h3 id="migrate-resources-that-are-already-provisioned-as-code">Migrate resources that are already provisioned as-code</h3>
+<p>If you already use tools like <a href="/docs/grafana-cloud/developer-resources/infrastructure-as-code/terraform/">Terraform</a>, <a href="/docs/grafana-cloud/developer-resources/infrastructure-as-code/ansible/">Ansible</a>, or <a href="/docs/grafana-cloud/developer-resources/api-reference/http-api/">Grafana’s HTTP API</a> to provision resources to Grafana, redirect those to the new Grafana Cloud instance by replacing the Grafana URL and credentials.</p>
+<h3 id="migrate-dashboards-folders-data-sources-library-panels-and-alert-rules-using-grizzly">Migrate dashboards, folders, data sources, library panels, and alert rules using Grizzly</h3>
+<p>Grizzly is a command line tool that streamlines working with Grafana resources. Use it to migrate most of the content in your Grafana instance. Follow these steps in your terminal to install Grizzly. If you need to change the os or the architecture, Refer to the Grizzly <a href="https://github.com/grafana/grizzly/releases" target="_blank" rel="noopener noreferrer">releases</a> and use the binary according to your needs.</p>
+<pre># download the binary (adapt os and arch as needed)
+$ curl -fSL -o &#34;/usr/local/bin/grr&#34; &#34;https://github.com/grafana/grizzly/releases/download/v0.3.1/grr-linux-amd64&#34;
+
+# make it executable
+$ chmod a+x &#34;/usr/local/bin/grr&#34;
+
+# have fun :)
+$ grr --help</pre>
+<p>First, create a new folder on your computer and navigate to it to keep your work organized.</p>
+<pre>mkdir grafana-migration
+cd grafana-migration</pre>
+<p>To give grizzly access to your Grafana OSS/Enterprise instance and the Grafana Cloud Instance, you need to create a <a href="/docs/grafana-cloud/account-management/authentication-and-permissions/service-accounts/">service account</a> and a corresponding <a href="https://www.grafana.com/docs/grafana-cloud/account-management/authentication-and-permissions/service-accounts/#service-account-tokens" target="_blank" rel="noopener noreferrer">access token</a> on each instance. You can use these tokens to authenticate requests to pull and push resources. Follow these steps on your Grafana OSS/Enterprise instance:</p>
+<ul>
+<li>Navigate to the <strong>Administration -&gt; Users and access -&gt; Service Accounts</strong> Page within the Grafana OSS/Enterprise instance.</li>
+<li>Click on <strong>Add Service Account</strong></li>
+<li>Give the Service account a descriptive name like “grizzly-migration” and apply the <strong>Admin</strong> role.</li>
+<li>After creating the account, click on <strong>Add Service Account Token</strong></li>
+<li>Enter a name for the token</li>
+<li>Select <strong>Set expiration date</strong> and enter an expiry date for the token</li>
+<li>Click <strong>Generate Token</strong> and save this token in a password manager or other secure place.</li>
+</ul>
+<p>Complete the service account creation and token generation process for your Grafana Cloud Instance by following the same steps outlined above for your Grafana OSS/Enterprise instance. This ensures that Grizzly has the necessary access token for both platforms.</p>
+<p>Next, to tell grizzly which instances you’re going to work on, use the following commands:</p>
+<pre>grr config create-context grafana-onprem
+grr config use-context grafana-onprem
+grr config set output-format json
+grr config set grafana.url $GRAFANA_ENT_INSTANCE_URL
+grr config set grafana.token $GRAFANA_SOURCE_TOKEN
+
+grr config create-context grafana-cloud
+grr config use-context grafana-cloud
+grr config set output-format json
+grr config set grafana.url $GRAFANA_CLOUD_INSTANCE_URL
+grr config set grafana.token $GRAFANA_DEST_TOKEN</pre>
+<p>Afterward, you will have two contexts set up; one for your local Grafana OSS/Enterprise installation and one for Grafana Cloud. The <code>grr config use-context</code> command allows you to switch between the two instances while using Grizzly.</p>
+<h4 id="export-existing-resources">Export existing resources</h4>
+<p>Switch to the <code>grafana-onprem</code> context and use the pull command to fetch the resources you want to migrate:</p>
+<pre>grr config use-context grafana-onprem
+grr pull . \
+  -t &#39;Dashboard/*&#39; \
+  -t &#39;Datasource/*&#39; \
+  -t &#39;DashboardFolder/*&#39; \
+  -t &#39;LibraryElement/*&#39; \
+  -t &#39;AlertRuleGroup/*&#39; \
+  -t &#39;AlertContactPoint/*&#39; \
+  -t &#39;AlertNotificationPolicy/*&#39;</pre>
+<p>This will fetch the specified resources from Grafana and store them in the current directory.</p>
+<h4 id="push-the-resources-to-your-grafana-cloud-stack">Push the resources to your Grafana Cloud stack</h4>
+<p>With everything in place, switch to the Grafana cloud context and use the following commands to apply the resources to the configured instance:</p>
+<pre>grr config use-context grafana-cloud
+
+grr apply . -t &#39;DashboardFolder/*&#39;
+grr apply . -t &#39;LibraryElement/*&#39;
+grr apply . -t &#39;Datasource/*&#39;
+grr apply . -t &#39;Dashboard/*&#39;
+grr apply . -t &#39;AlertRuleGroup/*&#39;
+grr apply . -t &#39;AlertContactPoint/*&#39;
+grr apply . -t &#39;AlertNotificationPolicy/*&#39;</pre>
+<h4 id="fill-in-data-source-credentials">Fill in data source credentials</h4>
+<p>After migrating your data sources, you must fill in their credentials, like tokens, usernames, or passwords. For security reasons, grizzly cannot read encrypted data source credentials from the existing Grafana instance.</p>
+<p>To fill in the missing authentication information, go to the <strong>Connections -&gt; Datasources</strong> page in your new Grafana Cloud instance and verify that credentials for all data sources are set. You can skip data sources starting with <code>grafanacloud</code> - These are managed by Grafana Cloud directly and provide access to Grafana Cloud databases.</p>
+<p>If one of your data sources can only be accessed from your internal network, take a look at the <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private Data Source Connect documentation</a>.</p>
+<p>After you have configured the data sources, all your dashboards should be available as they were before.</p>
+<h5 id="optional-configure-private-data-source-connect-pdc">(Optional) Configure Private Data Source Connect (PDC)</h5>
+<p>This step only applies if you use Grafana OSS/Enterprise to access network-secured data sources.</p>
+<p>Some data sources, like Prometheus or SQL databases, live on private networks or behind fire wall rules that are not accessible by Grafana Cloud. If your Grafana OSS/Enterprise instance was hosted on the same network as your data source, you might find that Grafana Cloud cannot connect to all of the same data sources that Grafana OSS/Enterprise could access.</p>
+<p>To access these data sources from Grafana Cloud, follow our guide to <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/configure-pdc/">configure PDC in your network</a>, and then configure the applicable Grafana data sources to <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/configure-pdc/#configure-a-data-source-to-use-private-data-source-connect-pdc">connect using PDC</a>. Note that PDC is only needed for your network-secured data sources, not for data sources like Splunk or CloudWatch that are accessible over the public internet.</p>
+<p>For more information on how PDC works, see our <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">overview document</a>.</p>
+<h3 id="migrate-reports-and-playlists-using-grafanas-http-api">Migrate reports and playlists using Grafana’s HTTP API</h3>
+<p>Grizzly does not currently support Reports and Playlists as a resource, so you can perform this migration using Grafana’s HTTP API using the <code>curl</code> command.</p>
+<h4 id="reports-for-grafana-enterprise-only">Reports (For Grafana Enterprise only)</h4>
+<ol>
+<li>
+<p>To export your Reports, you will need to invoke the <code>api/reports</code> endpoint of your Grafana OSS/Enterprise instance. The below shell command accomplishes this by using <code>curl</code> to send a request to the endpoint and then stores the retrieved report configuration into a file named <code>reports.json</code>.</p>
+<pre>curl ${GRAFANA_ONPREM_INSTANCE_URL}/api/reports -H &#34;Authorization: Bearer $GRAFANA_SOURCE_TOKEN&#34; &gt; reports.json</pre>
+</li>
+<li>
+<p>To upload the configuration data you have saved in the <code>reports.json</code> file to your new Grafana Cloud instance, run the below command. The command will take the local file <code>reports.json</code> and push its contents to the <code>api/reports</code> endpoint of your Grafana Cloud instance.</p>
+<pre>jq -M -r -c &#39;.[]&#39; &lt; reports.json | while read -r json; do curl -XPOST ${GRAFANA_CLOUD_INSTANCE_URL}/api/reports -H&#34;Authorization: Bearer $GRAFANA_DEST_TOKEN&#34; -d&#34;$json&#34; -H &#39;Content-Type: application/json&#39;; done</pre>
+</li>
+</ol>
+<h4 id="playlists">Playlists</h4>
+<ol>
+<li>
+<p>To retrieve the Playlists from your Grafana OSS/Enterprise instance, issue an HTTP GET request to the <code>/api/playlists</code> endpoint. Use the following shell command:</p>
+<pre>mkdir playlists
+curl &#34;${GRAFANA_ONPREM_INSTANCE_URL}/api/playlists&#34; \
+-H &#34;Authorization: Bearer $GRAFANA_SOURCE_TOKEN&#34; \
+| jq -M -r -c &#39;.[] | .uid&#39; \
+| while read -r uid; do \
+curl &#34;${GRAFANA_ONPREM_INSTANCE_URL}/api/playlists/$uid&#34; \
+    -H &#34;Authorization: Bearer $GRAFANA_SOURCE_TOKEN&#34; \
+    &gt; playlists/$uid.json; \
+done</pre>
+<p>The command provided above will carry out an HTTP request to this endpoint and accomplish several tasks:</p>
+<ul>
+<li>It fetches an array of all the playlists available in the Grafana OSS/Enterprise instance.</li>
+<li>It then iterates through each playlist to obtain the complete set of details.</li>
+<li>Finally, it stores each playlist&rsquo;s specification as separate JSON files within a directory named <code>playlists</code></li>
+</ul>
+</li>
+<li>
+<p>To import the playlists, execute the following command. This command constructs an HTTP POST request targeting the <code>/api/playlists</code> endpoint of your Grafana Cloud Instance.</p>
+<pre>for playlist in playlists/*; do
+  curl -XPOST &#34;${GRAFANA_CLOUD_INSTANCE_URL}/api/playlists&#34; \
+    -H &#34;Authorization: Bearer $GRAFANA_DEST_TOKEN&#34; \
+    -H &#34;Content-Type: application/json&#34; \
+    -d $playlist &gt; /dev/null;
+done</pre>
+</li>
+</ol>
+<h3 id="migrate-single-sign-on-configuration">Migrate single sign-on configuration</h3>
+<p>Grafana Cloud stacks support all of the same authentication and authorization options as Grafana OSS/Enterprise, except for <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/anonymous-auth/">anonymous authentication</a> and use of the <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/auth-proxy/">Auth proxy</a>. However, single sign-on settings cannot be exported and imported like dashboards, alerts, and other resources.</p>
+<p>To set up SAML authentication from scratch using Grafana’s UI or API, follow <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml-ui/">these instructions</a> to Configure SAML authentication in Grafana.</p>
+<p>LDAP and OIDC/OAuth2 can only be configured in Grafana Cloud by the Grafana Labs support team. Follow <a href="/docs/grafana-cloud/account-management/authentication-and-permissions/">these instructions</a> to request SSO configuration from the support team.</p>
+<h3 id="migrate-custom-grafana-configuration">Migrate custom Grafana configuration</h3>
+<p>You may have customized the <a href="/docs/grafana/latest/setup-grafana/configure-grafana/">configuration</a> of your Grafana OSS/Enterprise instance, for example with feature toggles, custom auth, or embedding options. Since Grafana configuration is stored in environment variables or the filesystem where Grafana runs, Grafana Cloud users do not have access to it. However, you can open a support ticket to ask a Grafana Labs support engineer for customizations.</p>
+<p>The following customizations are available via support:</p>
+<ul>
+<li>Enabling <a href="http://www.grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles" target="_blank" rel="noopener noreferrer">feature toggles</a>.</li>
+<li><a href="http://www.grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication" target="_blank" rel="noopener noreferrer">Single sign-on and team sync using SAML, LDAP, or OAuth</a>.</li>
+<li>Enable <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#allow_embedding">embedding Grafana dashboards in other applications</a> for Grafana Cloud contracted customers.</li>
+<li><a href="/docs/grafana/latest/setup-grafana/configure-security/audit-grafana/">Audit logging</a> (<a href="/docs/grafana-cloud/account-management/usage-insights/">Usage insights logs and dashboards</a> are available in select Grafana Cloud paid accounts).</li>
+</ul>
+<p>Note that the following custom configurations are not supported in Grafana Cloud:</p>
+<ul>
+<li><a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/anonymous-auth/">Anonymous user access</a>.</li>
+<li><a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/auth-proxy/">Auth proxy</a>.</li>
+<li><a href="/docs/grafana/latest/setup-grafana/configure-security/configure-database-encryption/">Third-party database encryption</a> and the <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-database-encryption/encrypt-secrets-using-hashicorp-key-vault/">Hashicorp Vault</a> integration.</li>
+<li>Running self-signed plugins, like custom-built data sources or visualizations. For more information on plugin signing, refer to our <a href="/developers/plugin-tools/publish-a-plugin/sign-a-plugin">developer documentation</a>.</li>
+</ul>
+<p>If you have a custom configuration in Grafana OSS/Enterprise that is not listed here, reach out to our support team to find out whether they can help you set it up.</p>
+<h2 id="next-steps">Next steps</h2>
+<p>After you have successfully migrated resources and configuration from Grafana OSS/Enterprise, consider the following steps to enhance your monitoring experience:</p>
+<ul>
+<li><strong>Get started with Grafana Cloud</strong>: learn more about the functionality available in Grafana Cloud, which is not available in the open source or Enterprise editions. Read more in <a href="/docs/grafana-cloud/get-started/">Get started with Grafana Cloud</a></li>
+<li><strong>AWS PrivateLink for Grafana Cloud</strong>: securely transmit telemetry data from your AWS Virtual Private Cloud (VPC) to Grafana Cloud, entirely within the AWS network.
+Learn how to set this up with <a href="/docs/grafana-cloud/send-data/aws-privatelink/">AWS PrivateLink Integration</a>.</li>
+<li><strong>Azure PrivateLink for Grafana Cloud</strong>, securely transmit telemetry from your Azure Virtual Network to Grafana Cloud while staying on the Azure network, and avoid exposing your traffic to the public internet.
+Learn how to set this up with <a href="/docs/grafana-cloud/send-data/azure-privatelink/">AWS PrivateLink Integration</a>.</li>
+<li><strong><a href="/docs/grafana-cloud/monitor-infrastructure/integrations/">Grafana Integrations</a></strong>: ready-made integrations to make monitoring your infrastructure and applications more straightforward.</li>
+</ul>

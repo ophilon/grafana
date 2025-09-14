@@ -1,0 +1,32 @@
+<svg width="350" height="200" viewBox="0 0 350 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="350" height="200" rx="40" fill="#FDE8BE"/>
+<path d="M204 130.8H213.7" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M208.9 126V135.7" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M307 96.8H316.7" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M311.9 92V101.7" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M145 25.8H154.7" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M149.9 21V30.7" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M57.5 69C60.5376 69 63 66.5376 63 63.5C63 60.4624 60.5376 58 57.5 58C54.4624 58 52 60.4624 52 63.5C52 66.5376 54.4624 69 57.5 69Z" fill="white"/>
+<path d="M294.5 147C297.538 147 300 144.538 300 141.5C300 138.462 297.538 136 294.5 136C291.462 136 289 138.462 289 141.5C289 144.538 291.462 147 294.5 147Z" fill="white"/>
+<path d="M275.5 50C278.538 50 281 47.5376 281 44.5C281 41.4624 278.538 39 275.5 39C272.462 39 270 41.4624 270 44.5C270 47.5376 272.462 50 275.5 50Z" fill="white"/>
+<path d="M172.301 118.7V143.5" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M76.1016 143.5V91.8C76.1016 87.7 79.4016 84.4 83.5016 84.4H109.002" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M136.901 143.5C132.901 150.5 123.901 153 116.901 149C114.601 147.7 112.701 145.8 111.401 143.5H68.8008V150.9C68.8008 159.1 75.4008 165.7 83.6008 165.7H164.901C173.101 165.7 179.701 159.1 179.701 150.9V143.5H136.901V143.5Z" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M157 56.1C140.4 51.1 122.9 60.6 118 77.2C115.8 84.6 116.4 92.5 119.7 99.5L109.5 120.1L132.8 113.7C148 122.2 167.2 116.8 175.7 101.6C184.2 86.4 178.8 67.2 163.6 58.7C161.5 57.7 159.3 56.7 157 56.1Z" fill="url(#paint0_radial)"/>
+<path d="M137.301 77.6C136.301 77.5 135.401 78.3 135.301 79.3C135.201 80.3 136.001 81.2 137.001 81.3C138.001 81.4 138.901 80.6 139.001 79.6C139.101 78.6 138.301 77.7 137.301 77.6Z" stroke="#FDE8BE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M159.401 78.9C158.401 78.8 157.501 79.6 157.401 80.6C157.301 81.6 158.101 82.5 159.101 82.6C160.101 82.7 161.001 81.9 161.101 80.9C161.201 79.9 160.401 79 159.401 78.9Z" stroke="#FDE8BE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M157.502 90.4C157.102 95.1 153.002 98.6 148.302 98.3C143.602 98.6 139.502 95.1 139.102 90.4" stroke="#FDE8BE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M247.1 84.6C246.1 84.5 245.2 85.3 245.1 86.3C245 87.3 245.8 88.2 246.8 88.3C247.8 88.4 248.7 87.6 248.8 86.6C248.9 85.5 248.2 84.7 247.1 84.6Z" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M269.301 85.9C268.301 85.8 267.401 86.6 267.301 87.6C267.201 88.6 268.001 89.5 269.001 89.6C270.001 89.7 270.901 88.9 271.001 87.9C271.101 86.9 270.301 86 269.301 85.9Z" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M267.3 97.4C266.9 102.1 262.8 105.6 258.1 105.3C253.4 105.6 249.3 102.1 248.9 97.4H267.3Z" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M188.802 92.7C204.002 101.2 223.202 95.8 231.702 80.6C240.202 65.4 234.802 46.2 219.602 37.7C217.502 36.5 215.402 35.6 213.102 35C196.502 30 179.002 39.5 174.102 56.1" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M226.9 98.7C230.3 115.8 246.9 126.8 263.9 123.4C280.9 120 292 103.4 288.6 86.4C288.1 84.1 287.4 81.8 286.4 79.7C279.4 63.9 260.8 56.7 245 63.8" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M181.301 61.2999H190.101C197.801 61.2999 204.101 55.1999 204.201 47.4999C204.201 44.6999 209.801 44.3999 209.801 49.6999C209.501 53.1999 208.901 56.5999 207.901 59.8999V59.9999H223.201C224.701 59.9999 225.801 61.1999 225.801 62.5999C225.801 63.9999 224.601 65.1999 223.201 65.1999H220.601C222.101 65.1999 223.201 66.3999 223.201 67.7999C223.201 69.2999 222.001 70.4 220.601 70.4H219.301C220.801 70.4 221.901 71.5999 221.901 72.9999C221.901 74.3999 220.701 75.5999 219.301 75.5999H218.001C219.501 75.5999 220.601 76.8 220.601 78.2C220.601 79.6 219.401 80.7999 218.001 80.7999H207.201C199.701 80.7999 203.401 76.7999 188.401 76.7999" stroke="#FBC55A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+<defs>
+<radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(115.5 70.5) rotate(40.4547) scale(84.7659 91.1109)">
+<stop stop-color="#FCC15B"/>
+<stop offset="1" stop-color="#FC9E5B"/>
+</radialGradient>
+</defs>
+</svg>
+

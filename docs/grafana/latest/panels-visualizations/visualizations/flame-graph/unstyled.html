@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<h1 id="flame-graph">Flame graph</h1>
+<p>Flame graphs let you visualize <a href="/docs/pyroscope/latest/introduction/what-is-profiling/">profiling</a> data. Using this visualization, a <a href="/docs/pyroscope/latest/view-and-analyze-profile-data/profiling-types/">profile</a> can be represented as a <a href="#flame-graph-mode">flame graph</a>, <a href="#top-table-mode">top table</a>, or both.</p>
+<p>For example, if you want to understand which parts of a program consume the most resources, such as CPU time, memory, or I/O operations, you can use a flame graph to visualize and analyze where potential performance issues are:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 750px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="A flame graph visualization for a system profile with both flame graph and top table mode."width="2874"height="1372"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-dark-v12.0.png"
+            alt="A flame graph visualization for a system profile with both flame graph and top table mode."width="2874"height="1372"/>
+        </noscript></div></a></figure>
+<p>You can use a flame graph visualization if you need to:</p>
+<ul>
+<li>Identify any performance hotspots to find where code optimizations may be needed.</li>
+<li>Diagnose the root cause of any performance degradation.</li>
+<li>Analyze the behavior of complex systems, including distributed systems or microservices architectures.</li>
+</ul>
+<p>To learn more about how Grafana Pyroscope visualizes flame graphs, refer to <a href="/docs/pyroscope/latest/view-and-analyze-profile-data/flamegraphs/">Flame graphs: Visualizing performance data</a>.</p>
+<h2 id="configure-a-flame-graph-visualization">Configure a flame graph visualization</h2>
+<p>Once you’ve created a 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">dashboard</a>, the following video shows you how to configure a flame graph visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=VEvK0JkPlOY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/cdl34qv4zzg8wa/" target="_blank" rel="noopener noreferrer">Flame Graphs</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/cdl34qv4zzg8wa/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>To render a flame graph, you must format the data frame data using a <em>nested set model</em>.</p>
+<p>A nested set model ensures each item of a flame graph is encoded by its nesting level as an integer value, its metadata, and by its order in the data frame. This means that the order of items is significant and needs to be correct. The ordering is a depth-first traversal of the items in the flame graph which recreates the graph without needing variable-length values in the data frame like in a children&rsquo;s array.</p>
+<p>Required fields:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>level</td>
+          <td>number</td>
+          <td>The nesting level of the item. In other words how many items are between this item and the top item of the flame graph.</td>
+      </tr>
+      <tr>
+          <td>value</td>
+          <td>number</td>
+          <td>The absolute or cumulative value of the item. This translates to the width of the item in the graph.</td>
+      </tr>
+      <tr>
+          <td>label</td>
+          <td>string</td>
+          <td>Label to be shown for the particular item.</td>
+      </tr>
+      <tr>
+          <td>self</td>
+          <td>number</td>
+          <td>Self value, which is usually the cumulative value of the item minus the sum of cumulative values of its immediate children.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="example">Example</h3>
+<p>The following table is an example of the type of data you need for a flame graph visualization and how it should be formatted:</p>
+<table>
+  <thead>
+      <tr>
+          <th>level</th>
+          <th>value</th>
+          <th>self</th>
+          <th>label</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>0</td>
+          <td>16.5 Bil</td>
+          <td>16.5 K</td>
+          <td>total</td>
+      </tr>
+      <tr>
+          <td>1</td>
+          <td>4.10 Bil</td>
+          <td>4.10 k</td>
+          <td>test/pkg/agent.(*Target).start.func1</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>4.10 Bil</td>
+          <td>4.10 K</td>
+          <td>test/pkg/agent.(*Target).start.func1</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>3.67 Bil</td>
+          <td>3.67 K</td>
+          <td>test/pkg/distributor.(*Distributor).Push</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>1.13 Bil</td>
+          <td>1.13 K</td>
+          <td>compress/gzip.(*Writer).Write</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>1.06 Bil</td>
+          <td>1.06 K</td>
+          <td>compress/flat.(*compressor).write</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="flame-graph-mode">Flame graph mode</h2>
+<p>A flame graph takes advantage of the hierarchical nature of profiling data. It condenses data into a format that allows you to easily see which code paths are consuming the most system resources, such as CPU time, allocated objects, or space when measuring memory. Each block in the flame graph represents a function call in a stack and its width represents its value.</p>
+<p>Grayed-out sections are a set of functions that represent a relatively small value and they are collapsed together into one section for performance reasons.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/flame-graph-panel/flame-graph-mode-dark.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/flame-graph-panel/flame-graph-mode-dark.png"data-srcset="/static/img/docs/flame-graph-panel/flame-graph-mode-dark.png?w=320 320w, /static/img/docs/flame-graph-panel/flame-graph-mode-dark.png?w=550 550w, /static/img/docs/flame-graph-panel/flame-graph-mode-dark.png?w=750 750w, /static/img/docs/flame-graph-panel/flame-graph-mode-dark.png?w=900 900w, /static/img/docs/flame-graph-panel/flame-graph-mode-dark.png?w=1040 1040w, /static/img/docs/flame-graph-panel/flame-graph-mode-dark.png?w=1240 1240w, /static/img/docs/flame-graph-panel/flame-graph-mode-dark.png?w=1920 1920w"
+          data-sizes="auto"alt="A flame graph visualization for a system profile with flame graph mode."width="1014"height="776"/>
+        <noscript>
+          <img
+            src="/static/img/docs/flame-graph-panel/flame-graph-mode-dark.png"
+            alt="A flame graph visualization for a system profile with flame graph mode."width="1014"height="776"/>
+        </noscript></div></a></figure>
+<p>You can hover over a specific function to view a tooltip that shows you additional data about that function, like the function&rsquo;s value, percentage of total value, and the number of samples with that function.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A flame graph visualization with a hover tooltip."width="1428"height="704"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-tooltip-v11.6.png"
+            alt="A flame graph visualization with a hover tooltip."width="1428"height="704"/>
+        </noscript></div></a></figure>
+<h3 id="menu-actions">Menu actions</h3>
+<p>You can click a function to show a drop-down menu with additional actions:</p>
+<ul>
+<li><a href="#focus-block">Focus block</a></li>
+<li><a href="#copy-function-name">Copy function name</a></li>
+<li><a href="#sandwich-view">Sandwich view</a></li>
+<li><a href="#grouping">Grouping</a></li>
+</ul>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="A flame graph visualization with drop-down actions."width="1412"height="948"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-menu-v12.0.png"
+            alt="A flame graph visualization with drop-down actions."width="1412"height="948"/>
+        </noscript></div></a></figure>
+<h4 id="focus-block">Focus block</h4>
+<p>When you click <strong>Focus block</strong>, the block, or function, is set to 100% of the flame graph&rsquo;s width and all its child functions are shown with their widths updated relative to the width of the parent function. This makes it easier to drill down into smaller parts of the flame graph.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A flame graph visualization with focus block action selected."width="1752"height="714"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-focus-v11.6.png"
+            alt="A flame graph visualization with focus block action selected."width="1752"height="714"/>
+        </noscript></div></a></figure>
+<h4 id="copy-function-name">Copy function name</h4>
+<p>When you click <strong>Copy function name</strong>, the full name of the function that the block represents is copied.</p>
+<h4 id="sandwich-view">Sandwich view</h4>
+<p>The sandwich view allows you to show the context of the clicked function. It shows all the function&rsquo;s callers on the top and all the callees at the bottom. This shows the aggregated context of the function so if the function exists in multiple places in the flame graph, all the contexts are shown and aggregated in the sandwich view.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A flame graph visualization with sandwich view selected."width="1746"height="1328"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-sandwich-v11.6.png"
+            alt="A flame graph visualization with sandwich view selected."width="1746"height="1328"/>
+        </noscript></div></a></figure>
+<h4 id="grouping">Grouping</h4>
+<p>Under the <strong>Grouping</strong> section of the menu, the following options let you expand and collapse groups of functions:</p>
+<ul>
+<li><strong>Expand group</strong> - Expands the grouped function you&rsquo;ve clicked. Displayed if you click a function that&rsquo;s been automatically grouped in the flame graph.</li>
+<li><strong>Expand all groups</strong> - Expands all grouped functions in the flame graph. Always displayed when you click the graph.</li>
+<li><strong>Collapse group</strong> - Collapses the expanded function you&rsquo;ve clicked. Displayed if you click a function in the flame graph that&rsquo;s been manually expanded.</li>
+<li><strong>Collapse all groups</strong> - Collapses all expanded functions in the flame graph. Displayed if there are any expanded functions when you click the graph.</li>
+</ul>
+<h3 id="status-bar">Status bar</h3>
+<p>The status bar shows metadata about the flame graph and currently applied modifications, like what part of the graph is in focus or what function is shown in sandwich view. Click the <strong>X</strong> in the status bar pill to remove that modification.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 730px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="A flame graph visualization&#39;s status bar."width="1460"height="96"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-status-v11.6.png"
+            alt="A flame graph visualization&#39;s status bar."width="1460"height="96"/>
+        </noscript></div></a></figure>
+<h2 id="top-table-mode">Top table mode</h2>
+<p>The top table shows the functions from the profile in table format. The table has three columns: symbols, self, and total. The table is sorted by self time by default, but can be reordered by total time or symbol name by clicking the column headers. Each row represents aggregated values for the given function if the function appears in multiple places in the profile.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Table view"width="1444"height="836"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-toptable-v12.0.png"
+            alt="Table view"width="1444"height="836"/>
+        </noscript></div></a></figure>
+<p>There are also action buttons on the left-most side of each row. The first button searches for the function name while second button shows the sandwich view of the function.</p>
+<h2 id="toolbar">Toolbar</h2>
+<p>The following table lists the features of the toolbar:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#search">Search</a></td>
+          <td>Use the search field to find functions with a particular name. All the functions in the flame graph that match the search will remain colored while the rest of the functions appear in gray.</td>
+      </tr>
+      <tr>
+          <td>Reset</td>
+          <td>Reset the flame graph back to its original state from a focus block or sandwich view. The reset icon is only displayed when the flame graph is in one of those two states.</td>
+      </tr>
+      <tr>
+          <td><a href="#color-schema-picker">Color schema picker</a></td>
+          <td>Switch between coloring functions by their value or by their package name to visually tie functions from the same package together.</td>
+      </tr>
+      <tr>
+          <td>Grouping</td>
+          <td>Expand or collapse all groups to show all instances of a function or show the function grouped.</td>
+      </tr>
+      <tr>
+          <td>Text align</td>
+          <td>Align text either to the left or to the right to show more important parts of the function name when it does not fit into the block.</td>
+      </tr>
+      <tr>
+          <td>Visualization picker</td>
+          <td>Choose to show only the flame graph, only table, or both at the same time.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="search">Search</h3>
+<p>You can use the search field to find functions with a particular name. All the functions in the flame graph that match the search will remain colored while the rest of the functions are grayed-out.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png?w=1920 1920w"
+          data-sizes="auto"alt="Searching for a function name in a flame graph visualization."width="2304"height="918"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-search-v12.0.png"
+            alt="Searching for a function name in a flame graph visualization."width="2304"height="918"/>
+        </noscript></div></a></figure>
+<h3 id="color-schema-picker">Color schema picker</h3>
+<p>You can switch between coloring functions by their value or by their package name to visually tie functions from the same package together.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 700px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png"data-srcset="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png?w=320 320w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png?w=550 550w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png?w=750 750w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png?w=900 900w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png?w=1040 1040w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png?w=1240 1240w, /media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png?w=1920 1920w"
+          data-sizes="auto"alt="Different color scheme"width="1444"height="744"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/panels-visualizations/screenshot-flamegraph-color-v11.6.png"
+            alt="Different color scheme"width="1444"height="744"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="standard-options">Standard options</h3>
+<p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations.
+When you set a standard option, the change is applied to all fields or series.
+For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+<p>You can customize the following standard options:</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>This option lets you choose which unit a field should use. For more information on unit options as well as creating custom units, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#unit">unit configuration documentation</a>.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

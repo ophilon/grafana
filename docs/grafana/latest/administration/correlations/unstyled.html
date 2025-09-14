@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<h1 id="correlations">Correlations</h1>
+<p>You can create interactive links for Explore visualizations by setting up Correlations. These links can either run queries or generate external URLs related to presented data.</p>
+<p>A correlation defines how data in one <a href="../../datasources/">data source</a> is used to query data in another data source or to generate an external URL.
+Some examples:</p>
+<ul>
+<li>an application name returned in a logs data source can be used to query metrics related to that application in a metrics data source, or</li>
+<li>a user name returned by an SQL data source can be used to query logs related to that particular user in a logs data source</li>
+<li>a customer ID in a logs data source can link to a different platform that has a profile on that customer.</li>
+</ul>
+<p><a href="../../explore/">Explore</a> takes user-defined correlations to display links inside the visualizations.
+If a correlation links to a query, you can click on that link to run the related query and see results in <a href="../../explore/#split-and-compare">Explore Split View</a>.
+If a correlation links to an external URL, you can click on the link to open the URL in a new tab in your browser.</p>
+<p>Explore visualizations that currently support showing links based on correlations:</p>
+<ul>
+<li><a href="use-correlations-in-visualizations/#correlations-in-logs-panel">Logs Panel</a></li>
+<li><a href="use-correlations-in-visualizations/#correlations-in-table">Table</a></li>
+</ul>
+<p>You can configure correlations using <a href="../provisioning/">provisioning</a>, the <strong>Administration &gt; Plugins and data &gt; Correlations</strong> page in Grafana or directly in <a href="../../explore/correlations-editor-in-explore/">Explore</a>.</p>
+<h2 id="example-of-how-links-work-in-explore-once-set-up">Example of how links work in Explore once set up</h2>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1516px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/correlations/correlations-in-explore-10-0.gif"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/correlations/correlations-in-explore-10-0.gif"alt="Demonstration of following a correlation link in Grafana Explore"width="1516"height="558"title="Correlations links in Explore"/>
+        <noscript>
+          <img
+            src="/static/img/docs/correlations/correlations-in-explore-10-0.gif"
+            alt="Demonstration of following a correlation link in Grafana Explore"width="1516"height="558"title="Correlations links in Explore"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Correlations links in Explore</figcaption></a></figure>
+<p>See also:</p>
+<ul><li>
+    <a href="/docs/grafana/latest/administration/correlations/correlation-configuration/">Correlation</a></li><li>
+    <a href="/docs/grafana/latest/administration/correlations/correlation-permissions/">Permissions</a></li><li>
+    <a href="/docs/grafana/latest/administration/correlations/add-permissions-to-create-new-correlations/">Add permissions to create new correlations</a></li><li>
+    <a href="/docs/grafana/latest/administration/correlations/create-a-new-correlation/">Create a new correlation</a></li><li>
+    <a href="/docs/grafana/latest/administration/correlations/use-variables-and-transformations/">Use variables and transformations in a correlation</a></li><li>
+    <a href="/docs/grafana/latest/administration/correlations/use-correlations-in-visualizations/">Use correlations in visualizations</a></li></ul>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<h1 id="curl-examples">cURL examples</h1>
+<p>This page provides examples of calls to the Grafana API using cURL.</p>
+<p>The most basic example for a dashboard for which there is no authentication. You can test the following on your local machine, assuming a default installation and anonymous access enabled, required:</p>
+<pre>curl http://localhost:3000/api/search</pre>
+<p>Here&rsquo;s a cURL command that works for getting the home dashboard when you are running Grafana locally with <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/#basic-auth">basic authentication</a> enabled using the default admin credentials:</p>
+<pre>curl http://admin:admin@localhost:3000/api/search</pre>
+<p>To pass a username and password with <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/manage-rbac-roles/">HTTP basic authorization</a>, encode them as base64.
+You can&rsquo;t use authorization tokens in the request.</p>
+<p>For example, to <a href="/docs/grafana/latest/administration/roles-and-permissions/access-control/manage-rbac-roles/">list permissions associated with roles</a> given a username of <code>user</code> and password of <code>password</code>, use:</p>
+<pre>curl --location &#39;&lt;grafana_url&gt;/api/access-control/builtin-roles&#39; --user &#39;user:password&#39;</pre>

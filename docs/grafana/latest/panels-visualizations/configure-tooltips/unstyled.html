@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<h1 id="configure-tooltips">Configure tooltips</h1>
+<p>When you hover your cursor over a visualization, Grafana can display tooltips that contain more information about a data point, like the exact time of a result. You can customize tooltips to control how many series they include and the order of those values. You can also copy the content from tooltips to use elsewhere. Learn more about configuring tooltips in <a href="#tooltip-options">Tooltip options</a>.</p>
+<h2 id="supported-visualizations">Supported visualizations</h2>
+<p>You can configure tooltips for the following visualizations:</p>
+<div class="column-list">
+  <ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/">Bar chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">Candlestick</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/heatmap/">Heatmap</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/pie-chart/">Pie chart</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/">State timeline</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/status-history/">Status history</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/time-series/">Time series</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/trend/">Trend</a></li>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/xy-chart/">XY chart</a></li>
+</ul>
+
+</div>
+<p>Some visualizations, for example 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/candlestick/">candlestick</a> and 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/flame-graph/">flame graph</a>, have tooltips, but they aren&rsquo;t configurable. These visualizations don&rsquo;t have a <strong>Tooltip</strong> section in the panel editor pane. 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/geomap/#tooltip">Geomaps</a> provide you the option to have tooltips triggered upon click or hover under the <strong>Map controls</strong> options in the panel editor pane.</p>
+<!-- if we add documentation for treemap, some info will need to be added in the paragraph above -->
+<h2 id="tooltip-options">Tooltip options</h2>
+<p>You can find the following options under the <strong>Tooltip</strong> section in the panel edit pane.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Not all of the options listed apply to all visualizations with tooltips.</p></blockquote></div>
+
+<h3 id="tooltip-mode">Tooltip mode</h3>
+<p>Choose how tooltips behave with the following options:</p>
+<ul>
+<li><strong>Single</strong> - The tooltip only the single series that you&rsquo;re hovering over in the visualization.</li>
+<li><strong>All</strong> - The tooltip shows all series in the visualization. Grafana highlights the series that you are hovering over in bold in the series list in the tooltip.</li>
+<li><strong>Hidden</strong> - Tooltips aren&rsquo;t displayed when you interact with the visualization.</li>
+</ul>
+<p>You can use a 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">field override</a> to hide individual series from the tooltip.</p>
+<h3 id="values-sort-order">Values sort order</h3>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Values sort order</strong> option is displayed. This option controls the order in which values are listed in a tooltip. Choose from the following:</p>
+<ul>
+<li><strong>None</strong> - Grafana automatically sorts the values displayed in a tooltip.</li>
+<li><strong>Ascending</strong> - Values in the tooltip are listed from smallest to largest.</li>
+<li><strong>Descending</strong> - Values in the tooltip are listed from largest to smallest.</li>
+</ul>
+<h3 id="hide-zeros">Hide zeros</h3>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Hide zeros</strong> option is displayed. This option controls whether or not series with <code>0</code> values are shown in the list in the tooltip.</p>
+<h3 id="hover-proximity">Hover proximity</h3>
+<p>Set the hover proximity (in pixels) to control how close the cursor must be to a data point to trigger the tooltip to display.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/gif-grafana-10-4-hover-proximity.gif"
+  alt="Adding a hover proximity limit for tooltips" width="1136"
+     height="490"/></p>
+<h3 id="max-width">Max width</h3>
+<p>Set the maximum width of the tooltip box.</p>
+<h3 id="max-height">Max height</h3>
+<p>Set the maximum height of the tooltip box. The default is 600 pixels.</p>
+<h3 id="show-histogram-y-axis">Show histogram (Y axis)</h3>
+<p>For the heatmap visualization only, when you set the <strong>Tooltip mode</strong> to <strong>Single</strong>, the <strong>Show histogram (Y axis)</strong> option is displayed. This option controls whether or not the tooltip includes a histogram representing the y-axis.</p>
+<h3 id="show-color-scale">Show color scale</h3>
+<p>For the heatmap visualization only, when you set the <strong>Tooltip mode</strong> to <strong>Single</strong>, the <strong>Show color scale</strong> option is displayed. This option controls whether or not the tooltip includes the color scale that&rsquo;s also represented in the legend. When the color scale is included in the tooltip, it shows the hovered value on the scale:</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/panels-visualizations/screenshot-heatmap-tooltip-color-scale-v11.0.png"
+  alt="Heatmap with a tooltip displayed showing the hovered value reflected in the color scale" width="794"
+     height="342"/></p>

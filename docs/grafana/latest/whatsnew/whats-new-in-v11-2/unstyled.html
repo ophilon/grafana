@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<!-- vale GoogleWe = NO -->
+<!-- vale We = NO -->
+<h1 id="whats-new-in-grafana-v112">What’s new in Grafana v11.2</h1>
+<p>Welcome to Grafana 11.2! We&rsquo;ve made a number of improvements in this release, including a Grafana Cloud Migration Assistant in public preview, several new transformations, and a centralized page for viewing your alert history. We&rsquo;ve also released several new data sources to help you visualize data from Zendesk, Catchpoint, and Yugabyte. Read on to learn more about these and all the new features in v11.2.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=s6IYpILVDSM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>For even more detail about all the changes in this release, refer to the <a href="https://github.com/grafana/grafana/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">changelog</a>. For the specific steps we recommend when you upgrade to v11.2, check out our 
+    <a href="/docs/grafana/latest/upgrade-guide/upgrade-v11.2/">Upgrade Guide</a>.</p>
+<h2 id="grafana-cloud-migration-assistant-is-in-public-preview">Grafana Cloud Migration Assistant is in public preview</h2>
+<!-- #wg-everyone-to-cloud -->
+<p><em>Available in public preview in Grafana Open Source and Enterprise</em></p>
+<p>Migrating from OSS or Enterprise Grafana to Grafana Cloud has traditionally been complex, requiring technical knowledge of Grafana&rsquo;s HTTP API and time-consuming manual processes. The new Grafana Cloud Migration Assistant changes this by providing a user-friendly interface that automates the migration of your resources. No coding required, it securely handles the transfer in just a few easy steps.</p>
+<p>This intuitive UI offers real-time updates on your migration status, making your migration journey faster, more efficient, and less error-prone. Initially, the Cloud Migration Assistant supports dashboards, folders, and core data sources, with plans to include alerting, app plugins, and panel plugins in future updates.</p>
+<p>Ready to make the move? Explore our <a href="/docs/grafana-cloud/account-management/migration-guide/">migration guide</a> to learn more about the Cloud Migration Assistant today and begin your effortless transition to Grafana Cloud.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=66W1UMHtX3U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<h2 id="navigation-bookmarks">Navigation bookmarks</h2>
+<!-- #grafana-frontend-platform -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>As Grafana keeps growing, we have had feedback that it can be hard to find the pages you are looking for in the navigation. That is why we have added a new section to the navigation called &lsquo;Bookmarks&rsquo;, so you can easily access all of your favourite pages at the top of the navigation.</p>
+<p>This feature is being rolled out across Grafana Cloud now. To use Bookmarks in self-managed Grafana, turn on the <code>pinNavItems</code> 
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/feature-toggles/">feature toggle</a> in Grafana v11.2 or newer.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 2908px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/media/docs/grafana/grafana-nav-bookmarks.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/media/docs/grafana/grafana-nav-bookmarks.png"data-srcset="/media/docs/grafana/grafana-nav-bookmarks.png?w=320 320w, /media/docs/grafana/grafana-nav-bookmarks.png?w=550 550w, /media/docs/grafana/grafana-nav-bookmarks.png?w=750 750w, /media/docs/grafana/grafana-nav-bookmarks.png?w=900 900w, /media/docs/grafana/grafana-nav-bookmarks.png?w=1040 1040w, /media/docs/grafana/grafana-nav-bookmarks.png?w=1240 1240w, /media/docs/grafana/grafana-nav-bookmarks.png?w=1920 1920w"
+          data-sizes="auto"alt="Bookmark pages in the Grafana nav bar for quick access"width="2908"height="1110"title="Bookmark pages in the nav bar for quick access."/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/grafana-nav-bookmarks.png"
+            alt="Bookmark pages in the Grafana nav bar for quick access"width="2908"height="1110"title="Bookmark pages in the nav bar for quick access."/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Bookmark pages in the nav bar for quick access.</figcaption></a></figure>
+<h2 id="dashboards-and-visualizations">Dashboards and visualizations</h2>
+<h3 id="transformation-updates">Transformation updates</h3>
+<!-- Nathan Marrs; #grafana-dataviz -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>We&rsquo;ve made a number of exciting updates to transformations!</p>
+<p><strong>You can now use variables in some transformations</strong></p>
+<p>Template variables are now supported for the <strong>Limit</strong>, <strong>Sort by</strong>, <strong>Filter data by values</strong>, <strong>Grouping to matrix</strong> (<a href="https://github.com/grafana/grafana/pull/88551" target="_blank" rel="noopener noreferrer">a community contribution</a> ⭐️), <strong>Heatmap</strong>, and <strong>Histogram</strong> transformations. This enables dynamic transformation configurations based on panel data and dashboard variables.</p>
+<p><strong>New transpose transformation</strong></p>
+<p>We&rsquo;re excited to announce the new <strong>Transpose</strong> transformation, which allows you to pivot the data frame, converting rows into columns and columns into rows. This feature is particularly useful for data sources that don&rsquo;t support pivot queries, enabling more flexible and insightful data visualizations.</p>
+<p>For more information, refer to the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#transpose">documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1040px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png"data-srcset="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=320 320w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=550 550w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=750 750w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=900 900w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=1040 1040w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=1240 1240w, /media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png?w=1920 1920w"
+          data-sizes="auto"alt="Transpose transformation in action"width="1040"height="792"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/transformations/screenshot-grafana-11-2-transpose-transformation.png"
+            alt="Transpose transformation in action"width="1040"height="792"/>
+        </noscript></div></a></figure>
+<p>This feature is <a href="https://github.com/grafana/grafana/pull/88963" target="_blank" rel="noopener noreferrer">a community contribution</a> ❤️</p>
+<p><strong>Group to nested tables is now generally available</strong></p>
+<p>We&rsquo;re excited to announce that the <strong>Group to nested tables</strong> transformation is now generally available! Easily group your table data by specified fields and perform calculations on each group. With this transformation, you can enhance the depth and utility of your table visualizations.</p>
+<p>See 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#group-to-nested-tables">the documentation for more information</a>.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-10-4-table-group-to-nested-table-transformation.mp4"
+      type="video/mp4"
+    >
+    </video><figcaption class="mb-2">Group to nested tables transformation</figcaption></figure>
+</div>
+<p><strong>Format string is now generally available</strong></p>
+<p>The <strong>Format string</strong> transformation is now generally available! Use this transformation to customize the output of a string field. From formatting your string data to upper, lower, title case, and more, this transformation provides a convenient way to standardize and tailor the presentation of string data for better visualization and analysis. See 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#format-string">the documentation for more information</a>.</p>
+<p><strong>New cumulative and window calculations available in Add field from calculation</strong></p>
+<p>The <strong>Add field from calculation</strong> transformation now supports both cumulative and window calculations. The cumulative function calculates on the current row and all preceding rows. You can calculate the total or the mean of your data up to and including the current row. With the window function you can calculate the mean, standard deviation, or variance on a specified set (window) of your data. The window can either be trailing or centered. With a trailing window the current row will be the last row in the window. With a centered window the window will be centered on the current row.</p>
+<p>See 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/transform-data/#add-field-from-calculation">the documentation for more information</a>.</p>
+<h3 id="improvements-in-canvas-visualizations">Improvements in canvas visualizations</h3>
+<!-- Adela Almasan, Nathan Marrs, #grafana-dataviz -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<h4 id="standardized-tooltips">Standardized tooltips</h4>
+<p>As a continuation of our efforts to standardize tooltips across visualizations, we&rsquo;ve updated canvas visualization tooltips to be supported for all elements tied to data. Besides the element name and data, the tooltip now also displays the timestamp. This is a step forward from the previous implementation where tooltips were shown only if data links were configured.</p>
+<h4 id="data-links-improvements">Data links improvements</h4>
+<p>We&rsquo;ve updated canvas visualizations so that you can add data links to canvas elements without using an override. The <strong>Selected element</strong> configuration now includes a <strong>Data links</strong> section where you can add data links to elements using the same steps as in other visualizations.</p>
+<p>Data links in canvas elements can also be configured to open with a single click. To enable this functionality, select <strong>Link</strong> under the one <strong>One-click</strong> section in the <strong>Selected element</strong> data link options. If there are multiple data links for an element, the first link in the list has the one-click functionality.</p>
+<p>As part of this improvement, we&rsquo;ve also added the ability to control the order in which data links are displayed by dragging and dropping them. This improvement has been added to all visualizations.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=zOsM8VqwYpw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>In future releases, we&rsquo;ll add one-click functionality to data links in other Grafana visualizations.</p>
+<p>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/canvas/#data-links">Documentation</a></p>
+<h3 id="state-timeline-supports-pagination">State timeline supports pagination</h3>
+<!-- #grafana-dataviz -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The state timeline visualization now supports pagination. The <strong>Page size</strong> option lets you paginate the state timeline visualization to limit how many series are visible at once. This is useful when you have many series. Previously, all the series in a state timeline were made to fit within the single window of the panel, which could make it hard to read.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/panels-visualizations/screen-recording-grafana-11-2-state-timeline-pagination-dark.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<p>With paginated results, the visualization displays a subset of all series on each page.</p>
+<p>Pagination is especially useful if you&rsquo;re running a query on a dynamic data source. It&rsquo;s also helpful regardless of whether you have many data frames with just two fields (time + value) or few frames with many fields (time + many values).</p>
+<p>This feature is <a href="https://github.com/grafana/grafana/pull/89586" target="_blank" rel="noopener noreferrer">a community contribution</a> ❤️</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=mgkjWJvYoHk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/state-timeline/#page-size-enable-pagination">Documentation</a></p>
+<h2 id="alerting">Alerting</h2>
+<h3 id="centralized-alert-history-page">Centralized alert history page</h3>
+<!-- Ryan Kehoe, Sonia Alguilar -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>View a history of all alert events generated by your Grafana-managed alert rules from one centralized page. This helps you see patterns in your alerts over time, observe trends, make predictions, and even debug alerts that might be firing too often.</p>
+<p>An alert event is displayed each time an alert instance changes its state over a period of time. All alert events are displayed regardless of whether silences or mute timings are set, so you’ll see a complete set of your data history even if you’re not necessarily being notified.</p>
+<p>For Grafana Enterprise and OSS users:</p>
+<p>To try out the new alert history page, enable the <code>alertingCentralAlertHistory</code> feature toggle and 
+    <a href="/docs/grafana/latest/alerting/set-up/configure-alert-state-history/">configure Loki annotations</a>.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=0fNtby8ieEw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<p>
+    <a href="/docs/grafana/latest/alerting/manage-notifications/view-state-health/">Documentation</a></p>
+<h2 id="explore">Explore</h2>
+<h3 id="logs-filtering-and-pinning-in-explore-content-outline">Logs filtering and pinning in Explore content outline</h3>
+<!-- Haris Rozajac -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Grafana Explore now allows for logs filtering and pinning in content outline.</p>
+<p><strong>Filtering Logs:</strong> All log levels are now automatically available in the content outline. You can filter by log level, currently supported for Elasticsearch and Loki data sources. To select multiple filters, hold down the command key on Mac or the control key on Windows while clicking.</p>
+<p><strong>Pinning Logs:</strong> The new pinning feature allows users to pin logs to the content outline, making them easily accessible for quick reference during investigations. To pin a log, hover over a log in the logs panel and click on the <strong>Pin to content outline</strong> icon in the log row menu. Clicking on a pinned log will open the log context modal, showing the log highlighted in context with other logs. From here, you can also open the log in split mode to preserve the time range in the left pane while having the time range specific to that log in the right pane.</p>
+<h3 id="forward-direction-search-for-loki">Forward direction search for Loki</h3>
+<!-- #observability-logs -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>Explore now supports forward direction search for Loki logs searches. This allows users to seamlessly browse logs in a time range in forward chronological order (for example, tracing a specific user&rsquo;s actions using logs).</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 2882px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/logs/forward_search.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/logs/forward_search.png"data-srcset="/static/img/logs/forward_search.png?w=320 320w, /static/img/logs/forward_search.png?w=550 550w, /static/img/logs/forward_search.png?w=750 750w, /static/img/logs/forward_search.png?w=900 900w, /static/img/logs/forward_search.png?w=1040 1040w, /static/img/logs/forward_search.png?w=1240 1240w, /static/img/logs/forward_search.png?w=1920 1920w"
+          data-sizes="auto"alt="Explore logs with the Direction option selected"width="2882"height="1334"/>
+        <noscript>
+          <img
+            src="/static/img/logs/forward_search.png"
+            alt="Explore logs with the Direction option selected"width="2882"height="1334"/>
+        </noscript></div></a></figure>
+<p>To use this feature, select <strong>Forward</strong> for the <strong>Direction</strong> option. Note that in the screenshot above, logs are rendered beginning from the starting time period of the query, not the end.</p>
+<p>
+    <a href="/docs/grafana/latest/datasources/loki/query-editor/">Documentation</a></p>
+<h2 id="data-sources">Data sources</h2>
+<h3 id="cloudwatch-metric-insights-cross-account-observability-support">Cloudwatch Metric Insights cross account observability support</h3>
+<!-- #grafana-aws-datasources -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>We are excited to announce support for cross-account querying in Metric Insights query builder for AWS Cloudwatch Plugin. This enables building SQL queries to monitor across multiple accounts in the same region in AWS Cloudwatch.</p>
+<p>This feature introduces an account drop-down for selecting one or all of your source accounts and builds a query that targets them. Furthermore, results can be grouped by account ID by selecting <strong>Account ID</strong> in the <strong>Group By</strong> drop-down.</p>
+<p>For more complex queries that are not covered by the options in the builder you can switch to the manual Code editor and edit the query.</p>
+<p>To set up cross-account querying for AWS Cloudwatch Plugin, see instructions 
+    <a href="/docs/grafana/latest/datasources/aws-cloudwatch/query-editor/#cross-account-observability">here</a>.</p>
+<h3 id="zendesk-data-source-for-grafana">Zendesk data source for Grafana</h3>
+<!-- #grafana-oss-big-tent -->
+<p><em>Available in public preview in Grafana Enterprise and Grafana Cloud</em></p>
+<p>We are excited to announce the release of a new Zendesk data source for Grafana. This addition extends Grafana&rsquo;s capabilities, enabling seamless integration with Zendesk.</p>
+<p>You can find out more about the data source in the <a href="/docs/plugins/grafana-zendesk-datasource/latest/">Zendesk data source documentation</a>.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 4572px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/zendesk/zendesk_query_editor.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/zendesk/zendesk_query_editor.png"data-srcset="/media/docs/zendesk/zendesk_query_editor.png?w=320 320w, /media/docs/zendesk/zendesk_query_editor.png?w=550 550w, /media/docs/zendesk/zendesk_query_editor.png?w=750 750w, /media/docs/zendesk/zendesk_query_editor.png?w=900 900w, /media/docs/zendesk/zendesk_query_editor.png?w=1040 1040w, /media/docs/zendesk/zendesk_query_editor.png?w=1240 1240w, /media/docs/zendesk/zendesk_query_editor.png?w=1920 1920w"
+          data-sizes="auto"alt="Zendesk Query Editor"width="4572"height="960"/>
+        <noscript>
+          <img
+            src="/media/docs/zendesk/zendesk_query_editor.png"
+            alt="Zendesk Query Editor"width="4572"height="960"/>
+        </noscript></div></a></figure>
+<h3 id="catchpoint-enterprise-data-source-for-grafana">Catchpoint Enterprise data source for Grafana</h3>
+<!-- Taewoo Kim -->
+<p><em>Available in public preview in Grafana Enterprise and Grafana Cloud</em></p>
+<p><strong>Introducing Catchpoint data source plugin.</strong></p>
+<p>The Catchpoint data source plugin allows you to query and visualize <code>Tests</code>, <code>RUM</code> and <code>SLO</code> data from within Grafana.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/plugins/Catchpoint.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h3 id="yugabyte-data-source-for-grafana">Yugabyte data source for Grafana</h3>
+<!-- #grafana-oss-big-tent -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>We are excited to announce the release of a new data source for Grafana: <strong>Yugabyte</strong>. This addition extends Grafana&rsquo;s capabilities, enabling seamless integration with YugabyteDB.</p>
+<p>You can find out more about the data source in the <a href="/docs/plugins/grafana-yugabyte-datasource/latest/">Yugabyte data source documentation</a>.</p>
+<p>The datasource has some known limitations: ad-hoc filters and TLS/network customization are not yet supported. Improvements and additional supported features are planned for future updates.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 3136px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/yugabyte/yugabyte_explore_builder.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/yugabyte/yugabyte_explore_builder.png"data-srcset="/media/docs/yugabyte/yugabyte_explore_builder.png?w=320 320w, /media/docs/yugabyte/yugabyte_explore_builder.png?w=550 550w, /media/docs/yugabyte/yugabyte_explore_builder.png?w=750 750w, /media/docs/yugabyte/yugabyte_explore_builder.png?w=900 900w, /media/docs/yugabyte/yugabyte_explore_builder.png?w=1040 1040w, /media/docs/yugabyte/yugabyte_explore_builder.png?w=1240 1240w, /media/docs/yugabyte/yugabyte_explore_builder.png?w=1920 1920w"
+          data-sizes="auto"alt="Yugabyte query editor"width="3136"height="1130"/>
+        <noscript>
+          <img
+            src="/media/docs/yugabyte/yugabyte_explore_builder.png"
+            alt="Yugabyte query editor"width="3136"height="1130"/>
+        </noscript></div></a></figure>
+<h2 id="authentication-and-authorization">Authentication and authorization</h2>
+<h3 id="map-org-specific-user-roles-from-your-oauth-provider">Map org-specific user roles from your OAuth provider</h3>
+<!-- #identity-access, @Misi -->
+<p><em>Generally available in Grafana Open Source and Enterprise</em></p>
+<p>Assign users to particular organizations with a specific role in Grafana, depending on an attribute value obtained from your identity provider.</p>
+<p>This is a longstanding feature request from the community. We collaborated with our community to implement the request and have added this capability in Grafana 11.2.0.</p>
+<p>For Generic OAuth and Okta, you can configure the claim (using the <code>org_attribute_path</code> setting) that contains the organizations which the user belongs to. Other OAuth providers use the same attribute for organization mapping that is used for group mapping: Entra ID (previously Azure AD), GitLab and Google use the current user’s Groups, and GitHub uses the user’s Teams.</p>
+<p>To configure organization mapping for your instance, please check the documentation for the OAuth provider you are using in the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/">Grafana documentation</a>. You can find an example of how to configure organization mapping on each OAuth provider page under the <strong>Org roles mapping example</strong> section.</p>
+<h3 id="better-saml-integration-for-azure-ad">Better SAML integration for Azure AD</h3>
+<p><em>Generally available in all editions of Grafana</em></p>
+<!-- Lino Urdiales -->
+<p>When setting up Grafana with Azure AD using the SAML protocol, the Azure AD Graph API sometimes returns a follow-up Graph API call rather than the information itself. This is the case for users who belong to more than 150 groups when using SAML.</p>
+<p>With Grafana 11.2, we offer a mechanism for setting up an application as a Service Account in Azure AD and retrieving information from Graph API.</p>
+<p>Please refer to our 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/saml/#configure-a-graph-api-application-in-azure-ad">documentation</a> on how to set up an Azure AD registered application for this setup.</p>
+<h3 id="api-support-for-ldap-configuration">API support for LDAP configuration</h3>
+<!-- #proj-grafana-sso-config -->
+<p><em>Available in public preview in all editions of Grafana</em></p>
+<p>
+    <a href="/docs/grafana/latest/developers/http_api/sso-settings/">The SSO settings API</a> has been updated to include support for LDAP settings. This feature is experimental behind the feature flag <code>ssoSettingsLDAP</code>.</p>
+<p>You will soon be able to configure LDAP from the UI and Terraform.</p>
+<h3 id="reduce-number-of-required-fields-from-the-saml-form">Reduce number of required fields from the SAML form</h3>
+<!-- #proj-grafana-sso-config -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud Pro and Advanced</em></p>
+<p>The private key and certificate fields are no longer mandatory in the SAML form. To configure SAML without providing a private key and a certificate you have to opt out from using signed requests.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1198px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png"data-srcset="/media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png?w=320 320w, /media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png?w=550 550w, /media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png?w=750 750w, /media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png?w=900 900w, /media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png?w=1040 1040w, /media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png?w=1240 1240w, /media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png?w=1920 1920w"
+          data-sizes="auto"alt="Sign requests in SAML config form"width="1198"height="522"/>
+        <noscript>
+          <img
+            src="/media/docs/grafana/screenshot-grafana-11-2-saml-sign-requests.png"
+            alt="Sign requests in SAML config form"width="1198"height="522"/>
+        </noscript></div></a></figure>
+<h3 id="generate-saml-certificate-and-private-key">Generate SAML certificate and private key</h3>
+<!-- #proj-grafana-sso-config -->
+<p><em>Generally available in Grafana Enterprise and Grafana Cloud Pro</em></p>
+<p>You can generate a new certificate and private key for SAML directly from the UI form. Click on the <strong>Generate key and certificate</strong> button from the <strong>Sign requests</strong> tab in the SAML form and then fill in the information you want to be embedded in your generated certificate.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-11-2-generate-saml-certificate.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>
+<h3 id="openid-connect-discovery-url-for-generic-oauth">OpenID Connect Discovery URL for Generic OAuth</h3>
+<!-- #proj-grafana-sso-config -->
+<p><em>Generally available in all editions of Grafana</em></p>
+<p>The OpenID Connect Discovery URL is available in the Generic OAuth form. The info extracted from this URL will be used to populate the Auth URL, Token URL and API URL fields.</p>
+<div class="">
+  <figure class="p-0 m-0 ">
+    <video 
+      width="" 
+      controls
+      muted
+      playsinline
+      
+        class="lazyload"
+        preload="none"
+        
+             
+      
+      
+        loop
+      
+      src="/media/docs/grafana/screen-recording-11-2-openid-discovery-url.mp4"
+      type="video/mp4"
+    >
+    </video></figure>
+</div>

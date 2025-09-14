@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<h1 id="build-your-first-dashboard">Build your first dashboard</h1>
+<p>This topic helps you get started with Grafana and build your first dashboard using the built-in <code>Grafana</code> data source. To learn more about Grafana, refer to 
+    <a href="/docs/grafana/latest/introduction/">Introduction to Grafana</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Grafana also offers a <a href="/signup/cloud/connect-account?pg=gsdocs">free account with Grafana Cloud</a> to help getting started even easier and faster. You can install Grafana to self-host or get a free Grafana Cloud account.</p></blockquote></div>
+
+<h4 id="install-grafana">Install Grafana</h4>
+<p>Grafana can be installed on many different operating systems. For a list of the minimum hardware and software requirements, as well as instructions on installing Grafana, refer to 
+    <a href="/docs/grafana/latest/setup-grafana/installation/">Install Grafana</a>.</p>
+<h4 id="sign-in-to-grafana">Sign in to Grafana</h4>
+<p>To sign in to Grafana for the first time:</p>
+<ol>
+<li>
+<p>Open your web browser and go to http://localhost:3000/.</p>
+<p>The default HTTP port that Grafana listens to is <code>3000</code> unless you have configured a different port.</p>
+</li>
+<li>
+<p>On the sign-in page, enter <code>admin</code> for both the username and password.</p>
+</li>
+<li>
+<p>Click <strong>Sign in</strong>.</p>
+<p>If successful, you&rsquo;ll see a prompt to change the password.</p>
+</li>
+<li>
+<p>Click <strong>OK</strong> on the prompt and change your password.</p>
+</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>We strongly recommend that you change the default administrator password.</p></blockquote></div>
+
+<h4 id="create-a-dashboard">Create a dashboard</h4>
+<p>If you&rsquo;ve already set up a data source that you know how to query, refer to 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">Create a dashboard</a> instead.</p>
+<p>To create your first dashboard using the built-in <code>-- Grafana --</code> data source:</p>
+<ol>
+<li>
+<p>Click <strong>Dashboards</strong> in the main menu.</p>
+</li>
+<li>
+<p>On the <strong>Dashboards</strong> page, click <strong>New</strong> and select <strong>New Dashboard</strong> from the drop-down menu.</p>
+</li>
+<li>
+<p>On the dashboard, click <strong>+ Add visualization</strong>.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/dashboards/empty-dashboard-10.2.png"
+  alt="Empty dashboard state" width="939"
+     height="507"/></p>
+</li>
+<li>
+<p>In the dialog box that opens, click <code>-- Grafana --</code>:</p>
+<figure
+       class="figure-wrapper figure-wrapper__lightbox w-100p float-right"
+       style="max-width: 800px;"
+       itemprop="associatedMedia"
+       itemscope=""
+       itemtype="http://schema.org/ImageObject"
+     ><a
+           class="lightbox-link"
+           href="/media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png"
+           itemprop="contentUrl"
+         ><div class="img-wrapper w-100p h-auto"><img
+             class="lazyload "
+             data-src="/media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png"data-srcset="/media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png?w=320 320w, /media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png?w=550 550w, /media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png?w=750 750w, /media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png?w=900 900w, /media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png?w=1040 1040w, /media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png?w=1240 1240w, /media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png?w=1920 1920w"
+             data-sizes="auto"alt="Select data source dialog box"width="1220"height="696"/>
+           <noscript>
+             <img
+               src="/media/docs/grafana/dashboards/screenshot-data-source-selector-10.0.png"
+               alt="Select data source dialog box"width="1220"height="696"class="float-right"/>
+           </noscript></div></a></figure>
+<p>This configures your 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/#add-a-query">query</a> and generates the Random Walk dashboard.</p>
+</li>
+<li>
+<p>Click <strong>Refresh</strong> to query the data source.</p>
+</li>
+<li>
+<p>When you&rsquo;ve finished editing your panel, click <strong>Save dashboard</strong>.</p>
+<p>Alternatively, click <strong>Back to dashboard</strong> if you want to see your changes applied to the dashboard first. Then click <strong>Save dashboard</strong> when you&rsquo;re ready.</p>
+</li>
+<li>
+<p>Add a descriptive title for the dashboard, or have Grafana create one using 
+    <a href="/docs/grafana/latest/dashboards/manage-dashboards/#set-up-generative-ai-features-for-dashboards">generative AI features</a>, and then click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Back to dashboard</strong> and then <strong>Exit edit</strong>.</p>
+</li>
+</ol>
+<p>Congratulations, you have created your first dashboard and it&rsquo;s displaying results.</p>
+<h4 id="next-steps">Next steps</h4>
+<p>Continue to experiment with what you have built, try the 
+    <a href="/docs/grafana/latest/explore/">explore workflow</a> or another visualization feature. Refer to 
+    <a href="/docs/grafana/latest/datasources/">Data sources</a> for a list of supported data sources and instructions on how to 
+    <a href="/docs/grafana/latest/datasources/#add-a-data-source">add a data source</a>. The following topics will be of interest to you:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/panels-visualizations/">Panels and visualizations</a></li>
+<li>
+    <a href="/docs/grafana/latest/dashboards/">Dashboards</a></li>
+<li>
+    <a href="/docs/grafana/latest/dashboards/use-dashboards/#keyboard-shortcuts">Keyboard shortcuts</a></li>
+<li><a href="/grafana/plugins?orderBy=weight&amp;direction=asc">Plugins</a></li>
+</ul>
+<h5 id="admins">Admins</h5>
+<p>The following topics are of interest to Grafana server admin users:</p>
+<ul>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-grafana/">Grafana configuration</a></li>
+<li>
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/">Authentication</a></li>
+<li>
+    <a href="/docs/grafana/latest/administration/roles-and-permissions/">User permissions and roles</a></li>
+<li>
+    <a href="/docs/grafana/latest/administration/provisioning/">Provisioning</a></li>
+<li>
+    <a href="/docs/grafana/latest/cli/">Grafana CLI</a></li>
+</ul>

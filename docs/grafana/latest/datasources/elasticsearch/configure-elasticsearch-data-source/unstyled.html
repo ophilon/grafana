@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<h1 id="configure-the-elasticsearch-data-source">Configure the Elasticsearch data source</h1>
+<p>Grafana ships with built-in support for Elasticsearch.
+You can create a variety of queries to visualize logs or metrics stored in Elasticsearch, and annotate graphs with log events stored in Elasticsearch.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.</p>
+<p>Only users with the organization <code>administrator</code> role can add data sources.
+Administrators can also 
+    <a href="/docs/grafana/latest/datasources/elasticsearch/#provision-the-data-source">configure the data source via YAML</a> with Grafana&rsquo;s provisioning system.</p>
+<h2 id="configuring-permissions">Configuring permissions</h2>
+<p>When Elasticsearch security features are enabled, it is essential to configure the necessary cluster privileges to ensure seamless operation. Below is a list of the required privileges along with their purposes:</p>
+<ul>
+<li><strong>monitor</strong> - Necessary to retrieve the version information of the connected Elasticsearch instance.</li>
+<li><strong>view_index_metadata</strong> - Required for accessing mapping definitions of indices.</li>
+<li><strong>read</strong> - Grants the ability to perform search and retrieval operations on indices. This is essential for querying and extracting data from the cluster.</li>
+</ul>
+<h2 id="add-the-data-source">Add the data source</h2>
+<p>To add the Elasticsearch data source, complete the following steps:</p>
+<ol>
+<li>Click <strong>Connections</strong> in the left-side menu.</li>
+<li>Under <strong>Connections</strong>, click <strong>Add new connection</strong>.</li>
+<li>Enter <code>Elasticsearch</code> in the search bar.</li>
+<li>Click <strong>Elasticsearch</strong> under the <strong>Data source</strong> section.</li>
+<li>Click <strong>Add new data source</strong> in the upper right.</li>
+</ol>
+<p>You will be taken to the <strong>Settings</strong> tab where you will set up your Elasticsearch configuration.</p>
+<h2 id="configuration-options">Configuration options</h2>
+<p>The following is a list of configuration options for Elasticsearch.</p>
+<p>The first option to configure is the name of your connection:</p>
+<ul>
+<li>
+<p><strong>Name</strong> - The data source name. This is how you refer to the data source in panels and queries. Examples: elastic-1, elasticsearch_metrics.</p>
+</li>
+<li>
+<p><strong>Default</strong> - Toggle to select as the default data source option. When you go to a dashboard panel or Explore, this will be the default selected data source.</p>
+</li>
+</ul>
+<h2 id="connection">Connection</h2>
+<p>Connect the Elasticsearch data source by specifying a URL.</p>
+<ul>
+<li><strong>URL</strong> - The URL of your Elasticsearch server. If your Elasticsearch server is local, use <code>http://localhost:9200</code>. If it is on a server within a network, this is the URL with the port where you are running Elasticsearch. Example: <code>http://elasticsearch.example.orgname:9200</code>.</li>
+</ul>
+<h2 id="authentication">Authentication</h2>
+<p>There are several authentication methods you can choose in the Authentication section.
+Select one of the following authentication methods from the dropdown menu.</p>
+<ul>
+<li>
+<p><strong>Basic authentication</strong> - The most common authentication method. Use your <code>data source</code> user name and <code>data source</code> password to connect.</p>
+</li>
+<li>
+<p><strong>Forward OAuth identity</strong> - Forward the OAuth access token (and the OIDC ID token if available) of the user querying the data source.</p>
+</li>
+<li>
+<p><strong>No authentication</strong> - Make the data source available without authentication. Grafana recommends using some type of authentication method.</p>
+</li>
+</ul>
+<!-- - **With credentials** - Toggle to enable credentials such as cookies or auth headers to be sent with cross-site requests. -->
+<h3 id="tls-settings">TLS settings</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use TLS (Transport Layer Security) for an additional layer of security when working with Elasticsearch. For information on setting up TLS encryption with Elasticsearch see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.8/configuring-tls.html#configuring-tls" target="_blank" rel="noopener noreferrer">Configure TLS</a>. You must add TLS settings to your Elasticsearch configuration file <strong>prior</strong> to setting these options in Grafana.</p></blockquote></div>
+
+<ul>
+<li>
+<p><strong>Add self-signed certificate</strong> - Check the box to authenticate with a CA certificate. Follow the instructions of the CA (Certificate Authority) to download the certificate file. Required for verifying self-signed TLS certificates.</p>
+</li>
+<li>
+<p><strong>TLS client authentication</strong> - Check the box to authenticate with the TLS client, where the server authenticates the client. Add the <code>Server name</code>, <code>Client certificate</code> and <code>Client key</code>. The <strong>ServerName</strong> is used to verify the hostname on the returned certificate. The <strong>Client certificate</strong> can be generated from a Certificate Authority (CA) or be self-signed. The <strong>Client key</strong> can also be generated from a Certificate Authority (CA) or be self-signed. The client key encrypts the data between client and server.</p>
+</li>
+<li>
+<p><strong>Skip TLS certificate validation</strong> - Check the box to bypass TLS certificate validation. Skipping TLS certificate validation is not recommended unless absolutely necessary or for testing purposes.</p>
+</li>
+</ul>
+<h3 id="http-headers">HTTP headers</h3>
+<p>Click <strong>+ Add header</strong> to add one or more HTTP headers. HTTP headers pass additional context and metadata about the request/response.</p>
+<ul>
+<li>
+<p><strong>Header</strong> - Add a custom header. This allows custom headers to be passed based on the needs of your Elasticsearch instance.</p>
+</li>
+<li>
+<p><strong>Value</strong> - The value of the header.</p>
+</li>
+</ul>
+<h2 id="additional-settings">Additional settings</h2>
+<p>Additional settings are optional settings that can be configured for more control over your data source.</p>
+<h3 id="advanced-http-settings">Advanced HTTP settings</h3>
+<ul>
+<li>
+<p><strong>Allowed cookies</strong> - Specify cookies by name that should be forwarded to the data source. The Grafana proxy deletes all forwarded cookies by default.</p>
+</li>
+<li>
+<p><strong>Timeout</strong> - The HTTP request timeout. This must be in seconds. There is no default, so this setting is up to you.</p>
+</li>
+</ul>
+<h3 id="elasticsearch-details">Elasticsearch details</h3>
+<p>The following settings are specific to the Elasticsearch data source.</p>
+<ul>
+<li>
+<p><strong>Index name</strong> - Use the index settings to specify a default for the <code>time field</code> and your Elasticsearch index&rsquo;s name. You can use a time pattern, for example <code>[logstash-]YYYY.MM.DD</code>, or a wildcard for the index name. When specifying a time pattern, the fixed part(s) of the pattern should be wrapped in square brackets.</p>
+</li>
+<li>
+<p><strong>Pattern</strong> - Select the matching pattern if using one in your index name. Options include:</p>
+<ul>
+<li>no pattern</li>
+<li>hourly</li>
+<li>daily</li>
+<li>weekly</li>
+<li>monthly</li>
+<li>yearly</li>
+</ul>
+</li>
+</ul>
+<p>Only select a pattern option if you have specified a time pattern in the Index name field.</p>
+<ul>
+<li>
+<p><strong>Time field name</strong> - Name of the time field. The default value is @timestamp. You can enter a different name.</p>
+</li>
+<li>
+<p><strong>Max concurrent shard requests</strong> - Sets the number of shards being queried at the same time. The default is <code>5</code>. For more information on shards see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/8.9/scalability.html#scalability" target="_blank" rel="noopener noreferrer">Elasticsearch&rsquo;s documentation</a>.</p>
+</li>
+<li>
+<p><strong>Min time interval</strong> - Defines a lower limit for the auto group-by time interval. This value <strong>must</strong> be formatted as a number followed by a valid time identifier:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Identifier</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>y</code></td>
+          <td>year</td>
+      </tr>
+      <tr>
+          <td><code>M</code></td>
+          <td>month</td>
+      </tr>
+      <tr>
+          <td><code>w</code></td>
+          <td>week</td>
+      </tr>
+      <tr>
+          <td><code>d</code></td>
+          <td>day</td>
+      </tr>
+      <tr>
+          <td><code>h</code></td>
+          <td>hour</td>
+      </tr>
+      <tr>
+          <td><code>m</code></td>
+          <td>minute</td>
+      </tr>
+      <tr>
+          <td><code>s</code></td>
+          <td>second</td>
+      </tr>
+      <tr>
+          <td><code>ms</code></td>
+          <td>millisecond</td>
+      </tr>
+  </tbody>
+</table>
+</li>
+</ul>
+<p>We recommend setting this value to match your Elasticsearch write frequency.
+For example, set this to <code>1m</code> if Elasticsearch writes data every minute.</p>
+<p>You can also override this setting in a dashboard panel under its data source options. The default is <code>10s</code>.</p>
+<ul>
+<li>
+<p><strong>X-Pack enabled</strong> - Toggle to enable <code>X-Pack</code>-specific features and options, which provide the <a href="../query-editor/">query editor</a> with additional aggregations, such as <code>Rate</code> and <code>Top Metrics</code>.</p>
+</li>
+<li>
+<p><strong>Include frozen indices</strong> - Toggle on when the <code>X-Pack enabled</code> setting is active. Includes frozen indices in searches. You can configure Grafana to include <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.13/frozen-indices.html" target="_blank" rel="noopener noreferrer">frozen indices</a> when performing search requests.</p>
+</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Frozen indices are <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.17/frozen-indices.html" target="_blank" rel="noopener noreferrer">deprecated in Elasticsearch</a> since v7.14.</p></blockquote></div>
+
+<h3 id="logs">Logs</h3>
+<p>In this section you can configure which fields the data source uses for log messages and log levels.</p>
+<ul>
+<li>
+<p><strong>Message field name:</strong> - Grabs the actual log message from the default source.</p>
+</li>
+<li>
+<p><strong>Level field name:</strong> - Name of the field with log level/severity information. When a level label is specified, the value of this label is used to determine the log level and update the color of each log line accordingly. If the log doesn’t have a specified level label, we try to determine if its content matches any of the 
+    <a href="/docs/grafana/latest/explore/logs-integration/#log-level">supported expressions</a>. The first match always determines the log level. If Grafana cannot infer a log-level field, it will be visualized with an unknown log level.</p>
+</li>
+</ul>
+<h3 id="data-links">Data links</h3>
+<p>Data links create a link from a specified field that can be accessed in Explore&rsquo;s logs view. You can add multiple data links by clicking <strong>+ Add</strong>.</p>
+<p>Each data link configuration consists of:</p>
+<ul>
+<li>
+<p><strong>Field</strong> - Sets the name of the field used by the data link.</p>
+</li>
+<li>
+<p><strong>URL/query</strong> - Sets the full link URL if the link is external. If the link is internal, this input serves as a query for the target data source.<br/>In both cases, you can interpolate the value from the field with the <code>${__value.raw }</code> macro.</p>
+</li>
+<li>
+<p><strong>URL Label</strong> (Optional) - Sets a custom display label for the link. The link label defaults to the full external URL or name of the linked internal data source and is overridden by this setting.</p>
+</li>
+<li>
+<p><strong>Internal link</strong> - Toggle on to set an internal link. For an internal link, you can select the target data source with a data source selector. This supports only tracing data sources.</p>
+</li>
+</ul>
+<h2 id="private-data-source-connect-pdc-and-elasticsearch">Private data source connect (PDC) and Elasticsearch</h2>
+<p>Use private data source connect (PDC) to connect to and query data within a secure network without opening that network to inbound traffic from Grafana Cloud. See <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect</a> for more information on how PDC works and <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/configure-pdc/#configure-grafana-private-data-source-connect-pdc">Configure Grafana private data source connect (PDC)</a> for steps on setting up a PDC connection.</p>
+<ul>
+<li><strong>Private data source connect</strong> - Click in the box to set the default PDC connection from the dropdown menu or create a new connection.</li>
+</ul>
+<p>Once you have configured your Elasticsearch data source options, click <strong>Save &amp; test</strong> at the bottom to test out your data source connection. You can also remove a connection by clicking <strong>Delete</strong>.</p>

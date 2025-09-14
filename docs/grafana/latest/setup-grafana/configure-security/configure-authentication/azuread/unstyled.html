@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<h1 id="configure-azure-adentra-id-oauth-authentication">Configure Azure AD/Entra ID OAuth authentication</h1>
+<p>The Azure AD authentication allows you to use a Microsoft Entra ID (formerly known as Azure Active Directory) tenant as an identity provider for Grafana. You can use Entra ID application roles to assign users and groups to Grafana roles from the Azure Portal.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If Users use the same email address in Microsoft Entra ID that they use with other authentication providers (such as Grafana.com), you need to do additional configuration to ensure that the users are matched correctly. Please refer to <a href="../#using-the-same-email-address-to-login-with-different-identity-providers">Using the same email address to login with different identity providers</a> for more information.</p></blockquote></div>
+
+<h2 id="create-the-microsoft-entra-id-application">Create the Microsoft Entra ID application</h2>
+<p>To enable the Azure AD/Entra ID OAuth, register your application with Entra ID.</p>
+<ol>
+<li>
+<p>Log in to <a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer">Azure Portal</a>, then click <strong>Microsoft Entra ID</strong> in the side menu.</p>
+</li>
+<li>
+<p>If you have access to more than one tenant, select your account in the upper right. Set your session to the Entra ID tenant you wish to use.</p>
+</li>
+<li>
+<p>Under <strong>Manage</strong> in the side menu, click <strong>App Registrations</strong> &gt; <strong>New Registration</strong>. Enter a descriptive name.</p>
+</li>
+<li>
+<p>Under <strong>Redirect URI</strong>, select the app type <strong>Web</strong>.</p>
+</li>
+<li>
+<p>Add the redirect URLs <code>https://&lt;grafana domain&gt;/login/azuread</code> and <code>https://&lt;grafana domain&gt;</code>, then click <strong>Register</strong>. The app&rsquo;s <strong>Overview</strong> page opens.</p>
+</li>
+<li>
+<p>Note the <strong>Application ID</strong>. This is the OAuth client ID.</p>
+</li>
+<li>
+<p>Click <strong>Endpoints</strong> from the top menu.</p>
+<ul>
+<li>Note the <strong>OAuth 2.0 authorization endpoint (v2)</strong> URL. This is the authorization URL.</li>
+<li>Note the <strong>OAuth 2.0 token endpoint (v2)</strong>. This is the token URL.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Certificates &amp; secrets</strong> in the side menu, then add a new entry under the supported client authentication option you want to use. The following are the supported client authentication options with their respective configuration steps.</p>
+<ul>
+<li>
+<p><strong>Client secrets</strong></p>
+<ol>
+<li>
+<p>Add a new entry under <strong>Client secrets</strong> with the following configuration.</p>
+<ul>
+<li>Description: Grafana OAuth 2.0</li>
+<li>Expires: Select an expiration period</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Add</strong> then copy the key <strong>Value</strong>. This is the OAuth 2.0 client secret.</p>
+</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Make sure that you copy the string in the <strong>Value</strong> field, rather than the one in the <strong>Secret ID</strong> field.</p></blockquote></div>
+
+<ol>
+<li>You must have set <code>client_authentication</code> under <code>[auth.azuread]</code> to <code>client_secret_post</code> in the Grafana server configuration for this to work.</li>
+</ol>
+</li>
+<li>
+<p><strong>Federated credentials</strong></p>
+<ul>
+<li>
+<p><strong><em>Managed Identity</em></strong></p>
+<ol>
+<li>
+<p>Refer to <a href="https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation-config-app-trust-managed-identity?tabs=microsoft-entra-admin-center" target="_blank" rel="noopener noreferrer">Configure an application to trust a managed identity (preview)</a> for a complete guide on setting up a managed identity as a federated credential.
+Add a new entry under Federated credentials with the following configuration.</p>
+<ul>
+<li>Federated credential scenario: Select <strong>Other issuer</strong>.</li>
+<li>Issuer: The OAuth 2.0 / OIDC issuer URL of the Microsoft Entra ID authority. For example: <code>https://login.microsoftonline.com/{tenantID}/v2.0</code>.</li>
+<li>Subject identifier: The Object (Principal) ID GUID of the Managed Identity.</li>
+<li>Name: A unique descriptive name for the credential.</li>
+<li>Description: Grafana OAuth.</li>
+<li>Audience: The audience value that must appear in the external token. For Public cloud, it would be <code>api://AzureADTokenExchange</code>. See mentioned documentation for the full list of available audiences.</li>
+</ul>
+</li>
+<li>
+<p>Click <strong>Add</strong>, and then copy the Managed Identity Client ID and the federated credential Audience values. This is your OAuth 2.0 federated credential.</p>
+</li>
+<li>
+<p>You must have set <code>client_authentication</code> under <code>[auth.azuread]</code> to <code>managed_identity</code> in the Grafana server configuration for this to work.</p>
+</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Managed identities as federated credentials are only applicable to workloads hosted in Azure.</p>
+<p>You can only add user-assigned managed identities as federated credentials on Entra ID applications.</p></blockquote></div>
+
+</li>
+<li>
+<p><strong><em>Workload Identity (K8s/AKS)</em></strong></p>
+<ol>
+<li>
+<p>Refer to <a href="https://azure.github.io/azure-workload-identity/docs/topics/federated-identity-credential.html#azure-portal-ui" target="_blank" rel="noopener noreferrer">Federated identity credential for an Azure AD application</a> for a complete guide on setting up a federated credential for workload identity.
+Add a new entry under Federated credentials with the following configuration.</p>
+<ul>
+<li>Federated credential scenario: Select <strong>Kubernetes accessing Azure resources</strong>.</li>
+<li><a href="https://learn.microsoft.com/en-us/azure/aks/use-oidc-issuer#get-the-oidc-issuer-url" target="_blank" rel="noopener noreferrer">Cluster issuer URL</a>: The OIDC issuer URL that your cluster is integrated with. For example: <code>https://{region}.oic.prod-aks.azure.com/{tenant_id}/{uuid}</code>.</li>
+<li>Namespace: Namespace of your Grafana deployment. For example: <code>grafana</code>.</li>
+<li>Service account name: Service account name of your Grafana deployment. For example: <code>grafana</code>.</li>
+<li>Subject identifier: The expected identity (subject claim) from the OIDC token, which Azure uses to validate and authorize token issuance to the requesting workload. For example: <code>system:serviceaccount:grafana:grafana</code>.</li>
+<li>Name: A unique descriptive name for the credential.</li>
+<li>Description: Grafana OAuth.</li>
+<li>Audience: The audience value that must appear in the external token. For Public cloud, it would be <code>api://AzureADTokenExchange</code>. See mentioned documentation for the full list of available audiences.</li>
+</ul>
+</li>
+<li>
+<p>You must have set <code>client_authentication</code> (env var <code>GF_AUTH_AZUREAD_CLIENT_AUTHENTICATION</code>) under <code>[auth.azuread]</code> to <code>workload_identity</code> in the Grafana server configuration for this to work.</p>
+</li>
+<li>
+<p>You may optionally set <code>workload_identity_token_file</code> (env var <code>GF_AUTH_AZUREAD_WORKLOAD_IDENTITY_TOKEN_FILE</code>) under <code>[auth.azuread]</code> to <code>/var/run/secrets/azure/tokens/azure-identity-token</code> in the Grafana server configuration for this to work. (Optional, defaults to <code>/var/run/secrets/azure/tokens/azure-identity-token</code>)</p>
+</li>
+<li>
+<p>You must have set <code>client_id</code> (env var <code>GF_AUTH_AZUREAD_CLIENT_ID</code>) under <code>[auth.azuread]</code> in the Grafana server configuration for this to work. This must match the Entra ID/Azure AD App Registration Application (client) ID.</p>
+</li>
+<li>
+<p>You must have set <code>token_url</code> (env var <code>GF_AUTH_AZUREAD_TOKEN_URL</code>) under <code>[auth.azuread]</code> to <code>https://login.microsoftonline.com/{tenantID}/oauth2/v2.0/token</code> in the Grafana server configuration for this to work.</p>
+</li>
+<li>
+<p>You must have set <code>auth_url</code> (env var <code>GF_AUTH_AZUREAD_AUTH_URL</code>) under <code>[auth.azuread]</code> to <code>https://login.microsoftonline.com/{tenantID}/oauth2/v2.0/authorize</code> in the Grafana server configuration for this to work.</p>
+</li>
+<li>
+<p>You must have set <code>federated_credential_audience</code> (env var <code>GF_AUTH_AZUREAD_FEDERATED_CREDENTIAL_AUDIENCE</code>) under <code>[auth.azuread]</code> to <code>api://AzureADTokenExchange</code> in the Grafana server configuration for this to work.</p>
+</li>
+</ol>
+</li>
+</ul>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Managed identities as federated credentials are only applicable to workloads hosted in Azure.</p>
+<p>You can only add user-assigned managed identities as federated credentials on Entra ID applications.</p></blockquote></div>
+
+</li>
+</ul>
+</li>
+<li>
+<p>Define the required application roles for Grafana <a href="#configure-application-roles-for-grafana-in-the-azure-portal">using the Azure Portal</a> or <a href="#configure-application-roles-for-grafana-in-the-manifest-file">using the manifest file</a>.</p>
+</li>
+<li>
+<p>Go to <strong>Microsoft Entra ID</strong> and then to <strong>Enterprise Applications</strong>, under <strong>Manage</strong>.</p>
+</li>
+<li>
+<p>Search for your application and click it.</p>
+</li>
+<li>
+<p>Click <strong>Users and Groups</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Add user/group</strong> to add a user or group to the Grafana roles.</p>
+</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When assigning a group to a Grafana role, ensure that users are direct members of the group. Users in nested groups will not have access to Grafana due to limitations within Azure AD/Entra ID side. For more information, see <a href="https://learn.microsoft.com/en-us/entra/identity/users/directory-service-limits-restrictions" target="_blank" rel="noopener noreferrer">Microsoft Entra service limits and restrictions</a>.</p></blockquote></div>
+
+<h3 id="configure-application-roles-for-grafana-in-the-azure-portal">Configure application roles for Grafana in the Azure Portal</h3>
+<p>This section describes setting up basic application roles for Grafana within the Azure Portal. For more information, see <a href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps" target="_blank" rel="noopener noreferrer">Add app roles to your application and receive them in the token</a>.</p>
+<ol>
+<li>
+<p>Go to <strong>App Registrations</strong>, search for your application, and click it.</p>
+</li>
+<li>
+<p>Click <strong>App roles</strong> and then <strong>Create app role</strong>.</p>
+</li>
+<li>
+<p>Define a role corresponding to each Grafana role: Viewer, Editor, and Admin.</p>
+<ol>
+<li>
+<p>Choose a <strong>Display name</strong> for the role. For example, &ldquo;Grafana Editor&rdquo;.</p>
+</li>
+<li>
+<p>Set the <strong>Allowed member types</strong> to <strong>Users/Groups</strong>.</p>
+</li>
+<li>
+<p>Ensure that the <strong>Value</strong> field matches the Grafana role name. For example, &ldquo;Editor&rdquo;.</p>
+</li>
+<li>
+<p>Choose a <strong>Description</strong> for the role. For example, &ldquo;Grafana Editor Users&rdquo;.</p>
+</li>
+<li>
+<p>Click <strong>Apply</strong>.</p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="configure-application-roles-for-grafana-in-the-manifest-file">Configure application roles for Grafana in the manifest file</h3>
+<p>If you prefer to configure the application roles for Grafana in the manifest file, complete the following steps:</p>
+<ol>
+<li>
+<p>Go to <strong>App Registrations</strong>, search for your application, and click it.</p>
+</li>
+<li>
+<p>Click <strong>Manifest</strong>.</p>
+</li>
+<li>
+<p>Add a Universally Unique Identifier to each role.</p>
+</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Every role requires a <a href="https://en.wikipedia.org/wiki/Universally_unique_identifier" target="_blank" rel="noopener noreferrer">Universally Unique Identifier</a> which you can generate on Linux with <code>uuidgen</code>, and on Windows through Microsoft PowerShell with <code>New-Guid</code>.</p></blockquote></div>
+
+<ol>
+<li>
+<p>Replace each &ldquo;SOME_UNIQUE_ID&rdquo; with the generated ID in the manifest file:</p>
+<pre>	&#34;appRoles&#34;: [
+			{
+				&#34;allowedMemberTypes&#34;: [
+					&#34;User&#34;
+				],
+				&#34;description&#34;: &#34;Grafana org admin Users&#34;,
+				&#34;displayName&#34;: &#34;Grafana Org Admin&#34;,
+				&#34;id&#34;: &#34;SOME_UNIQUE_ID&#34;,
+				&#34;isEnabled&#34;: true,
+				&#34;lang&#34;: null,
+				&#34;origin&#34;: &#34;Application&#34;,
+				&#34;value&#34;: &#34;Admin&#34;
+			},
+			{
+				&#34;allowedMemberTypes&#34;: [
+					&#34;User&#34;
+				],
+				&#34;description&#34;: &#34;Grafana read only Users&#34;,
+				&#34;displayName&#34;: &#34;Grafana Viewer&#34;,
+				&#34;id&#34;: &#34;SOME_UNIQUE_ID&#34;,
+				&#34;isEnabled&#34;: true,
+				&#34;lang&#34;: null,
+				&#34;origin&#34;: &#34;Application&#34;,
+				&#34;value&#34;: &#34;Viewer&#34;
+			},
+			{
+				&#34;allowedMemberTypes&#34;: [
+					&#34;User&#34;
+				],
+				&#34;description&#34;: &#34;Grafana Editor Users&#34;,
+				&#34;displayName&#34;: &#34;Grafana Editor&#34;,
+				&#34;id&#34;: &#34;SOME_UNIQUE_ID&#34;,
+				&#34;isEnabled&#34;: true,
+				&#34;lang&#34;: null,
+				&#34;origin&#34;: &#34;Application&#34;,
+				&#34;value&#34;: &#34;Editor&#34;
+			}
+		],</pre>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+<h3 id="assign-server-administrator-privileges">Assign server administrator privileges</h3>
+<p>If the application role received by Grafana is <code>GrafanaAdmin</code>, Grafana grants the user server administrator privileges.
+This is useful if you want to grant server administrator privileges to a subset of users.
+Grafana also assigns the user the <code>Admin</code> role of the default organization.</p>
+<p>The setting <code>allow_assign_grafana_admin</code> under <code>[auth.azuread]</code> must be set to <code>true</code> for this to work.
+If the setting is set to <code>false</code>, the user is assigned the role of <code>Admin</code> of the default organization, but not server administrator privileges.</p>
+<pre>{
+  &#34;allowedMemberTypes&#34;: [&#34;User&#34;],
+  &#34;description&#34;: &#34;Grafana server admin Users&#34;,
+  &#34;displayName&#34;: &#34;Grafana Server Admin&#34;,
+  &#34;id&#34;: &#34;SOME_UNIQUE_ID&#34;,
+  &#34;isEnabled&#34;: true,
+  &#34;lang&#34;: null,
+  &#34;origin&#34;: &#34;Application&#34;,
+  &#34;value&#34;: &#34;GrafanaAdmin&#34;
+}</pre>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>Ensure that you have followed the steps in <a href="#create-the-microsoft-entra-id-application">Create the Microsoft Entra ID application</a> before you begin.</p>
+<h2 id="configure-azure-ad-authentication-client-using-the-grafana-ui">Configure Azure AD authentication client using the Grafana UI</h2>
+<p>As a Grafana Admin, you can configure your Azure AD/Entra ID OAuth client from within Grafana using the Grafana UI. To do this, navigate to the <strong>Administration &gt; Authentication &gt; Azure AD</strong> page and fill in the form. If you have a current configuration in the Grafana configuration file, the form will be pre-populated with those values. Otherwise the form will contain default values.</p>
+<p>After you have filled in the form, click <strong>Save</strong> to save the configuration. If the save was successful, Grafana will apply the new configurations.</p>
+<p>If you need to reset changes you made in the UI back to the default values, click <strong>Reset</strong>. After you have reset the changes, Grafana will apply the configuration from the Grafana configuration file (if there is any configuration) or the default values.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If you run Grafana in high availability mode, configuration changes may not get applied to all Grafana instances immediately. You may need to wait a few minutes for the configuration to propagate to all Grafana instances.</p></blockquote></div>
+
+<h2 id="configure-azure-ad-authentication-client-using-the-terraform-provider">Configure Azure AD authentication client using the Terraform provider</h2>
+<pre>resource &#34;grafana_sso_settings&#34; &#34;azuread_sso_settings&#34; {
+  provider_name = &#34;azuread&#34;
+  oauth2_settings {
+    name                          = &#34;Azure AD&#34;
+    auth_url                      = &#34;https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/authorize&#34;
+    token_url                     = &#34;https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/token&#34;
+    client_authentication         = &#34;CLIENT_AUTHENTICATION_OPTION&#34;
+    client_id                     = &#34;APPLICATION_ID&#34;
+    client_secret                 = &#34;CLIENT_SECRET&#34;
+    managed_identity_client_id    = &#34;MANAGED_IDENTITY_CLIENT_ID&#34;
+    federated_credential_audience = &#34;FEDERATED_CREDENTIAL_AUDIENCE&#34;
+    allow_sign_up                 = true
+    auto_login                    = false
+    scopes                        = &#34;openid email profile&#34;
+    allowed_organizations         = &#34;TENANT_ID&#34;
+    role_attribute_strict         = false
+    allow_assign_grafana_admin    = false
+    skip_org_role_sync            = false
+    use_pkce                      = true
+    custom = {
+      domain_hint = &#34;contoso.com&#34;
+      force_use_graph_api = &#34;true&#34;
+    }
+  }
+}</pre>
+<p>Refer to <a href="https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/sso_settings" target="_blank" rel="noopener noreferrer">Terraform Registry</a> for a complete reference on using the <code>grafana_sso_settings</code> resource.</p>
+<h2 id="configure-azure-ad-authentication-client-using-the-grafana-configuration-file">Configure Azure AD authentication client using the Grafana configuration file</h2>
+<p>Ensure that you have access to the <a href="../../../configure-grafana/#configuration-file-location">Grafana configuration file</a>.</p>
+<h3 id="enable-azure-ad-oauth-in-grafana">Enable Azure AD OAuth in Grafana</h3>
+<p>Add the following to the <a href="../../../configure-grafana/#configuration-file-location">Grafana configuration file</a>:</p>
+<pre>[auth.azuread]
+name = Azure AD
+enabled = true
+allow_sign_up = true
+auto_login = false
+client_authentication = CLIENT_AUTHENTICATION_OPTION
+client_id = APPLICATION_ID
+client_secret = CLIENT_SECRET
+managed_identity_client_id = MANAGED_IDENTITY_CLIENT_ID
+federated_credential_audience = FEDERATED_CREDENTIAL_AUDIENCE
+scopes = openid email profile
+auth_url = https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/authorize
+token_url = https://login.microsoftonline.com/TENANT_ID/oauth2/v2.0/token
+allowed_domains =
+allowed_groups =
+allowed_organizations = TENANT_ID
+role_attribute_strict = false
+allow_assign_grafana_admin = false
+skip_org_role_sync = false
+use_pkce = true</pre>
+<p>You can also use these environment variables to configure <code>client_authentication</code>, <code>client_id</code>, <code>client_secret</code>, <code>managed_identity_client_id</code>, and <code>federated_credential_audience</code>:</p>
+<pre>GF_AUTH_AZUREAD_CLIENT_AUTHENTICATION
+GF_AUTH_AZUREAD_CLIENT_ID
+GF_AUTH_AZUREAD_CLIENT_SECRET
+GF_AUTH_AZUREAD_MANAGED_IDENTITY_CLIENT_ID
+GF_AUTH_AZUREAD_FEDERATED_CREDENTIAL_AUDIENCE</pre>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Verify that the Grafana <a href="../../../configure-grafana/#root_url">root_url</a> is set in your Azure Application Redirect URLs.</p></blockquote></div>
+
+<h3 id="configure-refresh-token">Configure refresh token</h3>
+<p>When a user logs in using an OAuth provider, Grafana verifies that the access token has not expired. When an access token expires, Grafana uses the provided refresh token (if any exists) to obtain a new access token.</p>
+<p>Grafana uses a refresh token to obtain a new access token without requiring the user to log in again. If a refresh token doesn&rsquo;t exist, Grafana logs the user out of the system after the access token has expired.</p>
+<p>Refresh token fetching and access token expiration check is enabled by default for the AzureAD provider since Grafana v10.1.0. If you would like to disable access token expiration check then set the <code>use_refresh_token</code> configuration value to <code>false</code>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>The <code>accessTokenExpirationCheck</code> feature toggle has been removed in Grafana v10.3.0 and the <code>use_refresh_token</code> configuration value will be used instead for configuring refresh token fetching and access token expiration check.</p></blockquote></div>
+
+<h3 id="configure-allowed-tenants">Configure allowed tenants</h3>
+<p>To limit access to authenticated users who are members of one or more tenants, set <code>allowed_organizations</code>
+to a <em>comma-</em> or <em>space-separated</em> list of tenant IDs. You can find tenant IDs on the Azure portal under <strong>Microsoft Entra ID -&gt; Overview</strong>.</p>
+<p>Make sure to include the tenant IDs of all the federated Users&rsquo; root directory if your Entra ID contains external identities.</p>
+<p>For example, if you want to only give access to members of the tenant <code>example</code> with an ID of <code>8bab1c86-8fba-33e5-2089-1d1c80ec267d</code>, then set the following:</p>
+<pre>allowed_organizations = 8bab1c86-8fba-33e5-2089-1d1c80ec267d</pre>
+<h3 id="configure-allowed-groups">Configure allowed groups</h3>
+<p>Microsoft Entra ID groups can be used to limit user access to Grafana. For more information about managing groups in Entra ID, refer to <a href="https://learn.microsoft.com/en-us/entra/fundamentals/how-to-manage-groups" target="_blank" rel="noopener noreferrer">Manage Microsoft Entra groups and group membership</a>.</p>
+<p>To limit access to authenticated users who are members of one or more Entra ID groups, set <code>allowed_groups</code>
+to a <em>comma-</em> or <em>space-separated</em> list of group object IDs.</p>
+<ol>
+<li>
+<p>To find object IDs for a specific group on the Azure portal, go to <strong>Microsoft Entra ID &gt; Manage &gt; Groups</strong>.</p>
+<p>You can find the Object Id of a group by clicking on the group and then clicking on <strong>Properties</strong>. The object ID is listed under <strong>Object ID</strong>. If you want to only give access to members of the group <code>example</code> with an Object Id of <code>8bab1c86-8fba-33e5-2089-1d1c80ec267d</code>, then set the following:</p>
+<pre>  allowed_groups = 8bab1c86-8fba-33e5-2089-1d1c80ec267d</pre>
+</li>
+<li>
+<p>You must enable adding the <a href="https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims#configure-groups-optional-claims" target="_blank" rel="noopener noreferrer">group attribute</a> to the tokens in your Entra ID App registration either <a href="#configure-group-membership-claims-on-the-azure-portal">from the Azure Portal</a> or <a href="#configure-group-membership-claim-in-the-manifest-file">from the manifest file</a>.</p>
+</li>
+</ol>
+<h4 id="configure-group-membership-claims-on-the-azure-portal">Configure group membership claims on the Azure Portal</h4>
+<p>To ensure that the <code>groups</code> claim is included in the token, add the <code>groups</code> claim to the token configuration either through the Azure Portal UI or by editing the manifest file.</p>
+<p>To configure group membership claims from the Azure Portal UI, complete the following steps:</p>
+<ol>
+<li>Navigate to the <strong>App Registrations</strong> page and select your application.</li>
+<li>Under <strong>Manage</strong> in the side menu, select <strong>Token configuration</strong>.</li>
+<li>Click <strong>Add groups claim</strong> and select the relevant option for your use case (for example, <strong>Security groups</strong> and <strong>Groups assigned to the application</strong>).</li>
+</ol>
+<p>For more information, see <a href="https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims#configure-groups-optional-claims" target="_blank" rel="noopener noreferrer">Configure groups optional claims</a>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>If the user is a member of more than 200 groups, Entra ID does not emit the groups claim in the token and instead emits a group overage claim. To set up a group overage claim, see <a href="#users-with-over-200-group-assignments">Users with over 200 Group assignments</a>.</p></blockquote></div>
+
+<h4 id="configure-group-membership-claim-in-the-manifest-file">Configure group membership claim in the manifest file</h4>
+<ol>
+<li>
+<p>Go to <strong>App Registrations</strong>, search for your application, and click it.</p>
+</li>
+<li>
+<p>Click <strong>Manifest</strong>.</p>
+</li>
+<li>
+<p>Add the following to the root of the manifest file:</p>
+<pre>&#34;groupMembershipClaims&#34;: &#34;ApplicationGroup, SecurityGroup&#34;</pre>
+</li>
+</ol>
+<h3 id="configure-allowed-domains">Configure allowed domains</h3>
+<p>The <code>allowed_domains</code> option limits access to users who belong to specific domains. Separate domains with space or comma. For example,</p>
+<pre>allowed_domains = mycompany.com mycompany.org</pre>
+<h3 id="pkce">PKCE</h3>
+<p>IETF&rsquo;s <a href="https://datatracker.ietf.org/doc/html/rfc7636" target="_blank" rel="noopener noreferrer">RFC 7636</a>
+introduces &ldquo;proof key for code exchange&rdquo; (PKCE) which provides
+additional protection against some forms of authorization code
+interception attacks. PKCE will be required in <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-03" target="_blank" rel="noopener noreferrer">OAuth 2.1</a>.</p>
+<blockquote>
+<p>You can disable PKCE in Grafana by setting <code>use_pkce</code> to <code>false</code> in the<code>[auth.azuread]</code> section.</p></blockquote>
+<h3 id="configure-automatic-login">Configure automatic login</h3>
+<p>To bypass the login screen and log in automatically, enable the &ldquo;auto_login&rdquo; feature.
+This setting is ignored if multiple auth providers are configured to use auto login.</p>
+<pre>auto_login = true</pre>
+<h3 id="team-sync">Team Sync</h3>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Available in 
+    <a href="/docs/grafana/latest/introduction/grafana-enterprise/">Grafana Enterprise</a> and to customers on select Grafana Cloud plans. For pricing information, visit <a href="/pricing/">pricing</a> or contact our sales team.</p></blockquote></div>
+
+<p>With Team Sync you can map your Entra ID groups to teams in Grafana so that your users will automatically be added to
+the correct teams.</p>
+<p>You can reference Entra ID groups by group object ID, like <code>8bab1c86-8fba-33e5-2089-1d1c80ec267d</code>.</p>
+<p>To learn more, refer to the 
+    <a href="/docs/grafana/latest/setup-grafana/configure-security/configure-team-sync/">Team Sync</a> documentation.</p>
+<h2 id="common-troubleshooting">Common troubleshooting</h2>
+<p>Here are some common issues and particulars you can run into when
+configuring Azure AD authentication in Grafana.</p>
+<h3 id="users-with-over-200-group-assignments">Users with over 200 Group assignments</h3>
+<p>To ensure that the token size doesn&rsquo;t exceed HTTP header size limits,
+Entra ID limits the number of object IDs that it includes in the groups claim.
+If a user is member of more groups than the coverage limit (200), then Entra ID does not emit the groups claim in the token and emits a group overage claim instead.</p>
+<blockquote>
+<p>More information in <a href="https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#groups-overage-claim" target="_blank" rel="noopener noreferrer">Groups overage claim</a></p></blockquote>
+<p>If Grafana receives a token with a group overage claim instead of a groups claim,
+Grafana attempts to retrieve the user&rsquo;s group membership by calling the included endpoint.</p>
+<p>The Entra ID <code>App registration</code> must include the following API permissions for group overage claim calls to succeed:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Permissions name</th>
+          <th>Type</th>
+          <th>Admin consent required</th>
+          <th>Status</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>GroupMember.Read.All</code></td>
+          <td>Delegated</td>
+          <td>Yes</td>
+          <td>Granted</td>
+      </tr>
+      <tr>
+          <td><code>User.Read</code></td>
+          <td>Delegated</td>
+          <td>No</td>
+          <td>Granted</td>
+      </tr>
+  </tbody>
+</table>
+<p>Admin consent is required for the <code>GroupMember.Read.All</code> permission. To grant admin consent, navigate to <strong>API permissions</strong> in the <strong>App registration</strong> and select <strong>Grant admin consent for [your-organization]</strong>.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>You can make Grafana always get group information from the Microsoft Graph API by turning on the <a href="./#force-fetching-groups-from-microsoft-graph-api"><code>force_use_graph_api</code></a> setting in the configuration.</p></blockquote></div>
+
+<h4 id="configure-the-required-graph-api-permissions">Configure the required Graph API permissions</h4>
+<ol>
+<li>Navigate to <strong>Microsoft Entra ID &gt; Manage &gt; App registrations</strong> and select your application.</li>
+<li>Select <strong>API permissions</strong> and then click on <strong>Add a permission</strong>.</li>
+<li>Select <strong>Microsoft Graph</strong> from the list of APIs.</li>
+<li>Select <strong>Delegated permissions</strong>.</li>
+<li>Under the <strong>GroupMember</strong> section, select <strong>GroupMember.Read.All</strong>.</li>
+<li>Click <strong>Add permissions</strong>.</li>
+<li>Select <strong>Microsoft Graph</strong> from the list of APIs.</li>
+<li>Select <strong>Delegated permissions</strong>.</li>
+<li>In the <strong>Select permissions</strong> pane, under the <strong>User</strong> section, select <strong>User.Read</strong>.</li>
+<li>Click the <strong>Add permissions</strong> button at the bottom of the page.</li>
+</ol>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Admin consent may be required for this permission.</p></blockquote></div>
+
+<h3 id="force-fetching-groups-from-microsoft-graph-api">Force fetching groups from Microsoft Graph API</h3>
+<p>To force fetching groups from Microsoft Graph API instead of the <code>id_token</code>, you can use the <code>force_use_graph_api</code> configuration option.</p>
+<pre>[auth.azuread]
+force_use_graph_api = true</pre>
+<h3 id="map-roles">Map roles</h3>
+<p>By default, Azure AD authentication will map users to organization roles based on the most privileged application role assigned to the user in Entra ID.</p>
+<p>If no application role is found, the user is assigned the role specified by
+<a href="../../../configure-grafana/#auto_assign_org_role">the <code>auto_assign_org_role</code> option</a>.
+You can disable this default role assignment by setting <code>role_attribute_strict = true</code>. This setting denies user access if no role or an invalid role is returned and the <code>org_mapping</code> expression evaluates to an empty mapping.</p>
+<p>You can use the <code>org_mapping</code> configuration option to assign the user to multiple organizations and specify their role based on their Entra ID group membership. For more information, refer to <a href="#org-roles-mapping-example">Org roles mapping example</a>. If the org role mapping (<code>org_mapping</code>) is specified and Entra ID returns a valid role, then the user will get the highest of the two roles.</p>
+<p><em>On every login</em> the user organization role will be reset to match Entra ID&rsquo;s application role and
+their organization membership will be reset to the default organization.</p>
+<h4 id="org-roles-mapping-example">Org roles mapping example</h4>
+<p>The Entra ID integration uses the external users&rsquo; groups in the <code>org_mapping</code> configuration to map organizations and roles based on their Entra ID group membership.</p>
+<p>In this example, the user has been granted the role of a <code>Viewer</code> in the <code>org_foo</code> organization, and the role of an <code>Editor</code> in the <code>org_bar</code> and <code>org_baz</code> orgs.</p>
+<p>The external user is part of the following Entra ID groups: <code>032cb8e0-240f-4347-9120-6f33013e817a</code> and <code>bce1c492-0679-4989-941b-8de5e6789cb9</code>.</p>
+<p>Config:</p>
+<pre>org_mapping = [&#34;032cb8e0-240f-4347-9120-6f33013e817a:org_foo:Viewer&#34;, &#34;bce1c492-0679-4989-941b-8de5e6789cb9:org_bar:Editor&#34;, &#34;*:org_baz:Editor&#34;]</pre>
+<h2 id="skip-organization-role-sync">Skip organization role sync</h2>
+<p>If Azure AD authentication is not intended to sync user roles and organization membership and prevent the sync of org roles from Entra ID, set <code>skip_org_role_sync</code> to <code>true</code>. This is useful if you want to manage the organization roles for your users from within Grafana or that your organization roles are synced from another provider.
+See <a href="../../../configure-grafana/#authazuread">Configure Grafana</a> for more details.</p>
+<pre>[auth.azuread]
+# ..
+# prevents the sync of org roles from AzureAD
+skip_org_role_sync = true</pre>
+<h2 id="configuration-options">Configuration options</h2>
+<p>The following table outlines the various Azure AD/Entra ID configuration options. You can apply these options as environment variables, similar to any other configuration within Grafana. For more information, refer to <a href="../../../configure-grafana/#override-configuration-with-environment-variables">Override configuration with environment variables</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Setting</th>
+          <th>Required</th>
+          <th>Supported on Cloud</th>
+          <th>Description</th>
+          <th>Default</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>enabled</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Enables Azure AD/Entra ID authentication.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>name</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Name that refers to the Azure AD/Entra ID authentication from the Grafana user interface.</td>
+          <td><code>OAuth</code></td>
+      </tr>
+      <tr>
+          <td><code>icon</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Icon used for the Azure AD/Entra ID authentication in the Grafana user interface.</td>
+          <td><code>signin</code></td>
+      </tr>
+      <tr>
+          <td><code>client_authentication</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Defines the client authentication method used to authenticate to the token endpoint. Supported values: <code>none</code>, <code>client_secret_post</code>, <code>managed_identity</code>, or <code>workload_identity</code>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>workload_identity_token_file</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>The path to the token file used to authenticate to the OAuth2 provider. This is only required when <code>client_authentication</code> is set to <code>workload_identity</code>. The token file contains the service account token projected by Kubernetes.</td>
+          <td><code>/var/run/secrets/azure/tokens/azure-identity-token</code></td>
+      </tr>
+      <tr>
+          <td><code>federated_credential_audience</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>The audience of the federated identity credential of your OAuth2 app. Required when <code>client_authentication</code> is set to <code>managed_identity</code> or <code>workload_identity</code>. For public cloud, this is typically <code>api://AzureADTokenExchange</code>.</td>
+          <td><code>api://AzureADTokenExchange</code></td>
+      </tr>
+      <tr>
+          <td><code>client_id</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Client ID of the App (<code>Application (client) ID</code> on the <strong>App registration</strong> dashboard).</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>client_secret</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Client secret of the App.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>auth_url</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Authorization endpoint of the Azure AD/Entra ID OAuth2 provider.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>token_url</code></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Endpoint used to obtain the OAuth2 access token.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>auth_style</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Name of the <a href="https://pkg.go.dev/golang.org/x/oauth2#AuthStyle" target="_blank" rel="noopener noreferrer">OAuth2 AuthStyle</a> to be used when ID token is requested from OAuth2 provider. It determines how <code>client_id</code> and <code>client_secret</code> are sent to Oauth2 provider. Available values are <code>AutoDetect</code>, <code>InParams</code> and <code>InHeader</code>.</td>
+          <td><code>AutoDetect</code></td>
+      </tr>
+      <tr>
+          <td><code>scopes</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated OAuth2 scopes.</td>
+          <td><code>openid email profile</code></td>
+      </tr>
+      <tr>
+          <td><code>allow_sign_up</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Controls Grafana user creation through the Azure AD/Entra ID login. Only existing Grafana users can log in with Azure AD/Entra ID if set to <code>false</code>.</td>
+          <td><code>true</code></td>
+      </tr>
+      <tr>
+          <td><code>auto_login</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to enable users to bypass the login screen and automatically log in. This setting is ignored if you configure multiple auth providers to use auto-login.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>login_prompt</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Indicates the type of user interaction when the user logs in with Azure AD/Entra ID. Available values are <code>login</code>, <code>consent</code> and <code>select_account</code>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>role_attribute_strict</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to deny user login if the Grafana org role cannot be extracted using <code>role_attribute_path</code> or <code>org_mapping</code>. For more information on user role mapping, refer to <a href="#map-roles">Map roles</a>.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>org_attribute_path</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td><a href="http://jmespath.org/examples.html" target="_blank" rel="noopener noreferrer">JMESPath</a> expression to use for Grafana org to role lookup. Grafana will first evaluate the expression using the OAuth2 ID token. If no value is returned, the expression will be evaluated using the user information obtained from the UserInfo endpoint. The result of the evaluation will be mapped to org roles based on <code>org_mapping</code>. For more information on org to role mapping, refer to <a href="#org-roles-mapping-example">Org roles mapping example</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>org_mapping</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>List of comma- or space-separated <code>&lt;ExternalOrgName&gt;:&lt;OrgIdOrName&gt;:&lt;Role&gt;</code> mappings. Value can be <code>*</code> meaning &ldquo;All users&rdquo;. Role is optional and can have the following values: <code>None</code>, <code>Viewer</code>, <code>Editor</code> or <code>Admin</code>. For more information on external organization to role mapping, refer to <a href="#org-roles-mapping-example">Org roles mapping example</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>allow_assign_grafana_admin</code></td>
+          <td>No</td>
+          <td>No</td>
+          <td>Set to <code>true</code> to automatically sync the Grafana server administrator role. When enabled, if the Azure AD/Entra ID user&rsquo;s App role is <code>GrafanaAdmin</code>, Grafana grants the user server administrator privileges and the organization administrator role. If disabled, the user will only receive the organization administrator role. For more details on user role mapping, refer to <a href="#map-roles">Map roles</a>.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>skip_org_role_sync</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Set to <code>true</code> to stop automatically syncing user roles. This will allow you to set organization roles for your users from within Grafana manually.</td>
+          <td><code>false</code></td>
+      </tr>
+      <tr>
+          <td><code>allowed_groups</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated groups. The user should be a member of at least one group to log in. If you configure <code>allowed_groups</code>, you must also configure Azure AD/Entra ID to include the <code>groups</code> claim following <a href="#configure-group-membership-claims-on-the-azure-portal">Configure group membership claims on the Azure Portal</a>.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>allowed_organizations</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated Azure tenant identifiers. The user should be a member of at least one tenant to log in.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>allowed_domains</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>List of comma- or space-separated domains. The user should belong to at least one domain to log in.</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td><code>domain_hint</code></td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>The realm of the user in a federated directory. This skips the email-based discovery process that the user goes through on the Azure AD/Entra ID sign-in page, for a slightly more streamlined user experience. More info <a href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc#send-the-sign-in-request" target="_blank" rel="noopener noreferrer">here</a>.</td>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+<p>| <code>tls_skip_verify_insecure</code> | No | No | If set to <code>true</code>, the client accepts any certificate presented by the server and any host name in that certificate. <em>You should only use this for testing</em>, because this mode leaves SSL/TLS susceptible to man-in-the-middle attacks. | <code>false</code> |
+| <code>tls_client_cert</code> | No | No | The path to the certificate. | |
+| <code>tls_client_key</code> | No | No | The path to the key. | |
+| <code>tls_client_ca</code> | No | No | The path to the trusted certificate authority list. | |
+| <code>use_pkce</code> | No | Yes | Set to <code>true</code> to use <a href="https://datatracker.ietf.org/doc/html/rfc7636" target="_blank" rel="noopener noreferrer">Proof Key for Code Exchange (PKCE)</a>. Grafana uses the SHA256 based <code>S256</code> challenge method and a 128 bytes (base64url encoded) code verifier. | <code>true</code> |
+| <code>use_refresh_token</code> | No | Yes | Enables the use of refresh tokens and checks for access token expiration. When enabled, Grafana automatically adds the <code>offline_access</code> scope to the list of scopes. | <code>true</code> |
+| <code>force_use_graph_api</code> | No | Yes | Set to <code>true</code> to always fetch groups from the Microsoft Graph API instead of the <code>id_token</code>. If a user belongs to more than 200 groups, the Microsoft Graph API will be used to retrieve the groups regardless of this setting. | <code>false</code> |
+| <code>signout_redirect_url</code> | No | Yes | URL to redirect to after the user logs out. | |</p>

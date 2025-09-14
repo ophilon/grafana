@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<h1 id="configure-the-grafana-pyroscope-data-source">Configure the Grafana Pyroscope data source</h1>
+<p>The Pyroscope data source sets how Grafana connects to your Pyroscope database.</p>
+<p>You can configure the data source using either the data source interface in Grafana or using a configuration file.
+This page explains how to set up and enable the data source capabilities using Grafana.</p>
+<p>If you make any changes, select <strong>Save &amp; test</strong> to preserve those changes.</p>
+<p>If you&rsquo;re using your own installation of Grafana, you can provision the Pyroscope data source using a YAML configuration file.
+For more information about provisioning and available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#datasources">Provisioning Grafana</a>.</p>
+<h2 id="before-you-begin">Before you begin</h2>
+<p>To configure a Pyroscope data source, you need administrator rights to your Grafana instance and a Pyroscope instance configured to send data to Grafana.</p>
+<p>If you&rsquo;re provisioning a Pyroscope data source, then you also need administrative rights on the server hosting your Grafana instance.</p>
+<h2 id="add-or-modify-a-data-source">Add or modify a data source</h2>
+<p>You can use these procedures to configure a new Pyroscope data source or to edit an existing one.</p>
+<h3 id="create-a-new-data-source">Create a new data source</h3>
+<p>To configure basic settings for the data source, complete the following steps:</p>
+<ol>
+<li>Select <strong>Connections</strong> in the main menu.</li>
+<li>Enter <code>Grafana Pyroscope</code> in the search bar.</li>
+<li>Select <strong>Grafana Pyroscope</strong>.</li>
+<li>Select <strong>Add new data source</strong> in the top-right corner of the page.</li>
+<li>On the <strong>Settings</strong> tab, complete the <strong>Name</strong>, <strong>Connection</strong>, and <strong>Authentication</strong> sections.</li>
+</ol>
+<ul>
+<li>Use the <strong>Name</strong> field to specify the name used for the data source in panels, queries, and Explore. Toggle the <strong>Default</strong> switch for the data source to be pre-selected for new panels.</li>
+<li>Under <strong>Connection</strong>, enter the <strong>URL</strong> of the Pyroscope instance. For example, <code>https://example.com:4100</code>. Refer to <a href="#connection-url">Connection URL</a> for more information.</li>
+<li>Complete the <a href="#authentication"><strong>Authentication</strong> section</a>.</li>
+</ul>
+<ol>
+<li>Optional: Use <strong>Additional settings</strong> to configure other options.</li>
+<li>Select <strong>Save &amp; test</strong>.</li>
+</ol>
+<h3 id="update-an-existing-data-source">Update an existing data source</h3>
+<p>To modify an existing Pyroscope data source:</p>
+<ol>
+<li>Select <strong>Connections</strong> in the main menu.</li>
+<li>Select <strong>Data sources</strong> to view a list of configured data sources.</li>
+<li>Select the Pyroscope data source you wish to modify.</li>
+<li>Optional: Use <strong>Additional settings</strong> to configure or modify other options.</li>
+<li>After completing your updates, select <strong>Save &amp; test</strong>.</li>
+</ol>
+<h4 id="connection-url">Connection URL</h4>
+<p>The data source connection URL should point to a location of a running Pyroscope backend.</p>
+<p><strong>Grafana Cloud Profiles</strong></p>
+<p>Your Grafana Cloud instance automatically includes a fully provisioned data source.</p>
+<p>If you are running a self-managed Grafana instance or need to configure an additional Pyroscope data source pointing to Grafana Cloud Profiles, you can find the Pyroscope URL under the <strong>Manage your stack</strong> section for your organization.</p>
+<p><strong>Self-managed Pyroscope backend</strong></p>
+<p>The connection URL for a self-managed Pyroscope backend depends on how Pyroscope is deployed.
+Refer to the steps under 
+    <a href="/docs/pyroscope/latest/deploy-kubernetes/helm/#query-profiles-in-grafana">Query profiles in Grafana</a> for more information on how to configure the data source.</p>
+<p>If you plan to use the 
+    <a href="/docs/grafana/latest/explore/simplified-exploration/profiles/">Profiles Drilldown</a> application and you are running a self-managed Pyroscope backend in microservices mode, the data source connection URL should point to a gateway or proxy that routes requests to the corresponding Pyroscope service.
+Refer to the <a href="https://github.com/grafana/pyroscope/blob/main/operations/pyroscope/helm/pyroscope/templates/ingress.yaml" target="_blank" rel="noopener noreferrer">Helm ingress configuration</a> for specific routing requirements.</p>
+<h2 id="authentication">Authentication</h2>
+<p>Use this section to select an authentication method to access the data source.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Use Transport Layer Security (TLS) for an additional layer of security when working with Pyroscope.
+For additional information on setting up TLS encryption with Pyroscope, refer to 
+    <a href="/docs/pyroscope/latest/configure-server/reference-configuration-parameters/">Pyroscope configuration</a>.</p></blockquote></div>
+
+
+
+<div data-shared="datasources/datasouce-authentication.md">
+            
+
+<!-- Authentication procedure from shared file -->
+<p>To set up authentication:</p>
+<ol>
+<li>
+<p>Select an authentication method from the drop-down list:</p>
+<ul>
+<li><strong>Basic authentication</strong>: Authenticates your data source using a username and password</li>
+<li><strong>Forward OAuth identity</strong>: Forwards the OAuth access token and the OIDC ID token, if available, of the user querying to the data source</li>
+<li><strong>No authentication</strong>: No authentication is required to access the data source</li>
+</ul>
+</li>
+<li>
+<p>For <strong>Basic authentication</strong> only: Enter the <strong>User</strong> and <strong>Password</strong>.</p>
+</li>
+<li>
+<p>Optional: Complete the <strong>TLS settings</strong> for additional security methods.</p>
+<dl>
+<dt><strong>TLS Client Authentication</strong></dt>
+<dd>Toggle on to use client authentication. When enabled, it adds the <strong>Server name</strong>, <strong>Client cert</strong>, and <strong>Client key</strong> fields. The client provides a certificate that is validated by the server to establish the client&rsquo;s trusted identity. The client key encrypts the data between client and server. These details are encrypted and stored in the Grafana database.</dd>
+<dt><strong>Add self-signed certificate</strong></dt>
+<dd>Activate this option to use a self-signed TLS certificate. You can add your own Certificate Authority (CA) certificate on top of one generated by the certificate authorities for additional security measure.</dd>
+<dt><strong>Skip TLS certification validation</strong></dt>
+<dd>When activated, it bypasses TLS certificate verification. Not recommended, unless absolutely necessary for testing.
+<img
+  class="lazyload d-inline-block"
+  data-src="/media/docs/grafana/data-sources/tempo/tempo-data-source-authentication.png"
+  alt="Authentication section showing the TLS client certificate options" width="633"
+     height="914"/></dd>
+</dl>
+</li>
+<li>
+<p>Optional: Add <strong>HTTP Headers</strong>. You can pass along additional context and metadata data about the request and response. Select <strong>Add header</strong> to add <strong>Header</strong> and <strong>Value</strong> fields.</p>
+</li>
+<li>
+<p>Select <strong>Save &amp; test</strong> to preserve your changes.</p>
+</li>
+</ol>
+
+  </div>
+
+        
+<h2 id="additional-settings">Additional settings</h2>
+<p>Use the down arrow to expand the <strong>Additional settings</strong> section to view these options.</p>
+<h3 id="advanced-http-settings">Advanced HTTP settings</h3>
+<p>The Grafana Proxy deletes forwarded cookies. Use the <strong>Allowed cookies</strong> field to specify cookies that should be forwarded to the data source by name.</p>
+<p>The <strong>Timeout</strong> field sets the HTTP request timeout in seconds.</p>
+<h3 id="querying">Querying</h3>
+<p><strong>Minimum step</strong> is used for queries returning time-series data. The default value is 15 seconds.</p>
+<p>Adjusting this option can help prevent gaps when you zoom in to profiling data.</p>
+<h3 id="private-data-source-connect">Private data source connect</h3>
+
+
+<div data-shared="datasources/datasouce-private-ds-connect.md">
+            
+
+<!-- Procedure for using private data source connect section in the data sources -->
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>This feature is only available in Grafana Cloud.</p></blockquote></div>
+
+<p>Use private data source connect (PDC) to connect to and query data within a secure network without opening that network to inbound traffic from Grafana Cloud.</p>
+<p>Refer to <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/">Private data source connect</a> for more information on how PDC works and <a href="/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/configure-pdc/#configure-grafana-private-data-source-connect-pdc">Configure Grafana private data source connect (PDC)</a> for steps on setting up a PDC connection.</p>
+<p>Use the drop-down list to select a configured private data source. If you make changes, select <strong>Test &amp; save</strong> to preserve your changes.</p>
+<p>Use <strong>Manage private data source connect</strong> to configure and manage any private data sources you have configured.</p>
+
+  </div>
+
+        

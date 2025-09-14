@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<h1 id="histogram">Histogram</h1>
+<p>Histograms calculate the distribution of values and present them as a bar chart. Each bar represents a bucket; the y-axis and the height of each bar represent the count of values that fall into each bucket, and the x-axis represents the value range.</p>
+<p>For example, if you want to understand the distribution of people&rsquo;s heights, you can use a histogram visualization to identify patterns or insights in the data distribution:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/histogram-panel/histogram-example-v8-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/histogram-panel/histogram-example-v8-0.png"data-srcset="/static/img/docs/histogram-panel/histogram-example-v8-0.png?w=320 320w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=550 550w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=750 750w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=900 900w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=1040 1040w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=1240 1240w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=1920 1920w"
+          data-sizes="auto"alt="A histogram visualization showing the distribution of people&#39;s heights"width="1086"height="535"/>
+        <noscript>
+          <img
+            src="/static/img/docs/histogram-panel/histogram-example-v8-0.png"
+            alt="A histogram visualization showing the distribution of people&#39;s heights"width="1086"height="535"/>
+        </noscript></div></a></figure>
+<p>You can use a histogram visualization if you need to:</p>
+<ul>
+<li>Visualize and analyze data distributions over a specific time range to see how frequently certain values occur.</li>
+<li>Identify any outliers in your data distribution.</li>
+<li>Provide statistical analysis to help with decision-making</li>
+</ul>
+<h2 id="configure-a-histogram-visualization">Configure a histogram visualization</h2>
+<p>After you&rsquo;ve created a 
+    <a href="/docs/grafana/latest/dashboards/build-dashboards/create-dashboard/">dashboard</a>, the following video shows you how to configure a histogram visualization:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cqHO0oYW6Ic?si=QfJ480j9-KM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<div class="d-sm-flex flex-direction-row-reverse bg-gray-1 br-12 p-2">
+  <img class="mb-1 lazyload" data-src="/media/docs/icons/docs-play.svg" width="228" height="182" alt="Give it a try using Grafana Play">
+  <div>
+    <div class="h4 pt-0 pb-half fw-500">Give it a try using Grafana Play</div>
+    <p class="pr-1 pb-half">With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development.
+This feature can be seen on <a href="https://play.grafana.org/d/histogram_tests/" target="_blank" rel="noopener noreferrer">Histogram Examples</a>.</p>
+    <div class="mx-auto">
+      <a class="btn btn--primary btn--large arrow fw-600 br-8 w-175" target="_blank" rel="noopener noreferrer" href="https://play.grafana.org/d/histogram_tests/">Try it</a>
+    </div>
+  </div>
+</div>
+
+<h2 id="supported-data-formats">Supported data formats</h2>
+<p>Histograms support time series and any table results with one or more numerical fields.</p>
+<h3 id="examples">Examples</h3>
+<p>The following tables are examples of the type of data you need for a histogram visualization and how it should be formatted.</p>
+<h4 id="time-series-table">Time-series table</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Time</th>
+          <th>Walking (km)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>2024-03-25 21:13:09</td>
+          <td>37.2</td>
+      </tr>
+      <tr>
+          <td>2024-03-25 21:13:10</td>
+          <td>37.1</td>
+      </tr>
+      <tr>
+          <td>2024-03-25 21:13:10</td>
+          <td>37.0</td>
+      </tr>
+      <tr>
+          <td>2024-03-25 21:13:11</td>
+          <td>37.2</td>
+      </tr>
+      <tr>
+          <td>2024-03-25 21:13:11</td>
+          <td>36.9</td>
+      </tr>
+      <tr>
+          <td>2024-03-25 21:13:12</td>
+          <td>36.7</td>
+      </tr>
+      <tr>
+          <td>2024-03-25 21:13:13</td>
+          <td>36.3</td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is converted as follows:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/histogram-panel/histogram-example-time-series.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/histogram-panel/histogram-example-time-series.png"data-srcset="/static/img/docs/histogram-panel/histogram-example-time-series.png?w=320 320w, /static/img/docs/histogram-panel/histogram-example-time-series.png?w=550 550w, /static/img/docs/histogram-panel/histogram-example-time-series.png?w=750 750w, /static/img/docs/histogram-panel/histogram-example-time-series.png?w=900 900w, /static/img/docs/histogram-panel/histogram-example-time-series.png?w=1040 1040w, /static/img/docs/histogram-panel/histogram-example-time-series.png?w=1240 1240w, /static/img/docs/histogram-panel/histogram-example-time-series.png?w=1920 1920w"
+          data-sizes="auto"alt="A histogram visualization showing the random walk distribution."width="1420"height="604"/>
+        <noscript>
+          <img
+            src="/static/img/docs/histogram-panel/histogram-example-time-series.png"
+            alt="A histogram visualization showing the random walk distribution."width="1420"height="604"/>
+        </noscript></div></a></figure>
+<h4 id="basic-numerical-table">Basic numerical table</h4>
+<table>
+  <thead>
+      <tr>
+          <th>Gender</th>
+          <th>Height (in)</th>
+          <th>Weight (lbs)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Male</td>
+          <td>73.8</td>
+          <td>242</td>
+      </tr>
+      <tr>
+          <td>Male</td>
+          <td>68.8</td>
+          <td>162</td>
+      </tr>
+      <tr>
+          <td>Male</td>
+          <td>74.1</td>
+          <td>213</td>
+      </tr>
+      <tr>
+          <td>Male</td>
+          <td>71.7</td>
+          <td>220</td>
+      </tr>
+      <tr>
+          <td>Male</td>
+          <td>69.9</td>
+          <td>206</td>
+      </tr>
+      <tr>
+          <td>Male</td>
+          <td>67.3</td>
+          <td>152</td>
+      </tr>
+      <tr>
+          <td>Male</td>
+          <td>68.8</td>
+          <td>184</td>
+      </tr>
+  </tbody>
+</table>
+<p>The data is converted as follows:</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 1025px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link"
+        href="/static/img/docs/histogram-panel/histogram-example-height-weight.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload "
+          data-src="/static/img/docs/histogram-panel/histogram-example-height-weight.png"data-srcset="/static/img/docs/histogram-panel/histogram-example-height-weight.png?w=320 320w, /static/img/docs/histogram-panel/histogram-example-height-weight.png?w=550 550w, /static/img/docs/histogram-panel/histogram-example-height-weight.png?w=750 750w, /static/img/docs/histogram-panel/histogram-example-height-weight.png?w=900 900w, /static/img/docs/histogram-panel/histogram-example-height-weight.png?w=1040 1040w, /static/img/docs/histogram-panel/histogram-example-height-weight.png?w=1240 1240w, /static/img/docs/histogram-panel/histogram-example-height-weight.png?w=1920 1920w"
+          data-sizes="auto"alt="A histogram visualization showing the male height and weight distribution"width="1302"height="592"/>
+        <noscript>
+          <img
+            src="/static/img/docs/histogram-panel/histogram-example-height-weight.png"
+            alt="A histogram visualization showing the male height and weight distribution"width="1302"height="592"/>
+        </noscript></div></a></figure>
+<h2 id="configuration-options">Configuration options</h2>
+
+
+<div data-shared="visualizations/config-options-intro.md">
+            <p>The following section describes the configuration options available in the panel editor pane for this visualization. These options are, as much as possible, ordered as they appear in Grafana.</p>
+</div>
+
+        
+<h3 id="panel-options">Panel options</h3>
+
+
+<div data-shared="visualizations/panel-options.md">
+            <p>In the <strong>Panel options</strong> section of the panel editor pane, set basic options like panel title and description, as well as panel links. To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-panel-options/">Configure panel options</a>.</p>
+</div>
+
+        
+<h3 id="histogram-options">Histogram options</h3>
+<p>Use the following options to refine your histogram visualization.</p>
+<!-- prettier-ignore-start -->
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Bucket count</td>
+          <td>Specifies the number of bins used to group your data in the histogram, affecting the granularity of the displayed distribution. Leave this empty for automatic bucket count of 30.</td>
+      </tr>
+      <tr>
+          <td>Bucket size</td>
+          <td>The size of the buckets. Leave this empty for automatic bucket sizing (~10% of the full range).</td>
+      </tr>
+      <tr>
+          <td><a href="#bucket-offset">Bucket offset</a></td>
+          <td>If the first bucket should not start at zero. A non-zero offset has the effect of shifting the aggregation window.</td>
+      </tr>
+      <tr>
+          <td>Combine series</td>
+          <td>This will merge all series and fields into a combined histogram.</td>
+      </tr>
+      <tr>
+          <td>Stacking</td>
+          <td>Controls how multiple series are displayed in the histogram. Choose from the following:<ul><li><strong>Off</strong> - Series are not stacked, but instead shown side by side.</li><li><strong>Normal</strong> - Series are stacked on top of each other, showing cumulative values.</li><li><strong>100%</strong> - Series are stacked to fill 100% of the chart, showing the relative proportion of each series.</li></ul></td>
+      </tr>
+      <tr>
+          <td>Line width</td>
+          <td>Controls line width of the bars.</td>
+      </tr>
+      <tr>
+          <td>Fill opacity</td>
+          <td>Controls the fill opacity bars.</td>
+      </tr>
+      <tr>
+          <td><a href="#gradient-mode">Gradient mode</a></td>
+          <td>Set the mode of the gradient fill. Fill gradient is based on the line color.</td>
+      </tr>
+  </tbody>
+</table>
+<!-- prettier-ignore-end -->
+<h4 id="bucket-offset">Bucket offset</h4>
+<p>If the first bucket should not start at zero, a non-zero offset has the effect of shifting the aggregation window.</p>
+<p>For example, 5-sized buckets that are 0-5, 5-10, 10-15 with a default 0 offset would become 2-7, 7-12, 12-17 with an offset of 2; offsets of 0, 5, or 10, in this case, would effectively do nothing.</p>
+<p>Typically, this option would be used with an explicitly defined bucket size rather than automatic. For this setting to affect, the offset amount should be greater than 0 and less than the bucket size; values outside this range have the same effect as values within this range.</p>
+<h4 id="gradient-mode">Gradient mode</h4>
+<p>Set the mode of the gradient fill. Fill gradient is based on the line color. To change the color, use the standard 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">color scheme</a> field option.</p>
+<p>Gradient display is influenced by the <strong>Fill opacity</strong> setting.</p>
+<p>Choose from the following:</p>
+<ul>
+<li><strong>None</strong> - No gradient fill. This is the default setting.</li>
+<li><strong>Opacity</strong> - Transparency of the gradient is calculated based on the values on the Y-axis. The opacity of the fill is increasing with the values on the Y-axis.</li>
+<li><strong>Hue</strong> - Gradient color is generated based on the hue of the line color.</li>
+<li><strong>Scheme</strong> - The selected <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/#color-scheme">color palette</a> is applied to the histogram bars.</li>
+</ul>
+<h3 id="tooltip-options">Tooltip options</h3>
+
+
+<div data-shared="visualizations/tooltip-options-3.md">
+            
+
+<p>Tooltip options control the information overlay that appears when you hover over data points in the visualization.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><a href="#tooltip-mode">Tooltip mode</a></td>
+          <td>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</td>
+      </tr>
+      <tr>
+          <td><a href="#values-sort-order">Values sort order</a></td>
+          <td>This option controls the order in which values are listed in a tooltip.</td>
+      </tr>
+      <tr>
+          <td>Max width</td>
+          <td>Set the maximum width of the tooltip box.</td>
+      </tr>
+      <tr>
+          <td>Max height</td>
+          <td>Set the maximum height of the tooltip box. The default is 600 pixels.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="tooltip-mode">Tooltip mode</h4>
+<p>When you hover your cursor over the visualization, Grafana can display tooltips. Choose how tooltips behave.</p>
+<ul>
+<li><strong>Single</strong> - The hover tooltip shows only a single series, the one that you are hovering over on the visualization.</li>
+<li><strong>All</strong> - The hover tooltip shows all series in the visualization. Grafana highlights the series that you are hovering over in bold in the series list in the tooltip.</li>
+<li><strong>Hidden</strong> - Do not display the tooltip when you interact with the visualization.</li>
+</ul>
+<p>Use an override to hide individual series from the tooltip.</p>
+<h4 id="values-sort-order">Values sort order</h4>
+<p>When you set the <strong>Tooltip mode</strong> to <strong>All</strong>, the <strong>Values sort order</strong> option is displayed. This option controls the order in which values are listed in a tooltip. Choose from the following:</p>
+<ul>
+<li><strong>None</strong> - Grafana automatically sorts the values displayed in a tooltip.</li>
+<li><strong>Ascending</strong> - Values in the tooltip are listed from smallest to largest.</li>
+<li><strong>Descending</strong> - Values in the tooltip are listed from largest to smallest.</li>
+</ul>
+
+  </div>
+
+        
+<h3 id="legend-options">Legend options</h3>
+
+
+<div data-shared="visualizations/legend-options-1.md">
+            <p>Legend options control the series names and statistics that appear under or to the right of the graph. For more information about the legend, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-legend/">Configure a legend</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Visibility</td>
+          <td>Toggle the switch to turn the legend on or off.</td>
+      </tr>
+      <tr>
+          <td>Mode</td>
+          <td>Use these settings to define how the legend appears in your visualization. <strong>List</strong> displays the legend as a list. This is a default display mode of the legend. <strong>Table</strong> displays the legend as a table.</td>
+      </tr>
+      <tr>
+          <td>Placement</td>
+          <td>Choose where to display the legend. <strong>Bottom</strong> places the legend below the graph. <strong>Right</strong> places the legend to the right of the graph.</td>
+      </tr>
+      <tr>
+          <td>Width</td>
+          <td>Control how wide the legend is when placed on the right side of the visualization. This option is only displayed if you set the legend placement to <strong>Right</strong>.</td>
+      </tr>
+      <tr>
+          <td>Values</td>
+          <td>Choose which of the 
+    <a href="/docs/grafana/latest/panels-visualizations/query-transform-data/calculation-types/">standard calculations</a> to show in the legend. You can have more than one.</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+
+        
+<h3 id="standard-options">Standard options</h3>
+
+
+<div data-shared="visualizations/standard-options.md">
+            <p><strong>Standard options</strong> in the panel editor pane let you change how field data is displayed in your visualizations. When you set a standard option, the change is applied to all fields or series. For more granular control over the display of fields, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure overrides</a>.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unit</td>
+          <td>Choose which unit a field should use.</td>
+      </tr>
+      <tr>
+          <td>Min/Max</td>
+          <td>Set the minimum and maximum values used in percentage threshold calculations or leave these field empty for them to be calculated automatically.</td>
+      </tr>
+      <tr>
+          <td>Field min/max</td>
+          <td>Enable <strong>Field min/max</strong> to have Grafana calculate the min or max of each field individually, based on the minimum or maximum value of the field.</td>
+      </tr>
+      <tr>
+          <td>Decimals</td>
+          <td>Specify the number of decimals Grafana includes in the rendered value.</td>
+      </tr>
+      <tr>
+          <td>Display name</td>
+          <td>Set the display title of all fields. You can use variables in the field title.</td>
+      </tr>
+      <tr>
+          <td>Color scheme</td>
+          <td>Set single or multiple colors for your entire visualization.</td>
+      </tr>
+      <tr>
+          <td>No value</td>
+          <td>Enter what Grafana should display if the field value is empty or null. The default value is a hyphen (-).</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-standard-options/">Configure standard options</a>.</p>
+</div>
+
+        
+<h3 id="data-links-and-actions">Data links and actions</h3>
+
+
+<div data-shared="visualizations/datalink-options.md">
+            <p>Data links allow you to link to other panels, dashboards, and external resources while maintaining the context of the source panel.
+You can create links that include the series name or even the value under the cursor.</p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>Actions are not supported for this visualization.</p></blockquote></div>
+
+<p>For each data link, set the following options:</p>
+<ul>
+<li><strong>Title</strong></li>
+<li><strong>URL</strong></li>
+<li><strong>Open in new tab</strong></li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-data-links/">Configure data links and actions</a>.</p>
+</div>
+
+        
+<h3 id="value-mappings">Value mappings</h3>
+
+
+<div data-shared="visualizations/value-mappings-options.md">
+            <p>Value mapping is a technique you can use to change how data appears in a visualization.</p>
+<p>For each value mapping, set the following options:</p>
+<ul>
+<li><strong>Condition</strong> - Choose what&rsquo;s mapped to the display text and (optionally) color:
+<ul>
+<li><strong>Value</strong> - Specific values</li>
+<li><strong>Range</strong> - Numerical ranges</li>
+<li><strong>Regex</strong> - Regular expressions</li>
+<li><strong>Special</strong> - Special values like <code>Null</code>, <code>NaN</code> (not a number), or boolean values like <code>true</code> and <code>false</code></li>
+</ul>
+</li>
+<li><strong>Display text</strong></li>
+<li><strong>Color</strong> (Optional)</li>
+<li><strong>Icon</strong> (Canvas only)</li>
+</ul>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-value-mappings/">Configure value mappings</a>.</p>
+</div>
+
+        
+<h3 id="thresholds">Thresholds</h3>
+
+
+<div data-shared="visualizations/thresholds-options-2.md">
+            <p>A threshold is a value or limit you set for a metric that’s reflected visually when it’s met or exceeded. Thresholds are one way you can conditionally style and color your visualizations based on query results.</p>
+<p>For each threshold, set the following options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Value</td>
+          <td>Set the value for each threshold.</td>
+      </tr>
+      <tr>
+          <td>Thresholds mode</td>
+          <td>Choose from <strong>Absolute</strong> and <strong>Percentage</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-thresholds/">Configure thresholds</a>.</p>
+</div>
+
+        
+<h3 id="field-overrides">Field overrides</h3>
+
+
+<div data-shared="visualizations/overrides-options.md">
+            <p>Overrides allow you to customize visualization settings for specific fields or series. When you add an override rule, it targets a particular set of fields and lets you define multiple options for how that field is displayed.</p>
+<p>Choose from the following override options:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Option</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Fields with name</td>
+          <td>Select a field from the list of all available fields.</td>
+      </tr>
+      <tr>
+          <td>Field with name matching regex</td>
+          <td>Specify fields to override with a regular expression.</td>
+      </tr>
+      <tr>
+          <td>Fields with type</td>
+          <td>Select fields by type, such as string, numeric, or time.</td>
+      </tr>
+      <tr>
+          <td>Fields returned by query</td>
+          <td>Select all fields returned by a specific query, such as A, B, or C.</td>
+      </tr>
+      <tr>
+          <td>Fields with values</td>
+          <td>Select all fields returned by your defined reducer condition, such as <strong>Min</strong>, <strong>Max</strong>, <strong>Count</strong>, <strong>Total</strong>.</td>
+      </tr>
+  </tbody>
+</table>
+<p>To learn more, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/configure-overrides/">Configure field overrides</a>.</p>
+</div>
+
+        

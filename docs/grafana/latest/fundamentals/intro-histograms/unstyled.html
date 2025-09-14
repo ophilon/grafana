@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<h1 id="introduction-to-histograms-and-heatmaps">Introduction to histograms and heatmaps</h1>
+<p>A histogram is a graphical representation of the distribution of numerical data. It groups values into buckets
+(sometimes also called bins) and then counts how many values fall into each bucket.</p>
+<p>Instead of graphing the actual values, histograms graph the buckets. Each bar represents a bucket,
+and the bar height represents the frequency (such as count) of values that fell into that bucket&rsquo;s interval.</p>
+<h2 id="histogram-example">Histogram example</h2>
+<p>This <em>histogram</em> shows the value distribution of a couple of time series. You can easily see that
+most values land between 240-300 with a peak between 260-280.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/v43/heatmap_histogram.png"
+  alt="Histogram example" width="864"
+     height="297"/></p>
+<p>Here is an example showing height distribution of people.</p>
+<figure
+    class="figure-wrapper figure-wrapper__lightbox w-100p "
+    style="max-width: 625px;"
+    itemprop="associatedMedia"
+    itemscope=""
+    itemtype="http://schema.org/ImageObject"
+  ><a
+        class="lightbox-link captioned"
+        href="/static/img/docs/histogram-panel/histogram-example-v8-0.png"
+        itemprop="contentUrl"
+      ><div class="img-wrapper w-100p h-auto"><img
+          class="lazyload mb-0"
+          data-src="/static/img/docs/histogram-panel/histogram-example-v8-0.png"data-srcset="/static/img/docs/histogram-panel/histogram-example-v8-0.png?w=320 320w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=550 550w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=750 750w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=900 900w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=1040 1040w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=1240 1240w, /static/img/docs/histogram-panel/histogram-example-v8-0.png?w=1920 1920w"
+          data-sizes="auto"alt="Bar chart example"width="1086"height="535"title="Bar chart example"/>
+        <noscript>
+          <img
+            src="/static/img/docs/histogram-panel/histogram-example-v8-0.png"
+            alt="Bar chart example"width="1086"height="535"title="Bar chart example"/>
+        </noscript></div><figcaption class="w-100p caption text-gray-13  ">Bar chart example</figcaption></a></figure>
+<p>For more information about histogram visualization options, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/histogram/">Histogram</a>.</p>
+<p>Histograms only look at <em>value distributions</em> over a specific time range. The problem with histograms is that you cannot see any trends or changes in the distribution over time. This is where heatmaps become useful.</p>
+<h2 id="heatmaps">Heatmaps</h2>
+<p>A <em>heatmap</em> is like a histogram, but over time, where each time slice represents its own histogram. Instead of using bar height as a representation of frequency, it uses cells, and colors the cell proportional to the number of values in the bucket.</p>
+<p>In this example, you can clearly see what values are more common and how they trend over time.</p>
+<p><img
+  class="lazyload d-inline-block"
+  data-src="/static/img/docs/v43/heatmap_histogram_over_time.png"
+  alt="Heatmap example" width="863"
+     height="368"/></p>
+<p>For more information about heatmap visualization options, refer to 
+    <a href="/docs/grafana/latest/panels-visualizations/visualizations/heatmap/">Heatmap</a>.</p>
+<h2 id="pre-bucketed-data">Pre-bucketed data</h2>
+<p>There are a number of data sources supporting histogram over time, like Elasticsearch (by using a Histogram bucket
+aggregation) or Prometheus (with <a href="https://prometheus.io/docs/concepts/metric_types/#histogram" target="_blank" rel="noopener noreferrer">histogram</a> metric type
+and <em>Format as</em> option set to Heatmap). But generally, any data source could be used as long as it meets the requirement
+that it either returns series with names representing bucket bounds, or that it returns series sorted by the bounds
+in ascending order.</p>
+<h2 id="raw-data-vs-aggregated">Raw data vs aggregated</h2>
+<p>If you use the heatmap with regular time series data (not pre-bucketed), then it&rsquo;s important to keep in mind that your data
+is often already aggregated by your time series backend. Most time series queries do not return raw sample data,
+but instead include a group by time interval or maxDataPoints limit coupled with an aggregation function (usually average).</p>
+<p>This all depends on the time range of your query of course. But the important point is to know that the histogram bucketing
+that Grafana performs might be done on already aggregated and averaged data. To get more accurate heatmaps, it is better
+to do the bucketing during metric collection, or to store the data in Elasticsearch or any other data source which
+supports doing histogram bucketing on the raw data.</p>
+<p>If you remove or lower the group by time (or raise maxDataPoints) in your query to return more data points, your heatmap will be
+more accurate, but this can also be very CPU and memory taxing for your browser, possibly causing hangs or crashes if the number of
+data points becomes unreasonably large.</p>

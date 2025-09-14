@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<h1 id="short-url-api">Short URL API</h1>
+<p>Use this API to create shortened URLs. A short URL represents a longer URL containing complex query parameters in a smaller and simpler format.</p>
+<h2 id="create-short-url">Create short URL</h2>
+<p><code>POST /api/short-urls</code></p>
+<p>Creates a short URL.</p>
+<p><strong>Example request:</strong></p>
+<pre>POST /api/short-urls HTTP/1.1
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer eyJrIjoiT0tTcG1pUlY2RnVKZTFVaDFsNFZXdE9ZWmNrMkZYbk
+
+{
+  &#34;path&#34;: &#34;d/TxKARsmGz/new-dashboard?orgId=1&amp;from=1599389322894&amp;to=1599410922894&#34;
+}</pre>
+<p>JSON body schema:</p>
+<ul>
+<li><strong>path</strong> – The path to shorten, relative to the Grafana <a href="/docs/grafana/latest/setup-grafana/configure-grafana/#root_url">root_url</a>.</li>
+</ul>
+<p><strong>Example response:</strong></p>
+<pre>HTTP/1.1 200
+Content-Type: application/json
+
+{
+  &#34;uid&#34;: AT76wBvGk,
+  &#34;url&#34;: http://localhost:3000/goto/AT76wBvGk?orgId=1
+}</pre>
+<p>Status codes:</p>
+<ul>
+<li><strong>200</strong> – Created</li>
+<li><strong>400</strong> – Errors (invalid JSON, missing or invalid fields)</li>
+</ul>

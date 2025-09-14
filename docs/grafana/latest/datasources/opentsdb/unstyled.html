@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<h1 id="opentsdb-data-source">OpenTSDB data source</h1>
+<p>Grafana ships with advanced support for OpenTSDB.
+This topic explains configuration, variables, querying, and other features specific to the OpenTSDB data source.</p>
+<p>For instructions on how to add a data source to Grafana, refer to the 
+    <a href="/docs/grafana/latest/administration/data-source-management/">administration documentation</a>.
+Only users with the organization administrator role can add data sources.
+Administrators can also <a href="#provision-the-data-source">configure the data source via YAML</a> with Grafana&rsquo;s provisioning system.</p>
+<h2 id="opentsdb-settings">OpenTSDB settings</h2>
+<p>To configure basic settings for the data source, complete the following steps:</p>
+<ol>
+<li>
+<p>Click <strong>Connections</strong> in the left-side menu.</p>
+</li>
+<li>
+<p>Under Your connections, click <strong>Data sources</strong>.</p>
+</li>
+<li>
+<p>Enter <code>OpenTSDB</code> in the search bar.</p>
+</li>
+<li>
+<p>Select <strong>OpenTSDB</strong>.</p>
+<p>The <strong>Settings</strong> tab of the data source is displayed.</p>
+</li>
+<li>
+<p>Set the data source&rsquo;s basic configuration options:</p>
+</li>
+</ol>
+<table>
+  <thead>
+      <tr>
+          <th>Name</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Name</strong></td>
+          <td>The data source name. This is how you refer to the data source in panels and queries.</td>
+      </tr>
+      <tr>
+          <td><strong>Default</strong></td>
+          <td>Default data source that will be be pre-selected for new panels.</td>
+      </tr>
+      <tr>
+          <td><strong>URL</strong></td>
+          <td>The HTTP protocol, IP, and port of your OpenTSDB server (default port is usually 4242).</td>
+      </tr>
+      <tr>
+          <td><strong>Allowed cookies</strong></td>
+          <td>Listing of cookies to forward to the data source.</td>
+      </tr>
+      <tr>
+          <td><strong>Version</strong></td>
+          <td>The OpenTSDB version (supported versions are: 2.4, 2.3, 2.2 and versions less than 2.1).</td>
+      </tr>
+      <tr>
+          <td><strong>Resolution</strong></td>
+          <td>Metrics from OpenTSDB may have data points with either second or millisecond resolution.</td>
+      </tr>
+      <tr>
+          <td><strong>Lookup limit</strong></td>
+          <td>Default is 1000.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="provision-the-data-source">Provision the data source</h3>
+<p>You can define and configure the data source in YAML files as part of Grafana&rsquo;s provisioning system.
+For more information about provisioning, and for available configuration options, refer to 
+    <a href="/docs/grafana/latest/administration/provisioning/#data-sources">Provisioning Grafana</a>.</p>
+<h4 id="provisioning-example">Provisioning example</h4>
+<pre>apiVersion: 1
+
+datasources:
+  - name: OpenTSDB
+    type: opentsdb
+    access: proxy
+    url: http://localhost:4242
+    jsonData:
+      tsdbResolution: 1
+      tsdbVersion: 1</pre>
+<h2 id="query-editor">Query editor</h2>
+<p>Open a graph in edit mode by click the title. Query editor will differ if the data source has version &lt;=2.1 or = 2.2.
+In the former version, only tags can be used to query OpenTSDB. But in the latter version, filters as well as tags
+can be used to query OpenTSDB. Fill Policy is also introduced in OpenTSDB 2.2.</p>
+<p><img
+  class="lazyload"
+  data-src="/static/img/docs/v43/opentsdb_query_editor.png"
+  alt="" width="1171"
+     height="239"/></p>
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>While using OpenTSDB 2.2 data source, make sure you use either Filters or Tags as they are mutually exclusive. If used together, might give you weird results.</p></blockquote></div>
+
+
+
+<div class="admonition admonition-note"><blockquote><p class="title text-uppercase">Note</p><p>When using OpenTSDB 2.4 with alerting, queries are executed with the parameter <code>arrays=true</code>. This causes OpenTSDB to return data points as an array of arrays instead of a map of key-value pairs. Grafana then converts this data into the appropriate data frame format.</p></blockquote></div>
+
+<h3 id="auto-complete-suggestions">Auto complete suggestions</h3>
+<p>As you begin typing metric names, tag names, or tag values, highlighted autocomplete suggestions will appear.
+The autocomplete only works if the OpenTSDB suggest API is enabled.</p>
+<h2 id="templating-queries">Templating queries</h2>
+<p>Instead of hard-coding things like server, application and sensor name in your metric queries you can use variables in their place.
+Variables are shown as dropdown select boxes at the top of the dashboard. These dropdowns make it easy to change the data
+being displayed in your dashboard.</p>
+<p>Check out the 
+    <a href="/docs/grafana/latest/dashboards/variables/">Templating</a> documentation for an introduction to the templating feature and the different
+types of template variables.</p>
+<h3 id="query-variable">Query variable</h3>
+<p>Grafana&rsquo;s OpenTSDB data source supports template variable queries. This means you can create template variables
+that fetch the values from OpenTSDB. For example, metric names, tag names, or tag values.</p>
+<p>When using OpenTSDB with a template variable of <code>query</code> type you can use following syntax for lookup.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Query</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>metrics(prefix)</code></td>
+          <td>Returns metric names with specific prefix (can be empty)</td>
+      </tr>
+      <tr>
+          <td><code>tag_names(cpu)</code></td>
+          <td>Returns tag names (i.e. keys) for a specific cpu metric</td>
+      </tr>
+      <tr>
+          <td><code>tag_values(cpu, hostname)</code></td>
+          <td>Returns tag values for metric cpu and tag key hostname</td>
+      </tr>
+      <tr>
+          <td><code>suggest_tagk(prefix)</code></td>
+          <td>Returns tag names (i.e. keys) for all metrics with specific prefix (can be empty)</td>
+      </tr>
+      <tr>
+          <td><code>suggest_tagv(prefix)</code></td>
+          <td>Returns tag values for all metrics with specific prefix (can be empty)</td>
+      </tr>
+  </tbody>
+</table>
+<p>If you do not see template variables being populated in <code>Preview of values</code> section, you need to enable
+<code>tsd.core.meta.enable_realtime_ts</code> in the OpenTSDB server settings. Also, to populate metadata of
+the existing time series data in OpenTSDB, you need to run <code>tsdb uid metasync</code> on the OpenTSDB server.</p>
+<h3 id="nested-templating">Nested templating</h3>
+<p>One template variable can be used to filter tag values for another template variable. First parameter is the metric name,
+second parameter is the tag key for which you need to find tag values, and after that all other dependent template variables.
+Some examples are mentioned below to make nested template queries work successfully.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Query</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>tag_values(cpu, hostname, env=$env)</code></td>
+          <td>Return tag values for cpu metric, selected env tag value and tag key hostname</td>
+      </tr>
+      <tr>
+          <td><code>tag_values(cpu, hostname, env=$env, region=$region)</code></td>
+          <td>Return tag values for cpu metric, selected env tag value, selected region tag value and tag key hostname</td>
+      </tr>
+  </tbody>
+</table>
+<p>For details on OpenTSDB metric queries, check out the official <a href="http://opentsdb.net/docs/build/html/index.html" target="_blank" rel="noopener noreferrer">OpenTSDB documentation</a></p>
